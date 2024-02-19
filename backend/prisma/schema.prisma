@@ -9,3 +9,150 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model Course {
+  id              String              @id @default(uuid())
+  name            String
+  description     String?
+  content         String?             @db.Text
+  roles           Role[]
+  videoSouceUrl   String?
+  thumbnailUrl    String
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+  publicationDate DateTime
+  published       Boolean             @default(true)
+  modules         Module[]
+  tags            TagOptionTagValue[]
+  comments        Comment[]
+
+  @@map("courses")
+}
+
+model Role {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  courses     Course[]
+
+  @@map("roles")
+}
+
+model Module {
+  id              String              @id @default(uuid())
+  name            String
+  description     String?
+  content         String?             @db.Text
+  VideoSouceUrl   String?
+  thumbnailUrl    String
+  course          Course[]
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+  publicationDate DateTime
+  published       Boolean             @default(false)
+  lessons         Lesson[]
+  tags            TagOptionTagValue[]
+  comments        Comment[]
+
+  @@map("modules")
+}
+
+model Lesson {
+  id              String              @id @default(uuid())
+  name            String
+  type            LessonType          @default(video)
+  description     String?
+  content         String?             @db.Text
+  videoSouceUrl   String?
+  thumbnailUrl    String
+  modules         Module[]
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+  publicationDate DateTime
+  published       Boolean             @default(false)
+  tags            TagOptionTagValue[]
+  comments        Comment[]
+  lessonProgress  LessonProgress[]
+
+  @@map("lessons")
+}
+
+enum LessonType {
+  video
+  text
+  courseWare
+}
+
+model TagOption {
+  id                String              @id @default(uuid())
+  name              String
+  description       String?
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  TagOptionTagValue TagOptionTagValue[]
+
+  @@map("tag_options")
+}
+
+model TagValue {
+  id                String              @id @default(uuid())
+  name              String
+  description       String?
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  TagOptionTagValue TagOptionTagValue[]
+
+  @@map("tag_values")
+}
+
+model TagOptionTagValue {
+  id          String    @id @default(uuid())
+  tagOptionId String
+  tagValueId  String
+  tagOption   TagOption @relation(fields: [tagOptionId], references: [id], onDelete: Cascade)
+  tagValue    TagValue  @relation(fields: [tagValueId], references: [id], onDelete: Cascade)
+  lessons     Lesson[]
+  modules     Module[]
+  courses     Course[]
+  published   Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  // @@id([tagOptionId, tagValueId])
+  @@unique(name: "tag", [tagOptionId, tagValueId])
+  @@map("tag_option_tag_value")
+}
+
+model Comment {
+  id           String    @id @default(uuid())
+  content      String    @db.Text
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  userId       String
+  lesson       Lesson?   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  course       Course?   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  module       Module?   @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  lessonId     String?
+  courseId     String?
+  moduleId     String?
+  responseToId String?
+  responseTo   Comment?  @relation("CommentToComment", fields: [responseToId], references: [id], onDelete: Cascade)
+  responses    Comment[] @relation("CommentToComment")
+  notify String[]
+
+  @@map("comments")
+}
+
+model LessonProgress {
+  id                     String    @id @default(uuid())
+  lesson                 Lesson    @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  userId                 String
+  lessonId               String
+  progressInMilliseconds Int       @default(0)
+  startedAt              DateTime  @default(now())
+  updatedAt              DateTime  @updatedAt
+  finishedAt              DateTime?
+
+  @@unique([lessonId, userId])
+  @@map("lesson_progress")
+}
