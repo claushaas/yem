@@ -1,7 +1,7 @@
 import express from 'express';
 import 'express-async-errors';
-import {type Request, type Response, type NextFunction} from 'express';
 import router from './routes';
+import errorMiddleware from './middlewares/error.middleware';
 
 export default class App {
 	public app: express.Express;
@@ -29,6 +29,6 @@ export default class App {
 	}
 
 	private initializeErrorHandling() {
-		this.app.use((err: Error, req: Request, res: Response, next: NextFunction) => res.status(500).send(err.message));
+		this.app.use(errorMiddleware);
 	}
 }
