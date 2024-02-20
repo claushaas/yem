@@ -1,6 +1,6 @@
 import {PrismaClient, type Prisma} from '@prisma/client';
 
-export default class Course {
+export default class CourseModel {
 	private readonly _model: PrismaClient;
 
 	constructor(model: PrismaClient = new PrismaClient()) {
