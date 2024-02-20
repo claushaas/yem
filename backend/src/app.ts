@@ -9,6 +9,9 @@ export default class App {
 		this.app = express();
 
 		this.initializeMiddlewares();
+
+		this.app.get('/health', (req, res) => res.json({ok: true}));
+
 		this.initializeErrorHandling();
 	}
 
