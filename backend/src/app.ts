@@ -1,6 +1,7 @@
 import express from 'express';
 import 'express-async-errors';
 import {type Request, type Response, type NextFunction} from 'express';
+import router from './routes';
 
 export default class App {
 	public app: express.Express;
@@ -23,6 +24,8 @@ export default class App {
 
 	private initializeMiddlewares() {
 		this.app.use(express.json());
+
+		this.app.use(router);
 	}
 
 	private initializeErrorHandling() {
