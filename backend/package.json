@@ -5,8 +5,7 @@
   "main": "./build/server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "predev": "npx prisma migrate dev",
-    "dev": "ts-node-dev --ignore-watch node_modules src/server.ts",
+    "dev": "npx prisma migrate dev && ts-node-dev --ignore-watch node_modules src/server.ts",
     "eslint": "eslint --ext .ts ./src",
     "build": "tsc --project tsconfig.json",
     "prestart": "npm run build",

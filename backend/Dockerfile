@@ -1,12 +1,14 @@
 FROM --platform=arm64 node:21-alpine3.18
 
-WORKDIR /app
+WORKDIR /backend
 
 COPY package*.json ./
 
 RUN npm ci
 
 COPY . .
+
+RUN npx prisma generate
 
 EXPOSE 3001
 
