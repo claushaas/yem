@@ -18,6 +18,8 @@ export default class UserService {
 	}
 
 	public async login(username: string, password: string) {
+		const cleanUsername = username.trim().toLowerCase();
+
 		const params: InitiateAuthCommandInput = {
 			// eslint-disable-next-line @typescript-eslint/naming-convention
 			AuthFlow: 'USER_PASSWORD_AUTH',
@@ -26,7 +28,7 @@ export default class UserService {
 			// eslint-disable-next-line @typescript-eslint/naming-convention
 			AuthParameters: {
 				// eslint-disable-next-line @typescript-eslint/naming-convention
-				USERNAME: username,
+				USERNAME: cleanUsername,
 				// eslint-disable-next-line @typescript-eslint/naming-convention
 				PASSWORD: password,
 			},
@@ -43,7 +45,7 @@ export default class UserService {
 			// eslint-disable-next-line @typescript-eslint/naming-convention
 			UserPoolId: process.env.COGNITO_USER_POOL_ID,
 			// eslint-disable-next-line @typescript-eslint/naming-convention
-			Username: username,
+			Username: cleanUsername,
 		}));
 
 		const userAttributes = convertCognitoUserAttributesToObj(user.UserAttributes as TypeCognitoUserAttributes);
