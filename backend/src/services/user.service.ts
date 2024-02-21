@@ -7,10 +7,6 @@ import {generateToken} from '../utils/jwt';
 import {type TypeCognitoUserAttributes} from '../types/CognitoUserAttributes';
 import convertCognitoUserAttributesToObj from '../utils/convertCognitoUserAttributesToObj';
 
-// Const client = new FooClient({
-//   credentials: fromEnv(),
-// });
-
 export default class UserService {
 	private readonly _awsClient: CognitoIdentityProviderClient;
 
