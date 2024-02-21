@@ -11,6 +11,9 @@ export default class CourseService {
 	public async create(courseData: Prisma.CourseCreateInput) {
 		const createdCourse = await this._model.create(courseData);
 
-		return createdCourse;
+		return {
+			status: 'CREATED',
+			data: createdCourse,
+		};
 	}
 }
