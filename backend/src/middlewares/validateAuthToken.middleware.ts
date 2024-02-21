@@ -18,8 +18,6 @@ const validateAuthToken = (req: Request, res: Response, next: NextFunction) => {
 	try {
 		const decoded = verifyToken(token);
 
-		console.log(decoded);
-
 		res.locals.user = decoded;
 
 		next();
