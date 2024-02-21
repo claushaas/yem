@@ -1,4 +1,4 @@
-type CustomError = {
+type TypeCustomError = {
 	statusCode?: number;
 } & Error;
-export default CustomError;
+export default TypeCustomError;
