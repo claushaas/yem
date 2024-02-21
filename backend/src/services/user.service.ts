@@ -5,7 +5,7 @@ import {
 import CustomError from '../utils/CustomError';
 import {generateToken} from '../utils/jwt';
 import {type TypeCognitoUserAttributes} from '../types/CognitoUserAttributes';
-import convertCognitoUserAttributesToObj from '../utils/converCognitoUserAttributesToObj';
+import convertCognitoUserAttributesToObj from '../utils/convertCognitoUserAttributesToObj';
 
 // Const client = new FooClient({
 //   credentials: fromEnv(),
