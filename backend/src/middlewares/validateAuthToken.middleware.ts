@@ -3,16 +3,10 @@ import {verifyToken} from '../utils/jwt';
 import CustomError from '../utils/CustomError';
 
 const validateAuthToken = (req: Request, res: Response, next: NextFunction) => {
-	const {authorization} = req.headers;
-
-	if (!authorization) {
-		throw new CustomError('UNAUTHORIZED', 'Token not found');
-	}
-
-	const [, token] = authorization.split(' ');
+	const token = req.cookies.access_token as string ?? undefined;
 
 	if (!token) {
-		throw new CustomError('UNAUTHORIZED', 'Token must be a valid token');
+		throw new CustomError('UNAUTHORIZED', 'Token not found');
 	}
 
 	try {

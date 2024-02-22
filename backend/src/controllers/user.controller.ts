@@ -16,6 +16,22 @@ export default class UserController {
 
 		const statusCode = mapStatusHttp(status);
 
-		return res.status(statusCode).json(data);
+		return res.status(statusCode)
+			.cookie('access_token', data.token, {
+				httpOnly: true,
+				secure: process.env.NODE_ENV === 'production',
+			})
+			.json({
+				message: 'User logged in successfully',
+			});
+	}
+
+	public logout(_req: Request, res: Response) {
+		const statusCode = mapStatusHttp('SUCCESSFUL');
+
+		return res
+			.status(statusCode)
+			.clearCookie('access_token')
+			.json({message: 'User logged out successfully'});
 	}
 }
