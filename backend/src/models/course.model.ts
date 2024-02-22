@@ -35,29 +35,39 @@ export default class CourseModel {
 	public async get(courseId: string) {
 		const course = await this._model.course.findUnique({
 			where: {id: courseId},
+			include: {
+				roles: true,
+				modules: true,
+			},
 		});
 
 		return course;
 	}
 
 	public async getAll() {
-		const courses = await this._model.course.findMany();
+		const courses = await this._model.course.findMany({
+			include: {
+				roles: true,
+				modules: true,
+			},
+		});
 
 		return courses;
 	}
 
-	public async getPublishedByRole(role: string) {
+	public async getPublishedByRole(roles: string[]) {
 		const courses = await this._model.course.findMany({
 			where: {
 				roles: {
 					some: {
-						name: role,
+						name: {in: roles},
 					},
 				},
 				published: true,
 			},
 			include: {
 				roles: true,
+				modules: true,
 			},
 		});
 
