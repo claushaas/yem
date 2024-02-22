@@ -22,7 +22,7 @@ export default class UserController {
 				secure: process.env.NODE_ENV === 'production',
 			})
 			.json({
-				message: 'User logged in successfully',
+				userData: data.userData,
 			});
 	}
 

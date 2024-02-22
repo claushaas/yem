@@ -75,7 +75,10 @@ export default class UserService {
 
 		return {
 			status: 'SUCCESSFUL',
-			data: {token},
+			data: {
+				token,
+				userData: cleanUser,
+			},
 		};
 	}
 }
