@@ -7,8 +7,6 @@ import {
 } from '@aws-sdk/client-cognito-identity-provider';
 import CustomError from '../utils/CustomError';
 import {generateToken} from '../utils/jwt';
-import {type TypeCognitoUserAttributes} from '../types/CognitoUserAttributes';
-import convertCognitoUserAttributesToObj from '../utils/convertCognitoUserAttributesToObj';
 import type TypeUser from '../types/User';
 
 export default class UserService {
