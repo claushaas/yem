@@ -2,6 +2,7 @@ import express from 'express';
 import 'express-async-errors';
 import router from './routes';
 import errorMiddleware from './middlewares/error.middleware';
+import cookieParser from 'cookie-parser';
 
 export default class App {
 	public app: express.Express;
@@ -24,6 +25,9 @@ export default class App {
 
 	private initializeMiddlewares() {
 		this.app.use(express.json());
+
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-call
+		this.app.use(cookieParser());
 
 		this.app.use(router);
 	}
