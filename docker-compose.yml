@@ -9,7 +9,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     restart: always
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready"]
+      test: [ "CMD-SHELL", "pg_isready" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -19,7 +19,7 @@ services:
       dockerfile: Dockerfile
     container_name: backend
     working_dir: /backend
-    volumes: 
+    volumes:
       - ./backend/src:/backend/src
     ports:
       - "3001:3001"
@@ -39,9 +39,10 @@ services:
       COGNITO_CLIENT_ID: ${COGNITO_CLIENT_ID}
       COGNITO_USER_POOL_ID: ${COGNITO_USER_POOL_ID}
       JWT_SECRET: ${JWT_SECRET}
+      NODE_ENV: ${NODE_ENV}
     restart: always
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3001/health"]
+      test: [ "CMD", "curl", "-f", "http://localhost:3001/health" ]
       interval: 10s
       timeout: 5s
       retries: 5
