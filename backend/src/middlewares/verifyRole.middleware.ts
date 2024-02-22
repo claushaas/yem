@@ -1,16 +1,15 @@
 import {type NextFunction, type Request, type Response} from 'express';
 import CustomError from '../utils/CustomError';
+import type TypeUser from '../types/User';
 
 const verifyRole = (req: Request, res: Response, next: NextFunction, role: string) => {
 	const {user}: {
-		user: {
-			'custom:roles': string;
-		};} = res.locals as {user: {'custom:roles': string}};
-	const {'custom:roles': roles}: {'custom:roles': string} = user;
+		user: TypeUser;} = res.locals as {user: TypeUser};
 
-	const rolesArray = roles.split('-');
+	console.log(user);
+	const {roles} = user;
 
-	if (!rolesArray.includes(role)) {
+	if (!roles.includes(role)) {
 		throw new CustomError('UNAUTHORIZED', 'You do not have the necessary permissions to access this resource');
 	}
 
