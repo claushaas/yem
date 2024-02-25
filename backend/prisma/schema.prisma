@@ -16,7 +16,7 @@ model Course {
   description     String?
   content         String?             @db.Text
   roles           Role[]
-  videoSouceUrl   String?
+  videoSourceUrl  String?
   thumbnailUrl    String
   createdAt       DateTime            @default(now())
   updatedAt       DateTime            @updatedAt
@@ -138,7 +138,7 @@ model Comment {
   responseToId String?
   responseTo   Comment?  @relation("CommentToComment", fields: [responseToId], references: [id], onDelete: Cascade)
   responses    Comment[] @relation("CommentToComment")
-  notify String[]
+  notify       String[]
 
   @@map("comments")
 }
@@ -151,7 +151,7 @@ model LessonProgress {
   progressInMilliseconds Int       @default(0)
   startedAt              DateTime  @default(now())
   updatedAt              DateTime  @updatedAt
-  finishedAt              DateTime?
+  finishedAt             DateTime?
 
   @@unique([lessonId, userId])
   @@map("lesson_progress")
