@@ -18,4 +18,11 @@ courseRouter.post(
 	},
 );
 
+courseRouter.get(
+	'/',
+	async (req: Request, res: Response) => {
+		await new CourseController().getAll(req, res);
+	},
+);
+
 export default courseRouter;
