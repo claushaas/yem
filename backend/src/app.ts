@@ -26,7 +26,6 @@ export default class App {
 	private initializeMiddlewares() {
 		this.app.use(express.json());
 
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-call
 		this.app.use(cookieParser());
 
 		this.app.use(router);

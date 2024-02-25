@@ -1,10 +1,12 @@
-type TypeUser = {
+export type UserRoles = string[];
+
+type User = {
 	id: string;
 	email: string;
-	roles: string[];
+	roles: UserRoles;
 	firstName: string;
 	lastName: string;
 	phoneNumber: string;
 };
 
-export default TypeUser;
+export default User;

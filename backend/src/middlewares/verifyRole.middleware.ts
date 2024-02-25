@@ -1,9 +1,9 @@
 import {type NextFunction, type Request, type Response} from 'express';
 import CustomError from '../utils/CustomError';
-import type TypeUser from '../types/User';
+import type User from '../types/User';
 
 const verifyRole = (req: Request, res: Response, next: NextFunction, role: string) => {
-	const {user}: {user: TypeUser} = res.locals as {user: TypeUser};
+	const {user} = res.locals as {user: User};
 
 	const {roles} = user;
 

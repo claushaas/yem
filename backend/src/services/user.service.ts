@@ -7,7 +7,7 @@ import {
 } from '@aws-sdk/client-cognito-identity-provider';
 import CustomError from '../utils/CustomError';
 import {generateToken} from '../utils/jwt';
-import type TypeUser from '../types/User';
+import type User from '../types/User';
 
 export default class UserService {
 	private readonly _awsClient: CognitoIdentityProviderClient;
@@ -56,7 +56,7 @@ export default class UserService {
 			}),
 		);
 
-		const cleanUser: TypeUser = {
+		const cleanUser: User = {
 			id:
 				user.UserAttributes?.find(attr => attr.Name === 'sub')?.Value ?? '',
 			email:
