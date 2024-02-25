@@ -43,7 +43,7 @@ model Module {
   name            String
   description     String?
   content         String?             @db.Text
-  VideoSouceUrl   String?
+  VideoSourceUrl  String?
   thumbnailUrl    String
   course          Course[]
   createdAt       DateTime            @default(now())
@@ -63,7 +63,7 @@ model Lesson {
   type            LessonType          @default(video)
   description     String?
   content         String?             @db.Text
-  videoSouceUrl   String?
+  videoSourceUrl  String?
   thumbnailUrl    String
   modules         Module[]
   createdAt       DateTime            @default(now())
