@@ -55,14 +55,9 @@ export default class CourseModel {
 		return courses;
 	}
 
-	public async getPublishedByRole(roles: string[]) {
+	public async getPublished() {
 		const courses = await this._model.course.findMany({
 			where: {
-				roles: {
-					some: {
-						name: {in: roles},
-					},
-				},
 				published: true,
 			},
 			include: {
