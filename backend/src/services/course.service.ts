@@ -58,7 +58,11 @@ export default class CourseService {
 
 		const rawCourses = await this._model.course.findMany({
 			include: {
-				roles: true,
+				roles: {
+					select: {
+						name: true,
+					},
+				},
 			},
 			where: {
 				published: true,
@@ -74,6 +78,106 @@ export default class CourseService {
 		return {
 			status: 'SUCCESSFUL',
 			data: returnableCourses,
+		};
+	}
+
+	public async getById(id: string, userRoles: UserRoles = []) {
+		const include = {
+			roles: {
+				select: {
+					name: true,
+				},
+			},
+			modules: {
+				select: {
+					id: true,
+					name: true,
+					description: true,
+					thumbnailUrl: true,
+					published: true,
+				},
+			},
+		};
+
+		if (userRoles.includes('admin')) {
+			const course = await this._model.course.findUnique({
+				include,
+				where: {
+					id,
+				},
+			});
+
+			return {
+				status: 'SUCCESSFUL',
+				data: course,
+			};
+		}
+
+		const rawCourse = await this._model.course.findUnique({
+			include,
+			where: {
+				id,
+				published: true,
+			},
+		});
+
+		const returnableCourse = {
+			...rawCourse,
+			content: testUserRoles(rawCourse?.roles as Role[], userRoles) ? rawCourse?.content : '',
+			videoSourceUrl: testUserRoles(rawCourse?.roles as Role[], userRoles) ? rawCourse?.videoSourceUrl : '',
+		};
+
+		return {
+			status: 'SUCCESSFUL',
+			data: returnableCourse,
+		};
+	}
+
+	public async update(id: string, courseData: TypeCourse) {
+		const newCourse = new Course(courseData);
+		const updatedCourse = await this._model.course.update({
+			include: {
+				roles: true,
+			},
+			where: {
+				id,
+			},
+			data: {
+				name: newCourse.name,
+				description: newCourse.description,
+				content: newCourse.content,
+				videoSourceUrl: newCourse.videoSourceUrl,
+				thumbnailUrl: newCourse.thumbnailUrl,
+				publicationDate: newCourse.publicationDate,
+				published: newCourse.published,
+				roles: {
+					connectOrCreate: newCourse.roles.map(role => ({
+						where: {id: undefined, name: role},
+						create: {name: role},
+					})),
+				},
+			},
+		});
+
+		return {
+			status: 'SUCCESSFUL',
+			data: updatedCourse,
+		};
+	}
+
+	public async delete(id: string) {
+		await this._model.course.update({
+			where: {
+				id,
+			},
+			data: {
+				published: false,
+			},
+		});
+
+		return {
+			status: 'NO_CONTENT',
+			data: null,
 		};
 	}
 }
