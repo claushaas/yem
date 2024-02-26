@@ -50,6 +50,8 @@ model Module {
   updatedAt       DateTime            @updatedAt
   publicationDate DateTime
   published       Boolean             @default(false)
+  subModules      Module[]            @relation("SubModules")
+  belongToModules Module[]            @relation("SubModules")
   lessons         Lesson[]
   tags            TagOptionTagValue[]
   comments        Comment[]
