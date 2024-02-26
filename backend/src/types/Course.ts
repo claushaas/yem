@@ -1,14 +1,12 @@
-import type Role from './Role';
-
-type Course = {
+type TypeCourse = {
 	name: string;
 	description?: string;
 	content?: string;
-	roles: Role[];
+	roles: string[];
 	videoSourceUrl?: string;
 	thumbnailUrl: string;
 	publicationDate: Date;
 	published: boolean;
 };
 
-export default Course;
+export default TypeCourse;
