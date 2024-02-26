@@ -25,4 +25,33 @@ courseRouter.get(
 	},
 );
 
+courseRouter.get(
+	'/:id',
+	async (req: Request, res: Response) => {
+		await new CourseController().getById(req, res);
+	},
+);
+
+courseRouter.put(
+	'/:id',
+	validateAuthToken,
+	(req: Request, res: Response, next: NextFunction) => {
+		verifyRole(req, res, next, 'admin');
+	},
+	async (req: Request, res: Response) => {
+		await new CourseController().update(req, res);
+	},
+);
+
+courseRouter.delete(
+	'/:id',
+	validateAuthToken,
+	(req: Request, res: Response, next: NextFunction) => {
+		verifyRole(req, res, next, 'admin');
+	},
+	async (req: Request, res: Response) => {
+		await new CourseController().delete(req, res);
+	},
+);
+
 export default courseRouter;
