@@ -1,8 +1,8 @@
 import {type Request, type Response} from 'express';
 import CourseService from '../services/course.service';
-import {type Prisma} from '@prisma/client';
 import mapStatusHttp from '../utils/mapStatusHttp';
-import type TUser from '../types/User';
+import type TypeUser from '../types/User';
+import type TypeCourse from '../types/Course';
 
 export default class CourseController {
 	private readonly _service: CourseService;
@@ -12,7 +12,7 @@ export default class CourseController {
 	}
 
 	public async create(req: Request, res: Response) {
-		const courseData = req.body as Prisma.CourseCreateInput;
+		const courseData = req.body as TypeCourse;
 
 		const {status, data} = await this._service.create(courseData);
 
@@ -22,7 +22,7 @@ export default class CourseController {
 	}
 
 	public async getAll(req: Request, res: Response) {
-		const {roles: userRoles} = res.locals.user as TUser;
+		const {roles: userRoles} = res.locals.user as TypeUser;
 
 		const {status, data} = await this._service.getAll(userRoles);
 
