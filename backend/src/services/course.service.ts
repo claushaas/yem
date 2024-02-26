@@ -1,18 +1,39 @@
-import CourseModel from '../models/course.model';
-import {type Prisma} from '@prisma/client';
+import {PrismaClient} from '@prisma/client';
 import testUserRoles from '../utils/testUserRoles';
 import type Role from '../types/Role';
 import {type UserRoles} from '../types/User';
+import Course from '../entities/course.entity';
+import type TypeCourse from '../types/Course';
 
 export default class CourseService {
-	private readonly _model: CourseModel;
+	private readonly _model: PrismaClient;
 
-	constructor(model: CourseModel = new CourseModel()) {
+	constructor(model: PrismaClient = new PrismaClient()) {
 		this._model = model;
 	}
 
-	public async create(courseData: Prisma.CourseCreateInput) {
-		const createdCourse = await this._model.create(courseData);
+	public async create(courseData: TypeCourse) {
+		const newCourse = new Course(courseData);
+		const createdCourse = await this._model.course.create({
+			include: {
+				roles: true,
+			},
+			data: {
+				name: newCourse.name,
+				description: newCourse.description,
+				content: newCourse.content,
+				videoSourceUrl: newCourse.videoSourceUrl,
+				thumbnailUrl: newCourse.thumbnailUrl,
+				publicationDate: newCourse.publicationDate,
+				published: newCourse.published,
+				roles: {
+					connectOrCreate: newCourse.roles.map(role => ({
+						where: {id: undefined, name: role},
+						create: {name: role},
+					})),
+				},
+			},
+		});
 
 		return {
 			status: 'CREATED',
@@ -22,7 +43,12 @@ export default class CourseService {
 
 	public async getAll(userRoles: UserRoles = []) {
 		if (userRoles.includes('admin')) {
-			const courses = await this._model.getAll();
+			const courses = await this._model.course.findMany({
+				include: {
+					roles: true,
+					modules: true,
+				},
+			});
 
 			return {
 				status: 'SUCCESSFUL',
@@ -30,7 +56,14 @@ export default class CourseService {
 			};
 		}
 
-		const rawCourses = await this._model.getPublished();
+		const rawCourses = await this._model.course.findMany({
+			include: {
+				roles: true,
+			},
+			where: {
+				published: true,
+			},
+		});
 
 		const returnableCourses = rawCourses.map(course => ({
 			...course,
