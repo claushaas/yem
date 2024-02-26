@@ -30,4 +30,36 @@ export default class CourseController {
 
 		return res.status(statusCode).json(data);
 	}
+
+	public async getById(req: Request, res: Response) {
+		const {id} = req.params;
+		const {roles: userRoles} = res.locals.user as TypeUser;
+
+		const {status, data} = await this._service.getById(id, userRoles);
+
+		const statusCode = mapStatusHttp(status);
+
+		return res.status(statusCode).json(data);
+	}
+
+	public async update(req: Request, res: Response) {
+		const {id} = req.params;
+		const courseData = req.body as TypeCourse;
+
+		const {status, data} = await this._service.update(id, courseData);
+
+		const statusCode = mapStatusHttp(status);
+
+		return res.status(statusCode).json(data);
+	}
+
+	public async delete(req: Request, res: Response) {
+		const {id} = req.params;
+
+		const {status, data} = await this._service.delete(id);
+
+		const statusCode = mapStatusHttp(status);
+
+		return res.status(statusCode).json(data);
+	}
 }
