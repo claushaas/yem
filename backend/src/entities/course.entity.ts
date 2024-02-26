@@ -1,7 +1,20 @@
 import type TypeCourse from '../types/Course';
+import Joi from 'joi';
+import CustomError from '../utils/CustomError';
+
+const courseSchema = Joi.object({
+	name: Joi.string().required().min(3).max(35),
+	description: Joi.string().min(10).max(150),
+	content: Joi.string(),
+	roles: Joi.array().items(Joi.string()).required(),
+	videoSourceUrl: Joi.string().uri(),
+	thumbnailUrl: Joi.string().required().uri(),
+	publicationDate: Joi.date().required().default(new Date()),
+	published: Joi.boolean().required().default(true),
+});
 
 export default class Course implements TypeCourse {
-	private _name: string;
+	private readonly _name: string;
 	private readonly _description?: string;
 	private readonly _content?: string;
 	private readonly _roles: string[];
@@ -11,6 +24,12 @@ export default class Course implements TypeCourse {
 	private readonly _published: boolean;
 
 	constructor(course: TypeCourse) {
+		const {error} = courseSchema.validate(course);
+
+		if (error) {
+			throw new CustomError('UNPROCESSABLE_ENTITY', `Invalid course data: ${error.message}`);
+		}
+
 		this._name = course.name;
 		this._description = course.description;
 		this._content = course.content;
@@ -51,9 +70,5 @@ export default class Course implements TypeCourse {
 
 	get published() {
 		return this._published;
-	}
-
-	setName(name: string) {
-		(this._name = name);
 	}
 }
