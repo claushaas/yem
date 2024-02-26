@@ -14,6 +14,7 @@ export default class CourseService {
 
 	public async create(courseData: TypeCourse) {
 		const newCourse = new Course(courseData);
+
 		const createdCourse = await this._model.course.create({
 			include: {
 				roles: true,
@@ -42,12 +43,17 @@ export default class CourseService {
 	}
 
 	public async getAll(userRoles: UserRoles = []) {
+		const include = {
+			roles: {
+				select: {
+					name: true,
+				},
+			},
+		};
+
 		if (userRoles.includes('admin')) {
 			const courses = await this._model.course.findMany({
-				include: {
-					roles: true,
-					modules: true,
-				},
+				include,
 			});
 
 			return {
@@ -57,13 +63,7 @@ export default class CourseService {
 		}
 
 		const rawCourses = await this._model.course.findMany({
-			include: {
-				roles: {
-					select: {
-						name: true,
-					},
-				},
-			},
+			include,
 			where: {
 				published: true,
 			},
@@ -134,7 +134,8 @@ export default class CourseService {
 	}
 
 	public async update(id: string, courseData: TypeCourse) {
-		const newCourse = new Course(courseData);
+		const courseToUpdate = new Course(courseData);
+
 		const updatedCourse = await this._model.course.update({
 			include: {
 				roles: true,
@@ -143,15 +144,15 @@ export default class CourseService {
 				id,
 			},
 			data: {
-				name: newCourse.name,
-				description: newCourse.description,
-				content: newCourse.content,
-				videoSourceUrl: newCourse.videoSourceUrl,
-				thumbnailUrl: newCourse.thumbnailUrl,
-				publicationDate: newCourse.publicationDate,
-				published: newCourse.published,
+				name: courseToUpdate.name,
+				description: courseToUpdate.description,
+				content: courseToUpdate.content,
+				videoSourceUrl: courseToUpdate.videoSourceUrl,
+				thumbnailUrl: courseToUpdate.thumbnailUrl,
+				publicationDate: courseToUpdate.publicationDate,
+				published: courseToUpdate.published,
 				roles: {
-					connectOrCreate: newCourse.roles.map(role => ({
+					connectOrCreate: courseToUpdate.roles.map(role => ({
 						where: {id: undefined, name: role},
 						create: {name: role},
 					})),
