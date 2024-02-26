@@ -141,6 +141,12 @@ CREATE TABLE "_CourseToTagOptionTagValue" (
 );
 
 -- CreateTable
+CREATE TABLE "_SubModules" (
+    "A" TEXT NOT NULL,
+    "B" TEXT NOT NULL
+);
+
+-- CreateTable
 CREATE TABLE "_ModuleToTagOptionTagValue" (
     "A" TEXT NOT NULL,
     "B" TEXT NOT NULL
@@ -181,6 +187,12 @@ CREATE UNIQUE INDEX "_CourseToTagOptionTagValue_AB_unique" ON "_CourseToTagOptio
 
 -- CreateIndex
 CREATE INDEX "_CourseToTagOptionTagValue_B_index" ON "_CourseToTagOptionTagValue"("B");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "_SubModules_AB_unique" ON "_SubModules"("A", "B");
+
+-- CreateIndex
+CREATE INDEX "_SubModules_B_index" ON "_SubModules"("B");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "_ModuleToTagOptionTagValue_AB_unique" ON "_ModuleToTagOptionTagValue"("A", "B");
@@ -238,6 +250,12 @@ ALTER TABLE "_CourseToTagOptionTagValue" ADD CONSTRAINT "_CourseToTagOptionTagVa
 
 -- AddForeignKey
 ALTER TABLE "_CourseToTagOptionTagValue" ADD CONSTRAINT "_CourseToTagOptionTagValue_B_fkey" FOREIGN KEY ("B") REFERENCES "tag_option_tag_value"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_SubModules" ADD CONSTRAINT "_SubModules_A_fkey" FOREIGN KEY ("A") REFERENCES "modules"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_SubModules" ADD CONSTRAINT "_SubModules_B_fkey" FOREIGN KEY ("B") REFERENCES "modules"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_ModuleToTagOptionTagValue" ADD CONSTRAINT "_ModuleToTagOptionTagValue_A_fkey" FOREIGN KEY ("A") REFERENCES "modules"("id") ON DELETE CASCADE ON UPDATE CASCADE;
