@@ -4,6 +4,7 @@ import type Role from '../types/Role';
 import {type UserRoles} from '../types/User';
 import Course from '../entities/course.entity';
 import type TypeCourse from '../types/Course';
+import CustomError from '../utils/CustomError';
 
 export default class CourseService {
 	private readonly _model: PrismaClient;
@@ -18,6 +19,20 @@ export default class CourseService {
 		const createdCourse = await this._model.course.create({
 			include: {
 				roles: true,
+				tags: {
+					include: {
+						tagOption: {
+							select: {
+								name: true,
+							},
+						},
+						tagValue: {
+							select: {
+								name: true,
+							},
+						},
+					},
+				},
 			},
 			data: {
 				name: newCourse.name,
@@ -31,6 +46,43 @@ export default class CourseService {
 					connectOrCreate: newCourse.roles.map(role => ({
 						where: {id: undefined, name: role},
 						create: {name: role},
+					})),
+				},
+				tags: {
+					connectOrCreate: newCourse.tags?.map(tag => ({
+						where: {
+							id: undefined,
+							tagOption: {
+								name: tag[0],
+							},
+							tagValue: {
+								name: tag[1],
+							},
+						},
+						create: {
+							tagOption: {
+								connectOrCreate: {
+									where: {
+										id: undefined,
+										name: tag[0],
+									},
+									create: {
+										name: tag[0],
+									},
+								},
+							},
+							tagValue: {
+								connectOrCreate: {
+									where: {
+										id: undefined,
+										name: tag[1],
+									},
+									create: {
+										name: tag[1],
+									},
+								},
+							},
+						},
 					})),
 				},
 			},
@@ -56,6 +108,10 @@ export default class CourseService {
 				include,
 			});
 
+			if (courses.length === 0) {
+				throw new CustomError('NOT_FOUND', 'No courses found');
+			}
+
 			return {
 				status: 'SUCCESSFUL',
 				data: courses,
@@ -68,6 +124,10 @@ export default class CourseService {
 				published: true,
 			},
 		});
+
+		if (rawCourses.length === 0) {
+			throw new CustomError('NOT_FOUND', 'No courses found');
+		}
 
 		const returnableCourses = rawCourses.map(course => ({
 			...course,
@@ -95,6 +155,21 @@ export default class CourseService {
 					description: true,
 					thumbnailUrl: true,
 					published: true,
+					publicationDate: true,
+				},
+			},
+			tags: {
+				include: {
+					tagOption: {
+						select: {
+							name: true,
+						},
+					},
+					tagValue: {
+						select: {
+							name: true,
+						},
+					},
 				},
 			},
 		};
@@ -106,6 +181,10 @@ export default class CourseService {
 					id,
 				},
 			});
+
+			if (!course) {
+				throw new CustomError('NOT_FOUND', 'Course not found');
+			}
 
 			return {
 				status: 'SUCCESSFUL',
@@ -120,6 +199,10 @@ export default class CourseService {
 				published: true,
 			},
 		});
+
+		if (!rawCourse) {
+			throw new CustomError('NOT_FOUND', 'Course not found');
+		}
 
 		const returnableCourse = {
 			...rawCourse,
@@ -139,6 +222,20 @@ export default class CourseService {
 		const updatedCourse = await this._model.course.update({
 			include: {
 				roles: true,
+				tags: {
+					include: {
+						tagOption: {
+							select: {
+								name: true,
+							},
+						},
+						tagValue: {
+							select: {
+								name: true,
+							},
+						},
+					},
+				},
 			},
 			where: {
 				id,
@@ -157,8 +254,49 @@ export default class CourseService {
 						create: {name: role},
 					})),
 				},
+				tags: {
+					connectOrCreate: courseToUpdate.tags?.map(tag => ({
+						where: {
+							id: undefined,
+							tagOption: {
+								name: tag[0],
+							},
+							tagValue: {
+								name: tag[1],
+							},
+						},
+						create: {
+							tagOption: {
+								connectOrCreate: {
+									where: {
+										id: undefined,
+										name: tag[0],
+									},
+									create: {
+										name: tag[0],
+									},
+								},
+							},
+							tagValue: {
+								connectOrCreate: {
+									where: {
+										id: undefined,
+										name: tag[1],
+									},
+									create: {
+										name: tag[1],
+									},
+								},
+							},
+						},
+					})),
+				},
 			},
 		});
+
+		if (!updatedCourse) {
+			throw new CustomError('NOT_FOUND', 'No course to update');
+		}
 
 		return {
 			status: 'SUCCESSFUL',
@@ -167,7 +305,7 @@ export default class CourseService {
 	}
 
 	public async delete(id: string) {
-		await this._model.course.update({
+		const deletedCourse = await this._model.course.update({
 			where: {
 				id,
 			},
@@ -175,6 +313,10 @@ export default class CourseService {
 				published: false,
 			},
 		});
+
+		if (!deletedCourse) {
+			throw new CustomError('NOT_FOUND', 'No course to delete');
+		}
 
 		return {
 			status: 'NO_CONTENT',
