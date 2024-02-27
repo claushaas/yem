@@ -33,10 +33,10 @@ export default class ModuleController {
 	}
 
 	public async getById(req: Request, res: Response) {
-		const {id} = req.params;
+		const {courseId, id} = req.params;
 		const {roles: userRoles} = res.locals.user as TypeUser;
 
-		const {status, data} = await this._service.getById(id, userRoles);
+		const {status, data} = await this._service.getById(courseId, id, userRoles);
 
 		const statusCode = mapStatusHttp(status);
 

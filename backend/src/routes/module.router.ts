@@ -26,7 +26,7 @@ moduleRouter.get(
 );
 
 moduleRouter.get(
-	'/:id',
+	'one/:courseId/:id',
 	async (req: Request, res: Response) => {
 		await new ModuleController().getById(req, res);
 	},

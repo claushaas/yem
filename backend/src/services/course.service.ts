@@ -142,33 +142,50 @@ export default class CourseService {
 	}
 
 	public async getById(id: string, userRoles: UserRoles = []) {
-		const include = {
-			roles: {
-				select: {
-					name: true,
-				},
+		const includeRoles = {
+			select: {
+				name: true,
 			},
-			modules: {
-				select: {
-					id: true,
-					name: true,
-					description: true,
-					thumbnailUrl: true,
-					published: true,
-					publicationDate: true,
-				},
-			},
-			tags: {
-				include: {
-					tagOption: {
-						select: {
-							name: true,
-						},
+		};
+
+		const includeTags = {
+			include: {
+				tagOption: {
+					select: {
+						name: true,
 					},
-					tagValue: {
-						select: {
-							name: true,
-						},
+				},
+				tagValue: {
+					select: {
+						name: true,
+					},
+				},
+			},
+		};
+
+		const includeModules = {
+			select: {
+				id: true,
+				name: true,
+				description: true,
+				thumbnailUrl: true,
+				published: true,
+				publicationDate: true,
+			},
+		};
+
+		const includeComments = {
+			select: {
+				id: true,
+				content: true,
+				createdAt: true,
+				userId: true,
+				responses: {
+					select: {
+						id: true,
+						content: true,
+						createdAt: true,
+						userId: true,
 					},
 				},
 			},
@@ -176,7 +193,12 @@ export default class CourseService {
 
 		if (userRoles.includes('admin')) {
 			const course = await this._model.course.findUnique({
-				include,
+				include: {
+					roles: includeRoles,
+					tags: includeTags,
+					modules: includeModules,
+					comments: includeComments,
+				},
 				where: {
 					id,
 				},
@@ -193,10 +215,33 @@ export default class CourseService {
 		}
 
 		const rawCourse = await this._model.course.findUnique({
-			include,
 			where: {
 				id,
 				published: true,
+			},
+			include: {
+				roles: includeRoles,
+				tags: includeTags,
+				modules: {
+					...includeModules,
+					where: {
+						published: true,
+					},
+				},
+				comments: {
+					...includeComments,
+					select: {
+						responses: {
+							...includeComments.select.responses,
+							where: {
+								published: true,
+							},
+						},
+					},
+					where: {
+						published: true,
+					},
+				},
 			},
 		});
 

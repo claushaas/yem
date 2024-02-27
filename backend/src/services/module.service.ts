@@ -1,4 +1,4 @@
-import {type Prisma, PrismaClient} from '@prisma/client';
+import {PrismaClient} from '@prisma/client';
 import testUserRoles from '../utils/testUserRoles';
 import {type TypeModule} from '../types/Module';
 import Module from '../entities/module.entity';
@@ -115,7 +115,7 @@ export default class ModuleService {
 			},
 		};
 
-		const moduleWhere: Prisma.ModuleWhereInput = {
+		const moduleWhere = {
 			// eslint-disable-next-line @typescript-eslint/naming-convention
 			OR: [
 				{
@@ -337,6 +337,14 @@ export default class ModuleService {
 				tags: includeTags,
 				comments: {
 					...includeComments,
+					select: {
+						responses: {
+							...includeComments.select.responses,
+							where: {
+								published: true,
+							},
+						},
+					},
 					where: {
 						published: true,
 					},
