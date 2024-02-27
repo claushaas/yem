@@ -1,3 +1,5 @@
+import type TypeTags from './Tag';
+
 type TypeCourse = {
 	name: string;
 	description?: string;
@@ -7,6 +9,7 @@ type TypeCourse = {
 	thumbnailUrl: string;
 	publicationDate: Date;
 	published: boolean;
+	tags?: TypeTags;
 };
 
 export default TypeCourse;
