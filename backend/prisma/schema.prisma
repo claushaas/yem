@@ -141,6 +141,7 @@ model Comment {
   responseTo   Comment?  @relation("CommentToComment", fields: [responseToId], references: [id], onDelete: Cascade)
   responses    Comment[] @relation("CommentToComment")
   notify       String[]
+  published    Boolean   @default(true)
 
   @@map("comments")
 }

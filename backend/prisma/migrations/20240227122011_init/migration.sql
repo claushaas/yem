@@ -105,6 +105,7 @@ CREATE TABLE "comments" (
     "moduleId" TEXT,
     "responseToId" TEXT,
     "notify" TEXT[],
+    "published" BOOLEAN NOT NULL DEFAULT true,
 
     CONSTRAINT "comments_pkey" PRIMARY KEY ("id")
 );
