@@ -1,6 +1,7 @@
 import type TypeCourse from '../types/Course';
 import Joi from 'joi';
 import CustomError from '../utils/CustomError';
+import type TypeTags from '../types/Tag';
 
 const courseSchema = Joi.object({
 	name: Joi.string().required().min(3).max(35),
@@ -11,6 +12,7 @@ const courseSchema = Joi.object({
 	thumbnailUrl: Joi.string().required().uri(),
 	publicationDate: Joi.date().required().default(new Date()),
 	published: Joi.boolean().required().default(true),
+	tags: Joi.array().items(Joi.array().items(Joi.string()).min(2).max(2)).unique(),
 });
 
 export default class Course implements TypeCourse {
@@ -22,6 +24,7 @@ export default class Course implements TypeCourse {
 	private readonly _thumbnailUrl: string;
 	private readonly _publicationDate: Date;
 	private readonly _published: boolean;
+	private readonly _tags?: TypeTags;
 
 	constructor(course: TypeCourse) {
 		const {error} = courseSchema.validate(course);
@@ -38,6 +41,7 @@ export default class Course implements TypeCourse {
 		this._thumbnailUrl = course.thumbnailUrl;
 		this._publicationDate = course.publicationDate;
 		this._published = course.published;
+		this._tags = course.tags;
 	}
 
 	get name() {
@@ -70,5 +74,9 @@ export default class Course implements TypeCourse {
 
 	get published() {
 		return this._published;
+	}
+
+	get tags() {
+		return this._tags;
 	}
 }
