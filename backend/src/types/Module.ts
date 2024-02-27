@@ -1,5 +1,5 @@
 import {type Prisma} from '@prisma/client';
-import type TypeTags from './Tag';
+import {type TypeTags} from './Tag';
 import {type TypeUuid} from './UUID';
 
 export type TypeModule = {

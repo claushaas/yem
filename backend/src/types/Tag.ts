@@ -1,6 +1,3 @@
 export type TypeTag = [string, string];
 
-type TypeTags = TypeTag[];
-
-export default TypeTags;
-
+export type TypeTags = TypeTag[];

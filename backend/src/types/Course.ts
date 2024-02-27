@@ -1,4 +1,4 @@
-import type TypeTags from './Tag';
+import {type TypeTags} from './Tag';
 
 type TypeCourse = {
 	name: string;

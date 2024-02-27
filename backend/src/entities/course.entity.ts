@@ -1,7 +1,7 @@
 import type TypeCourse from '../types/Course';
 import Joi from 'joi';
 import CustomError from '../utils/CustomError';
-import type TypeTags from '../types/Tag';
+import {type TypeTags} from '../types/Tag';
 
 const courseSchema = Joi.object({
 	name: Joi.string().required().min(3).max(35),
