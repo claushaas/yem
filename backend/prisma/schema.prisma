@@ -43,7 +43,7 @@ model Module {
   name            String
   description     String?
   content         String?             @db.Text
-  VideoSourceUrl  String?
+  videoSourceUrl  String?
   thumbnailUrl    String
   course          Course[]
   createdAt       DateTime            @default(now())

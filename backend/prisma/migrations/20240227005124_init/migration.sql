@@ -32,7 +32,7 @@ CREATE TABLE "modules" (
     "name" TEXT NOT NULL,
     "description" TEXT,
     "content" TEXT,
-    "VideoSourceUrl" TEXT,
+    "videoSourceUrl" TEXT,
     "thumbnailUrl" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
