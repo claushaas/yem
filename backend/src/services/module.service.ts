@@ -2,8 +2,9 @@ import {type Prisma, PrismaClient} from '@prisma/client';
 import testUserRoles from '../utils/testUserRoles';
 import {type TypeModule} from '../types/Module';
 import Module from '../entities/module.entity';
-
-type Test = Prisma.ModuleCreateInput;
+import {type UserRoles} from '../types/User';
+import {type TypeUuid} from '../types/UUID';
+import type Role from '../types/Role';
 
 export default class ModuleService {
 	private readonly _model: PrismaClient;
@@ -94,76 +95,297 @@ export default class ModuleService {
 		};
 	}
 
-	// Public async getAll(userRoles: UserRoles = []) {
-	// 	const include = {
-	// 		lessons: {
-	// 			select: {
-	// 				name: true,
-	// 			},
-	// 		},
-	// 	};
+	public async getList(courseId: TypeUuid, parentId: TypeUuid, userRoles: UserRoles = []) {
+		const moduleInclude = {
+			course: true,
+			belongToModules: true,
+			tags: {
+				include: {
+					tagOption: {
+						select: {
+							name: true,
+						},
+					},
+					tagValue: {
+						select: {
+							name: true,
+						},
+					},
+				},
+			},
+		};
 
-	// 	if (userRoles.includes('admin')) {
-	// 		const modules = await this._model.module.findMany({
-	// 			include,
-	// 		});
+		const moduleWhere: Prisma.ModuleWhereInput = {
+			// eslint-disable-next-line @typescript-eslint/naming-convention
+			OR: [
+				{
+					course: {
+						some: {
+							id: parentId,
+						},
+					},
+				},
+				{
+					belongToModules: {
+						some: {
+							id: parentId,
+						},
+					},
+				},
+			],
+		};
 
-	// 		return {
-	// 			status: 'SUCCESSFUL',
-	// 			data: modules,
-	// 		};
-	// 	}
+		if (userRoles.includes('admin')) {
+			const modules = await this._model.module.findMany({
+				include: moduleInclude,
+				where: moduleWhere,
+			});
 
-	// 	const rawModules = await this._model.module.findMany({
-	// 		include,
-	// 	});
+			if (modules.length === 0) {
+				return {
+					status: 'NOT_FOUND',
+					message: 'No modules found',
+				};
+			}
 
-	// 	const modules = rawModules.map(module => {
-	// 		const lessons = module.lessons.map(lesson => lesson.name);
+			return {
+				status: 'SUCCESSFUL',
+				data: modules,
+			};
+		}
 
-	// 		return {
-	// 			...module,
-	// 			lessons,
-	// 		};
-	// 	});
+		const rawModules = await this._model.module.findMany({
+			include: moduleInclude,
+			where: {
+				...moduleWhere,
+				published: true,
+			},
+		});
 
-	// 	return {
-	// 		status: 'SUCCESSFUL',
-	// 		data: modules,
-	// 	};
-	// }
+		if (rawModules.length === 0) {
+			return {
+				status: 'NOT_FOUND',
+				message: 'No modules found',
+			};
+		}
 
-	// public async getById(id: number, userRoles: UserRoles = []) {
-	// 	const include = {
-	// 		lessons: {
-	// 			select: {
-	// 				name: true,
-	// 			},
-	// 		},
-	// 	};
+		const course = await this._model.course.findUnique({
+			where: {
+				id: courseId,
+			},
+			select: {
+				id: false,
+				name: false,
+				description: false,
+				content: false,
+				videoSourceUrl: false,
+				thumbnailUrl: false,
+				createdAt: false,
+				updatedAt: false,
+				publicationDate: false,
+				published: false,
+				modules: false,
+				comments: false,
+				tags: false,
+				roles: {
+					select: {
+						name: true,
+					},
+				},
+			},
+		});
 
-	// 	const module = await this._model.module.findUnique({
-	// 		include,
-	// 		where: {
-	// 			id,
-	// 		},
-	// 	});
+		const modules = rawModules.map(module => ({
+			...module,
+			content: testUserRoles(course?.roles as Role[], userRoles) ? module.content : '',
+			videoSourceUrl: testUserRoles(course?.roles as Role[], userRoles) ? module.videoSourceUrl : '',
+		}));
 
-	// 	if (!module) {
-	// 		return {
-	// 			status: 'FAILED',
-	// 			message: 'Module not found',
-	// 		};
-	// 	}
+		return {
+			status: 'SUCCESSFUL',
+			data: modules,
+		};
+	}
 
-	// 	const lessons = module.lessons.map(lesson => lesson.name);
+	public async getById(courseId: TypeUuid, id: TypeUuid, userRoles: UserRoles = []) {
+		const includeSubModules = {
+			select: {
+				id: true,
+				name: true,
+				description: true,
+				thumbnailUrl: true,
+				published: true,
+				publicationDate: true,
+				tags: {
+					include: {
+						tagOption: {
+							select: {
+								name: true,
+							},
+						},
+						tagValue: {
+							select: {
+								name: true,
+							},
+						},
+					},
+				},
+			},
+		};
 
-	// 	return {
-	// 		status: 'SUCCESSFUL',
-	// 		data: {
-	// 			...module,
-	// 			lessons,
-	// 		},
-	// 	};
-	// }
+		const includeLessons = {
+			select: {
+				id: true,
+				name: true,
+				description: true,
+				thumbnailUrl: true,
+				published: true,
+				publicationDate: true,
+				tags: {
+					include: {
+						tagOption: {
+							select: {
+								name: true,
+							},
+						},
+						tagValue: {
+							select: {
+								name: true,
+							},
+						},
+					},
+				},
+			},
+		};
+
+		const includeTags = {
+			include: {
+				tagOption: {
+					select: {
+						name: true,
+					},
+				},
+				tagValue: {
+					select: {
+						name: true,
+					},
+				},
+			},
+		};
+
+		const includeComments = {
+			select: {
+				id: true,
+				content: true,
+				createdAt: true,
+				userId: true,
+				responses: {
+					select: {
+						id: true,
+						content: true,
+						createdAt: true,
+						userId: true,
+					},
+				},
+			},
+		};
+
+		if (userRoles.includes('admin')) {
+			const module = await this._model.module.findUnique({
+				where: {
+					id,
+				},
+				include: {
+					subModules: includeSubModules,
+					lessons: includeLessons,
+					tags: includeTags,
+					comments: includeComments,
+				},
+			});
+
+			if (!module) {
+				return {
+					status: 'NOT_FOUND',
+					message: 'Module not found',
+				};
+			}
+
+			return {
+				status: 'SUCCESSFUL',
+				data: module,
+			};
+		}
+
+		const rawModule = await this._model.module.findUnique({
+			where: {
+				id,
+				published: true,
+			},
+			include: {
+				subModules: {
+					...includeSubModules,
+					where: {
+						published: true,
+					},
+				},
+				lessons: {
+					...includeLessons,
+					where: {
+						published: true,
+					},
+				},
+				tags: includeTags,
+				comments: {
+					...includeComments,
+					where: {
+						published: true,
+					},
+				},
+			},
+		});
+
+		if (!module) {
+			return {
+				status: 'NOT_FOUND',
+				message: 'Module not found',
+			};
+		}
+
+		const course = await this._model.course.findUnique({
+			where: {
+				id: courseId,
+			},
+			select: {
+				id: false,
+				name: false,
+				description: false,
+				content: false,
+				videoSourceUrl: false,
+				thumbnailUrl: false,
+				createdAt: false,
+				updatedAt: false,
+				publicationDate: false,
+				published: false,
+				modules: false,
+				comments: false,
+				tags: false,
+				roles: {
+					select: {
+						name: true,
+					},
+				},
+			},
+		});
+
+		const returnableModule = {
+			...rawModule,
+			content: testUserRoles(course?.roles as Role[], userRoles) ? rawModule?.content : '',
+			videoSourceUrl: testUserRoles(course?.roles as Role[], userRoles) ? rawModule?.videoSourceUrl : '',
+		};
+
+		return {
+			status: 'SUCCESSFUL',
+			data: returnableModule,
+		};
+	}
 }

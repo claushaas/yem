@@ -1,12 +1,34 @@
-import {Router} from 'express';
+import {
+	type NextFunction, type Request, type Response, Router,
+} from 'express';
 import ModuleController from '../controllers/module.controller';
+import validateAuthToken from '../middlewares/validateAuthToken.middleware';
+import verifyRole from '../middlewares/verifyRole.middleware';
 
 const moduleRouter = Router();
 
 moduleRouter.post(
 	'/',
-	async (req, res) => {
+	validateAuthToken,
+	(req: Request, res: Response, next: NextFunction) => {
+		verifyRole(req, res, next, 'admin');
+	},
+	async (req: Request, res: Response) => {
 		await new ModuleController().create(req, res);
+	},
+);
+
+moduleRouter.get(
+	'/list/:courseId/:parentId',
+	async (req: Request, res: Response) => {
+		await new ModuleController().getList(req, res);
+	},
+);
+
+moduleRouter.get(
+	'/:id',
+	async (req: Request, res: Response) => {
+		await new ModuleController().getById(req, res);
 	},
 );
 
