@@ -29,4 +29,15 @@ lessonRouter.put(
 	},
 );
 
+lessonRouter.delete(
+	'/:id',
+	validateAuthToken,
+	(req: Request, res: Response, next: NextFunction) => {
+		verifyRole(req, res, next, 'admin');
+	},
+	async (req: Request, res: Response) => {
+		await new LessonController().delete(req, res);
+	},
+);
+
 export default lessonRouter;

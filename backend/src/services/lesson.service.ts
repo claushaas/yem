@@ -178,4 +178,24 @@ export default class LessonService {
 			data: updatedLesson,
 		};
 	}
+
+	public async delete(id: TypeUuid) {
+		const deletedLesson = await this._model.lesson.update({
+			where: {
+				id,
+			},
+			data: {
+				published: false,
+			},
+		});
+
+		if (!deletedLesson) {
+			throw new CustomError('NOT_FOUND', `Lesson with id ${id} not found`);
+		}
+
+		return {
+			status: 'NO_CONTENT',
+			data: null,
+		};
+	}
 }

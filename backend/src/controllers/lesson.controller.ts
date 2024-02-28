@@ -31,4 +31,14 @@ export default class LessonController {
 
 		return res.status(statusCode).json(data);
 	}
+
+	public async delete(req: Request, res: Response) {
+		const {id} = req.params;
+
+		const {status, data} = await this._service.delete(id);
+
+		const statusCode = mapStatusHttp(status);
+
+		return res.status(statusCode).json(data);
+	}
 }
