@@ -500,8 +500,8 @@ export default class ModuleService {
 		}
 
 		return {
-			status: 'SUCCESSFUL',
-			data: module,
+			status: 'NO_CONTENT',
+			data: null,
 		};
 	}
 }
