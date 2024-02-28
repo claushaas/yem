@@ -18,4 +18,15 @@ lessonRouter.post(
 	},
 );
 
+lessonRouter.put(
+	'/:id',
+	validateAuthToken,
+	(req: Request, res: Response, next: NextFunction) => {
+		verifyRole(req, res, next, 'admin');
+	},
+	async (req: Request, res: Response) => {
+		await new LessonController().update(req, res);
+	},
+);
+
 export default lessonRouter;

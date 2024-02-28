@@ -20,4 +20,15 @@ export default class LessonController {
 
 		return res.status(statusCode).json(data);
 	}
+
+	public async update(req: Request, res: Response) {
+		const lessonData = req.body as TypeLesson;
+		const {id} = req.params;
+
+		const {status, data} = await this._service.update(id, lessonData);
+
+		const statusCode = mapStatusHttp(status);
+
+		return res.status(statusCode).json(data);
+	}
 }
