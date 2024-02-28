@@ -95,6 +95,91 @@ export default class ModuleService {
 		};
 	}
 
+	public async update(id: TypeUuid, moduleData: TypeModule) {
+		const newModule = new Module(moduleData);
+
+		const updatedModule = await this._model.module.update({
+			include: {
+				course: true,
+				belongToModules: true,
+				tags: {
+					include: {
+						tagOption: {
+							select: {
+								name: true,
+							},
+						},
+						tagValue: {
+							select: {
+								name: true,
+							},
+						},
+					},
+				},
+			},
+			where: {
+				id,
+			},
+			data: {
+				name: newModule.name,
+				description: newModule.description,
+				content: newModule.content,
+				videoSourceUrl: newModule.videoSourceUrl,
+				thumbnailUrl: newModule.thumbnailUrl,
+				publicationDate: newModule.publicationDate,
+				published: newModule.published,
+				course: {
+					connect: newModule.courses?.map(course => ({id: course})),
+				},
+				belongToModules: {
+					connect: newModule.belongToModules?.map(module => ({id: module})),
+				},
+				tags: {
+					connectOrCreate: newModule.tags?.map(tag => ({
+						where: {
+							id: undefined,
+							tagOption: {
+								name: tag[0],
+							},
+							tagValue: {
+								name: tag[1],
+							},
+						},
+						create: {
+							tagOption: {
+								connectOrCreate: {
+									where: {
+										id: undefined,
+										name: tag[0],
+									},
+									create: {
+										name: tag[0],
+									},
+								},
+							},
+							tagValue: {
+								connectOrCreate: {
+									where: {
+										id: undefined,
+										name: tag[1],
+									},
+									create: {
+										name: tag[1],
+									},
+								},
+							},
+						},
+					})),
+				},
+			},
+		});
+
+		return {
+			status: 'SUCCESSFUL',
+			data: updatedModule,
+		};
+	}
+
 	public async getList(courseId: TypeUuid, parentId: TypeUuid, userRoles: UserRoles = []) {
 		const moduleInclude = {
 			course: true,
@@ -394,6 +479,29 @@ export default class ModuleService {
 		return {
 			status: 'SUCCESSFUL',
 			data: returnableModule,
+		};
+	}
+
+	public async delete(id: TypeUuid) {
+		const module = await this._model.module.update({
+			where: {
+				id,
+			},
+			data: {
+				published: false,
+			},
+		});
+
+		if (!module) {
+			return {
+				status: 'NOT_FOUND',
+				message: 'Module not found',
+			};
+		}
+
+		return {
+			status: 'SUCCESSFUL',
+			data: module,
 		};
 	}
 }

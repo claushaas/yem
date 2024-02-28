@@ -18,6 +18,28 @@ moduleRouter.post(
 	},
 );
 
+moduleRouter.put(
+	'/:id',
+	validateAuthToken,
+	(req: Request, res: Response, next: NextFunction) => {
+		verifyRole(req, res, next, 'admin');
+	},
+	async (req: Request, res: Response) => {
+		await new ModuleController().update(req, res);
+	},
+);
+
+moduleRouter.delete(
+	'/:id',
+	validateAuthToken,
+	(req: Request, res: Response, next: NextFunction) => {
+		verifyRole(req, res, next, 'admin');
+	},
+	async (req: Request, res: Response) => {
+		await new ModuleController().delete(req, res);
+	},
+);
+
 moduleRouter.get(
 	'/list/:courseId/:parentId',
 	async (req: Request, res: Response) => {

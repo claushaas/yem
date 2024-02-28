@@ -21,6 +21,17 @@ export default class ModuleController {
 		return res.status(statusCode).json(data);
 	}
 
+	public async update(req: Request, res: Response) {
+		const {id} = req.params;
+		const moduleData = req.body as TypeModule;
+
+		const {status, data} = await this._service.update(id, moduleData);
+
+		const statusCode = mapStatusHttp(status);
+
+		return res.status(statusCode).json(data);
+	}
+
 	public async getList(req: Request, res: Response) {
 		const {roles: userRoles} = res.locals.user as TypeUser;
 		const {courseId, parentId} = req.params;
@@ -43,24 +54,13 @@ export default class ModuleController {
 		return res.status(statusCode).json(data);
 	}
 
-	// Public async update(req: Request, res: Response) {
-	// 	const {id} = req.params;
-	// 	const moduleData = req.body as TypeModule;
+	public async delete(req: Request, res: Response) {
+		const {id} = req.params;
 
-	// 	const {status, data} = await this._service.update(id, moduleData);
+		const {status, data} = await this._service.delete(id);
 
-	// 	const statusCode = mapStatusHttp(status);
+		const statusCode = mapStatusHttp(status);
 
-	// 	return res.status(statusCode).json(data);
-	// }
-
-	// public async delete(req: Request, res: Response) {
-	// 	const {id} = req.params;
-
-	// 	const {status, data} = await this._service.delete(id);
-
-	// 	const statusCode = mapStatusHttp(status);
-
-	// 	return res.status(statusCode).json(data);
-	// }
+		return res.status(statusCode).json(data);
+	}
 }
