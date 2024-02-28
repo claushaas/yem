@@ -11,12 +11,11 @@ const moduleSchema = Joi.object({
 	thumbnailUrl: Joi.string().required().uri(),
 	publicationDate: Joi.date().required().default(new Date()),
 	published: Joi.boolean().required().default(true),
-	courses: Joi.array().items(Joi.string()),
-	lessons: Joi.array().items(Joi.string()),
-	subModules: Joi.array().items(Joi.string()),
-	belongToModules: Joi.array().items(Joi.string()),
+	courses: Joi.array().items(Joi.string().uuid()),
+	lessons: Joi.array().items(Joi.string().uuid()),
+	subModules: Joi.array().items(Joi.string().uuid()),
+	belongToModules: Joi.array().items(Joi.string().uuid()),
 	tags: Joi.array().items(Joi.array().items(Joi.string()).min(2).max(2)).unique(),
-	comments: Joi.array().items(Joi.string()),
 });
 
 export default class Module implements TypeModule {
@@ -32,7 +31,6 @@ export default class Module implements TypeModule {
 	private readonly _subModules?: string[];
 	private readonly _belongToModules?: string[];
 	private readonly _tags?: TypeTags;
-	private readonly _comments?: string[];
 
 	constructor(module: TypeModule) {
 		const {error} = moduleSchema.validate(module);
@@ -53,7 +51,6 @@ export default class Module implements TypeModule {
 		this._subModules = module.subModules;
 		this._belongToModules = module.belongToModules;
 		this._tags = module.tags;
-		this._comments = module.comments;
 	}
 
 	get name() {
@@ -102,9 +99,5 @@ export default class Module implements TypeModule {
 
 	get tags() {
 		return this._tags;
-	}
-
-	get comments() {
-		return this._comments;
 	}
 }
