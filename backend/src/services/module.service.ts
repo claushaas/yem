@@ -423,6 +423,7 @@ export default class ModuleService {
 				comments: {
 					...includeComments,
 					select: {
+						...includeComments.select,
 						responses: {
 							...includeComments.select.responses,
 							where: {

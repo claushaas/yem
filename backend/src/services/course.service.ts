@@ -231,6 +231,7 @@ export default class CourseService {
 				comments: {
 					...includeComments,
 					select: {
+						...includeComments.select,
 						responses: {
 							...includeComments.select.responses,
 							where: {
