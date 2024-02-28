@@ -340,7 +340,7 @@ export default class CourseService {
 		});
 
 		if (!updatedCourse) {
-			throw new CustomError('NOT_FOUND', 'No course to update');
+			throw new CustomError('NOT_FOUND', `Course with id ${id} not found`);
 		}
 
 		return {
