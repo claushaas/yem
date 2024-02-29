@@ -6,7 +6,7 @@ import {type UserRoles} from '../types/User';
 import {type TypeUuid} from '../types/UUID';
 import type Role from '../types/Role';
 import CustomError from '../utils/CustomError';
-import {raw} from '@prisma/client/runtime/library';
+import {type TypeServiceReturn} from '../types/ServiceReturn';
 
 export default class ModuleService {
 	private readonly _model: PrismaClient;
@@ -15,7 +15,7 @@ export default class ModuleService {
 		this._model = model;
 	}
 
-	public async create(moduleData: TypeModule) {
+	public async create(moduleData: TypeModule): Promise<TypeServiceReturn> {
 		const newModule = new Module(moduleData);
 
 		const createdModule = await this._model.module.create({
@@ -97,7 +97,7 @@ export default class ModuleService {
 		};
 	}
 
-	public async update(id: TypeUuid, moduleData: TypeModule) {
+	public async update(id: TypeUuid, moduleData: TypeModule): Promise<TypeServiceReturn> {
 		const newModule = new Module(moduleData);
 
 		const updatedModule = await this._model.module.update({
@@ -182,7 +182,7 @@ export default class ModuleService {
 		};
 	}
 
-	public async getList(parentId: TypeUuid, userRoles: UserRoles = []) {
+	public async getList(parentId: TypeUuid, userRoles: UserRoles = []): Promise<TypeServiceReturn> {
 		const moduleSelect = {
 			name: true,
 			description: true,
@@ -259,7 +259,7 @@ export default class ModuleService {
 		};
 	}
 
-	public async getById(courseId: TypeUuid, id: TypeUuid, userRoles: UserRoles = []) {
+	public async getById(courseId: TypeUuid, id: TypeUuid, userRoles: UserRoles = []): Promise<TypeServiceReturn> {
 		const includeSubModules = {
 			select: {
 				id: true,
@@ -268,45 +268,6 @@ export default class ModuleService {
 				thumbnailUrl: true,
 				published: true,
 				publicationDate: true,
-				tags: {
-					include: {
-						tagOption: {
-							select: {
-								name: true,
-							},
-						},
-						tagValue: {
-							select: {
-								name: true,
-							},
-						},
-					},
-				},
-			},
-		};
-
-		const includeLessons = {
-			select: {
-				id: true,
-				name: true,
-				description: true,
-				thumbnailUrl: true,
-				published: true,
-				publicationDate: true,
-				tags: {
-					include: {
-						tagOption: {
-							select: {
-								name: true,
-							},
-						},
-						tagValue: {
-							select: {
-								name: true,
-							},
-						},
-					},
-				},
 			},
 		};
 
@@ -322,6 +283,18 @@ export default class ModuleService {
 						name: true,
 					},
 				},
+			},
+		};
+
+		const includeLessons = {
+			select: {
+				id: true,
+				name: true,
+				description: true,
+				thumbnailUrl: true,
+				published: true,
+				publicationDate: true,
+				tags: includeTags,
 			},
 		};
 
@@ -350,7 +323,6 @@ export default class ModuleService {
 				include: {
 					subModules: includeSubModules,
 					lessons: includeLessons,
-					tags: includeTags,
 					comments: includeComments,
 				},
 			});
@@ -383,7 +355,6 @@ export default class ModuleService {
 						published: true,
 					},
 				},
-				tags: includeTags,
 				comments: {
 					...includeComments,
 					select: {
@@ -444,7 +415,7 @@ export default class ModuleService {
 		};
 	}
 
-	public async delete(id: TypeUuid) {
+	public async delete(id: TypeUuid): Promise<TypeServiceReturn> {
 		const module = await this._model.module.update({
 			where: {
 				id,
@@ -455,10 +426,7 @@ export default class ModuleService {
 		});
 
 		if (!module) {
-			return {
-				status: 'NOT_FOUND',
-				message: 'Module not found',
-			};
+			throw new CustomError('NOT_FOUND', `Module with id ${id} not found`);
 		}
 
 		return {
