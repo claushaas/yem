@@ -40,4 +40,11 @@ lessonRouter.delete(
 	},
 );
 
+lessonRouter.get(
+	'/:moduleId',
+	async (req: Request, res: Response) => {
+		await new LessonController().getList(req, res);
+	},
+);
+
 export default lessonRouter;
