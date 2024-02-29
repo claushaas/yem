@@ -41,16 +41,16 @@ moduleRouter.delete(
 );
 
 moduleRouter.get(
-	'/list/:courseId/:parentId',
+	'/:courseId/:id',
 	async (req: Request, res: Response) => {
-		await new ModuleController().getList(req, res);
+		await new ModuleController().getById(req, res);
 	},
 );
 
 moduleRouter.get(
-	'one/:courseId/:id',
+	'/:parentId',
 	async (req: Request, res: Response) => {
-		await new ModuleController().getById(req, res);
+		await new ModuleController().getList(req, res);
 	},
 );
 
