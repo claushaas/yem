@@ -7,6 +7,7 @@ import CustomError from '../utils/CustomError';
 import {type TypeLesson} from '../types/Lesson';
 import Lesson from '../entities/lesson.entity';
 import {type TypeUuid} from '../types/UUID';
+import {type TypeServiceReturn} from '../types/ServiceReturn';
 
 export default class LessonService {
 	private readonly _model: PrismaClient;
@@ -15,7 +16,7 @@ export default class LessonService {
 		this._model = model;
 	}
 
-	public async create(lessonData: TypeLesson) {
+	public async create(lessonData: TypeLesson): Promise<TypeServiceReturn> {
 		const newLesson = new Lesson(lessonData);
 
 		const createdLesson = await this._model.lesson.create({
@@ -94,7 +95,7 @@ export default class LessonService {
 		};
 	}
 
-	public async update(id: TypeUuid, lessonData: TypeLesson) {
+	public async update(id: TypeUuid, lessonData: TypeLesson): Promise<TypeServiceReturn> {
 		const newLesson = new Lesson(lessonData);
 
 		const updatedLesson = await this._model.lesson.update({
@@ -175,12 +176,12 @@ export default class LessonService {
 		}
 
 		return {
-			status: 'OK',
+			status: 'SUCCESSFUL',
 			data: updatedLesson,
 		};
 	}
 
-	public async delete(id: TypeUuid) {
+	public async delete(id: TypeUuid): Promise<TypeServiceReturn> {
 		const deletedLesson = await this._model.lesson.update({
 			where: {
 				id,
@@ -200,7 +201,7 @@ export default class LessonService {
 		};
 	}
 
-	public async getList(moduleId: TypeUuid, user: TypeUser | undefined) {
+	public async getList(moduleId: TypeUuid, user: TypeUser | undefined): Promise<TypeServiceReturn> {
 		const lessonWhere = {
 			modules: {
 				some: {
