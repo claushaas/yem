@@ -3,6 +3,7 @@ import {
 } from 'express';
 import CourseController from '../controllers/course.controller';
 import validateAuthToken from '../middlewares/validateAuthToken.middleware';
+import getUserData from '../middlewares/getUserData.middleware';
 import verifyRole from '../middlewares/verifyRole.middleware';
 
 const courseRouter = Router();
@@ -20,6 +21,7 @@ courseRouter.post(
 
 courseRouter.get(
 	'/',
+	getUserData,
 	async (req: Request, res: Response) => {
 		await new CourseController().getAll(req, res);
 	},
@@ -27,6 +29,7 @@ courseRouter.get(
 
 courseRouter.get(
 	'/:id',
+	getUserData,
 	async (req: Request, res: Response) => {
 		await new CourseController().getById(req, res);
 	},
