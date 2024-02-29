@@ -41,4 +41,15 @@ export default class LessonController {
 
 		return res.status(statusCode).json(data);
 	}
+
+	public async getList(req: Request, res: Response) {
+		const {moduleId} = req.params;
+		const {user} = res.locals as {user: TypeUser};
+
+		const {status, data} = await this._service.getList(moduleId, user);
+
+		const statusCode = mapStatusHttp(status);
+
+		return res.status(statusCode).json(data);
+	}
 }
