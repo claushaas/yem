@@ -5,6 +5,8 @@ import Module from '../entities/module.entity';
 import {type UserRoles} from '../types/User';
 import {type TypeUuid} from '../types/UUID';
 import type Role from '../types/Role';
+import CustomError from '../utils/CustomError';
+import {raw} from '@prisma/client/runtime/library';
 
 export default class ModuleService {
 	private readonly _model: PrismaClient;
@@ -180,10 +182,13 @@ export default class ModuleService {
 		};
 	}
 
-	public async getList(courseId: TypeUuid, parentId: TypeUuid, userRoles: UserRoles = []) {
-		const moduleInclude = {
-			course: true,
-			belongToModules: true,
+	public async getList(parentId: TypeUuid, userRoles: UserRoles = []) {
+		const moduleSelect = {
+			name: true,
+			description: true,
+			thumbnailUrl: true,
+			publicationDate: true,
+			published: true,
 			tags: {
 				include: {
 					tagOption: {
@@ -222,15 +227,12 @@ export default class ModuleService {
 
 		if (userRoles.includes('admin')) {
 			const modules = await this._model.module.findMany({
-				include: moduleInclude,
+				select: moduleSelect,
 				where: moduleWhere,
 			});
 
 			if (modules.length === 0) {
-				return {
-					status: 'NOT_FOUND',
-					message: 'No modules found',
-				};
+				throw new CustomError('NOT_FOUND', 'No modules found');
 			}
 
 			return {
@@ -239,56 +241,21 @@ export default class ModuleService {
 			};
 		}
 
-		const rawModules = await this._model.module.findMany({
-			include: moduleInclude,
+		const modulesForStudents = await this._model.module.findMany({
+			select: moduleSelect,
 			where: {
 				...moduleWhere,
 				published: true,
 			},
 		});
 
-		if (rawModules.length === 0) {
-			return {
-				status: 'NOT_FOUND',
-				message: 'No modules found',
-			};
+		if (modulesForStudents.length === 0) {
+			throw new CustomError('NOT_FOUND', 'No modules found');
 		}
-
-		const course = await this._model.course.findUnique({
-			where: {
-				id: courseId,
-			},
-			select: {
-				id: false,
-				name: false,
-				description: false,
-				content: false,
-				videoSourceUrl: false,
-				thumbnailUrl: false,
-				createdAt: false,
-				updatedAt: false,
-				publicationDate: false,
-				published: false,
-				modules: false,
-				comments: false,
-				tags: false,
-				roles: {
-					select: {
-						name: true,
-					},
-				},
-			},
-		});
-
-		const modules = rawModules.map(module => ({
-			...module,
-			content: testUserRoles(course?.roles as Role[], userRoles) ? module.content : '',
-			videoSourceUrl: testUserRoles(course?.roles as Role[], userRoles) ? module.videoSourceUrl : '',
-		}));
 
 		return {
 			status: 'SUCCESSFUL',
-			data: modules,
+			data: modulesForStudents,
 		};
 	}
 
@@ -389,10 +356,7 @@ export default class ModuleService {
 			});
 
 			if (!module) {
-				return {
-					status: 'NOT_FOUND',
-					message: 'Module not found',
-				};
+				throw new CustomError('NOT_FOUND', 'Module not found');
 			}
 
 			return {
@@ -438,11 +402,8 @@ export default class ModuleService {
 			},
 		});
 
-		if (!module) {
-			return {
-				status: 'NOT_FOUND',
-				message: 'Module not found',
-			};
+		if (!rawModule) {
+			throw new CustomError('NOT_FOUND', 'Module not found');
 		}
 
 		const course = await this._model.course.findUnique({
