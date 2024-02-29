@@ -4,6 +4,7 @@ import e, {
 import validateAuthToken from '../middlewares/validateAuthToken.middleware';
 import verifyRole from '../middlewares/verifyRole.middleware';
 import LessonController from '../controllers/lesson.controller';
+import getUserData from '../middlewares/getUserData.middleware';
 
 const lessonRouter = Router();
 
@@ -42,6 +43,7 @@ lessonRouter.delete(
 
 lessonRouter.get(
 	'/:moduleId',
+	getUserData,
 	async (req: Request, res: Response) => {
 		await new LessonController().getList(req, res);
 	},
