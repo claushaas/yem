@@ -21,7 +21,7 @@ export default class CourseController {
 		return res.status(statusCode).json(data);
 	}
 
-	public async getAll(req: Request, res: Response) {
+	public async getAll(_req: Request, res: Response) {
 		const {roles: userRoles} = res.locals.user as TypeUser;
 
 		const {status, data} = await this._service.getAll(userRoles);
