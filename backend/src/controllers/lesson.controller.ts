@@ -52,4 +52,15 @@ export default class LessonController {
 
 		return res.status(statusCode).json(data);
 	}
+
+	public async getById(req: Request, res: Response) {
+		const {courseId, lessonId} = req.params;
+		const {user} = res.locals as {user: TypeUser};
+
+		const {status, data} = await this._service.getById(courseId, lessonId, user);
+
+		const statusCode = mapStatusHttp(status);
+
+		return res.status(statusCode).json(data);
+	}
 }
