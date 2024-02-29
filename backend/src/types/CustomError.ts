@@ -1,4 +1,6 @@
+import {type TypeHttpStatusCode} from './HTTPStatus';
+
 type TypeCustomError = {
-	statusCode?: number;
+	statusCode?: TypeHttpStatusCode;
 } & Error;
 export default TypeCustomError;

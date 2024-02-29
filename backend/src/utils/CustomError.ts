@@ -1,10 +1,11 @@
 import type TypeCustomError from '../types/CustomError';
+import {type TypeHttpStatus, type TypeHttpStatusCode} from '../types/HTTPStatus';
 import mapStatusHttp from './mapStatusHttp';
 
 export default class CustomError extends Error implements TypeCustomError {
-	statusCode: number;
+	statusCode: TypeHttpStatusCode;
 
-	constructor(statusCode: string, message: string) {
+	constructor(statusCode: TypeHttpStatus, message: string) {
 		super(message);
 		this.statusCode = mapStatusHttp(statusCode);
 	}
