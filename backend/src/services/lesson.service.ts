@@ -2,7 +2,6 @@ import {PrismaClient} from '@prisma/client';
 import testUserRoles from '../utils/testUserRoles';
 import type Role from '../types/Role';
 import type TypeUser from '../types/User';
-import {type UserRoles} from '../types/User';
 import CustomError from '../utils/CustomError';
 import {type TypeLesson} from '../types/Lesson';
 import Lesson from '../entities/lesson.entity';
@@ -211,6 +210,7 @@ export default class LessonService {
 		};
 
 		const lessonSelectWithoutUserId = {
+			id: true,
 			name: true,
 			type: true,
 			description: true,
@@ -273,6 +273,127 @@ export default class LessonService {
 		return {
 			status: 'SUCCESSFUL',
 			data: lessons,
+		};
+	}
+
+	public async getById(courseId: TypeUuid, lessonId: TypeUuid, user: TypeUser | undefined): Promise<TypeServiceReturn> {
+		const course = await this._model.course.findUnique({
+			where: {
+				id: courseId,
+			},
+			select: {
+				id: false,
+				name: false,
+				description: false,
+				content: false,
+				videoSourceUrl: false,
+				thumbnailUrl: false,
+				createdAt: false,
+				updatedAt: false,
+				publicationDate: false,
+				published: false,
+				modules: false,
+				comments: false,
+				tags: false,
+				roles: {
+					select: {
+						name: true,
+					},
+				},
+			},
+		});
+
+		const lessonWhere = {
+			id: lessonId,
+		};
+
+		const lessonSelectWithoutUserId = {
+			id: true,
+			name: true,
+			type: true,
+			description: true,
+			content: Boolean(testUserRoles(course?.roles as Role[], user?.roles ?? [])),
+			videoSourceUrl: Boolean(testUserRoles(course?.roles as Role[], user?.roles ?? [])),
+			thumbnailUrl: true,
+			publicationDate: true,
+			published: true,
+			tags: {
+				include: {
+					tagOption: {
+						select: {
+							name: true,
+						},
+					},
+					tagValue: {
+						select: {
+							name: true,
+						},
+					},
+				},
+			},
+			comments: {
+				where: {
+					published: user ? true : undefined,
+				},
+				select: {
+					id: true,
+					content: true,
+					createdAt: true,
+					userId: true,
+					published: true,
+					responses: {
+						select: {
+							id: true,
+							content: true,
+							createdAt: true,
+							userId: true,
+							published: true,
+						},
+					},
+				},
+			},
+		};
+
+		const lessonSelectWithUserId = {
+			...lessonSelectWithoutUserId,
+			lessonProgress: {
+				where: {
+					userId: user?.id,
+				},
+			},
+		};
+
+		if (user?.roles.includes('admin')) {
+			const lesson = await this._model.lesson.findUnique({
+				where: lessonWhere,
+				select: lessonSelectWithUserId,
+			});
+
+			if (!lesson) {
+				throw new CustomError('NOT_FOUND', 'Lesson not found');
+			}
+
+			return {
+				status: 'SUCCESSFUL',
+				data: lesson,
+			};
+		}
+
+		const lesson = await this._model.lesson.findUnique({
+			where: {
+				...lessonWhere,
+				published: true,
+			},
+			select: user ? lessonSelectWithUserId : lessonSelectWithoutUserId,
+		});
+
+		if (!lesson) {
+			throw new CustomError('NOT_FOUND', 'Lesson not found');
+		}
+
+		return {
+			status: 'SUCCESSFUL',
+			data: lesson,
 		};
 	}
 }
