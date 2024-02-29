@@ -4,6 +4,7 @@ import {
 import ModuleController from '../controllers/module.controller';
 import validateAuthToken from '../middlewares/validateAuthToken.middleware';
 import verifyRole from '../middlewares/verifyRole.middleware';
+import getUserData from '../middlewares/getUserData.middleware';
 
 const moduleRouter = Router();
 
@@ -42,6 +43,7 @@ moduleRouter.delete(
 
 moduleRouter.get(
 	'/:courseId/:id',
+	getUserData,
 	async (req: Request, res: Response) => {
 		await new ModuleController().getById(req, res);
 	},
@@ -49,6 +51,7 @@ moduleRouter.get(
 
 moduleRouter.get(
 	'/:parentId',
+	getUserData,
 	async (req: Request, res: Response) => {
 		await new ModuleController().getList(req, res);
 	},
