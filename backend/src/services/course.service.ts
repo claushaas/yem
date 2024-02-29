@@ -95,17 +95,17 @@ export default class CourseService {
 	}
 
 	public async getAll(userRoles: UserRoles = []) {
-		const include = {
-			roles: {
-				select: {
-					name: true,
-				},
-			},
+		const select = {
+			name: true,
+			description: true,
+			thumbnailUrl: true,
+			publicationDate: true,
+			published: true,
 		};
 
 		if (userRoles.includes('admin')) {
 			const courses = await this._model.course.findMany({
-				include,
+				select,
 			});
 
 			if (courses.length === 0) {
@@ -118,26 +118,20 @@ export default class CourseService {
 			};
 		}
 
-		const rawCourses = await this._model.course.findMany({
-			include,
+		const coursesForStudents = await this._model.course.findMany({
+			select,
 			where: {
 				published: true,
 			},
 		});
 
-		if (rawCourses.length === 0) {
+		if (coursesForStudents.length === 0) {
 			throw new CustomError('NOT_FOUND', 'No courses found');
 		}
 
-		const returnableCourses = rawCourses.map(course => ({
-			...course,
-			content: testUserRoles(course.roles as Role[], userRoles) ? course.content : '',
-			videoSourceUrl: testUserRoles(course.roles as Role[], userRoles) ? course.videoSourceUrl : '',
-		}));
-
 		return {
 			status: 'SUCCESSFUL',
-			data: returnableCourses,
+			data: coursesForStudents,
 		};
 	}
 
