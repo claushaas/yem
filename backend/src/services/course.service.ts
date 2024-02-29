@@ -5,6 +5,7 @@ import {type UserRoles} from '../types/User';
 import Course from '../entities/course.entity';
 import type TypeCourse from '../types/Course';
 import CustomError from '../utils/CustomError';
+import {type TypeServiceReturn} from '../types/ServiceReturn';
 
 export default class CourseService {
 	private readonly _model: PrismaClient;
@@ -13,7 +14,7 @@ export default class CourseService {
 		this._model = model;
 	}
 
-	public async create(courseData: TypeCourse) {
+	public async create(courseData: TypeCourse): Promise<TypeServiceReturn> {
 		const newCourse = new Course(courseData);
 
 		const createdCourse = await this._model.course.create({
@@ -94,7 +95,7 @@ export default class CourseService {
 		};
 	}
 
-	public async getAll(userRoles: UserRoles = []) {
+	public async getAll(userRoles: UserRoles = []): Promise<TypeServiceReturn> {
 		const select = {
 			name: true,
 			description: true,
@@ -135,25 +136,10 @@ export default class CourseService {
 		};
 	}
 
-	public async getById(id: string, userRoles: UserRoles = []) {
+	public async getById(id: string, userRoles: UserRoles = []): Promise<TypeServiceReturn> {
 		const includeRoles = {
 			select: {
 				name: true,
-			},
-		};
-
-		const includeTags = {
-			include: {
-				tagOption: {
-					select: {
-						name: true,
-					},
-				},
-				tagValue: {
-					select: {
-						name: true,
-					},
-				},
 			},
 		};
 
@@ -189,7 +175,6 @@ export default class CourseService {
 			const course = await this._model.course.findUnique({
 				include: {
 					roles: includeRoles,
-					tags: includeTags,
 					modules: includeModules,
 					comments: includeComments,
 				},
@@ -215,7 +200,6 @@ export default class CourseService {
 			},
 			include: {
 				roles: includeRoles,
-				tags: includeTags,
 				modules: {
 					...includeModules,
 					where: {
@@ -256,7 +240,7 @@ export default class CourseService {
 		};
 	}
 
-	public async update(id: string, courseData: TypeCourse) {
+	public async update(id: string, courseData: TypeCourse): Promise<TypeServiceReturn> {
 		const courseToUpdate = new Course(courseData);
 
 		const updatedCourse = await this._model.course.update({
@@ -344,7 +328,7 @@ export default class CourseService {
 		};
 	}
 
-	public async delete(id: string) {
+	public async delete(id: string): Promise<TypeServiceReturn> {
 		const deletedCourse = await this._model.course.update({
 			where: {
 				id,
