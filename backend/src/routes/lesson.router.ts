@@ -42,6 +42,14 @@ lessonRouter.delete(
 );
 
 lessonRouter.get(
+	'/:courseId/:lessonId',
+	getUserData,
+	async (req: Request, res: Response) => {
+		await new LessonController().getById(req, res);
+	},
+);
+
+lessonRouter.get(
 	'/:moduleId',
 	getUserData,
 	async (req: Request, res: Response) => {
