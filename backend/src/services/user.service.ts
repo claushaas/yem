@@ -8,6 +8,7 @@ import {
 import CustomError from '../utils/CustomError';
 import {generateToken} from '../utils/jwt';
 import type User from '../types/User';
+import {type TypeServiceReturn} from '../types/ServiceReturn';
 
 export default class UserService {
 	private readonly _awsClient: CognitoIdentityProviderClient;
@@ -23,7 +24,7 @@ export default class UserService {
 		this._awsClient = awsClient;
 	}
 
-	public async login(username: string, password: string) {
+	public async login(username: string, password: string): Promise<TypeServiceReturn> {
 		const cleanUsername = username.trim().toLowerCase();
 
 		const params: InitiateAuthCommandInput = {
