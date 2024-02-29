@@ -1,6 +1,7 @@
 import {PrismaClient} from '@prisma/client';
 import testUserRoles from '../utils/testUserRoles';
 import type Role from '../types/Role';
+import type TypeUser from '../types/User';
 import {type UserRoles} from '../types/User';
 import CustomError from '../utils/CustomError';
 import {type TypeLesson} from '../types/Lesson';
@@ -196,6 +197,81 @@ export default class LessonService {
 		return {
 			status: 'NO_CONTENT',
 			data: null,
+		};
+	}
+
+	public async getList(moduleId: TypeUuid, user: TypeUser | undefined) {
+		const lessonWhere = {
+			modules: {
+				some: {
+					id: moduleId,
+				},
+			},
+		};
+
+		const lessonSelectWithoutUserId = {
+			name: true,
+			type: true,
+			description: true,
+			thumbnailUrl: true,
+			publicationDate: true,
+			published: true,
+			tags: {
+				include: {
+					tagOption: {
+						select: {
+							name: true,
+						},
+					},
+					tagValue: {
+						select: {
+							name: true,
+						},
+					},
+				},
+			},
+		};
+
+		const lessonSelectWithUserId = {
+			...lessonSelectWithoutUserId,
+			lessonProgress: {
+				where: {
+					userId: user?.id,
+				},
+			},
+		};
+
+		if (user?.roles.includes('admin')) {
+			const lessons = await this._model.lesson.findMany({
+				where: lessonWhere,
+				select: lessonSelectWithUserId,
+			});
+
+			if (!lessons) {
+				throw new CustomError('NOT_FOUND', 'No lessons found');
+			}
+
+			return {
+				status: 'SUCCESSFUL',
+				data: lessons,
+			};
+		}
+
+		const lessons = await this._model.lesson.findMany({
+			where: {
+				...lessonWhere,
+				published: true,
+			},
+			select: user ? lessonSelectWithUserId : lessonSelectWithoutUserId,
+		});
+
+		if (!lessons) {
+			throw new CustomError('NOT_FOUND', 'No lessons found');
+		}
+
+		return {
+			status: 'SUCCESSFUL',
+			data: lessons,
 		};
 	}
 }
