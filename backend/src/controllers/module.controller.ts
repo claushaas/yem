@@ -36,7 +36,7 @@ export default class ModuleController {
 		const {roles: userRoles} = res.locals.user as TypeUser;
 		const {courseId, parentId} = req.params;
 
-		const {status, data} = await this._service.getList(courseId, parentId, userRoles);
+		const {status, data} = await this._service.getList(parentId, userRoles);
 
 		const statusCode = mapStatusHttp(status);
 
