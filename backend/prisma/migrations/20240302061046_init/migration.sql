@@ -58,6 +58,7 @@ CREATE TABLE "lessons" (
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "publicationDate" TIMESTAMP(3) NOT NULL,
     "published" BOOLEAN NOT NULL DEFAULT false,
+    "duration" INTEGER,
 
     CONSTRAINT "lessons_pkey" PRIMARY KEY ("id")
 );
@@ -183,10 +184,22 @@ CREATE TABLE "_LessonToTagOptionTagValue" (
 );
 
 -- CreateIndex
+CREATE UNIQUE INDEX "courses_name_key" ON "courses"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "tag_options_name_key" ON "tag_options"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "tag_values_name_key" ON "tag_values"("name");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "tag_option_tag_value_tagOptionId_tagValueId_key" ON "tag_option_tag_value"("tagOptionId", "tagValueId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "lesson_progress_lessonId_userId_key" ON "lesson_progress"("lessonId", "userId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "user_subscriptions_userId_courseId_providerSubscriptionId_key" ON "user_subscriptions"("userId", "courseId", "providerSubscriptionId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "_CourseToRole_AB_unique" ON "_CourseToRole"("A", "B");
