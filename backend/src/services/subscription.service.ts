@@ -3,12 +3,18 @@ import type TypeUser from '../types/User';
 import {type TypeServiceReturn} from '../types/ServiceReturn';
 import Subscription from '../entities/subscription.entity';
 import {type TypeSubscription} from '../types/Subscription';
+import {HotmartService} from './hotmart.service';
+import {IuguService} from './iugu.service';
 
 export default class SubscriptionService {
 	private readonly _model: PrismaClient;
+	private readonly _hotmartService: HotmartService;
+	private readonly _iuguService: IuguService;
 
 	constructor(model: PrismaClient = new PrismaClient()) {
 		this._model = model;
+		this._hotmartService = new HotmartService();
+		this._iuguService = new IuguService();
 	}
 
 	public async createOrUpdate(subscriptionData: TypeSubscription): Promise<TypeServiceReturn<unknown>> {
@@ -16,9 +22,12 @@ export default class SubscriptionService {
 
 		const createdOrUpdatedSubscription = await this._model.userSubscriptions.upsert({
 			where: {
-				id: undefined,
-				userId: subscription.userId,
-				courseId: subscription.courseId,
+				// eslint-disable-next-line @typescript-eslint/naming-convention
+				userId_courseId_providerSubscriptionId: {
+					userId: subscription.userId,
+					courseId: subscription.courseId,
+					providerSubscriptionId: subscription.providerSubscriptionId,
+				},
 			},
 			update: {
 				expiresAt: subscription.expiresAt,
@@ -39,6 +48,45 @@ export default class SubscriptionService {
 		return {
 			status: 'SUCCESSFUL',
 			data: subscription,
+		};
+	}
+
+	public async createOrUpdateAllUserSubscriptions(user: TypeUser): Promise<TypeServiceReturn<unknown>> {
+		try {
+			const {data: hotmartSubscriptions} = await this._hotmartService.getUserSubscriptions(user);
+
+			if (hotmartSubscriptions.length > 0) {
+				await Promise.all(
+					hotmartSubscriptions.map(async subscription => {
+						await this.createOrUpdate(subscription);
+					}),
+				);
+			}
+
+			console.log('hotmartSubscriptions', hotmartSubscriptions);
+		} catch (error) {
+			console.error('Error getting hotmart subscriptions', error);
+		}
+
+		try {
+			const {data: iuguSubscriptions} = await this._iuguService.getUserSubscriptions(user);
+
+			if (iuguSubscriptions.length > 0) {
+				await Promise.all(
+					iuguSubscriptions.map(async subscription => {
+						await this.createOrUpdate(subscription);
+					}),
+				);
+			}
+
+			console.log('iuguSubscriptions', iuguSubscriptions);
+		} catch (error) {
+			console.error('Error getting iugu subscriptions', error);
+		}
+
+		return {
+			status: 'NO_CONTENT',
+			data: null,
 		};
 	}
 }
