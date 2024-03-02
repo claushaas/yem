@@ -43,6 +43,8 @@ services:
       JWT_SECRET: ${JWT_SECRET}
       NODE_ENV: ${NODE_ENV}
       AWS_SECRET_ID: ${AWS_SECRET_ID}
+      IUGU_API_URL: ${IUGU_API_URL}
+      IUGU_API_TOKEN: ${IUGU_API_TOKEN}
     restart: always
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:3001/health" ]
