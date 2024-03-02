@@ -25,6 +25,7 @@ model Course {
   modules         Module[]
   tags            TagOptionTagValue[]
   comments        Comment[]
+  subscriptions   UserSubscriptions[]
 
   @@map("courses")
 }
@@ -158,4 +159,23 @@ model LessonProgress {
 
   @@unique([lessonId, userId])
   @@map("lesson_progress")
+}
+
+model UserSubscriptions {
+  id                     String       @id @default(uuid())
+  userId                 String
+  courseId               String
+  createdAt              DateTime     @default(now())
+  updatedAt              DateTime     @updatedAt
+  expiresAt              DateTime
+  course                 Course       @relation(fields: [courseId], references: [id])
+  provider               ProviderType
+  providerSubscriptionId String
+
+  @@map("user_subscriptions")
+}
+
+enum ProviderType {
+  hotmart
+  iugu
 }

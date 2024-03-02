@@ -1,6 +1,9 @@
 -- CreateEnum
 CREATE TYPE "LessonType" AS ENUM ('video', 'text', 'courseWare');
 
+-- CreateEnum
+CREATE TYPE "ProviderType" AS ENUM ('hotmart', 'iugu');
+
 -- CreateTable
 CREATE TABLE "courses" (
     "id" TEXT NOT NULL,
@@ -124,6 +127,20 @@ CREATE TABLE "lesson_progress" (
 );
 
 -- CreateTable
+CREATE TABLE "user_subscriptions" (
+    "id" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+    "courseId" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "expiresAt" TIMESTAMP(3) NOT NULL,
+    "provider" "ProviderType" NOT NULL,
+    "providerSubscriptionId" TEXT NOT NULL,
+
+    CONSTRAINT "user_subscriptions_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "_CourseToRole" (
     "A" TEXT NOT NULL,
     "B" TEXT NOT NULL
@@ -233,6 +250,9 @@ ALTER TABLE "comments" ADD CONSTRAINT "comments_responseToId_fkey" FOREIGN KEY (
 
 -- AddForeignKey
 ALTER TABLE "lesson_progress" ADD CONSTRAINT "lesson_progress_lessonId_fkey" FOREIGN KEY ("lessonId") REFERENCES "lessons"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "user_subscriptions" ADD CONSTRAINT "user_subscriptions_courseId_fkey" FOREIGN KEY ("courseId") REFERENCES "courses"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_CourseToRole" ADD CONSTRAINT "_CourseToRole_A_fkey" FOREIGN KEY ("A") REFERENCES "courses"("id") ON DELETE CASCADE ON UPDATE CASCADE;
