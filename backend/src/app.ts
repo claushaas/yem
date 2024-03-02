@@ -3,9 +3,8 @@ import 'express-async-errors';
 import router from './routes';
 import errorMiddleware from './middlewares/error.middleware';
 import cookieParser from 'cookie-parser';
-// Import {HotmartService} from './services/hotmart.service';
-// import {SecretService} from './services/secret.service';
-// import CustomError from './utils/CustomError';
+// Import CustomError from './utils/CustomError';
+// import SubscriptionService from './services/subscription.service';
 
 export default class App {
 	public app: express.Express;
@@ -19,13 +18,16 @@ export default class App {
 
 		// This.app.get('/hotmart', async (_req, res) => {
 		// 	try {
-		// 		const secretService = new SecretService();
+		// 		const subscriptionService = new SubscriptionService();
 
-		// 		const {data: secrets} = await secretService.getSecret();
-
-		// 		const hotmartService = new HotmartService(secrets.hotmartApiAccessToken);
-
-		// 		const response = await hotmartService.getUserSubscriptions('claus.haas@me.com');
+		// 		const response = await subscriptionService.createOrUpdateAllUserSubscriptions({
+		// 			email: 'claus.haas@me.com',
+		// 			id: 'baafa754-3686-400c-ba8d-d72da6bd256a',
+		// 			firstName: 'Subscriber',
+		// 			lastName: 'Test',
+		// 			phoneNumber: '123456789',
+		// 			roles: ['subscriber'],
+		// 		});
 
 		// 		res.json(response);
 		// 	} catch (error) {
