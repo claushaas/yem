@@ -1,7 +1,7 @@
 import {PrismaClient} from '@prisma/client';
-import testUserRoles from '../utils/testUserRoles';
 import {type TypeModule} from '../types/Module';
 import Module from '../entities/module.entity';
+import type TypeUser from '../types/User';
 import {type UserRoles} from '../types/User';
 import {type TypeUuid} from '../types/UUID';
 import type Role from '../types/Role';
@@ -15,7 +15,7 @@ export default class ModuleService {
 		this._model = model;
 	}
 
-	public async create(moduleData: TypeModule): Promise<TypeServiceReturn> {
+	public async create(moduleData: TypeModule): Promise<TypeServiceReturn<unknown>> {
 		const newModule = new Module(moduleData);
 
 		const createdModule = await this._model.module.create({
@@ -97,7 +97,7 @@ export default class ModuleService {
 		};
 	}
 
-	public async update(id: TypeUuid, moduleData: TypeModule): Promise<TypeServiceReturn> {
+	public async update(id: TypeUuid, moduleData: TypeModule): Promise<TypeServiceReturn<unknown>> {
 		const newModule = new Module(moduleData);
 
 		const updatedModule = await this._model.module.update({
@@ -182,7 +182,7 @@ export default class ModuleService {
 		};
 	}
 
-	public async getList(parentId: TypeUuid, userRoles: UserRoles = []): Promise<TypeServiceReturn> {
+	public async getList(parentId: TypeUuid, userRoles: UserRoles = []): Promise<TypeServiceReturn<unknown>> {
 		const moduleSelect = {
 			name: true,
 			description: true,
@@ -259,7 +259,7 @@ export default class ModuleService {
 		};
 	}
 
-	public async getById(courseId: TypeUuid, id: TypeUuid, userRoles: UserRoles = []): Promise<TypeServiceReturn> {
+	public async getById(courseId: TypeUuid, id: TypeUuid, user: TypeUser): Promise<TypeServiceReturn<unknown>> {
 		const includeSubModules = {
 			select: {
 				id: true,
@@ -315,7 +315,7 @@ export default class ModuleService {
 			},
 		};
 
-		if (userRoles.includes('admin')) {
+		if (user.roles.includes('admin')) {
 			const module = await this._model.module.findUnique({
 				where: {
 					id,
@@ -400,13 +400,21 @@ export default class ModuleService {
 						name: true,
 					},
 				},
+				subscriptions: {
+					where: {
+						userId: user.id,
+						courseId,
+					},
+				},
 			},
 		});
 
+		const hasActiveSubscription = course?.subscriptions.some(subscription => subscription.expiresAt > new Date());
+
 		const returnableModule = {
 			...rawModule,
-			content: testUserRoles(course?.roles as Role[], userRoles) ? rawModule?.content : '',
-			videoSourceUrl: testUserRoles(course?.roles as Role[], userRoles) ? rawModule?.videoSourceUrl : '',
+			content: hasActiveSubscription ? rawModule?.content : '',
+			videoSourceUrl: hasActiveSubscription ? rawModule?.videoSourceUrl : '',
 		};
 
 		return {
@@ -415,7 +423,7 @@ export default class ModuleService {
 		};
 	}
 
-	public async delete(id: TypeUuid): Promise<TypeServiceReturn> {
+	public async delete(id: TypeUuid): Promise<TypeServiceReturn<unknown>> {
 		const module = await this._model.module.update({
 			where: {
 				id,
