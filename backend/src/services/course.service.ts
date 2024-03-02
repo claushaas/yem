@@ -1,6 +1,5 @@
 import {PrismaClient} from '@prisma/client';
-import testUserRoles from '../utils/testUserRoles';
-import type Role from '../types/Role';
+import type TypeUser from '../types/User';
 import {type UserRoles} from '../types/User';
 import Course from '../entities/course.entity';
 import type TypeCourse from '../types/Course';
@@ -14,7 +13,7 @@ export default class CourseService {
 		this._model = model;
 	}
 
-	public async create(courseData: TypeCourse): Promise<TypeServiceReturn> {
+	public async create(courseData: TypeCourse): Promise<TypeServiceReturn<unknown>> {
 		const newCourse = new Course(courseData);
 
 		const createdCourse = await this._model.course.create({
@@ -95,7 +94,7 @@ export default class CourseService {
 		};
 	}
 
-	public async getAll(userRoles: UserRoles = []): Promise<TypeServiceReturn> {
+	public async getAll(userRoles: UserRoles = []): Promise<TypeServiceReturn<unknown>> {
 		const select = {
 			name: true,
 			description: true,
@@ -136,7 +135,7 @@ export default class CourseService {
 		};
 	}
 
-	public async getById(id: string, userRoles: UserRoles = []): Promise<TypeServiceReturn> {
+	public async getById(id: string, user: TypeUser): Promise<TypeServiceReturn<unknown>> {
 		const includeRoles = {
 			select: {
 				name: true,
@@ -171,7 +170,7 @@ export default class CourseService {
 			},
 		};
 
-		if (userRoles.includes('admin')) {
+		if (user.roles.includes('admin')) {
 			const course = await this._model.course.findUnique({
 				include: {
 					roles: includeRoles,
@@ -199,6 +198,12 @@ export default class CourseService {
 				published: true,
 			},
 			include: {
+				subscriptions: {
+					where: {
+						userId: user.id,
+						courseId: id,
+					},
+				},
 				roles: includeRoles,
 				modules: {
 					...includeModules,
@@ -228,10 +233,12 @@ export default class CourseService {
 			throw new CustomError('NOT_FOUND', 'Course not found');
 		}
 
+		const hasActiveSubscription = rawCourse.subscriptions.some(subscription => subscription.expiresAt > new Date());
+
 		const returnableCourse = {
 			...rawCourse,
-			content: testUserRoles(rawCourse?.roles as Role[], userRoles) ? rawCourse?.content : '',
-			videoSourceUrl: testUserRoles(rawCourse?.roles as Role[], userRoles) ? rawCourse?.videoSourceUrl : '',
+			content: hasActiveSubscription ? rawCourse?.content : '',
+			videoSourceUrl: hasActiveSubscription ? rawCourse?.videoSourceUrl : '',
 		};
 
 		return {
@@ -240,7 +247,7 @@ export default class CourseService {
 		};
 	}
 
-	public async update(id: string, courseData: TypeCourse): Promise<TypeServiceReturn> {
+	public async update(id: string, courseData: TypeCourse): Promise<TypeServiceReturn<unknown>> {
 		const courseToUpdate = new Course(courseData);
 
 		const updatedCourse = await this._model.course.update({
@@ -328,7 +335,7 @@ export default class CourseService {
 		};
 	}
 
-	public async delete(id: string): Promise<TypeServiceReturn> {
+	public async delete(id: string): Promise<TypeServiceReturn<unknown>> {
 		const deletedCourse = await this._model.course.update({
 			where: {
 				id,
