@@ -2,57 +2,72 @@ import {Request} from '../utils/Axios';
 import CustomError from '../utils/CustomError';
 import {type TypeServiceReturn} from '../types/ServiceReturn';
 import {SecretService} from './secret.service';
-import {type TypeSecret} from '../types/Secret';
+import type TypeUser from '../types/User';
+import {type TypeHotmartSubscription, type TypeSubscription} from '../types/Subscription';
 
 const baseUrl = process.env.HOTMART_API_URL ?? 'https://sandbox.hotmart.com/';
 
 export class HotmartService {
-	private readonly _request: Request;
-	private _accessToken: string;
 	private readonly _secretService: SecretService;
 
-	constructor(accessToken: string) {
+	constructor() {
 		this._secretService = new SecretService();
-		this._accessToken = accessToken;
-		this._request = new Request(baseUrl, {
-			'Content-Type': 'application/json',
-			// eslint-disable-next-line @typescript-eslint/naming-convention
-			Authorization: `Bearer ${this._accessToken}`,
-		});
 	}
 
-	public async getUserSubscriptions(userEmail: string): Promise<TypeServiceReturn<unknown>> {
+	public async getUserSubscriptions(user: TypeUser): Promise<TypeServiceReturn<TypeSubscription[]>> {
+		const secrets = await this._secretService.getSecret();
+
+		const request = new Request(baseUrl, {
+			'Content-Type': 'application/json',
+			// eslint-disable-next-line @typescript-eslint/naming-convention
+			Authorization: `Bearer ${secrets.data.hotmartApiAccessToken}`,
+		});
+
 		const url = '/payments/api/v1/subscriptions';
 		const params = {
 			// eslint-disable-next-line @typescript-eslint/naming-convention
-			subscriber_email: userEmail,
+			subscriber_email: user.email,
 		};
 
 		try {
-			const response = await this._request.get(url, params);
+			const response = await request.get(url, params);
 
 			return {
 				status: 'SUCCESSFUL',
-				data: response.data,
+				data: response.data.items ? this._mapSubscriptions(response.data.items as TypeHotmartSubscription[], user) : [],
 			};
 		} catch (error) {
+			console.error('Error getting user subscriptions1', error);
 			try {
-				await this._getAccessToken();
+				const newAccessToken = await this._getAccessToken();
 
-				const response = await this._request.get(url, params);
+				const request = new Request(baseUrl, {
+					'Content-Type': 'application/json',
+					// eslint-disable-next-line @typescript-eslint/naming-convention
+					Authorization: `Bearer ${newAccessToken}`,
+				});
+
+				const response = await request.get(url, params);
 
 				return {
 					status: 'SUCCESSFUL',
-					data: response.data,
+					data: response.data.items ? this._mapSubscriptions(response.data.items as TypeHotmartSubscription[], user) : [],
 				};
 			} catch (error) {
+				console.error('Error getting user subscriptions2', error);
 				throw new CustomError('INVALID_DATA', (error as Error).message);
 			}
 		}
 	}
 
-	private setAccessToken(accessToken: string): void {
-		this._accessToken = accessToken;
+	private _mapSubscriptions(subscriptions: TypeHotmartSubscription[], user: TypeUser): TypeSubscription[] {
+		return subscriptions.map(subscription => ({
+			userId: user.id,
+			courseId: 'TODO: pesquisar id do curso pelo id do produto no hotmart',
+			expiresAt: new Date(subscription.date_next_charge),
+			provider: 'hotmart',
+			providerSubscriptionId: subscription.subscription_id,
+		}));
 	}
 
 	private async _getAccessToken(): Promise<string> {
@@ -79,8 +94,6 @@ export class HotmartService {
 				...secrets,
 				hotmartApiAccessToken: response.data.access_token as string,
 			});
-
-			this.setAccessToken(response.data.access_token as string);
 
 			return response.data.access_token as string;
 		} catch (error) {
