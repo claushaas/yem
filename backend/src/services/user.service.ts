@@ -16,12 +16,10 @@ export default class UserService {
 	private readonly _subscriptionService: SubscriptionService;
 
 	constructor(
-		awsClient: CognitoIdentityProviderClient = new CognitoIdentityProviderClient(
-			{
-				region: process.env.AWS_REGION ?? 'us-east-1',
-				credentials: fromEnv(),
-			},
-		),
+		awsClient: CognitoIdentityProviderClient = new CognitoIdentityProviderClient({
+			region: process.env.AWS_REGION ?? 'us-east-1',
+			credentials: fromEnv(),
+		}),
 	) {
 		this._awsClient = awsClient;
 		this._subscriptionService = new SubscriptionService();
@@ -73,14 +71,12 @@ export default class UserService {
 	private async _getUserData(username: string): Promise<TypeServiceReturn<TypeUser>> {
 		const cleanUsername = username.trim().toLowerCase();
 
-		const user = await this._awsClient.send(
-			new AdminGetUserCommand({
-				// eslint-disable-next-line @typescript-eslint/naming-convention
-				UserPoolId: process.env.COGNITO_USER_POOL_ID,
-				// eslint-disable-next-line @typescript-eslint/naming-convention
-				Username: cleanUsername,
-			}),
-		);
+		const user = await this._awsClient.send(new AdminGetUserCommand({
+			// eslint-disable-next-line @typescript-eslint/naming-convention
+			UserPoolId: process.env.COGNITO_USER_POOL_ID,
+			// eslint-disable-next-line @typescript-eslint/naming-convention
+			Username: cleanUsername,
+		}));
 
 		const cleanUser: TypeUser = {
 			id:
