@@ -24,7 +24,7 @@ export default class UserService {
 		this._awsClient = awsClient;
 	}
 
-	public async login(username: string, password: string): Promise<TypeServiceReturn> {
+	public async login(username: string, password: string): Promise<TypeServiceReturn<unknown>> {
 		const cleanUsername = username.trim().toLowerCase();
 
 		const params: InitiateAuthCommandInput = {
@@ -47,6 +47,27 @@ export default class UserService {
 		if (response.$metadata.httpStatusCode !== 200) {
 			throw new CustomError('UNAUTHORIZED', 'Usuário ou senha incorretos');
 		}
+
+		/*
+			TODO: emitir eventos usando https://github.com/sindresorhus/emittery
+			para localizar assinaturas do usuário e criar subscriptions no banco de dados
+		*/
+
+		const {data: user} = await this._getUserData(cleanUsername);
+
+		const token = generateToken(user as User);
+
+		return {
+			status: 'SUCCESSFUL',
+			data: {
+				token,
+				userData: user,
+			},
+		};
+	}
+
+	private async _getUserData(username: string): Promise<TypeServiceReturn<unknown>> {
+		const cleanUsername = username.trim().toLowerCase();
 
 		const user = await this._awsClient.send(
 			new AdminGetUserCommand({
@@ -72,14 +93,13 @@ export default class UserService {
 				user.UserAttributes?.find(attr => attr.Name === 'phone_number')?.Value ?? '',
 		};
 
-		const token = generateToken(cleanUser);
+		if (!cleanUser.id) {
+			throw new CustomError('NOT_FOUND', 'Usuário não encontrado');
+		}
 
 		return {
 			status: 'SUCCESSFUL',
-			data: {
-				token,
-				userData: cleanUser,
-			},
+			data: cleanUser,
 		};
 	}
 }
