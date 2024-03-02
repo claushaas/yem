@@ -41,6 +41,7 @@ services:
       COGNITO_USER_POOL_ID: ${COGNITO_USER_POOL_ID}
       JWT_SECRET: ${JWT_SECRET}
       NODE_ENV: ${NODE_ENV}
+      AWS_SECRET_ID: ${AWS_SECRET_ID}
     restart: always
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:3001/health" ]
