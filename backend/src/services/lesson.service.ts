@@ -1,6 +1,4 @@
 import {PrismaClient} from '@prisma/client';
-import testUserRoles from '../utils/testUserRoles';
-import type Role from '../types/Role';
 import type TypeUser from '../types/User';
 import CustomError from '../utils/CustomError';
 import {type TypeLesson} from '../types/Lesson';
@@ -15,7 +13,7 @@ export default class LessonService {
 		this._model = model;
 	}
 
-	public async create(lessonData: TypeLesson): Promise<TypeServiceReturn> {
+	public async create(lessonData: TypeLesson): Promise<TypeServiceReturn<unknown>> {
 		const newLesson = new Lesson(lessonData);
 
 		const createdLesson = await this._model.lesson.create({
@@ -94,7 +92,7 @@ export default class LessonService {
 		};
 	}
 
-	public async update(id: TypeUuid, lessonData: TypeLesson): Promise<TypeServiceReturn> {
+	public async update(id: TypeUuid, lessonData: TypeLesson): Promise<TypeServiceReturn<unknown>> {
 		const newLesson = new Lesson(lessonData);
 
 		const updatedLesson = await this._model.lesson.update({
@@ -180,7 +178,7 @@ export default class LessonService {
 		};
 	}
 
-	public async delete(id: TypeUuid): Promise<TypeServiceReturn> {
+	public async delete(id: TypeUuid): Promise<TypeServiceReturn<unknown>> {
 		const deletedLesson = await this._model.lesson.update({
 			where: {
 				id,
@@ -200,7 +198,7 @@ export default class LessonService {
 		};
 	}
 
-	public async getList(moduleId: TypeUuid, user: TypeUser | undefined): Promise<TypeServiceReturn> {
+	public async getList(moduleId: TypeUuid, user: TypeUser | undefined): Promise<TypeServiceReturn<unknown>> {
 		const lessonWhere = {
 			modules: {
 				some: {
@@ -276,7 +274,7 @@ export default class LessonService {
 		};
 	}
 
-	public async getById(courseId: TypeUuid, lessonId: TypeUuid, user: TypeUser | undefined): Promise<TypeServiceReturn> {
+	public async getById(courseId: TypeUuid, lessonId: TypeUuid, user: TypeUser | undefined): Promise<TypeServiceReturn<unknown>> {
 		const course = await this._model.course.findUnique({
 			where: {
 				id: courseId,
@@ -300,6 +298,12 @@ export default class LessonService {
 						name: true,
 					},
 				},
+				subscriptions: {
+					where: {
+						userId: user?.id,
+						courseId,
+					},
+				},
 			},
 		});
 
@@ -307,13 +311,15 @@ export default class LessonService {
 			id: lessonId,
 		};
 
+		const hasActiveSubscription = course?.subscriptions.some(subscription => subscription.expiresAt > new Date());
+
 		const lessonSelectWithoutUserId = {
 			id: true,
 			name: true,
 			type: true,
 			description: true,
-			content: Boolean(testUserRoles(course?.roles as Role[], user?.roles ?? [])),
-			videoSourceUrl: Boolean(testUserRoles(course?.roles as Role[], user?.roles ?? [])),
+			content: Boolean(hasActiveSubscription),
+			videoSourceUrl: Boolean(hasActiveSubscription),
 			thumbnailUrl: true,
 			publicationDate: true,
 			published: true,
@@ -366,7 +372,11 @@ export default class LessonService {
 		if (user?.roles.includes('admin')) {
 			const lesson = await this._model.lesson.findUnique({
 				where: lessonWhere,
-				select: lessonSelectWithUserId,
+				select: {
+					...lessonSelectWithUserId,
+					content: true,
+					videoSourceUrl: true,
+				},
 			});
 
 			if (!lesson) {
