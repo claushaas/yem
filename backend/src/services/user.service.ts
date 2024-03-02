@@ -7,11 +7,13 @@ import {
 } from '@aws-sdk/client-cognito-identity-provider';
 import CustomError from '../utils/CustomError';
 import {generateToken} from '../utils/jwt';
-import type User from '../types/User';
+import type TypeUser from '../types/User';
 import {type TypeServiceReturn} from '../types/ServiceReturn';
+import SubscriptionService from './subscription.service';
 
 export default class UserService {
 	private readonly _awsClient: CognitoIdentityProviderClient;
+	private readonly _subscriptionService: SubscriptionService;
 
 	constructor(
 		awsClient: CognitoIdentityProviderClient = new CognitoIdentityProviderClient(
@@ -22,6 +24,7 @@ export default class UserService {
 		),
 	) {
 		this._awsClient = awsClient;
+		this._subscriptionService = new SubscriptionService();
 	}
 
 	public async login(username: string, password: string): Promise<TypeServiceReturn<unknown>> {
@@ -48,14 +51,15 @@ export default class UserService {
 			throw new CustomError('UNAUTHORIZED', 'Usuário ou senha incorretos');
 		}
 
-		/*
-			TODO: emitir eventos usando https://github.com/sindresorhus/emittery
-			para localizar assinaturas do usuário e criar subscriptions no banco de dados
-		*/
-
 		const {data: user} = await this._getUserData(cleanUsername);
 
-		const token = generateToken(user as User);
+		const token = generateToken(user);
+
+		try {
+			await this._subscriptionService.createOrUpdateAllUserSubscriptions(user);
+		} catch (error) {
+			console.error('Error creating or updating subscriptions', error);
+		}
 
 		return {
 			status: 'SUCCESSFUL',
@@ -66,7 +70,7 @@ export default class UserService {
 		};
 	}
 
-	private async _getUserData(username: string): Promise<TypeServiceReturn<unknown>> {
+	private async _getUserData(username: string): Promise<TypeServiceReturn<TypeUser>> {
 		const cleanUsername = username.trim().toLowerCase();
 
 		const user = await this._awsClient.send(
@@ -78,7 +82,7 @@ export default class UserService {
 			}),
 		);
 
-		const cleanUser: User = {
+		const cleanUser: TypeUser = {
 			id:
 				user.UserAttributes?.find(attr => attr.Name === 'sub')?.Value ?? '',
 			email:
