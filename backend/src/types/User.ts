@@ -1,7 +1,9 @@
+import {type TypeUuid} from './UUID';
+
 export type UserRoles = string[];
 
 type TypeUser = {
-	id: string;
+	id: TypeUuid;
 	email: string;
 	roles: UserRoles;
 	firstName: string;
