@@ -33,9 +33,9 @@ export default class CourseController {
 
 	public async getById(req: Request, res: Response) {
 		const {id} = req.params;
-		const {roles: userRoles} = res.locals.user as TypeUser;
+		const user = res.locals.user as TypeUser;
 
-		const {status, data} = await this._service.getById(id, userRoles);
+		const {status, data} = await this._service.getById(id, user);
 
 		const statusCode = mapStatusHttp(status);
 
