@@ -37,7 +37,6 @@ export class HotmartService {
 				data: response.data.items ? this._mapSubscriptions(response.data.items as TypeHotmartSubscription[], user) : [],
 			};
 		} catch (error) {
-			console.error('Error getting user subscriptions1', error);
 			try {
 				const newAccessToken = await this._getAccessToken();
 
@@ -54,7 +53,6 @@ export class HotmartService {
 					data: response.data.items ? this._mapSubscriptions(response.data.items as TypeHotmartSubscription[], user) : [],
 				};
 			} catch (error) {
-				console.error('Error getting user subscriptions2', error);
 				throw new CustomError('INVALID_DATA', (error as Error).message);
 			}
 		}
