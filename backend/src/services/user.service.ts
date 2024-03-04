@@ -10,6 +10,7 @@ import {generateToken} from '../utils/jwt';
 import type TypeUser from '../types/User';
 import {type TypeServiceReturn} from '../types/ServiceReturn';
 import SubscriptionService from './subscription.service';
+import {logger} from '../utils/Logger';
 
 export default class UserService {
 	private readonly _awsClient: CognitoIdentityProviderClient;
@@ -59,6 +60,8 @@ export default class UserService {
 			console.error('Error creating or updating subscriptions', error);
 		}
 
+		logger.logInfo(`User ${user.id} logged in successfully`);
+
 		return {
 			status: 'SUCCESSFUL',
 			data: {
@@ -93,7 +96,10 @@ export default class UserService {
 				user.UserAttributes?.find(attr => attr.Name === 'phone_number')?.Value ?? '',
 		};
 
+		logger.logInfo(`User ${cleanUser.id} data retrieved successfully`);
+
 		if (!cleanUser.id) {
+			logger.logError(`User ${cleanUsername} not found`);
 			throw new CustomError('NOT_FOUND', 'Usuário não encontrado');
 		}
 
