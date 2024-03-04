@@ -44,7 +44,7 @@ export default class CourseService {
 				published: newCourse.published,
 				roles: {
 					connectOrCreate: newCourse.roles.map(role => ({
-						where: {id: undefined, name: role},
+						where: {name: role},
 						create: {name: role},
 					})),
 				},
@@ -281,7 +281,7 @@ export default class CourseService {
 				published: courseToUpdate.published,
 				roles: {
 					connectOrCreate: courseToUpdate.roles.map(role => ({
-						where: {id: undefined, name: role},
+						where: {name: role},
 						create: {name: role},
 					})),
 				},
