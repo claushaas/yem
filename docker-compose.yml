@@ -50,6 +50,10 @@ services:
       NEW_RELIC_LOG: ${NEW_RELIC_LOG}
       NEW_RELIC_LICENSE_KEY: ${NEW_RELIC_LICENSE_KEY}
       NEW_RELIC_APP_NAME: ${NEW_RELIC_APP_NAME}
+      WINSTON_LOG_LEVEL: ${WINSTON_LOG_LEVEL}
+      HOTMART_API_BASIC: ${HOTMART_API_BASIC}
+      HOTMART_API_CLIENT_ID: ${HOTMART_API_CLIENT_ID}
+      HOTMART_API_SECRET: ${HOTMART_API_SECRET}
     restart: always
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:3001/health" ]
