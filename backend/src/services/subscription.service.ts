@@ -62,8 +62,6 @@ export default class SubscriptionService {
 					}),
 				);
 			}
-
-			console.log('hotmartSubscriptions', hotmartSubscriptions);
 		} catch (error) {
 			console.error('Error getting hotmart subscriptions', error);
 		}
@@ -78,8 +76,6 @@ export default class SubscriptionService {
 					}),
 				);
 			}
-
-			console.log('iuguSubscriptions', iuguSubscriptions);
 		} catch (error) {
 			console.error('Error getting iugu subscriptions', error);
 		}
