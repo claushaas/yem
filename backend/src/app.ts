@@ -4,6 +4,7 @@ import router from './routes';
 import errorMiddleware from './middlewares/error.middleware';
 import cookieParser from 'cookie-parser';
 import {logger} from './utils/Logger';
+import {morganMiddleware} from './middlewares/morgan.middleware';
 
 export default class App {
 	public app: express.Express;
@@ -29,8 +30,8 @@ export default class App {
 
 	private initializeMiddlewares() {
 		this.app.use(express.json());
-
 		this.app.use(cookieParser());
+		this.app.use(morganMiddleware);
 
 		this.app.use(router);
 	}
