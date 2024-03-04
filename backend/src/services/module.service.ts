@@ -4,7 +4,6 @@ import Module from '../entities/module.entity';
 import type TypeUser from '../types/User';
 import {type UserRoles} from '../types/User';
 import {type TypeUuid} from '../types/UUID';
-import type Role from '../types/Role';
 import CustomError from '../utils/CustomError';
 import {type TypeServiceReturn} from '../types/ServiceReturn';
 
