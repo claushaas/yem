@@ -54,19 +54,15 @@ export default class ModuleService {
 				tags: {
 					connectOrCreate: newModule.tags?.map(tag => ({
 						where: {
-							id: undefined,
-							tagOption: {
-								name: tag[0],
-							},
-							tagValue: {
-								name: tag[1],
+							tag: {
+								tagOptionName: tag[0],
+								tagValueName: tag[1],
 							},
 						},
 						create: {
 							tagOption: {
 								connectOrCreate: {
 									where: {
-										id: undefined,
 										name: tag[0],
 									},
 									create: {
@@ -77,7 +73,6 @@ export default class ModuleService {
 							tagValue: {
 								connectOrCreate: {
 									where: {
-										id: undefined,
 										name: tag[1],
 									},
 									create: {
@@ -139,19 +134,15 @@ export default class ModuleService {
 				tags: {
 					connectOrCreate: newModule.tags?.map(tag => ({
 						where: {
-							id: undefined,
-							tagOption: {
-								name: tag[0],
-							},
-							tagValue: {
-								name: tag[1],
+							tag: {
+								tagOptionName: tag[0],
+								tagValueName: tag[1],
 							},
 						},
 						create: {
 							tagOption: {
 								connectOrCreate: {
 									where: {
-										id: undefined,
 										name: tag[0],
 									},
 									create: {
@@ -162,7 +153,6 @@ export default class ModuleService {
 							tagValue: {
 								connectOrCreate: {
 									where: {
-										id: undefined,
 										name: tag[1],
 									},
 									create: {

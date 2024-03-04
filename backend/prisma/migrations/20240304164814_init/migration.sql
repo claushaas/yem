@@ -88,8 +88,8 @@ CREATE TABLE "tag_values" (
 -- CreateTable
 CREATE TABLE "tag_option_tag_value" (
     "id" TEXT NOT NULL,
-    "tagOptionId" TEXT NOT NULL,
-    "tagValueId" TEXT NOT NULL,
+    "tagOptionName" TEXT NOT NULL,
+    "tagValueName" TEXT NOT NULL,
     "published" BOOLEAN NOT NULL DEFAULT true,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -196,7 +196,7 @@ CREATE UNIQUE INDEX "tag_options_name_key" ON "tag_options"("name");
 CREATE UNIQUE INDEX "tag_values_name_key" ON "tag_values"("name");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "tag_option_tag_value_tagOptionId_tagValueId_key" ON "tag_option_tag_value"("tagOptionId", "tagValueId");
+CREATE UNIQUE INDEX "tag_option_tag_value_tagOptionName_tagValueName_key" ON "tag_option_tag_value"("tagOptionName", "tagValueName");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "lesson_progress_lessonId_userId_key" ON "lesson_progress"("lessonId", "userId");
@@ -247,10 +247,10 @@ CREATE UNIQUE INDEX "_LessonToTagOptionTagValue_AB_unique" ON "_LessonToTagOptio
 CREATE INDEX "_LessonToTagOptionTagValue_B_index" ON "_LessonToTagOptionTagValue"("B");
 
 -- AddForeignKey
-ALTER TABLE "tag_option_tag_value" ADD CONSTRAINT "tag_option_tag_value_tagOptionId_fkey" FOREIGN KEY ("tagOptionId") REFERENCES "tag_options"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "tag_option_tag_value" ADD CONSTRAINT "tag_option_tag_value_tagOptionName_fkey" FOREIGN KEY ("tagOptionName") REFERENCES "tag_options"("name") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "tag_option_tag_value" ADD CONSTRAINT "tag_option_tag_value_tagValueId_fkey" FOREIGN KEY ("tagValueId") REFERENCES "tag_values"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "tag_option_tag_value" ADD CONSTRAINT "tag_option_tag_value_tagValueName_fkey" FOREIGN KEY ("tagValueName") REFERENCES "tag_values"("name") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "comments" ADD CONSTRAINT "comments_lessonId_fkey" FOREIGN KEY ("lessonId") REFERENCES "lessons"("id") ON DELETE CASCADE ON UPDATE CASCADE;

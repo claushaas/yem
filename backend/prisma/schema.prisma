@@ -114,20 +114,20 @@ model TagValue {
 }
 
 model TagOptionTagValue {
-  id          String    @id @default(uuid())
-  tagOptionId String
-  tagValueId  String
-  tagOption   TagOption @relation(fields: [tagOptionId], references: [id], onDelete: Cascade)
-  tagValue    TagValue  @relation(fields: [tagValueId], references: [id], onDelete: Cascade)
-  lessons     Lesson[]
-  modules     Module[]
-  courses     Course[]
-  published   Boolean   @default(true)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  id            String    @id @default(uuid())
+  tagOptionName String
+  tagValueName  String
+  tagOption     TagOption @relation(fields: [tagOptionName], references: [name], onDelete: Cascade)
+  tagValue      TagValue  @relation(fields: [tagValueName], references: [name], onDelete: Cascade)
+  lessons       Lesson[]
+  modules       Module[]
+  courses       Course[]
+  published     Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 
   // @@id([tagOptionId, tagValueId])
-  @@unique(name: "tag", [tagOptionId, tagValueId])
+  @@unique(name: "tag", [tagOptionName, tagValueName])
   @@map("tag_option_tag_value")
 }
 

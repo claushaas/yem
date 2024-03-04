@@ -49,19 +49,15 @@ export default class LessonService {
 				tags: {
 					connectOrCreate: newLesson.tags?.map(tag => ({
 						where: {
-							id: undefined,
-							tagOption: {
-								name: tag[0],
-							},
-							tagValue: {
-								name: tag[1],
+							tag: {
+								tagOptionName: tag[0],
+								tagValueName: tag[1],
 							},
 						},
 						create: {
 							tagOption: {
 								connectOrCreate: {
 									where: {
-										id: undefined,
 										name: tag[0],
 									},
 									create: {
@@ -72,7 +68,6 @@ export default class LessonService {
 							tagValue: {
 								connectOrCreate: {
 									where: {
-										id: undefined,
 										name: tag[1],
 									},
 									create: {
@@ -131,19 +126,15 @@ export default class LessonService {
 				tags: {
 					connectOrCreate: newLesson.tags?.map(tag => ({
 						where: {
-							id: undefined,
-							tagOption: {
-								name: tag[0],
-							},
-							tagValue: {
-								name: tag[1],
+							tag: {
+								tagOptionName: tag[0],
+								tagValueName: tag[1],
 							},
 						},
 						create: {
 							tagOption: {
 								connectOrCreate: {
 									where: {
-										id: undefined,
 										name: tag[0],
 									},
 									create: {
@@ -154,7 +145,6 @@ export default class LessonService {
 							tagValue: {
 								connectOrCreate: {
 									where: {
-										id: undefined,
 										name: tag[1],
 									},
 									create: {
