@@ -17,12 +17,12 @@ export class HotmartService {
 	}
 
 	public async getUserSubscriptions(user: TypeUser): Promise<TypeServiceReturn<TypeSubscription[]>> {
-		logger.logDebug('Getting user subscriptions');
+		logger.logDebug('Starting to get user hotmart subscriptions');
 
 		const secrets = await this._secretService.getSecret();
-
 		logger.logDebug(`Got secrets: ${JSON.stringify(secrets)}`);
 
+		logger.logDebug('Creating new request for hotmart');
 		const request = new Request(baseUrl, {
 			'Content-Type': 'application/json',
 			// eslint-disable-next-line @typescript-eslint/naming-convention
@@ -36,6 +36,7 @@ export class HotmartService {
 		};
 
 		try {
+			logger.logDebug('Sending subscription request to hotmart');
 			const response = await request.get(url, params);
 			logger.logDebug(`Got response: ${JSON.stringify(response.data)}`);
 
@@ -88,13 +89,6 @@ export class HotmartService {
 			const {data: secrets} = await this._secretService.getSecret();
 			logger.logDebug('Got secrets');
 
-			// Logger.logDebug('Creating new request for hotmart auth service');
-			// const request2 = new Request('https://api-sec-vlc.hotmart.com', {
-			// 	'Content-Type': 'application/json',
-			// 	// eslint-disable-next-line @typescript-eslint/naming-convention
-			// 	Authorization: secrets.hotmartApiClientBasic,
-			// });
-
 			logger.logDebug('Sending request for hotmart auth service');
 
 			const response = await axios.post(
@@ -116,10 +110,6 @@ export class HotmartService {
 					},
 				},
 			);
-
-			// Const response = await request2.post({
-			// 	url: `https://api-sec-vlc.hotmart.com/security/oauth/token?grant_type=client_credentials&client_id=${secrets.hotmartApiClientId}&client_secret=${secrets.hotmartApiClientSecret}`,
-			// });
 			logger.logDebug('Got response');
 
 			logger.logDebug('Sending new hotmart access token to secret service');
@@ -131,7 +121,6 @@ export class HotmartService {
 
 			return response.data.access_token as string;
 		} catch (error) {
-			console.log(error);
 			logger.logError(`Error getting new access token: ${JSON.stringify((error as Record<string, string>).data)}`);
 			throw new CustomError('INVALID_DATA', (error as Error).message);
 		}
