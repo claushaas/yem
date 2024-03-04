@@ -3,6 +3,7 @@ import UserService from '../services/user.service';
 import mapStatusHttp from '../utils/mapStatusHttp';
 import {type TypeHttpStatus} from '../types/HTTPStatus';
 import type TypeUser from '../types/User';
+import {logger} from '../utils/Logger';
 
 export default class UserController {
 	private readonly _userService: UserService;
@@ -30,6 +31,10 @@ export default class UserController {
 
 	public logout(_req: Request, res: Response) {
 		const statusCode = mapStatusHttp('SUCCESSFUL');
+
+		const user = res.locals.user as TypeUser;
+
+		logger.logInfo(`User ${user.id} logged out successfully`);
 
 		return res
 			.status(statusCode)
