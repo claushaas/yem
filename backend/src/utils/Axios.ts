@@ -24,11 +24,11 @@ export class Request {
 		data?: Record<string, string>;
 		params?: Record<string, string>;
 	}): Promise<AxiosResponse> {
-		return this._request.post(url, {data, params});
+		return this._request.post(url, data ? data : {}, {params});
 	}
 
 	public async put(url: string, data: Record<string, string> = {}): Promise<AxiosResponse> {
-		return this._request.put(url, {data});
+		return this._request.put(url, data);
 	}
 
 	public async delete(url: string): Promise<any> {
@@ -36,6 +36,6 @@ export class Request {
 	}
 
 	public async patch(url: string, data: Record<string, string> = {}): Promise<AxiosResponse> {
-		return this._request.patch(url, {data});
+		return this._request.patch(url, data);
 	}
 }
