@@ -37,6 +37,7 @@ model Role {
   description String?
   courses     Course[]
 
+  @@unique([name])
   @@map("roles")
 }
 

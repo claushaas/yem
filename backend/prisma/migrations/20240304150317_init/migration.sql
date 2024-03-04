@@ -187,6 +187,9 @@ CREATE TABLE "_LessonToTagOptionTagValue" (
 CREATE UNIQUE INDEX "courses_name_key" ON "courses"("name");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "roles_name_key" ON "roles"("name");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "tag_options_name_key" ON "tag_options"("name");
 
 -- CreateIndex
