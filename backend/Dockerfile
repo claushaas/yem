@@ -1,6 +1,6 @@
 FROM --platform=arm64 node:21-alpine3.18
 
-RUN apt update && apt install tzdata -y
+RUN apk update && apk add --no-cache tzdata
 ENV TZ="America/Sao_Paulo"
 
 WORKDIR /backend
