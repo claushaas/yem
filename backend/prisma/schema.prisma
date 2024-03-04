@@ -126,7 +126,6 @@ model TagOptionTagValue {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
-  // @@id([tagOptionId, tagValueId])
   @@unique(name: "tag", [tagOptionName, tagValueName])
   @@map("tag_option_tag_value")
 }
