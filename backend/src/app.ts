@@ -3,8 +3,7 @@ import 'express-async-errors';
 import router from './routes';
 import errorMiddleware from './middlewares/error.middleware';
 import cookieParser from 'cookie-parser';
-// Import CustomError from './utils/CustomError';
-// import SubscriptionService from './services/subscription.service';
+import {logger} from './utils/Logger';
 
 export default class App {
 	public app: express.Express;
@@ -14,33 +13,17 @@ export default class App {
 
 		this.initializeMiddlewares();
 
-		this.app.get('/health', (_req, res) => res.json({ok: true}));
-
-		// This.app.get('/hotmart', async (_req, res) => {
-		// 	try {
-		// 		const subscriptionService = new SubscriptionService();
-
-		// 		const response = await subscriptionService.createOrUpdateAllUserSubscriptions({
-		// 			email: 'claus.haas@me.com',
-		// 			id: 'baafa754-3686-400c-ba8d-d72da6bd256a',
-		// 			firstName: 'Subscriber',
-		// 			lastName: 'Test',
-		// 			phoneNumber: '123456789',
-		// 			roles: ['subscriber'],
-		// 		});
-
-		// 		res.json(response);
-		// 	} catch (error) {
-		// 		throw new CustomError('INVALID_DATA', (error as Error).message);
-		// 	}
-		// });
+		this.app.get('/health', (_req, res) => {
+			logger.logInfo('Health check');
+			res.json({ok: true});
+		});
 
 		this.initializeErrorHandling();
 	}
 
 	public start(PORT: string | number): void {
 		this.app.listen(PORT, () => {
-			console.log(`Running on port ${PORT}`);
+			logger.logInfo(`Server running on port ${PORT}`);
 		});
 	}
 
