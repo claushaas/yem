@@ -3,6 +3,10 @@ import newrelicFormatter from '@newrelic/winston-enricher';
 
 const newrelicWinstonFormatter = newrelicFormatter(winston);
 
+const timezoned = () => new Date().toLocaleString('pt-BR', {
+	timeZone: 'America/Sao_Paulo',
+});
+
 class Logger {
 	private readonly _instance: winston.Logger;
 
@@ -10,7 +14,7 @@ class Logger {
 		this._instance = winston.createLogger({
 			level: process.env.WINSTON_LOG_LEVEL ?? 'info',
 			format: winston.format.combine(
-				winston.format.timestamp(),
+				winston.format.timestamp({format: timezoned}),
 				winston.format.json(),
 				newrelicWinstonFormatter(),
 			),
@@ -22,22 +26,22 @@ class Logger {
 					),
 				}),
 			],
-			// ExceptionHandlers: [
-			// 	new winston.transports.Console({
-			// 		format: winston.format.combine(
-			// 			winston.format.colorize(),
-			// 			winston.format.simple(),
-			// 		),
-			// 	}),
-			// ],
-			// rejectionHandlers: [
-			// 	new winston.transports.Console({
-			// 		format: winston.format.combine(
-			// 			winston.format.colorize(),
-			// 			winston.format.simple(),
-			// 		),
-			// 	}),
-			// ],
+			exceptionHandlers: [
+				new winston.transports.Console({
+					format: winston.format.combine(
+						winston.format.colorize(),
+						winston.format.simple(),
+					),
+				}),
+			],
+			rejectionHandlers: [
+				new winston.transports.Console({
+					format: winston.format.combine(
+						winston.format.colorize(),
+						winston.format.simple(),
+					),
+				}),
+			],
 		});
 	}
 
