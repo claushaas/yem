@@ -1,7 +1,7 @@
 import {type TypeLessonType, type TypeLesson} from '../types/Lesson';
 import CustomError from '../utils/CustomError';
 import {type TypeTags} from '../types/Tag';
-import Joi from 'joi';
+import * as Joi from 'joi';
 import {type TypeUuid} from '../types/UUID';
 
 const lessonSchema = Joi.object({

@@ -1,7 +1,7 @@
 import {type TypeModule} from '../types/Module';
 import CustomError from '../utils/CustomError';
 import {type TypeTags} from '../types/Tag';
-import Joi from 'joi';
+import * as Joi from 'joi';
 
 const moduleSchema = Joi.object({
 	name: Joi.string().required().min(3).max(35),

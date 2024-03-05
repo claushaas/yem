@@ -1,5 +1,5 @@
 import type TypeCourse from '../types/Course';
-import Joi from 'joi';
+import * as Joi from 'joi';
 import CustomError from '../utils/CustomError';
 import {type TypeTags} from '../types/Tag';
 
