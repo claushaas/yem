@@ -9,7 +9,7 @@
     "eslint": "eslint --ext .ts ./src",
     "build": "tsc --project tsconfig.json",
     "prestart": "npm run build",
-    "start": "node -r newrelic ./build/server.js",
+    "start": "node --env-file=.env -r newrelic ./build/server.js",
     "update": "npx npm-check-updates -i"
   },
   "author": "Claus Haas",
