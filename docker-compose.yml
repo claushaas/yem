@@ -1,0 +1,63 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:16.2
+    container_name: db
+    ports:
+      - "5432:5432"
+    user: ${POSTGRES_USER}
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    restart: always
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: backend
+    working_dir: /backend
+    volumes:
+      - ./backend/src:/backend/src
+    ports:
+      - "3001:3001"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      APP_PORT: ${APP_PORT}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_DATABASE: ${POSTGRES_DATABASE}
+      POSTGRES_HOST: db
+      POSTGRES_PORT: ${POSTGRES_PORT}
+      DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:${POSTGRES_PORT}/${POSTGRES_DATABASE}
+      DIRECT_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@$db:${POSTGRES_PORT}/${POSTGRES_DATABASE}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      AWS_REGION: ${AWS_REGION}
+      COGNITO_CLIENT_ID: ${COGNITO_CLIENT_ID}
+      COGNITO_USER_POOL_ID: ${COGNITO_USER_POOL_ID}
+      JWT_SECRET: ${JWT_SECRET}
+      NODE_ENV: ${NODE_ENV}
+      AWS_SECRET_ID: ${AWS_SECRET_ID}
+      IUGU_API_URL: ${IUGU_API_URL}
+      IUGU_API_TOKEN: ${IUGU_API_TOKEN}
+      NEW_RELIC_NO_CONFIG_FILE: ${NEW_RELIC_NO_CONFIG_FILE}
+      NEW_RELIC_DISTRIBUTED_TRACING_ENABLED: ${NEW_RELIC_DISTRIBUTED_TRACING_ENABLED}
+      NEW_RELIC_LOG: ${NEW_RELIC_LOG}
+      NEW_RELIC_LICENSE_KEY: ${NEW_RELIC_LICENSE_KEY}
+      NEW_RELIC_APP_NAME: ${NEW_RELIC_APP_NAME}
+      WINSTON_LOG_LEVEL: ${WINSTON_LOG_LEVEL}
+      HOTMART_API_BASIC: ${HOTMART_API_BASIC}
+      HOTMART_API_CLIENT_ID: ${HOTMART_API_CLIENT_ID}
+      HOTMART_API_SECRET: ${HOTMART_API_SECRET}
+    restart: always
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:3001/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5

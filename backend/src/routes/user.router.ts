@@ -1,0 +1,21 @@
+import {type Request, type Response, Router} from 'express';
+import UserController from '../controllers/user.controller';
+import validateAuthToken from '../middlewares/validateAuthToken.middleware';
+
+const userRouter = Router();
+
+userRouter.post(
+	'/login',
+	async (req: Request, res: Response) => {
+		await new UserController().login(req, res);
+	},
+);
+
+userRouter.get(
+	'/logout',
+	validateAuthToken,
+	(req: Request, res: Response) => new UserController().logout(req, res),
+);
+
+export default userRouter;
+
