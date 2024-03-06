@@ -8,7 +8,6 @@
     "dev": "npx prisma migrate dev && ts-node-dev --ignore-watch node_modules -r newrelic src/server.ts",
     "eslint": "eslint --ext .ts ./src",
     "build": "tsc --project tsconfig.json",
-    "prestart": "node --max-old-space-size=16384 && npm run build",
     "start": "node -r newrelic ./build/server.js",
     "update": "npx npm-check-updates -i"
   },
