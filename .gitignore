@@ -1,3 +1,4 @@
 .env
 node-modules
 .env.production
+.env.staging
