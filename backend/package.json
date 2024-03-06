@@ -8,6 +8,7 @@
     "dev": "npx prisma migrate dev && ts-node-dev --ignore-watch node_modules -r newrelic src/server.ts",
     "eslint": "eslint --ext .ts ./src",
     "build": "tsc --project tsconfig.json",
+    "prestart": "npm run build",
     "start": "node -r newrelic ./build/server.js",
     "update": "npx npm-check-updates -i"
   },
@@ -16,7 +17,6 @@
   "dependencies": {
     "@aws-sdk/client-cognito-identity-provider": "^3.525.0",
     "@aws-sdk/client-secrets-manager": "^3.525.0",
-    "@aws-sdk/client-sesv2": "^3.527.0",
     "@aws-sdk/credential-providers": "^3.525.0",
     "@newrelic/winston-enricher": "^4.0.1",
     "@prisma/client": "^5.10.2",
