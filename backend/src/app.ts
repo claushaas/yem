@@ -5,6 +5,7 @@ import errorMiddleware from './middlewares/error.middleware';
 import cookieParser from 'cookie-parser';
 import {logger} from './utils/Logger';
 import {morganMiddleware} from './middlewares/morgan.middleware';
+import {limiter} from './middlewares/rateLimiter.middleware';
 
 export default class App {
 	public app: express.Express;
@@ -29,6 +30,7 @@ export default class App {
 	}
 
 	private initializeMiddlewares() {
+		this.app.use(limiter);
 		this.app.use(express.json());
 		this.app.use(cookieParser());
 		this.app.use(morganMiddleware);

@@ -18,6 +18,7 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
+      target: dev
     container_name: backend
     working_dir: /backend
     volumes:
@@ -55,6 +56,10 @@ services:
       HOTMART_API_BASIC: ${HOTMART_API_BASIC}
       HOTMART_API_CLIENT_ID: ${HOTMART_API_CLIENT_ID}
       HOTMART_API_SECRET: ${HOTMART_API_SECRET}
+      BOTMAKER_CLIENT_ID: ${BOTMAKER_CLIENT_ID}
+      BOTMAKER_CLIENT_SECRET: ${BOTMAKER_CLIENT_SECRET}
+      BOTMAKER_API_URL: ${BOTMAKER_API_URL}
+      BOTMAKER_WHATSAPP_CHANNEL_ID: ${BOTMAKER_WHATSAPP_CHANNEL_ID}
     restart: always
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:3001/health" ]

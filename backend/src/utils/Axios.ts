@@ -15,16 +15,11 @@ export class Request {
 		return this._request.get(url, {params});
 	}
 
-	public async post({
-		url,
-		data,
-		params,
-	}: {
-		url: string;
-		data?: Record<string, string>;
-		params?: Record<string, string>;
-	}): Promise<AxiosResponse> {
-		return this._request.post(url, data ? data : {}, {params});
+	public async post(
+		url: string,
+		data: any,
+	): Promise<AxiosResponse> {
+		return this._request.post(url, data);
 	}
 
 	public async put(url: string, data: Record<string, string> = {}): Promise<AxiosResponse> {
