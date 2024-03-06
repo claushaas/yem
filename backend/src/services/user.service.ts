@@ -99,7 +99,7 @@ export default class UserService {
 		logger.logInfo(`User ${cleanUser.id} data retrieved successfully`);
 
 		if (!cleanUser.id) {
-			logger.logError(`User ${cleanUsername} not found`);
+			logger.logError(`Error getting user data: user id ${cleanUsername} not found`);
 			throw new CustomError('NOT_FOUND', 'Usuário não encontrado');
 		}
 
