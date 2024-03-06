@@ -23,4 +23,14 @@ export class BotmakerController {
 
 		return res.status(statusCode).json(data);
 	}
+
+	public async addToBlacklist(req: Request, res: Response) {
+		const {phoneNumber} = req.body as {phoneNumber: string};
+
+		const {status, data} = await this._service.addToBlackList(phoneNumber);
+
+		const statusCode = mapStatusHttp(status);
+
+		return res.status(statusCode).json(data);
+	}
 }
