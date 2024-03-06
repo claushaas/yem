@@ -19,6 +19,13 @@ botmakerRouter.post(
 	},
 );
 
+botmakerRouter.post(
+	'/add-to-blacklist',
+	async (req: Request, res: Response) => {
+		await new BotmakerController().addToBlacklist(req, res);
+	},
+);
+
 export {
 	botmakerRouter,
 };
