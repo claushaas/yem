@@ -17,7 +17,7 @@ export class Request {
 
 	public async post(
 		url: string,
-		data: any,
+		data: any = {},
 	): Promise<AxiosResponse> {
 		return this._request.post(url, data);
 	}
