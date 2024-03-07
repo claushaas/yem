@@ -3,6 +3,7 @@ import {
 } from '../types/User';
 import Joi from 'joi';
 import CustomError from '../utils/CustomError';
+import {convertStringToStartCase} from '../utils/convertStringToStartCase';
 
 const basicUserSchema = Joi.object({
 	email: Joi.string().email().required(),
@@ -36,9 +37,9 @@ class BasicUser {
 			throw new CustomError('UNPROCESSABLE_ENTITY', `Invalid user data: ${error.message}`);
 		}
 
-		this._email = user.email;
-		this._firstName = user.firstName;
-		this._lastName = user.lastName;
+		this._email = user.email.toLowerCase();
+		this._firstName = convertStringToStartCase(user.firstName);
+		this._lastName = convertStringToStartCase(user.lastName);
 	}
 
 	get email() {
