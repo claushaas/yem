@@ -19,6 +19,7 @@ import {MailService} from './mail.service';
 import {welcomeEmailTemplate} from '../assets/emails/welcome.email.template';
 import {BotmakerService} from './botmaker.service';
 import {MauticService} from './mautic.service';
+import {UserForCreation} from '../entities/user.entity';
 
 export default class UserService {
 	private readonly _awsClient: CognitoIdentityProviderClient;
@@ -41,15 +42,9 @@ export default class UserService {
 	}
 
 	public async create(userData: TypeUserCreationAttributes): Promise<TypeServiceReturn<unknown>> {
-		const {email: unformattedEmail, phoneNumber, firstName: unformattedFirstName, lastName: unformattedLastName, roles, document} = userData;
+		const newUser = new UserForCreation(userData);
 
-		if (!unformattedEmail || !phoneNumber || !unformattedFirstName || !unformattedLastName) {
-			throw new CustomError('INVALID_DATA', 'Missing some required fields');
-		}
-
-		const email = unformattedEmail.trim().toLowerCase();
-		const firstName = convertStringToStartCase(unformattedFirstName);
-		const lastName = convertStringToStartCase(unformattedLastName);
+		const {email, phoneNumber, firstName, lastName, roles, document} = newUser;
 
 		const paramsforUserCreation = {
 			// eslint-disable-next-line @typescript-eslint/naming-convention
@@ -140,11 +135,11 @@ export default class UserService {
 		const userPasswordResponse = await this._awsClient.send(commandForSettingUserPassword);
 
 		if (userPasswordResponse.$metadata.httpStatusCode !== 200) {
-			logger.logError(`Error setting user password for user ${email.toLowerCase()}`);
+			logger.logError(`Error setting user password for user ${email}`);
 			throw new CustomError('INVALID_DATA', 'Error setting user password');
 		}
 
-		logger.logDebug(`User ${email.toLowerCase()} password set successfully`);
+		logger.logDebug(`User ${email} password set successfully`);
 
 		try {
 			const response = await this._mauticService.createContact({
@@ -175,7 +170,7 @@ export default class UserService {
 				}),
 			]);
 		} catch (error) {
-			logger.logError(`Error sending welcome email or whatsapp message to user ${email.toLowerCase()}: ${(error as Error).message}`);
+			logger.logError(`Error sending welcome email or whatsapp message to user ${email}: ${(error as Error).message}`);
 		}
 
 		return {
