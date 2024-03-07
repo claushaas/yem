@@ -17,5 +17,12 @@ userRouter.get(
 	(req: Request, res: Response) => new UserController().logout(req, res),
 );
 
+userRouter.post(
+	'/',
+	async (req: Request, res: Response) => {
+		await new UserController().create(req, res);
+	},
+);
+
 export default userRouter;
 

@@ -165,7 +165,7 @@ export default class CourseService {
 			},
 		};
 
-		if (user.roles.includes('admin')) {
+		if (user.roles?.includes('admin')) {
 			const course = await this._model.course.findUnique({
 				include: {
 					roles: includeRoles,
