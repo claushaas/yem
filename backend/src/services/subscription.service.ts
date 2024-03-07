@@ -1,5 +1,5 @@
 import {PrismaClient} from '@prisma/client';
-import type TypeUser from '../types/User';
+import {type TypeUser} from '../types/User';
 import {type TypeServiceReturn} from '../types/ServiceReturn';
 import Subscription from '../entities/subscription.entity';
 import {type TypeSubscription} from '../types/Subscription';

@@ -10,11 +10,10 @@ import {
 } from '@aws-sdk/client-cognito-identity-provider';
 import CustomError from '../utils/CustomError';
 import {generateToken} from '../utils/jwt';
-import type TypeUser from '../types/User';
 import {type TypeServiceReturn} from '../types/ServiceReturn';
 import SubscriptionService from './subscription.service';
 import {logger} from '../utils/Logger';
-import {type TypeUserCreationAttributes} from '../types/User';
+import {type TypeUser, type TypeUserCreationAttributes} from '../types/User';
 import {convertStringToStartCase} from '../utils/convertStringToStartCase';
 import {MailService} from './mail.service';
 import {welcomeEmailTemplate} from '../assets/emails/welcome.email.template';

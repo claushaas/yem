@@ -2,9 +2,8 @@ import {type Request, type Response} from 'express';
 import UserService from '../services/user.service';
 import mapStatusHttp from '../utils/mapStatusHttp';
 import {type TypeHttpStatus} from '../types/HTTPStatus';
-import type TypeUser from '../types/User';
+import {type TypeUser, type TypeUserCreationAttributes} from '../types/User';
 import {logger} from '../utils/Logger';
-import {type TypeUserCreationAttributes} from '../types/User';
 
 export default class UserController {
 	private readonly _userService: UserService;

@@ -1,7 +1,6 @@
 import {Request} from '../utils/Axios';
 import CustomError from '../utils/CustomError';
 import {type TypeServiceReturn} from '../types/ServiceReturn';
-import {type AxiosResponse} from 'axios';
 import {type TypeMauticUserCreationAttributes} from '../types/User';
 import {logger} from '../utils/Logger';
 

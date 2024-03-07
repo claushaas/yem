@@ -1,7 +1,7 @@
 import CustomError from '../utils/CustomError';
 import {type TypeServiceReturn} from '../types/ServiceReturn';
 import api from 'api';
-import type TypeUser from '../types/User';
+import {type TypeUser} from '../types/User';
 import {type TypeIuguSubscription, type TypeSubscription} from '../types/Subscription';
 
 export class IuguService {

@@ -5,21 +5,18 @@ type Email = string;
 type FirstName = string;
 type LastName = string;
 
-type TypeUser = {
-	id: TypeUuid;
+type TypeBasicUser = {
 	email: Email;
-	roles?: UserRoles;
 	firstName: FirstName;
 	lastName: LastName;
+};
+
+export type TypeUser = TypeBasicUser & {
+	id: TypeUuid;
+	roles?: UserRoles;
 	phoneNumber: string;
 };
 
 export type TypeUserCreationAttributes = TypeUser & {document: string};
 
-export type TypeMauticUserCreationAttributes = {
-	email: Email;
-	firstName: FirstName;
-	lastName: LastName;
-};
-
-export default TypeUser;
+export type TypeMauticUserCreationAttributes = TypeBasicUser;
