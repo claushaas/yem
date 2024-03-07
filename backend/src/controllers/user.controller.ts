@@ -4,6 +4,7 @@ import mapStatusHttp from '../utils/mapStatusHttp';
 import {type TypeHttpStatus} from '../types/HTTPStatus';
 import type TypeUser from '../types/User';
 import {logger} from '../utils/Logger';
+import {type TypeUserCreationAttributes} from '../types/User';
 
 export default class UserController {
 	private readonly _userService: UserService;
@@ -40,5 +41,15 @@ export default class UserController {
 			.status(statusCode)
 			.clearCookie('access_token')
 			.json({message: 'User logged out successfully'});
+	}
+
+	public async create(req: Request, res: Response) {
+		const user = req.body as TypeUserCreationAttributes;
+
+		const {status, data} = await this._userService.create(user);
+
+		const statusCode = mapStatusHttp(status);
+
+		return res.status(statusCode).json(data);
 	}
 }

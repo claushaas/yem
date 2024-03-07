@@ -304,7 +304,7 @@ export default class ModuleService {
 			},
 		};
 
-		if (user.roles.includes('admin')) {
+		if (user.roles?.includes('admin')) {
 			const module = await this._model.module.findUnique({
 				where: {
 					id,

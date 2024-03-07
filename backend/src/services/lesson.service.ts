@@ -230,7 +230,7 @@ export default class LessonService {
 			},
 		};
 
-		if (user?.roles.includes('admin')) {
+		if (user?.roles?.includes('admin')) {
 			const lessons = await this._model.lesson.findMany({
 				where: lessonWhere,
 				select: lessonSelectWithUserId,
@@ -359,7 +359,7 @@ export default class LessonService {
 			},
 		};
 
-		if (user?.roles.includes('admin')) {
+		if (user?.roles?.includes('admin')) {
 			const lesson = await this._model.lesson.findUnique({
 				where: lessonWhere,
 				select: {
