@@ -15,6 +15,7 @@ type TypeUser = {
 };
 
 export type TypeUserCreationAttributes = TypeUser & {document: string};
+
 export type TypeMauticUserCreationAttributes = {
 	email: Email;
 	firstName: FirstName;
