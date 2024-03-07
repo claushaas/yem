@@ -19,12 +19,14 @@ import {convertStringToStartCase} from '../utils/convertStringToStartCase';
 import {MailService} from './mail.service';
 import {welcomeEmailTemplate} from '../assets/emails/welcome.email.template';
 import {BotmakerService} from './botmaker.service';
+import {MauticService} from './mautic.service';
 
 export default class UserService {
 	private readonly _awsClient: CognitoIdentityProviderClient;
 	private readonly _subscriptionService: SubscriptionService;
 	private readonly _mailService: MailService;
 	private readonly _botmakerService: BotmakerService;
+	private readonly _mauticService: MauticService;
 
 	constructor(
 		awsClient: CognitoIdentityProviderClient = new CognitoIdentityProviderClient({
@@ -36,6 +38,7 @@ export default class UserService {
 		this._subscriptionService = new SubscriptionService();
 		this._mailService = new MailService();
 		this._botmakerService = new BotmakerService();
+		this._mauticService = new MauticService();
 	}
 
 	public async create(userData: TypeUserCreationAttributes): Promise<TypeServiceReturn<unknown>> {
@@ -142,6 +145,24 @@ export default class UserService {
 		}
 
 		logger.logDebug(`User ${email.toLowerCase()} password set successfully`);
+
+		try {
+			const response = await this._mauticService.createContact({
+				email,
+				firstName,
+				lastName,
+			});
+
+			const mauticUserId = response.data.contact.id;
+
+			try {
+				await this._mauticService.addContactToSegment(mauticUserId, 3);
+			} catch (error) {
+				logger.logError(`Error adding user ${email} to segment 3: ${(error as Error).message}`);
+			}
+		} catch (error) {
+			logger.logError(`Error creating contact in Mautic for user ${email}: ${(error as Error).message}`);
+		}
 
 		try {
 			await Promise.all([

@@ -60,6 +60,9 @@ services:
       BOTMAKER_CLIENT_SECRET: ${BOTMAKER_CLIENT_SECRET}
       BOTMAKER_API_URL: ${BOTMAKER_API_URL}
       BOTMAKER_WHATSAPP_CHANNEL_ID: ${BOTMAKER_WHATSAPP_CHANNEL_ID}
+      MAUTIC_API_USERNAME: ${MAUTIC_API_USERNAME}
+      MAUTIC_API_PASSWORD: ${MAUTIC_API_PASSWORD}
+      MAUTIC_API_URL: ${MAUTIC_API_URL}
     restart: always
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:3001/health" ]
