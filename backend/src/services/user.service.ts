@@ -120,7 +120,7 @@ export default class UserService {
 		logger.logDebug(`User ${email} created successfully: ${JSON.stringify(userCreationResponse.User)}`);
 
 		const userName: string = userCreationResponse.User?.Attributes?.find(attr => attr.Name === 'sub')?.Value ?? '';
-		const password = Math.random().toString(36).slice(-8);
+		const password = crypto.getRandomValues(new Uint32Array(1))[0].toString(36).slice(-6);
 
 		const paramsForSettingUserPassword = {
 			// eslint-disable-next-line @typescript-eslint/naming-convention
