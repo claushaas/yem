@@ -5,7 +5,7 @@ type Email = string;
 type FirstName = string;
 type LastName = string;
 
-type TypeBasicUser = {
+export type TypeBasicUser = {
 	email: Email;
 	firstName: FirstName;
 	lastName: LastName;
