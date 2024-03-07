@@ -1,7 +1,7 @@
 import {type Request, type Response} from 'express';
 import mapStatusHttp from '../utils/mapStatusHttp';
 import LessonService from '../services/lesson.service';
-import type TypeUser from '../types/User';
+import {type TypeUser} from '../types/User';
 import {type TypeLesson} from '../types/Lesson';
 
 export default class LessonController {

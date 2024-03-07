@@ -1,5 +1,5 @@
 import {PrismaClient} from '@prisma/client';
-import type TypeUser from '../types/User';
+import {type TypeUser} from '../types/User';
 import CustomError from '../utils/CustomError';
 import {type TypeLesson} from '../types/Lesson';
 import Lesson from '../entities/lesson.entity';
