@@ -1,20 +1,18 @@
-import {
-	type JwtPayload, type Secret, sign, type SignOptions, verify,
-} from 'jsonwebtoken';
+import * as JWT from 'jsonwebtoken';
 
-const secret: Secret = process.env.JWT_SECRET ?? '';
+const secret: JWT.Secret = process.env.JWT_SECRET ?? '';
 
-const jwtConfig: SignOptions = {
+const jwtConfig: JWT.SignOptions = {
 	expiresIn: '10d',
 	algorithm: 'HS256',
 	encoding: 'utf-8',
 };
 
-export const generateToken = (payload: JwtPayload): string => sign(payload, secret, jwtConfig);
+export const generateToken = (payload: JWT.JwtPayload): string => JWT.sign(payload, secret, jwtConfig);
 
-export const verifyToken = (token: string): JwtPayload | string => {
+export const verifyToken = (token: string): JWT.JwtPayload | string => {
 	try {
-		return verify(token, secret);
+		return JWT.verify(token, secret);
 	} catch (error) {
 		return 'Token must be a valid token';
 	}

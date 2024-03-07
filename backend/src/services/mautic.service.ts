@@ -1,9 +1,9 @@
 import {Request} from '../utils/Axios';
 import CustomError from '../utils/CustomError';
 import {type TypeServiceReturn} from '../types/ServiceReturn';
-import {type AxiosResponse} from 'axios';
 import {type TypeMauticUserCreationAttributes} from '../types/User';
 import {logger} from '../utils/Logger';
+import {MauticUserForCreation} from '../entities/user.entity';
 
 export class MauticService {
 	private readonly _request: Request;
@@ -21,11 +21,13 @@ export class MauticService {
 			id: string;
 		};
 	}>> {
+		const validatedUser = new MauticUserForCreation(user);
+
 		const url = '/contacts/new';
 		const data = {
-			email: user.email,
-			firstname: user.firstName,
-			lastname: user.lastName,
+			email: validatedUser.email,
+			firstname: validatedUser.firstName,
+			lastname: validatedUser.lastName,
 		};
 
 		try {
@@ -63,7 +65,7 @@ export class MauticService {
 		}
 	}
 
-	public async updateContact(email: string, data: Record<string, string>): Promise<TypeServiceReturn<unknown>> {
+	public async updateContact(email: string, data: Partial<TypeMauticUserCreationAttributes>): Promise<TypeServiceReturn<unknown>> {
 		const response = await this._getContactIdByEmail(email);
 		const contactId = response.data;
 
@@ -82,7 +84,7 @@ export class MauticService {
 		}
 	}
 
-	public async deleteContact(email: string): Promise<TypeServiceReturn<unknown>> {
+	public async deleteContact(email: string): Promise<TypeServiceReturn<string>> {
 		const response = await this._getContactIdByEmail(email);
 		const contactId = response.data;
 
@@ -92,8 +94,8 @@ export class MauticService {
 			await this._request.delete(url);
 
 			return {
-				status: 'NO_CONTENT',
-				data: null,
+				status: 'SUCCESSFUL',
+				data: `User ${email} deleted successfully`,
 			};
 		} catch (error) {
 			logger.logError(`Error deleting contact ${contactId}: ${(error as Error).message}`);
@@ -153,7 +155,7 @@ export class MauticService {
 		try {
 			const response = await this._request.get(url, params);
 
-			const contactId = Object.keys(response.data.contacts as Record<string, any>)[0];
+			const contactId = Object.keys(response.data.contacts as Record<string, Record<string, any>>)[0];
 
 			return {
 				status: 'SUCCESSFUL',

@@ -1,5 +1,5 @@
 import {PrismaClient} from '@prisma/client';
-import type TypeUser from '../types/User';
+import {type TypeUser} from '../types/User';
 import {type UserRoles} from '../types/User';
 import Course from '../entities/course.entity';
 import type TypeCourse from '../types/Course';

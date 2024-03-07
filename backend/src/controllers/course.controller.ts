@@ -1,7 +1,7 @@
 import {type Request, type Response} from 'express';
 import CourseService from '../services/course.service';
 import mapStatusHttp from '../utils/mapStatusHttp';
-import type TypeUser from '../types/User';
+import {type TypeUser} from '../types/User';
 import type TypeCourse from '../types/Course';
 
 export default class CourseController {
