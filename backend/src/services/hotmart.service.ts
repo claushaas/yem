@@ -16,7 +16,7 @@ export class HotmartService {
 		this._secretService = new SecretService();
 	}
 
-	public async getUserSubscriptions(user: TypeUser): Promise<TypeServiceReturn<TypeSubscription[]>> {
+	public async getUserSchoolSubscriptions(user: TypeUser): Promise<TypeServiceReturn<TypeSubscription[]>> {
 		logger.logDebug('Starting to get user hotmart subscriptions');
 
 		const secrets = await this._secretService.getSecret();
@@ -33,6 +33,8 @@ export class HotmartService {
 		const params = {
 			// eslint-disable-next-line @typescript-eslint/naming-convention
 			subscriber_email: user.email,
+			// eslint-disable-next-line @typescript-eslint/naming-convention
+			product_id: '135340',
 		};
 
 		try {

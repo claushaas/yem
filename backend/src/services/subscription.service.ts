@@ -5,6 +5,7 @@ import Subscription from '../entities/subscription.entity';
 import {type TypeSubscription} from '../types/Subscription';
 import {HotmartService} from './hotmart.service';
 import {IuguService} from './iugu.service';
+import {logger} from '../utils/Logger';
 
 export default class SubscriptionService {
 	private readonly _model: PrismaClient;
@@ -53,7 +54,7 @@ export default class SubscriptionService {
 
 	public async createOrUpdateAllUserSubscriptions(user: TypeUser): Promise<TypeServiceReturn<unknown>> {
 		try {
-			const {data: hotmartSubscriptions} = await this._hotmartService.getUserSubscriptions(user);
+			const {data: hotmartSubscriptions} = await this._hotmartService.getUserSchoolSubscriptions(user);
 
 			if (hotmartSubscriptions.length > 0) {
 				await Promise.all(
@@ -63,7 +64,7 @@ export default class SubscriptionService {
 				);
 			}
 		} catch (error) {
-			console.error('Error getting hotmart subscriptions', error);
+			logger.logError(`Error getting hotmart subscriptions: ${(error as Error).message}`);
 		}
 
 		try {
@@ -77,7 +78,7 @@ export default class SubscriptionService {
 				);
 			}
 		} catch (error) {
-			console.error('Error getting iugu subscriptions', error);
+			logger.logError(`Error getting iugu subscriptions: ${(error as Error).message}`);
 		}
 
 		return {
