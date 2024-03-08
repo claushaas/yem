@@ -1,11 +1,11 @@
 import {PrismaClient} from '@prisma/client';
-import {type TypeUser} from '../types/User';
-import {type TypeServiceReturn} from '../types/ServiceReturn';
-import Subscription from '../entities/subscription.entity';
-import {type TypeSubscription} from '../types/Subscription';
-import {HotmartService} from './hotmart.service';
-import {IuguService} from './iugu.service';
-import {logger} from '../utils/Logger';
+import {type TypeUser} from '../types/User.js';
+import {type TypeServiceReturn} from '../types/ServiceReturn.js';
+import Subscription from '../entities/subscription.entity.js';
+import {type TypeSubscription} from '../types/Subscription.js';
+import {HotmartService} from './hotmart.service.js';
+import {IuguService} from './iugu.service.js';
+import {logger} from '../utils/Logger.js';
 
 export default class SubscriptionService {
 	private readonly _model: PrismaClient;

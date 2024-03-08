@@ -1,9 +1,9 @@
 import {
 	type Request, Router, type Response, type NextFunction,
 } from 'express';
-import {BotmakerController} from '../controllers/botmaker.controller';
-import validateAuthToken from '../middlewares/validateAuthToken.middleware';
-import verifyRole from '../middlewares/verifyRole.middleware';
+import {BotmakerController} from '../controllers/botmaker.controller.js';
+import validateAuthToken from '../middlewares/validateAuthToken.middleware.js';
+import verifyRole from '../middlewares/verifyRole.middleware.js';
 
 const botmakerRouter = Router();
 

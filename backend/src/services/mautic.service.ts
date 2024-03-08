@@ -1,9 +1,9 @@
-import {Request} from '../utils/Axios';
-import CustomError from '../utils/CustomError';
-import {type TypeServiceReturn} from '../types/ServiceReturn';
-import {type TypeMauticUserCreationAttributes} from '../types/User';
-import {logger} from '../utils/Logger';
-import {MauticUserForCreation} from '../entities/user.entity';
+import {Request} from '../utils/Axios.js';
+import CustomError from '../utils/CustomError.js';
+import {type TypeServiceReturn} from '../types/ServiceReturn.js';
+import {type TypeMauticUserCreationAttributes} from '../types/User.js';
+import {logger} from '../utils/Logger.js';
+import {MauticUserForCreation} from '../entities/user.entity.js';
 
 export class MauticService {
 	private readonly _request: Request;

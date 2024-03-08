@@ -1,8 +1,8 @@
 import {fromEnv} from '@aws-sdk/credential-providers';
-import CustomError from '../utils/CustomError';
+import CustomError from '../utils/CustomError.js';
 import {SecretsManagerClient, GetSecretValueCommand, UpdateSecretCommand} from '@aws-sdk/client-secrets-manager';
-import {type TypeServiceReturn} from '../types/ServiceReturn';
-import {type TypeSecret} from '../types/Secret';
+import {type TypeServiceReturn} from '../types/ServiceReturn.js';
+import {type TypeSecret} from '../types/Secret.js';
 
 export class SecretService {
 	private readonly _awsClient: SecretsManagerClient;

@@ -2,8 +2,8 @@ import {
 	type TypeUserCreationAttributes, type TypeMauticUserCreationAttributes, type TypeBasicUser,
 } from '../types/User';
 import Joi from 'joi';
-import CustomError from '../utils/CustomError';
-import {convertStringToStartCase} from '../utils/convertStringToStartCase';
+import CustomError from '../utils/CustomError.js';
+import {convertStringToStartCase} from '../utils/convertStringToStartCase.js';
 
 const basicUserSchema = Joi.object({
 	email: Joi.string().email().required(),

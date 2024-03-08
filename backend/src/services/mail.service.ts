@@ -1,9 +1,9 @@
 import {SESv2Client, SendEmailCommand} from '@aws-sdk/client-sesv2';
 import {fromEnv} from '@aws-sdk/credential-providers';
-import CustomError from '../utils/CustomError';
-import {logger} from '../utils/Logger';
-import type {TypeServiceReturn} from '../types/ServiceReturn';
-import {type TypeEmailTemplate} from '../types/Email';
+import CustomError from '../utils/CustomError.js';
+import {logger} from '../utils/Logger.js';
+import type {TypeServiceReturn} from '../types/ServiceReturn.js';
+import {type TypeEmailTemplate} from '../types/Email.js';
 
 export class MailService {
 	private readonly _awsClient: SESv2Client;

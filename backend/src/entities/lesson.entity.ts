@@ -1,8 +1,8 @@
-import {type TypeLessonType, type TypeLesson} from '../types/Lesson';
-import CustomError from '../utils/CustomError';
-import {type TypeTags} from '../types/Tag';
+import {type TypeLessonType, type TypeLesson} from '../types/Lesson.js';
+import CustomError from '../utils/CustomError.js';
+import {type TypeTags} from '../types/Tag.js';
 import Joi from 'joi';
-import {type TypeUuid} from '../types/UUID';
+import {type TypeUuid} from '../types/UUID.js';
 
 const lessonSchema = Joi.object({
 	name: Joi.string().required().min(3).max(35),
