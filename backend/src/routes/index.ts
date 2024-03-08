@@ -1,9 +1,9 @@
 import {Router} from 'express';
-import courseRouter from './course.router';
-import userRouter from './user.router';
-import moduleRouter from './module.router';
-import lessonRouter from './lesson.router';
-import {botmakerRouter} from './botmaker.router';
+import courseRouter from './course.router.js';
+import userRouter from './user.router.js';
+import moduleRouter from './module.router.js';
+import lessonRouter from './lesson.router.js';
+import {botmakerRouter} from './botmaker.router.js';
 
 const router = Router();
 

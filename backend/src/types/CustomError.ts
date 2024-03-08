@@ -1,4 +1,4 @@
-import {type TypeHttpStatusCode} from './HTTPStatus';
+import {type TypeHttpStatusCode} from './HTTPStatus.js';
 
 type TypeCustomError = {
 	statusCode?: TypeHttpStatusCode;

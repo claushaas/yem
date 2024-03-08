@@ -1,11 +1,11 @@
 import {PrismaClient} from '@prisma/client';
-import {type TypeModule} from '../types/Module';
-import Module from '../entities/module.entity';
-import type TypeUser from '../types/User';
-import {type UserRoles} from '../types/User';
-import {type TypeUuid} from '../types/UUID';
-import CustomError from '../utils/CustomError';
-import {type TypeServiceReturn} from '../types/ServiceReturn';
+import {type TypeModule} from '../types/Module.js';
+import Module from '../entities/module.entity.js';
+import {type TypeUser} from '../types/User.js';
+import {type UserRoles} from '../types/User.js';
+import {type TypeUuid} from '../types/UUID.js';
+import CustomError from '../utils/CustomError.js';
+import {type TypeServiceReturn} from '../types/ServiceReturn.js';
 
 export default class ModuleService {
 	private readonly _model: PrismaClient;

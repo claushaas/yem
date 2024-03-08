@@ -1,10 +1,10 @@
-import {Request} from '../utils/Axios';
-import CustomError from '../utils/CustomError';
-import {type TypeServiceReturn} from '../types/ServiceReturn';
-import {SecretService} from './secret.service';
-import type TypeUser from '../types/User';
-import {type TypeHotmartSubscription, type TypeSubscription} from '../types/Subscription';
-import {logger} from '../utils/Logger';
+import {Request} from '../utils/Axios.js';
+import CustomError from '../utils/CustomError.js';
+import {type TypeServiceReturn} from '../types/ServiceReturn.js';
+import {SecretService} from './secret.service.js';
+import {type TypeUser} from '../types/User.js';
+import {type TypeHotmartSubscription, type TypeSubscription} from '../types/Subscription.js';
+import {logger} from '../utils/Logger.js';
 import axios from 'axios';
 
 const baseUrl = process.env.HOTMART_API_URL ?? 'https://sandbox.hotmart.com/';

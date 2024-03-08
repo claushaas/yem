@@ -1,11 +1,11 @@
 import express from 'express';
 import 'express-async-errors';
-import router from './routes';
-import errorMiddleware from './middlewares/error.middleware';
+import router from './routes/index.js';
+import errorMiddleware from './middlewares/error.middleware.js';
 import cookieParser from 'cookie-parser';
-import {logger} from './utils/Logger';
-import {morganMiddleware} from './middlewares/morgan.middleware';
-import {limiter} from './middlewares/rateLimiter.middleware';
+import {logger} from './utils/Logger.js';
+import {morganMiddleware} from './middlewares/morgan.middleware.js';
+import {limiter} from './middlewares/rateLimiter.middleware.js';
 
 export default class App {
 	public app: express.Express;

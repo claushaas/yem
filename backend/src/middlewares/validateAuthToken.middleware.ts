@@ -1,6 +1,6 @@
 import {type NextFunction, type Request, type Response} from 'express';
-import {verifyToken} from '../utils/jwt';
-import CustomError from '../utils/CustomError';
+import {verifyToken} from '../utils/jwt.js';
+import CustomError from '../utils/CustomError.js';
 
 const validateAuthToken = (req: Request, res: Response, next: NextFunction) => {
 	const token = req.cookies.access_token as string ?? undefined;

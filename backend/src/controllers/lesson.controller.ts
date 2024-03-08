@@ -1,8 +1,8 @@
 import {type Request, type Response} from 'express';
-import mapStatusHttp from '../utils/mapStatusHttp';
-import LessonService from '../services/lesson.service';
-import type TypeUser from '../types/User';
-import {type TypeLesson} from '../types/Lesson';
+import mapStatusHttp from '../utils/mapStatusHttp.js';
+import LessonService from '../services/lesson.service.js';
+import {type TypeUser} from '../types/User.js';
+import {type TypeLesson} from '../types/Lesson.js';
 
 export default class LessonController {
 	private readonly _service: LessonService;

@@ -1,10 +1,10 @@
 import {
 	type NextFunction, type Request, type Response, Router,
 } from 'express';
-import ModuleController from '../controllers/module.controller';
-import validateAuthToken from '../middlewares/validateAuthToken.middleware';
-import verifyRole from '../middlewares/verifyRole.middleware';
-import getUserData from '../middlewares/getUserData.middleware';
+import ModuleController from '../controllers/module.controller.js';
+import validateAuthToken from '../middlewares/validateAuthToken.middleware.js';
+import verifyRole from '../middlewares/verifyRole.middleware.js';
+import getUserData from '../middlewares/getUserData.middleware.js';
 
 const moduleRouter = Router();
 

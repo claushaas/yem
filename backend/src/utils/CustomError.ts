@@ -1,6 +1,6 @@
-import type TypeCustomError from '../types/CustomError';
-import {type TypeHttpStatus, type TypeHttpStatusCode} from '../types/HTTPStatus';
-import mapStatusHttp from './mapStatusHttp';
+import type TypeCustomError from '../types/CustomError.js';
+import {type TypeHttpStatus, type TypeHttpStatusCode} from '../types/HTTPStatus.js';
+import mapStatusHttp from './mapStatusHttp.js';
 
 export default class CustomError extends Error implements TypeCustomError {
 	statusCode: TypeHttpStatusCode;

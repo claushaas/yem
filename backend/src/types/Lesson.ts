@@ -1,5 +1,5 @@
-import {type TypeTags} from './Tag';
-import {type TypeUuid} from './UUID';
+import {type TypeTags} from './Tag.js';
+import {type TypeUuid} from './UUID.js';
 
 export type TypeLessonType = 'video' | 'text' | 'courseWare';
 
