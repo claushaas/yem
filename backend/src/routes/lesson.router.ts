@@ -1,10 +1,10 @@
 import e, {
 	type Request, Router, type Response, type NextFunction,
 } from 'express';
-import validateAuthToken from '../middlewares/validateAuthToken.middleware';
-import verifyRole from '../middlewares/verifyRole.middleware';
-import LessonController from '../controllers/lesson.controller';
-import getUserData from '../middlewares/getUserData.middleware';
+import validateAuthToken from '../middlewares/validateAuthToken.middleware.js';
+import verifyRole from '../middlewares/verifyRole.middleware.js';
+import LessonController from '../controllers/lesson.controller.js';
+import getUserData from '../middlewares/getUserData.middleware.js';
 
 const lessonRouter = Router();
 

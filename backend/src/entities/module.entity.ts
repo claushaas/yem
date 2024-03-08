@@ -1,6 +1,6 @@
-import {type TypeModule} from '../types/Module';
-import CustomError from '../utils/CustomError';
-import {type TypeTags} from '../types/Tag';
+import {type TypeModule} from '../types/Module.js';
+import CustomError from '../utils/CustomError.js';
+import {type TypeTags} from '../types/Tag.js';
 import Joi from 'joi';
 
 const moduleSchema = Joi.object({

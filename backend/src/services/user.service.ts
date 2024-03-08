@@ -8,18 +8,18 @@ import {
 	type MessageActionType,
 	AdminSetUserPasswordCommand,
 } from '@aws-sdk/client-cognito-identity-provider';
-import CustomError from '../utils/CustomError';
-import {generateToken} from '../utils/jwt';
-import {type TypeServiceReturn} from '../types/ServiceReturn';
-import SubscriptionService from './subscription.service';
-import {logger} from '../utils/Logger';
-import {type TypeUser, type TypeUserCreationAttributes} from '../types/User';
-import {convertStringToStartCase} from '../utils/convertStringToStartCase';
-import {MailService} from './mail.service';
-import {welcomeEmailTemplate} from '../assets/emails/welcome.email.template';
-import {BotmakerService} from './botmaker.service';
-import {MauticService} from './mautic.service';
-import {UserForCreation} from '../entities/user.entity';
+import CustomError from '../utils/CustomError.js';
+import {generateToken} from '../utils/jwt.js';
+import {type TypeServiceReturn} from '../types/ServiceReturn.js';
+import SubscriptionService from './subscription.service.js';
+import {logger} from '../utils/Logger.js';
+import {type TypeUser, type TypeUserCreationAttributes} from '../types/User.js';
+import {convertStringToStartCase} from '../utils/convertStringToStartCase.js';
+import {MailService} from './mail.service.js';
+import {welcomeEmailTemplate} from '../assets/emails/welcome.email.template.js';
+import {BotmakerService} from './botmaker.service.js';
+import {MauticService} from './mautic.service.js';
+import {UserForCreation} from '../entities/user.entity.js';
 
 export default class UserService {
 	private readonly _awsClient: CognitoIdentityProviderClient;

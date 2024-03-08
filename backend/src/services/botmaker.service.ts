@@ -1,9 +1,9 @@
-import {Request} from '../utils/Axios';
-import CustomError from '../utils/CustomError';
-import {type TypeServiceReturn} from '../types/ServiceReturn';
-import {SecretService} from './secret.service';
+import {Request} from '../utils/Axios.js';
+import CustomError from '../utils/CustomError.js';
+import {type TypeServiceReturn} from '../types/ServiceReturn.js';
+import {SecretService} from './secret.service.js';
 import {type AxiosResponse} from 'axios';
-import {logger} from '../utils/Logger';
+import {logger} from '../utils/Logger.js';
 
 const baseUrl = process.env.BOTMAKER_API_URL ?? 'https://api.botmaker.com/v2.0';
 const whatsappChannelId = process.env.BOTMAKER_WHATSAPP_CHANNEL_ID;
