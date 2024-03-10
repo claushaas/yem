@@ -14,7 +14,6 @@ import {type TypeServiceReturn} from '../types/ServiceReturn.js';
 import SubscriptionService from './subscription.service.js';
 import {logger} from '../utils/Logger.js';
 import {type TypeUser, type TypeUserCreationAttributes} from '../types/User.js';
-import {convertStringToStartCase} from '../utils/convertStringToStartCase.js';
 import {MailService} from './mail.service.js';
 import {welcomeEmailTemplate} from '../assets/emails/welcome.email.template.js';
 import {BotmakerService} from './botmaker.service.js';
