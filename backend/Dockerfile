@@ -1,4 +1,4 @@
-FROM node:21-alpine3.18 AS base
+FROM node:20-alpine AS base
 
 RUN apk update && apk add --no-cache tzdata
 ENV TZ="America/Sao_Paulo"
