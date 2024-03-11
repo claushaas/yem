@@ -1,13 +1,16 @@
-name: Fly Staging Deploy
+name: Fly Productcion Deploy
+defaults:
+  run:
+    working-directory: ./web
 on:
   push:
     branches:
-      - staging    # change to main if needed
+      - main    # change to main if needed
 jobs:
   deploy:
     name: Deploy app
     runs-on: ubuntu-latest
-    environment: staging
+    environment: production
     concurrency: deploy-group    # optional: ensure only one action runs at a time
     steps:
       - uses: actions/checkout@v4
