@@ -81,7 +81,7 @@ services:
     volumes:
       - ./web/app:/web/app
     ports:
-      - "5173:5173"
+      - "3000:3000"
     environment:
       NODE_ENV: ${NODE_ENV}
       NEW_RELIC_APP_NAME: ${NEW_RELIC_WEB_APP_NAME}
