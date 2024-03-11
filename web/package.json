@@ -1,11 +1,39 @@
 {
-  "name": "web",
-  "version": "1.0.0",
-  "description": "Yoga em Movimento Web Frontend",
-  "main": "index.js",
+  "name": "yem-web",
+  "private": true,
+  "sideEffects": false,
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "remix vite:build",
+    "dev": "remix vite:dev --host",
+    "lint": "eslint --ignore-path .gitignore --cache --cache-location ./node_modules/.cache/eslint .",
+    "start": "remix-serve ./build/server/index.js",
+    "typecheck": "tsc",
+    "update": "npx npm-check-updates -i"
   },
-  "author": "Claus Haas",
-  "license": "ISC"
+  "dependencies": {
+    "@remix-run/node": "^2.8.1",
+    "@remix-run/react": "^2.8.1",
+    "@remix-run/serve": "^2.8.1",
+    "isbot": "^5.1.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@remix-run/dev": "^2.8.1",
+    "@types/react": "^18.2.64",
+    "@types/react-dom": "^18.2.21",
+    "@typescript-eslint/eslint-plugin": "^7.1.1",
+    "@typescript-eslint/parser": "^7.1.1",
+    "eslint": "^8.57.0",
+    "eslint-config-xo": "^0.44.0",
+    "eslint-config-xo-typescript": "^4.0.0",
+    "eslint-plugin-react": "^7.34.0",
+    "typescript": "^5.4.2",
+    "vite": "^5.1.5",
+    "vite-tsconfig-paths": "^4.3.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
 }

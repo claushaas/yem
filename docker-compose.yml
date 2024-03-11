@@ -36,7 +36,6 @@ services:
       POSTGRES_HOST: db
       POSTGRES_PORT: ${POSTGRES_PORT}
       DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:${POSTGRES_PORT}/${POSTGRES_DATABASE}
-      DIRECT_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:${POSTGRES_PORT}/${POSTGRES_DATABASE}
       AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
       AWS_REGION: ${AWS_REGION}
@@ -65,7 +64,23 @@ services:
       MAUTIC_API_URL: ${MAUTIC_API_URL}
     restart: always
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:3001/health" ]
+      test: [ "CMD", "curl", "-f", "http://localhost:3001/health/" ]
       interval: 10s
       timeout: 5s
       retries: 5
+  web:
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+      target: dev
+    depends_on:
+      backend:
+        condition: service_healthy
+    container_name: web
+    working_dir: /web
+    volumes:
+      - ./web/app:/web/app
+    ports:
+      - "5173:5173"
+    environment:
+      NODE_ENV: ${NODE_ENV}
