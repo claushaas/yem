@@ -1,10 +1,10 @@
+# base node image
 FROM node:20-alpine AS base
 
-RUN apk --no-cache add curl
 RUN apk update && apk add --no-cache tzdata
 ENV TZ="America/Sao_Paulo"
 
-WORKDIR /backend
+WORKDIR /web
 
 COPY package*.json ./
 
@@ -12,9 +12,7 @@ RUN npm ci
 
 COPY . .
 
-RUN npx prisma generate
-
-EXPOSE 3001
+EXPOSE 3000
 
 FROM base AS dev
 
