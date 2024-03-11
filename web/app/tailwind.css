@@ -4,5 +4,11 @@
 @import "@radix-ui/colors/mauve-dark-alpha.css";
 
 @tailwind base;
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+}
 @tailwind components;
 @tailwind utilities;
