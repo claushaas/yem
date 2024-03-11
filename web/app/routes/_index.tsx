@@ -6,13 +6,6 @@ export const meta: MetaFunction = () => [
 	{name: 'description', content: 'Welcome to Remix!'},
 ];
 
-import styles from '~/tailwind.css?url';
-import {type LinksFunction} from '@remix-run/node';
-
-export const links: LinksFunction = () => [
-	{rel: 'stylesheet', href: styles},
-];
-
 export default function Index() {
 	return (
 		<div className='bg-orange-2 dark:bg-orangedark-2'>
