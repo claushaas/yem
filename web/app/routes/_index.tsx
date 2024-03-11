@@ -1,4 +1,5 @@
 import type {MetaFunction} from '@remix-run/node';
+import React from 'react';
 
 export const meta: MetaFunction = () => [
 	{title: 'New Remix App'},
