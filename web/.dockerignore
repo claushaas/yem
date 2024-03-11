@@ -4,4 +4,5 @@
 .cache
 build
 **/.env
+**/.env.production
 fly.toml
