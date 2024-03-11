@@ -4,6 +4,8 @@
  * For more information, see https://remix.run/file-conventions/entry.server
  */
 
+import 'newrelic';
+
 import {PassThrough} from 'node:stream';
 
 import type {AppLoadContext, EntryContext} from '@remix-run/node';
@@ -11,6 +13,7 @@ import {createReadableStreamFromReadable} from '@remix-run/node';
 import {RemixServer} from '@remix-run/react';
 import {isbot} from 'isbot';
 import {renderToPipeableStream} from 'react-dom/server';
+import React from 'react';
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 const ABORT_DELAY = 5_000;
