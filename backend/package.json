@@ -15,10 +15,10 @@
   "author": "Claus Haas",
   "license": "ISC",
   "dependencies": {
-    "@aws-sdk/client-cognito-identity-provider": "^3.525.0",
-    "@aws-sdk/client-secrets-manager": "^3.525.0",
-    "@aws-sdk/client-sesv2": "^3.527.0",
-    "@aws-sdk/credential-providers": "^3.525.0",
+    "@aws-sdk/client-cognito-identity-provider": "^3.530.0",
+    "@aws-sdk/client-secrets-manager": "^3.529.1",
+    "@aws-sdk/client-sesv2": "^3.529.1",
+    "@aws-sdk/credential-providers": "^3.529.1",
     "@newrelic/winston-enricher": "^4.0.1",
     "@prisma/client": "^5.10.2",
     "api": "^6.1.1",
@@ -40,13 +40,13 @@
     "@types/jsonwebtoken": "^9.0.6",
     "@types/morgan": "^1.9.9",
     "@types/newrelic": "^9.14.3",
-    "@types/node": "^20.11.24",
+    "@types/node": "^20.11.25",
     "@typescript-eslint/eslint-plugin": "^7.1.1",
     "@typescript-eslint/parser": "^7.1.1",
     "eslint": "^8.57.0",
     "eslint-config-xo": "^0.44.0",
-    "eslint-config-xo-typescript": "^3.0.0",
+    "eslint-config-xo-typescript": "^4.0.0",
     "tsx": "^4.7.1",
-    "typescript": "^5.3.3"
+    "typescript": "^5.4.2"
   }
 }
