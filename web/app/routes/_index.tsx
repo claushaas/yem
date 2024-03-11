@@ -6,10 +6,17 @@ export const meta: MetaFunction = () => [
 	{name: 'description', content: 'Welcome to Remix!'},
 ];
 
+import styles from '~/tailwind.css?url';
+import {type LinksFunction} from '@remix-run/node';
+
+export const links: LinksFunction = () => [
+	{rel: 'stylesheet', href: styles},
+];
+
 export default function Index() {
 	return (
-		<div style={{fontFamily: 'system-ui, sans-serif', lineHeight: '1.8'}}>
-			<h1>Welcome to Remix</h1>
+		<div className='bg-orange-2 dark:bg-orangedark-2'>
+			<h1 className='text-mauve-11 dark:text-mauvedark-11'>Welcome to Remix</h1>
 			<ul>
 				<li>
 					<a
