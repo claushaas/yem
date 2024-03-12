@@ -8,7 +8,11 @@ export default {
 	content: ['./app/**/*.{js,jsx,ts,tsx}'],
 	theme: {
 		extend: {
-			colors: {
+			fontFamily: {
+				gothamLight: ['GothamRoundedLight', 'sans-serif'],
+				gothamBook: ['GothamRoundedBook', 'sans-serif'],
+				gothamMedium: ['GothamRoundedMedium', 'sans-serif'],
+				gothamBold: ['GothamRoundedBold', 'sans-serif'],
 			},
 		},
 	},
