@@ -4,4 +4,6 @@
 .cache
 build
 **/.env
+**/.env.production
 fly.toml
+.DS_Store
