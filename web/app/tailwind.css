@@ -4,11 +4,41 @@
 @import "@radix-ui/colors/mauve-dark-alpha.css";
 
 @tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 @layer base {
   * {
     box-sizing: border-box;
   }
+  @font-face {
+    font-family: 'GothamRoundedBold';
+    font-style:  bold;
+    src: url('./assets/fonts/GothamRoundedBold.ttf') format('truetype');
+  }
+  @font-face {
+    font-family: 'GothamRoundedBook';
+    font-style:  normal;
+    src: url('./assets/fonts/GothamRoundedBook.ttf') format('truetype');
+  }
+  @font-face {
+    font-family: 'GothamRoundedLight';
+    font-style:  light;
+    src: url('./assets/fonts/GothamRoundedLight.ttf') format('truetype');
+  }
+  @font-face {
+    font-family: 'GothamRoundedMedium';
+    font-style:  medium;
+    src: url('./assets/fonts/GothamRoundedMedium.ttf') format('truetype');
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-gothamBold;
+    @apply text-mauve-12;
+    @apply dark:text-mauvedark-11;
+  }
+  p {
+    @apply font-gothamBook;
+    @apply text-mauve-11;
+    @apply dark:text-mauvedark-10;
+  }
 }
-@tailwind components;
-@tailwind utilities;

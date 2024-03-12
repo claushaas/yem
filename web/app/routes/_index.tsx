@@ -7,34 +7,9 @@ export const meta: MetaFunction = () => [
 ];
 
 const Index = () => (
-	<div className='bg-orange-2 dark:bg-orangedark-2'>
-		<h1 className='text-mauve-11 dark:text-mauvedark-11'>Welcome to Remix</h1>
-		<ul>
-			<li>
-				<a
-					target='_blank'
-					href='https://remix.run/tutorials/blog'
-					rel='noreferrer'
-				>
-            15m Quickstart Blog Tutorial
-				</a>
-			</li>
-			<li>
-				<a
-					target='_blank'
-					href='https://remix.run/tutorials/jokes'
-					rel='noreferrer'
-				>
-            Deep Dive Jokes App Tutorial
-				</a>
-			</li>
-			<li>
-				<a target='_blank' href='https://remix.run/docs' rel='noreferrer'>
-            Remix Docs
-				</a>
-			</li>
-		</ul>
-	</div>
+	<>
+		<h1>Página Inicial</h1>
+	</>
 );
 
 export default Index;
