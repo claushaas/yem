@@ -7,8 +7,8 @@ export const meta: MetaFunction = () => [
 ];
 
 const Index = () => (
-	<div className='bg-orange-2 dark:bg-orangedark-2'>
-		<h1 className='text-mauve-11 dark:text-mauvedark-11'>Welcome to Remix</h1>
+	<div>
+		<h1>Welcome to Remix</h1>
 		<ul>
 			<li>
 				<a
@@ -16,7 +16,7 @@ const Index = () => (
 					href='https://remix.run/tutorials/blog'
 					rel='noreferrer'
 				>
-            15m Quickstart Blog Tutorial
+					<p>15m Quickstart Blog Tutorial</p>
 				</a>
 			</li>
 			<li>
