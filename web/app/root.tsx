@@ -8,7 +8,6 @@ import {
 } from '@remix-run/react';
 import React from 'react';
 import {type LinksFunction} from '@remix-run/node';
-import Logo from '~/assets/logo/logo-retangular-colorido.svg?react';
 import styles from '~/tailwind.css?url';
 
 export const links: LinksFunction = () => [
@@ -29,11 +28,31 @@ export function Layout({children}: {children: React.ReactNode}) {
 				dark:bg-mauvedark-2
 				min-h-screen
 			`}>
-				<div>
-					<Link to={'/'}>
-						<Logo width={150} />
-					</Link>
-				</div>
+				<header className={`
+					max-xs:max-w-[95%]
+					max-w-[90%]
+					mx-auto
+					my-4
+					flex
+					justify-between
+					items-center
+				`}>
+					<div className='w-40'>
+						<Link to={'/'}>
+							<div className='
+							inline
+							max-xs:before:bg-[url("./assets/logo/logo-reduzido-colorido.svg")]
+							xs:before:bg-[url("./assets/logo/logo-retangular-colorido.svg")]
+							before:h-10
+							before:block
+							before:bg-no-repeat
+						'/>
+						</Link>
+					</div>
+					<div>
+						<p>texto</p>
+					</div>
+				</header>
 				{children}
 				<ScrollRestoration />
 				<Scripts />
