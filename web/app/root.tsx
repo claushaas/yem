@@ -7,6 +7,13 @@ import {
 } from '@remix-run/react';
 import React from 'react';
 
+import styles from '~/tailwind.css?url';
+import {type LinksFunction} from '@remix-run/node';
+
+export const links: LinksFunction = () => [
+	{rel: 'stylesheet', href: styles},
+];
+
 export function Layout({children}: {children: React.ReactNode}) {
 	return (
 		<html lang='en'>
@@ -16,7 +23,7 @@ export function Layout({children}: {children: React.ReactNode}) {
 				<Meta />
 				<Links />
 			</head>
-			<body>
+			<body className='bg-mauve-2 dark:bg-mauvedark-2'>
 				{children}
 				<ScrollRestoration />
 				<Scripts />
