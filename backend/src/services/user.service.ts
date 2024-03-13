@@ -206,7 +206,13 @@ export default class UserService {
 
 		const {data: user} = await this._getUserData(cleanUsername);
 
-		const token = generateToken(user);
+		let token = '';
+		try {
+			token = generateToken(user);
+		} catch (error) {
+			logger.logError(`Error generating token for user ${user.id}: ${(error as Error).message}`);
+			throw new CustomError('UNKNOWN', `Error generating token for user ${user.id}: ${(error as Error).message}`);
+		}
 
 		try {
 			await this._subscriptionService.createOrUpdateAllUserSubscriptions(user);
