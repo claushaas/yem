@@ -48,25 +48,10 @@ export function Layout({children}: {children: React.ReactNode}) {
 				<Links />
 			</head>
 			<body className='bg-mauve-2 dark:bg-mauvedark-2 min-h-screen'>
-				<header className={`
-					max-xs:max-w-[95%]
-					max-w-[90%]
-					mx-auto
-					my-4
-					flex
-					justify-between
-					items-center
-				`}>
+				<header className='max-xs:max-w-[95%] max-w-[90%] mx-auto my-4 flex justify-between items-center'>
 					<div className='w-40'>
 						<Link to={'/'}>
-							<div className='
-							inline
-							max-xs:before:bg-[url("./assets/logo/logo-reduzido-colorido.svg")]
-							xs:before:bg-[url("./assets/logo/logo-retangular-colorido.svg")]
-							before:h-10
-							before:block
-							before:bg-no-repeat
-						'/>
+							<div className=' inline max-xs:before:bg-[url("./assets/logo/logo-reduzido-colorido.svg")] xs:before:bg-[url("./assets/logo/logo-retangular-colorido.svg")] before:h-10 before:block before:bg-no-repeat'/>
 						</Link>
 					</div>
 					<NavigationMenu.Root
@@ -87,7 +72,7 @@ export function Layout({children}: {children: React.ReactNode}) {
 										className='block size-4'
 									/>
 								</NavigationMenu.Trigger>
-								<NavigationMenu.Content className='radix-state-open:animate-enterFromRight radix-state-closed:animate-exitToRight px-4 py-2 bg-mauve-4 dark:bg-mauvedark-6 absolute top-[54px] right-0 rounded-md max-xs:w-[calc(100vw_-_calc(100vw_*_5_/_100))] w-72'>
+								<NavigationMenu.Content className='data-[motion=from-start]:animate-enterFromLeft data-[motion=from-end]:animate-enterFromRight data-[motion=to-start]:animate-exitToLeft data-[motion=to-end]:animate-exitToRight px-4 py-2 bg-mauve-4 dark:bg-mauvedark-6 absolute top-0 right-0 rounded-md max-xs:w-[calc(100vw_-_calc(100vw_*_5_/_100))] w-72'>
 									<ul className=''>
 										<li className='text-mauve-11 dark:text-mauvedark-11'>Item 1</li>
 										<li className='text-mauve-11 dark:text-mauvedark-11'>Item 2</li>
@@ -99,6 +84,10 @@ export function Layout({children}: {children: React.ReactNode}) {
 								<div className='relative top-[70%] h-[10px] w-[10px] rotate-[45deg] rounded-tl-[2px] bg-mauve-4 dark:bg-mauvedark-6' />
 							</NavigationMenu.Indicator>
 						</NavigationMenu.List>
+
+						<div className='perspective-[2000px] absolute top-full right-0 flex justify-center max-xs:w-[calc(100vw_-_calc(100vw_*_5_/_100))] w-72'>
+							<NavigationMenu.Viewport className='data-[state=open]:animate-scaleIn data-[state=closed]:animate-scaleOut relative mt-[10px] h-[var(--radix-navigation-menu-viewport-height)] origin-[top_center] overflow-hidden rounded-[6px] bg-white transition-[width,_height] duration-300 max-xs:w-[calc(100vw_-_calc(100vw_*_5_/_100))] w-72' />
+						</div>
 					</NavigationMenu.Root>
 				</header>
 				{children}
