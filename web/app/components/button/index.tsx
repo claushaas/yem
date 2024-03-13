@@ -12,6 +12,7 @@ enum ButtonType {
 }
 
 type ButtonProps = {
+	className?: string;
 	text?: string;
 	disabled?: boolean;
 	preset?: ButtonPreset;
@@ -71,18 +72,17 @@ const classNames = (preset: ButtonPreset) => {
 };
 
 export const Button = ({
+	className,
 	disabled = false,
 	preset = ButtonPreset.Primary,
 	text = 'Clicar Aqui',
 	type = ButtonType.Button,
 }: ButtonProps) => (
-	<>
-		<button
-			className={classNames(preset)}
-			disabled={disabled}
-			type={type}
-		>
-			{text}
-		</button>
-	</>
+	<button
+		className={classNames(preset) + (className ? ` ${className}` : '')}
+		disabled={disabled}
+		type={type}
+	>
+		{text}
+	</button>
 );
