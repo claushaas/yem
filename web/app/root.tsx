@@ -87,7 +87,7 @@ export function Layout({children}: {children: React.ReactNode}) {
 										className='block size-4'
 									/>
 								</NavigationMenu.Trigger>
-								<NavigationMenu.Content className='px-4 py-2 bg-mauve-4 dark:bg-mauvedark-6 absolute top-[54px] right-0 rounded-md max-xs:w-[calc(100vw_-_calc(100vw_*_5_/_100))] w-72 radix-motion-from-start:animate-enterFromLeft radix-motion-from-end:animate-exitToLeft radix-motion-to-start:animate-exitToRight radix-motion-to-end:animate-exitToRight'>
+								<NavigationMenu.Content className='radix-state-open:animate-enterFromRight radix-state-closed:animate-exitToRight px-4 py-2 bg-mauve-4 dark:bg-mauvedark-6 absolute top-[54px] right-0 rounded-md max-xs:w-[calc(100vw_-_calc(100vw_*_5_/_100))] w-72'>
 									<ul className=''>
 										<li className='text-mauve-11 dark:text-mauvedark-11'>Item 1</li>
 										<li className='text-mauve-11 dark:text-mauvedark-11'>Item 2</li>
@@ -95,7 +95,7 @@ export function Layout({children}: {children: React.ReactNode}) {
 								</NavigationMenu.Content>
 							</NavigationMenu.Item>
 
-							<NavigationMenu.Indicator className='data-[state=visible]:animate-fadeIn data-[state=hidden]:animate-fadeOut top-full z-[1] flex h-[10px] items-end justify-center overflow-hidden transition-[width,transform_250ms_ease]'>
+							<NavigationMenu.Indicator className='radix-state-visible:animate-fadeIn radix-state-hidden:animate-fadeOut top-full z-[1] flex h-[10px] items-end justify-center overflow-hidden transition-[width,transform_250ms_ease]'>
 								<div className='relative top-[70%] h-[10px] w-[10px] rotate-[45deg] rounded-tl-[2px] bg-mauve-4 dark:bg-mauvedark-6' />
 							</NavigationMenu.Indicator>
 						</NavigationMenu.List>
