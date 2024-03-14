@@ -23,7 +23,7 @@ const baseButtonClasses = `
 	px-4
 	py-1
 	rounded-lg
-	shadow-lg
+	shadow-sm
 	transition-colors
 	duration-200
 	ease-in-out

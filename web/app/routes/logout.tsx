@@ -4,7 +4,7 @@ import {Button, ButtonPreset, ButtonType} from '~/components/button';
 import {
 	json, type ActionFunctionArgs, type LoaderFunctionArgs, redirect,
 } from '@remix-run/node';
-import {Form, useLoaderData} from '@remix-run/react';
+import {Form} from '@remix-run/react';
 import {getUserSession, destroyUserSession} from '~/utils/session.server';
 import {yemApiRequest} from '~/utils/request.server';
 
@@ -21,14 +21,16 @@ export const action = async ({request}: ActionFunctionArgs) => {
 };
 
 const Logout = () => (
-	<>
-		<p>Ao clicar no botão abaixo você fará o logout da Plataforma da Yoga em Movimento</p>
-		<RadixForm.Form	asChild method='post' noValidate>
-			<Form>
-				<Button preset={ButtonPreset.Primary} type={ButtonType.Submit} text='Sair' />
-			</Form>
-		</RadixForm.Form>
-	</>
+	<main className='flex flex-col flex-grow-[0.6]'>
+		<div className='w-[260px] mx-auto my-auto flex flex-col'>
+			<p className='mb-3 text-center'>Ao clicar no botão abaixo você fará o logout da Plataforma da Yoga em Movimento</p>
+			<RadixForm.Form	asChild method='post' noValidate className='m-auto'>
+				<Form>
+					<Button preset={ButtonPreset.Primary} type={ButtonType.Submit} text='Sair' />
+				</Form>
+			</RadixForm.Form>
+		</div>
+	</main>
 );
 
 export default Logout;

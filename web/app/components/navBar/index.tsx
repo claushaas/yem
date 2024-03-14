@@ -3,12 +3,11 @@ import {Bars4Icon} from '@heroicons/react/24/outline';
 import * as NavigationMenu from '@radix-ui/react-navigation-menu';
 import * as Separator from '@radix-ui/react-separator';
 import {Link, useLoaderData} from '@remix-run/react';
-import {NavLink} from '~/components/navLink';
+import {NavLink} from '~/components/navBar/navLink';
 import {type TypeUserSession} from '~/types/userSession.type';
 
 export const NavBar = () => {
 	const {userData} = useLoaderData() as {userData: TypeUserSession | undefined};
-	console.log(userData);
 
 	return (
 		<header className='max-xs:max-w-[95%] max-w-[90%] mx-auto my-4 flex justify-between items-center w-[-webkit-fill-available]'>
@@ -20,13 +19,15 @@ export const NavBar = () => {
 			<NavigationMenu.Root
 				className='relative z-10 flex justify-center'
 			>
-				<NavigationMenu.List className='gap-3 center flex list-none items-center px-4 py-2 rounded-md shadow-md shadow-mauve-11 dark:shadow-mauvedark-5 bg-mauve-4 dark:bg-mauvedark-3'>
+				<NavigationMenu.List className='gap-3 center flex list-none items-center px-4 py-2 rounded-md shadow-sm shadow-mauve-11 dark:shadow-mauvedark-3 bg-mauve-4 dark:bg-mauvedark-3'>
 					{
 						!userData && (
 							<>
 								<NavigationMenu.Item>
 									<div className='py-1.5 leading-none'>
-										<NavLink to='/login'>Login</NavLink>
+										<NavLink to='/login'>
+											<p>Login</p>
+										</NavLink>
 									</div>
 								</NavigationMenu.Item>
 								<Separator.Root
@@ -44,7 +45,13 @@ export const NavBar = () => {
 						</NavigationMenu.Trigger>
 						<NavigationMenu.Content className='data-[motion=from-start]:animate-enterFromLeft data-[motion=from-end]:animate-enterFromRight data-[motion=to-start]:animate-exitToLeft data-[motion=to-end]:animate-exitToRight px-4 py-2 bg-mauve-4 dark:bg-mauvedark-6 absolute top-0 right-0 rounded-md max-xs:w-[calc(100vw_-_calc(100vw_*_5_/_100))] w-72'>
 							<ul className=''>
-								<li className='text-mauve-11 dark:text-mauvedark-11'>Item 1</li>
+								{
+									userData && (
+										<li className='text-mauve-11 dark:text-mauvedark-11'>
+											<NavLink to='/logout'>Sair</NavLink>
+										</li>
+									)
+								}
 								<li className='text-mauve-11 dark:text-mauvedark-11'>Item 2</li>
 							</ul>
 						</NavigationMenu.Content>
