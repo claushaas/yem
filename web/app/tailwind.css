@@ -39,6 +39,10 @@
   p {
     @apply font-gothamBook;
     @apply text-mauve-11;
-    @apply dark:text-mauvedark-10;
+    @apply dark:text-mauvedark-11;
+  }
+  svg {
+    @apply stroke-mauve-11;
+    @apply dark:stroke-mauvedark-11;
   }
 }

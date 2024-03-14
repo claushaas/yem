@@ -18,6 +18,7 @@ export class MailService {
 	}
 
 	public async sendEmail(template: TypeEmailTemplate): Promise<TypeServiceReturn<string>> {
+		logger.logDebug('Sending email');
 		const params = {
 			// eslint-disable-next-line @typescript-eslint/naming-convention
 			Content: {

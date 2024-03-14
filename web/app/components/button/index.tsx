@@ -5,13 +5,14 @@ export enum ButtonPreset {
 	Secondary = 'secondary',
 }
 
-enum ButtonType {
+export enum ButtonType {
 	Button = 'button',
 	Submit = 'submit',
 	Reset = 'reset',
 }
 
 type ButtonProps = {
+	className?: string;
 	text?: string;
 	disabled?: boolean;
 	preset?: ButtonPreset;
@@ -22,7 +23,7 @@ const baseButtonClasses = `
 	px-4
 	py-1
 	rounded-lg
-	shadow-lg
+	shadow-sm
 	transition-colors
 	duration-200
 	ease-in-out
@@ -71,18 +72,17 @@ const classNames = (preset: ButtonPreset) => {
 };
 
 export const Button = ({
+	className,
 	disabled = false,
 	preset = ButtonPreset.Primary,
 	text = 'Clicar Aqui',
 	type = ButtonType.Button,
 }: ButtonProps) => (
-	<>
-		<button
-			className={classNames(preset)}
-			disabled={disabled}
-			type={type}
-		>
-			{text}
-		</button>
-	</>
+	<button
+		className={classNames(preset) + (className ? ` ${className}` : '')}
+		disabled={disabled}
+		type={type}
+	>
+		{text}
+	</button>
 );

@@ -3,6 +3,7 @@ import CustomError from '../utils/CustomError.js';
 import {SecretsManagerClient, GetSecretValueCommand, UpdateSecretCommand} from '@aws-sdk/client-secrets-manager';
 import {type TypeServiceReturn} from '../types/ServiceReturn.js';
 import {type TypeSecret} from '../types/Secret.js';
+import {logger} from '../utils/Logger.js';
 
 export class SecretService {
 	private readonly _awsClient: SecretsManagerClient;
@@ -19,42 +20,54 @@ export class SecretService {
 	}
 
 	public async getSecret(): Promise<TypeServiceReturn<TypeSecret>> {
-		const params = {
+		try {
+			logger.logDebug('Getting secret');
+			const params = {
 			// eslint-disable-next-line @typescript-eslint/naming-convention
-			SecretId: this._awsSecretId,
-		};
+				SecretId: this._awsSecretId,
+			};
 
-		const command = new GetSecretValueCommand(params);
-		const response = await this._awsClient.send(command);
+			const command = new GetSecretValueCommand(params);
+			const response = await this._awsClient.send(command);
 
-		if (response.$metadata.httpStatusCode !== 200) {
-			throw new CustomError('UNAUTHORIZED', 'Usuário ou senha incorretos');
+			if (response.$metadata.httpStatusCode !== 200) {
+				throw new CustomError('UNAUTHORIZED', 'Usuário ou senha incorretos');
+			}
+
+			return {
+				status: 'SUCCESSFUL',
+				data: JSON.parse(response.SecretString ?? '{}') as TypeSecret,
+			};
+		} catch (error) {
+			logger.logError('Error getting secret');
+			throw new CustomError('UNKNOWN', 'Erro ao buscar secret');
 		}
-
-		return {
-			status: 'SUCCESSFUL',
-			data: JSON.parse(response.SecretString ?? '{}') as TypeSecret,
-		};
 	}
 
 	public async setSecret(secret: Record<string, string>): Promise<TypeServiceReturn<string>> {
-		const params = {
-			// eslint-disable-next-line @typescript-eslint/naming-convention
-			SecretId: this._awsSecretId,
-			// eslint-disable-next-line @typescript-eslint/naming-convention
-			SecretString: JSON.stringify(secret),
-		};
+		try {
+			logger.logDebug('Setting secret');
+			const params = {
+				// eslint-disable-next-line @typescript-eslint/naming-convention
+				SecretId: this._awsSecretId,
+				// eslint-disable-next-line @typescript-eslint/naming-convention
+				SecretString: JSON.stringify(secret),
+			};
 
-		const command = new UpdateSecretCommand(params);
-		const response = await this._awsClient.send(command);
+			const command = new UpdateSecretCommand(params);
+			const response = await this._awsClient.send(command);
 
-		if (response.$metadata.httpStatusCode !== 200) {
-			throw new CustomError('UNAUTHORIZED', 'Usuário ou senha incorretos');
+			if (response.$metadata.httpStatusCode !== 200) {
+				throw new CustomError('UNAUTHORIZED', 'Usuário ou senha incorretos');
+			}
+
+			return {
+				status: 'NO_CONTENT',
+				data: response.Name ?? '',
+			};
+		} catch (error) {
+			logger.logError('Error setting secret');
+			throw new CustomError('UNKNOWN', 'Erro ao setar secret');
 		}
-
-		return {
-			status: 'NO_CONTENT',
-			data: response.Name ?? '',
-		};
 	}
 }

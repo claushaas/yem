@@ -1,49 +1,58 @@
+import React, {type ReactNode} from 'react';
 import {
-	Link,
 	Links,
 	Meta,
 	Outlet,
 	Scripts,
 	ScrollRestoration,
 } from '@remix-run/react';
-import React from 'react';
-import {type LinksFunction} from '@remix-run/node';
-import Logo from '~/assets/logo/logo-retangular-colorido.svg?react';
+import {type LoaderFunctionArgs, type LinksFunction, json} from '@remix-run/node';
 import styles from '~/tailwind.css?url';
+import {NavBar} from '~/components/navBar';
+import {getUserSession} from './utils/session.server';
 
 export const links: LinksFunction = () => [
 	{rel: 'stylesheet', href: styles},
 ];
 
-export function Layout({children}: {children: React.ReactNode}) {
-	return (
-		<html lang='en'>
-			<head>
-				<meta charSet='utf-8' />
-				<meta name='viewport' content='width=device-width, initial-scale=1' />
-				<Meta />
-				<Links />
-			</head>
-			<body className={`
-				bg-mauve-2
-				dark:bg-mauvedark-2
-				min-h-screen
-			`}>
-				<div>
-					<Link to={'/'}>
-						<Logo width={150} />
-					</Link>
-				</div>
-				{children}
-				<ScrollRestoration />
-				<Scripts />
-			</body>
-		</html>
-	);
-}
+export const loader = async ({request}: LoaderFunctionArgs) => {
+	const userSession = await getUserSession(request.headers.get('Cookie'));
 
-export default function App() {
-	return <Outlet />;
-}
+	if (userSession.has('id')) {
+		return json({
+			userData: {
+				id: userSession.get('id') as string,
+				email: userSession.get('email') as string,
+				roles: userSession.get('roles') as string[],
+				firstName: userSession.get('firstName') as string,
+				lastName: userSession.get('lastName') as string,
+				phoneNumber: userSession.get('phoneNumber') as string,
+			},
+		});
+	}
 
-/// <reference types="vite-plugin-svgr/client" />
+	return json({userData: null});
+};
+
+export const Layout = ({children}: {children: ReactNode}) => (
+	<html lang='pt-BR' className='notranslate' translate='no'>
+		<head>
+			<meta charSet='utf-8' />
+			<meta name='viewport' content='width=device-width,initial-scale=1,viewport-fit=cover' />
+			<Meta />
+			<Links />
+		</head>
+		<body className='bg-mauve-2 dark:bg-mauvedark-2 min-h-screen flex flex-col'>
+			<NavBar />
+			{children}
+			<ScrollRestoration />
+			<Scripts />
+		</body>
+	</html>
+);
+
+const App = () => (
+	<Outlet />
+);
+
+export default App;

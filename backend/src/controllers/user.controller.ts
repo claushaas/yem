@@ -21,8 +21,10 @@ export default class UserController {
 
 		return res.status(statusCode)
 			.cookie('access_token', token, {
-				httpOnly: true,
-				secure: process.env.NODE_ENV === 'production',
+				// HttpOnly: true,
+				// secure: process.env.NODE_ENV === 'production',
+				maxAge: 1000 * 60 * 60 * 24 * 365, // 1 year
+				// sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'none',
 			})
 			.json({
 				userData,
@@ -32,9 +34,7 @@ export default class UserController {
 	public logout(_req: Request, res: Response) {
 		const statusCode = mapStatusHttp('SUCCESSFUL');
 
-		const user = res.locals.user as TypeUser;
-
-		logger.logInfo(`User ${user.id} logged out successfully`);
+		logger.logInfo('User logged out successfully');
 
 		return res
 			.status(statusCode)
@@ -46,6 +46,16 @@ export default class UserController {
 		const user = req.body as TypeUserCreationAttributes;
 
 		const {status, data} = await this._userService.create(user);
+
+		const statusCode = mapStatusHttp(status);
+
+		return res.status(statusCode).json(data);
+	}
+
+	public async getNewPassword(req: Request, res: Response) {
+		const {email} = req.body as {email: string};
+
+		const {status, data} = await this._userService.getNewPassword(email);
 
 		const statusCode = mapStatusHttp(status);
 

@@ -4,7 +4,7 @@
  * For more information, see https://remix.run/file-conventions/entry.client
  */
 
-import 'newrelic';
+// import 'newrelic';
 
 import {RemixBrowser} from '@remix-run/react';
 import {startTransition, StrictMode} from 'react';

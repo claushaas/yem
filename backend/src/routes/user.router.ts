@@ -1,6 +1,6 @@
 import {type Request, type Response, Router} from 'express';
 import UserController from '../controllers/user.controller.js';
-import validateAuthToken from '../middlewares/validateAuthToken.middleware.js';
+// Import validateAuthToken from '../middlewares/validateAuthToken.middleware.js';
 
 const userRouter = Router();
 
@@ -13,8 +13,13 @@ userRouter.post(
 
 userRouter.get(
 	'/logout',
-	validateAuthToken,
+	// ValidateAuthToken,
 	(req: Request, res: Response) => new UserController().logout(req, res),
+);
+
+userRouter.post(
+	'/new-password',
+	async (req: Request, res: Response) => new UserController().getNewPassword(req, res),
 );
 
 userRouter.post(

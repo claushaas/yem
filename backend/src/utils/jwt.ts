@@ -1,9 +1,9 @@
-import * as JWT from 'jsonwebtoken';
+import JWT from 'jsonwebtoken';
 
 const secret: JWT.Secret = process.env.JWT_SECRET ?? '';
 
 const jwtConfig: JWT.SignOptions = {
-	expiresIn: '10d',
+	expiresIn: '1y',
 	algorithm: 'HS256',
 	encoding: 'utf-8',
 };
