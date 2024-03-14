@@ -1,6 +1,7 @@
 import {
 	Links,
 	Meta,
+	type MetaFunction,
 	Outlet,
 	Scripts,
 	ScrollRestoration,
@@ -34,24 +35,22 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
 	return json({userData: null});
 };
 
-export function Layout({children}: {children: React.ReactNode}) {
-	return (
-		<html lang='pt-BR' className='notranslate' translate='no'>
-			<head>
-				<meta charSet='utf-8' />
-				<meta name='viewport' content='width=device-width,initial-scale=1,viewport-fit=cover' />
-				<Meta />
-				<Links />
-			</head>
-			<body className='bg-mauve-2 dark:bg-mauvedark-2 min-h-screen flex flex-col'>
-				<NavBar />
-				{children}
-				<ScrollRestoration />
-				<Scripts />
-			</body>
-		</html>
-	);
-}
+export const Layout = ({children}: {children: React.ReactNode}) => (
+	<html lang='pt-BR' className='notranslate' translate='no'>
+		<head>
+			<meta charSet='utf-8' />
+			<meta name='viewport' content='width=device-width,initial-scale=1,viewport-fit=cover' />
+			<Meta />
+			<Links />
+		</head>
+		<body className='bg-mauve-2 dark:bg-mauvedark-2 min-h-screen flex flex-col'>
+			<NavBar />
+			{children}
+			<ScrollRestoration />
+			<Scripts />
+		</body>
+	</html>
+);
 
 export default function App() {
 	return <Outlet />;
