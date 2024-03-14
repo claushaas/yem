@@ -78,12 +78,14 @@ const Login = () => {
 	} = useLoaderData();
 
 	return (
-		<div className='flex flex-col flex-grow-[0.6]'>
+		<main className='flex flex-col flex-grow-[0.6]'>
 			<RadixForm.Root method='post' className='w-[260px] mx-auto my-auto flex flex-col' asChild>
 				<Form>
 					<RadixForm.Field className='grid mb-[10px]' name='email'>
 						<div className='flex items-baseline justify-between'>
-							<RadixForm.Label className='text-[15px] font-medium leading-[35px] text-white'>Email</RadixForm.Label>
+							<RadixForm.Label className='leading-[35px]'>
+								<p>Email</p>
+							</RadixForm.Label>
 							<RadixForm.Message className='text-[13px]' match='valueMissing'>
 								<p>Preencha seu email</p>
 							</RadixForm.Message>
@@ -93,7 +95,7 @@ const Login = () => {
 						</div>
 						<RadixForm.Control asChild>
 							<input
-								className='box-border w-full bg-blackA2 shadow-blackA6 inline-flex h-[35px] appearance-none items-center justify-center rounded-[4px] px-[10px] text-[15px] leading-none text-white shadow-[0_0_0_1px] outline-none hover:shadow-[0_0_0_1px_black] focus:shadow-[0_0_0_2px_black] selection:color-white selection:bg-blackA6'
+								className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
 								type='email'
 								required
 							/>
@@ -101,7 +103,7 @@ const Login = () => {
 					</RadixForm.Field>
 					<RadixForm.Field className='grid mb-[10px]' name='password'>
 						<div className='flex items-baseline justify-between'>
-							<RadixForm.Label className='text-[15px] font-medium leading-[35px]'>
+							<RadixForm.Label className='leading-[35px]'>
 								<p>Senha</p>
 							</RadixForm.Label>
 							<RadixForm.Message className='text-[13px]' match='valueMissing'>
@@ -110,7 +112,7 @@ const Login = () => {
 						</div>
 						<RadixForm.Control asChild>
 							<input
-								className='box-border w-full bg-blackA2 shadow-blackA6 inline-flex h-[35px] appearance-none items-center justify-center rounded-[4px] px-[10px] text-[15px] leading-none text-white shadow-[0_0_0_1px] outline-none hover:shadow-[0_0_0_1px_black] focus:shadow-[0_0_0_2px_black] selection:color-white selection:bg-blackA6'
+								className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
 								type='password'
 								required
 							/>
@@ -126,7 +128,7 @@ const Login = () => {
 					</RadixForm.Submit>
 				</Form>
 			</RadixForm.Root>
-		</div>
+		</main>
 	);
 };
 
