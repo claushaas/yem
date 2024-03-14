@@ -34,9 +34,7 @@ export default class UserController {
 	public logout(_req: Request, res: Response) {
 		const statusCode = mapStatusHttp('SUCCESSFUL');
 
-		const user = res.locals.user as TypeUser;
-
-		logger.logInfo(`User ${user.id} logged out successfully`);
+		logger.logInfo('User logged out successfully');
 
 		return res
 			.status(statusCode)
