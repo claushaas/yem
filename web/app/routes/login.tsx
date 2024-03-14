@@ -4,24 +4,46 @@ import {Button, ButtonPreset} from '~/components/button';
 import {
 	json, type ActionFunctionArgs, type LoaderFunctionArgs, redirect,
 } from '@remix-run/node';
-import {Form, useLoaderData} from '@remix-run/react';
+import {Form, useLoaderData, useNavigation} from '@remix-run/react';
 import {yemApiRequest} from '~/utils/request.server';
 import {getUserSession, commitUserSession} from '~/utils/session.server';
 import {type TypeUserSession} from '~/types/userSession.type';
+import {YemSpinner} from '~/components/yemSpinner';
 
 export const action = async ({request}: ActionFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 
-	const formData = await request.formData();
-	const username = formData.get('email');
-	const password = formData.get('password');
+	try {
+		const formData = await request.formData();
+		const username = formData.get('email');
+		const password = formData.get('password');
 
-	const response = await yemApiRequest.post('/users/login', {
-		username,
-		password,
-	});
+		const response = await yemApiRequest.post('/users/login', {
+			username,
+			password,
+		});
 
-	if (!response.data.userData) {
+		const {id, email, roles, firstName, lastName, phoneNumber} = response.data.userData as TypeUserSession;
+
+		userSession.set('id', id);
+		userSession.set('email', email);
+		userSession.set('roles', roles);
+		userSession.set('firstName', firstName);
+		userSession.set('lastName', lastName);
+		userSession.set('phoneNumber', phoneNumber);
+
+		return redirect('/', {
+			headers: {
+				'Set-Cookie': await commitUserSession(userSession),
+			},
+		});
+	} catch (error) {
+		userSession.unset('id');
+		userSession.unset('email');
+		userSession.unset('roles');
+		userSession.unset('firstName');
+		userSession.unset('lastName');
+		userSession.unset('phoneNumber');
 		userSession.flash('error', 'Usuário ou senha inválidos');
 
 		return redirect('/login', {
@@ -30,21 +52,6 @@ export const action = async ({request}: ActionFunctionArgs) => {
 			},
 		});
 	}
-
-	const {id, email, roles, firstName, lastName, phoneNumber} = response.data.userData as TypeUserSession;
-
-	userSession.set('id', id);
-	userSession.set('email', email);
-	userSession.set('roles', roles);
-	userSession.set('firstName', firstName);
-	userSession.set('lastName', lastName);
-	userSession.set('phoneNumber', phoneNumber);
-
-	return redirect('/', {
-		headers: {
-			'Set-Cookie': await commitUserSession(userSession),
-		},
-	});
 };
 
 export const loader = async ({request}: LoaderFunctionArgs) => {
@@ -72,15 +79,19 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
 
 const Login = () => {
 	const data: {
+		error?: string;
 		ENV: {
 			YEM_API_BASE_URL: string;
 		};
 	} = useLoaderData();
 
+	const navigation = useNavigation();
+	const isSubmitting = navigation.formAction === '/login';
+
 	return (
 		<main className='flex flex-col flex-grow-[0.6]'>
 			<RadixForm.Root method='post' className='w-[260px] mx-auto my-auto flex flex-col' asChild>
-				<Form>
+				<Form action='/login'>
 					<RadixForm.Field className='grid mb-[10px]' name='email'>
 						<div className='flex items-baseline justify-between'>
 							<RadixForm.Label className='leading-[35px]'>
@@ -95,6 +106,7 @@ const Login = () => {
 						</div>
 						<RadixForm.Control asChild>
 							<input
+								disabled={isSubmitting}
 								className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
 								type='email'
 								required
@@ -112,6 +124,7 @@ const Login = () => {
 						</div>
 						<RadixForm.Control asChild>
 							<input
+								disabled={isSubmitting}
 								className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
 								type='password'
 								required
@@ -120,12 +133,18 @@ const Login = () => {
 					</RadixForm.Field>
 					<RadixForm.Field className='hidden' name='YEM_API_BASE_URL'>
 						<RadixForm.FormControl asChild>
-							<input type='text' value={data.ENV.YEM_API_BASE_URL}/>
+							<input type='text' value={data?.ENV?.YEM_API_BASE_URL ?? ''}/>
 						</RadixForm.FormControl>
 					</RadixForm.Field>
+					{data?.error
+						&& <p className='text-center text-mauve-12 dark:text-mauvedark-11 font-gothamMedium'>{data.error}</p>
+					}
 					<RadixForm.Submit asChild>
-						<Button className='m-auto' text='Fazer Login' preset={ButtonPreset.Primary} />
+						<Button disabled={isSubmitting} className='m-auto' text='Fazer Login' preset={ButtonPreset.Primary} />
 					</RadixForm.Submit>
+					{isSubmitting && (
+						<YemSpinner />
+					)}
 				</Form>
 			</RadixForm.Root>
 		</main>
