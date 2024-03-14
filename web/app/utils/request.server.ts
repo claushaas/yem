@@ -35,4 +35,4 @@ class Request {
 	}
 }
 
-export const yemApiRequest = new Request(process.env.YEM_API_URL ?? 'http://backend:3001');
+export const yemApiRequest = new Request(process.env.YEM_API_BASE_URL ?? 'http://backend:3001');
