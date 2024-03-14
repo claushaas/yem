@@ -8,7 +8,7 @@ export const meta: MetaFunction = () => [
 
 const Index = () => (
 	<>
-		<h1>Página Inicial</h1>
+		<h1 className='text-center'>Página Inicial</h1>
 	</>
 );
 
