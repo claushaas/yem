@@ -2,8 +2,8 @@ import type {MetaFunction} from '@remix-run/node';
 import React from 'react';
 
 export const meta: MetaFunction = () => [
-	{title: 'New Remix App'},
-	{name: 'description', content: 'Welcome to Remix!'},
+	{title: 'Yoga em Movimento'},
+	{name: 'description', content: 'Seja muito bem-vindo à Yoga em Movimento!'},
 ];
 
 const Index = () => (

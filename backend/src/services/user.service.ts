@@ -19,6 +19,8 @@ import {welcomeEmailTemplate} from '../assets/emails/welcome.email.template.js';
 import {BotmakerService} from './botmaker.service.js';
 import {MauticService} from './mautic.service.js';
 import {UserForCreation} from '../entities/user.entity.js';
+import {generateSecurePassword} from '../utils/generateSecurePassword.js';
+import {newPassWordEmailTemplate} from '../assets/emails/newPassword.email.template.js';
 
 export default class UserService {
 	private readonly _awsClient: CognitoIdentityProviderClient;
@@ -115,30 +117,11 @@ export default class UserService {
 
 		logger.logDebug(`User ${email} created successfully: ${JSON.stringify(userCreationResponse.User)}`);
 
-		const userName: string = userCreationResponse.User?.Attributes?.find(attr => attr.Name === 'sub')?.Value ?? '';
+		const username: string = userCreationResponse.User?.Attributes?.find(attr => attr.Name === 'sub')?.Value ?? '';
 
-		const password = crypto.getRandomValues(new Uint32Array(1))[0].toString(36).slice(-6);
+		const password = generateSecurePassword();
 
-		const paramsForSettingUserPassword = {
-			// eslint-disable-next-line @typescript-eslint/naming-convention
-			UserPoolId: process.env.COGNITO_USER_POOL_ID,
-			// eslint-disable-next-line @typescript-eslint/naming-convention
-			Username: userName,
-			// eslint-disable-next-line @typescript-eslint/naming-convention
-			Password: password,
-			// eslint-disable-next-line @typescript-eslint/naming-convention
-			Permanent: true,
-		};
-
-		const commandForSettingUserPassword = new AdminSetUserPasswordCommand(paramsForSettingUserPassword);
-		const userPasswordResponse = await this._awsClient.send(commandForSettingUserPassword);
-
-		if (userPasswordResponse.$metadata.httpStatusCode !== 200) {
-			logger.logError(`Error setting user password for user ${email}`);
-			throw new CustomError('INVALID_DATA', 'Error setting user password');
-		}
-
-		logger.logDebug(`User ${email} password set successfully`);
+		await this._setUserPassword(username, password);
 
 		try {
 			const response = await this._mauticService.createContact({
@@ -175,7 +158,7 @@ export default class UserService {
 		return {
 			status: 'CREATED',
 			data: {
-				userId: userName,
+				userId: username,
 			},
 		};
 	}
@@ -229,6 +212,61 @@ export default class UserService {
 				userData: user,
 			},
 		};
+	}
+
+	public async getNewPassword(email: string): Promise<TypeServiceReturn<unknown>> {
+		try {
+			const {data: user} = await this._getUserData(email);
+
+			const password = generateSecurePassword();
+
+			await this._setUserPassword(user.id, password);
+
+			await Promise.all([
+				this._mailService.sendEmail(newPassWordEmailTemplate(user.firstName, user.email, password)),
+				this._botmakerService.sendWhatsappTemplateMessate(user.phoneNumber, 'new_password', {
+					primeiroNome: user.firstName,
+					emailAluno: user.email,
+					senha: password,
+				}),
+			]);
+
+			return {
+				status: 'NO_CONTENT',
+				data: null,
+			};
+		} catch (error) {
+			logger.logError(`Error getting new password for user ${email}: ${(error as Error).message}`);
+			throw new CustomError('UNKNOWN', 'Error setting new password');
+		}
+	}
+
+	private async _setUserPassword(username: string, password: string): Promise<TypeServiceReturn<unknown>> {
+		try {
+			logger.logDebug(`Setting user password for user ${username}`);
+			const paramsForSettingUserPassword = {
+				// eslint-disable-next-line @typescript-eslint/naming-convention
+				UserPoolId: process.env.COGNITO_USER_POOL_ID,
+				// eslint-disable-next-line @typescript-eslint/naming-convention
+				Username: username,
+				// eslint-disable-next-line @typescript-eslint/naming-convention
+				Password: password,
+				// eslint-disable-next-line @typescript-eslint/naming-convention
+				Permanent: true,
+			};
+
+			const commandForSettingUserPassword = new AdminSetUserPasswordCommand(paramsForSettingUserPassword);
+			await this._awsClient.send(commandForSettingUserPassword);
+			logger.logDebug(`User password set successfully for user ${username}`);
+
+			return {
+				status: 'NO_CONTENT',
+				data: null,
+			};
+		} catch (error) {
+			logger.logError(`Error setting user password for user ${username}: ${(error as Error).message}`);
+			throw new CustomError('UNKNOWN', 'Error setting user password');
+		}
 	}
 
 	private async _getUserData(username: string): Promise<TypeServiceReturn<TypeUser>> {

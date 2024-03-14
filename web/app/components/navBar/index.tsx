@@ -7,7 +7,8 @@ import {NavLink} from '~/components/navBar/navLink';
 import {type TypeUserSession} from '~/types/userSession.type';
 
 export const NavBar = () => {
-	const {userData} = useLoaderData() as {userData: TypeUserSession | undefined};
+	const data = useLoaderData() as {userData?: TypeUserSession | undefined};
+	const userData = data?.userData;
 
 	return (
 		<header className='max-xs:max-w-[95%] max-w-[90%] mx-auto my-4 flex justify-between items-center w-[-webkit-fill-available]'>

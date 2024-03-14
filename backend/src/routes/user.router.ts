@@ -18,6 +18,11 @@ userRouter.get(
 );
 
 userRouter.post(
+	'/new-password',
+	async (req: Request, res: Response) => new UserController().getNewPassword(req, res),
+);
+
+userRouter.post(
 	'/',
 	async (req: Request, res: Response) => {
 		await new UserController().create(req, res);

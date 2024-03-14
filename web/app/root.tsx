@@ -1,15 +1,18 @@
 import {
 	Links,
 	Meta,
+	type MetaFunction,
 	Outlet,
 	Scripts,
 	ScrollRestoration,
 } from '@remix-run/react';
-import React from 'react';
+import React, {useState} from 'react';
 import {type LoaderFunctionArgs, type LinksFunction, json} from '@remix-run/node';
 import styles from '~/tailwind.css?url';
 import {NavBar} from '~/components/navBar';
 import {getUserSession} from './utils/session.server';
+import {AnimatePresence, motion} from 'framer-motion';
+import {useLocation, useOutlet} from 'react-router-dom';
 
 export const links: LinksFunction = () => [
 	{rel: 'stylesheet', href: styles},
@@ -34,7 +37,12 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
 	return json({userData: null});
 };
 
-export function Layout({children}: {children: React.ReactNode}) {
+function AnimatedOutlet() {
+	const [outlet] = useState(useOutlet());
+	return outlet;
+}
+
+export default function App() {
 	return (
 		<html lang='pt-BR' className='notranslate' translate='no'>
 			<head>
@@ -45,14 +53,20 @@ export function Layout({children}: {children: React.ReactNode}) {
 			</head>
 			<body className='bg-mauve-2 dark:bg-mauvedark-2 min-h-screen flex flex-col'>
 				<NavBar />
-				{children}
+				<AnimatePresence mode='wait' initial={false}>
+					<motion.main
+						key={useLocation().pathname}
+						initial={{opacity: 0}}
+						animate={{opacity: 1}}
+						exit={{opacity: 0}}
+						transition={{duration: 0.3}}
+					>
+						<AnimatedOutlet />
+					</motion.main>
+				</AnimatePresence>
 				<ScrollRestoration />
 				<Scripts />
 			</body>
 		</html>
 	);
-}
-
-export default function App() {
-	return <Outlet />;
 }
