@@ -35,4 +35,4 @@ class Request {
 	}
 }
 
-export const yemApiRequest = new Request('https://staging-yoga-em-movimento.koyeb.app/');
+export const yemApiRequest = new Request(process.env.YEM_API_URL ?? 'http://backend:3001');
