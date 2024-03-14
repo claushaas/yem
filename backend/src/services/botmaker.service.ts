@@ -4,7 +4,6 @@ import {type TypeServiceReturn} from '../types/ServiceReturn.js';
 import {SecretService} from './secret.service.js';
 import {type AxiosResponse} from 'axios';
 import {logger} from '../utils/Logger.js';
-
 const baseUrl = process.env.BOTMAKER_API_URL ?? 'https://api.botmaker.com/v2.0';
 const whatsappChannelId = process.env.BOTMAKER_WHATSAPP_CHANNEL_ID;
 
@@ -52,6 +51,7 @@ export class BotmakerService {
 		whatsappTemplateName: string,
 		variables: Record<string, string>,
 	): Promise<TypeServiceReturn<AxiosResponse>> {
+		logger.logDebug('Sending WP template');
 		const {data: {botmakerApiAccessToken}} = await this._secretService.getSecret();
 
 		const request = new Request(baseUrl, {
@@ -73,6 +73,7 @@ export class BotmakerService {
 
 		try {
 			const response = await request.post(url, data);
+			logger.logDebug('WP template sent successfully');
 
 			return {
 				status: 'SUCCESSFUL',

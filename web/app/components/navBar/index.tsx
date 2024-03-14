@@ -7,7 +7,7 @@ import {NavLink} from '~/components/navBar/navLink';
 import {type TypeUserSession} from '~/types/userSession.type';
 
 export const NavBar = () => {
-	const data = useLoaderData() as {userData?: TypeUserSession | undefined};
+	const data = useLoaderData() as {userData?: TypeUserSession | undefined} ?? {};
 	const userData = data?.userData;
 
 	return (

@@ -12,7 +12,7 @@ class Logger {
 
 	constructor() {
 		this._instance = winston.createLogger({
-			level: process.env.WINSTON_LOG_LEVEL ?? 'info',
+			level: process.env.WINSTON_LOG_LEVEL ?? 'debug',
 			format: winston.format.combine(
 				winston.format.timestamp({format: timezoned}),
 				winston.format.json(),
