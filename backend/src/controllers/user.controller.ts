@@ -51,4 +51,14 @@ export default class UserController {
 
 		return res.status(statusCode).json(data);
 	}
+
+	public async getNewPassword(req: Request, res: Response) {
+		const {email} = req.body as {email: string};
+
+		const {status, data} = await this._userService.getNewPassword(email);
+
+		const statusCode = mapStatusHttp(status);
+
+		return res.status(statusCode).json(data);
+	}
 }
