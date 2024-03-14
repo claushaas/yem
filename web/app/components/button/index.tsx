@@ -5,7 +5,7 @@ export enum ButtonPreset {
 	Secondary = 'secondary',
 }
 
-enum ButtonType {
+export enum ButtonType {
 	Button = 'button',
 	Submit = 'submit',
 	Reset = 'reset',
