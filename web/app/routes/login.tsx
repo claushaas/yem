@@ -1,32 +1,74 @@
 import React from 'react';
 import * as RadixForm from '@radix-ui/react-form';
 import {Button, ButtonPreset} from '~/components/button';
-import {json, type ActionFunctionArgs} from '@remix-run/node';
+import {
+	json, type ActionFunctionArgs, type LoaderFunctionArgs, redirect,
+} from '@remix-run/node';
 import {Form, useLoaderData} from '@remix-run/react';
-import {Request} from '~/utils/Request';
+import {yemApiRequest} from '~/utils/request.server';
+import {getUserSession, commitUserSession} from '~/utils/session.server';
+import {type TypeUserSession} from '~/types/userSession.type';
 
 export const action = async ({request}: ActionFunctionArgs) => {
-	const formData = await request.formData();
-	console.log(Object.fromEntries(formData));
+	const userSession = await getUserSession(request.headers.get('Cookie'));
 
-	const requestInstance = new Request('https://staging-yoga-em-movimento.koyeb.app/');
-	const response = await requestInstance.post('/users/login', {
-		username: formData.get('email'),
-		password: formData.get('password'),
+	const formData = await request.formData();
+	const username = formData.get('email');
+	const password = formData.get('password');
+
+	const response = await yemApiRequest.post('/users/login', {
+		username,
+		password,
 	});
 
-	console.log(response);
+	if (!response.data.userData) {
+		userSession.flash('error', 'Usuário ou senha inválidos');
 
-	return null;
+		return redirect('/login', {
+			headers: {
+				'Set-Cookie': await commitUserSession(userSession),
+			},
+		});
+	}
+
+	const {id, email, roles, firstName, lastName, phoneNumber} = response.data.userData as TypeUserSession;
+
+	userSession.set('id', id);
+	userSession.set('email', email);
+	userSession.set('roles', roles);
+	userSession.set('firstName', firstName);
+	userSession.set('lastName', lastName);
+	userSession.set('phoneNumber', phoneNumber);
+
+	return redirect('/', {
+		headers: {
+			'Set-Cookie': await commitUserSession(userSession),
+		},
+	});
 };
 
-export const loader = async () => json({
-	// eslint-disable-next-line @typescript-eslint/naming-convention
-	ENV: {
+export const loader = async ({request}: LoaderFunctionArgs) => {
+	const userSession = await getUserSession(request.headers.get('Cookie'));
+
+	if (userSession.has('id')) {
+		return redirect('/');
+	}
+
+	const data = {
+		error: userSession.get('error') as string | undefined,
 		// eslint-disable-next-line @typescript-eslint/naming-convention
-		YEM_API_BASE_URL: process.env.YEM_API_BASE_URL,
-	},
-});
+		ENV: {
+			// eslint-disable-next-line @typescript-eslint/naming-convention
+			YEM_API_BASE_URL: process.env.YEM_API_BASE_URL,
+		},
+	};
+
+	return json(data, {
+		headers: {
+			'Set-Cookie': await commitUserSession(userSession),
+		},
+	});
+};
 
 const Login = () => {
 	const data: {

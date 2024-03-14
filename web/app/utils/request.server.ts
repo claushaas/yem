@@ -1,6 +1,6 @@
 import axios, {type AxiosResponse, type AxiosInstance} from 'axios';
 
-export class Request {
+class Request {
 	private readonly _request: AxiosInstance;
 
 	constructor(baseUrl: string, headers: Record<string, string> = {}) {
@@ -34,3 +34,5 @@ export class Request {
 		return this._request.patch(url, data);
 	}
 }
+
+export const yemApiRequest = new Request('https://staging-yoga-em-movimento.koyeb.app/');
