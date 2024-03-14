@@ -20,8 +20,7 @@ export const action = async ({request}: ActionFunctionArgs) => {
 		return redirect('/login');
 	} catch (error) {
 		console.log(error);
-	} finally {
-		redirect('/login');
+		return redirect('/login');
 	}
 };
 
