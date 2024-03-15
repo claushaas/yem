@@ -1,4 +1,4 @@
-import {type PrismaClient} from '@prisma/client';
+import {PrismaClient} from '@prisma/client';
 import {type TypeModule} from '../types/Module.js';
 import Module from '../entities/module.entity.js';
 import {type TypeUser} from '../types/User.js';
@@ -6,12 +6,11 @@ import {type UserRoles} from '../types/User.js';
 import {type TypeUuid} from '../types/UUID.js';
 import CustomError from '../utils/CustomError.js';
 import {type TypeServiceReturn} from '../types/ServiceReturn.js';
-import {db} from '../db/db.js';
 
 export default class ModuleService {
 	private readonly _model: PrismaClient;
 
-	constructor(model: PrismaClient = db) {
+	constructor(model: PrismaClient = new PrismaClient()) {
 		this._model = model;
 	}
 

@@ -1,16 +1,15 @@
-import {type PrismaClient} from '@prisma/client';
+import {PrismaClient} from '@prisma/client';
 import {type TypeUser} from '../types/User.js';
 import CustomError from '../utils/CustomError.js';
 import {type TypeLesson} from '../types/Lesson.js';
 import Lesson from '../entities/lesson.entity.js';
 import {type TypeUuid} from '../types/UUID.js';
 import {type TypeServiceReturn} from '../types/ServiceReturn.js';
-import {db} from '../db/db.js';
 
 export default class LessonService {
 	private readonly _model: PrismaClient;
 
-	constructor(model: PrismaClient = db) {
+	constructor(model: PrismaClient = new PrismaClient()) {
 		this._model = model;
 	}
 
