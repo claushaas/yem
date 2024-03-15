@@ -19,7 +19,9 @@
     "@aws-sdk/client-secrets-manager": "^3.534.0",
     "@aws-sdk/client-sesv2": "^3.533.0",
     "@aws-sdk/credential-providers": "^3.533.0",
+    "@neondatabase/serverless": "^0.9.0",
     "@newrelic/winston-enricher": "^4.0.1",
+    "@prisma/adapter-neon": "^5.11.0",
     "@prisma/client": "^5.11.0",
     "api": "^6.1.1",
     "axios": "^1.6.7",
@@ -32,7 +34,8 @@
     "morgan": "^1.10.0",
     "newrelic": "latest",
     "prisma": "^5.11.0",
-    "winston": "^3.12.0"
+    "winston": "^3.12.0",
+    "ws": "^8.16.0"
   },
   "devDependencies": {
     "@types/cookie-parser": "^1.4.7",
@@ -41,6 +44,7 @@
     "@types/morgan": "^1.9.9",
     "@types/newrelic": "^9.14.3",
     "@types/node": "^20.11.27",
+    "@types/ws": "^8.5.10",
     "@typescript-eslint/eslint-plugin": "^7.2.0",
     "@typescript-eslint/parser": "^7.2.0",
     "eslint": "^8.57.0",
