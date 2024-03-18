@@ -2,12 +2,13 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model Course {
@@ -26,6 +27,7 @@ model Course {
   tags            TagOptionTagValue[]
   comments        Comment[]
   subscriptions   UserSubscriptions[]
+  isSelling       Boolean             @default(false)
 
   @@unique([name])
   @@map("courses")
