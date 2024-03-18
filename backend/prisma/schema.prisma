@@ -27,6 +27,7 @@ model Course {
   tags            TagOptionTagValue[]
   comments        Comment[]
   subscriptions   UserSubscriptions[]
+  isSelling       Boolean             @default(false)
 
   @@unique([name])
   @@map("courses")
