@@ -12,9 +12,9 @@ export const NavBar = () => {
 
 	return (
 		<header className='max-xs:max-w-[95%] max-w-[90%] mx-auto my-4 flex justify-between items-center w-[-webkit-fill-available]'>
-			<div className='w-40'>
+			<div className='w-72'>
 				<Link to={'/'}>
-					<div className=' inline max-xs:before:bg-[url("./assets/logo/logo-reduzido-colorido.svg")] xs:before:bg-[url("./assets/logo/logo-retangular-colorido.svg")] before:h-10 before:block before:bg-no-repeat'/>
+					<div className=' inline max-sm:before:bg-[url("./assets/logo/logo-reduzido-colorido.svg")] sm:before:bg-[url("./assets/logo/logo-retangular-colorido.svg")] max-xs:before:h-14 before:h-20 before:block before:bg-no-repeat'/>
 				</Link>
 			</div>
 			<NavigationMenu.Root
