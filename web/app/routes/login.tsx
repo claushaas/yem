@@ -93,8 +93,8 @@ const Login = () => {
 	return (
 		<main className='flex flex-col flex-grow-[0.6]'>
 			<div className='my-auto'>
-				<RadixForm.Root method='post' className='w-[260px] mx-auto flex flex-col' asChild>
-					<Form action='/login'>
+				<RadixForm.Root method='post' asChild>
+					<Form action='/login' className='w-[260px] mx-auto flex flex-col'>
 						<RadixForm.Field className='grid mb-[10px]' name='email'>
 							<div className='flex items-baseline justify-between'>
 								<RadixForm.Label className='leading-[35px]'>
