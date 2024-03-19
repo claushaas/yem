@@ -1,5 +1,5 @@
 {
-  "name": "backend",
+  "name": "yem-backend",
   "version": "1.0.0",
   "description": "Yoga em Movimento Backend",
   "main": "./build/server.js",
