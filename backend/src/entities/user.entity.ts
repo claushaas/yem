@@ -22,7 +22,7 @@ const mauticUserSchema = basicUserSchema;
 const userCreationSchema = userSchema.keys({
 	id: Joi.string().uuid(),
 	password: Joi.string().required().min(6),
-	document: Joi.string().required(),
+	document: Joi.string(),
 });
 
 class BasicUser {
@@ -71,7 +71,7 @@ export class UserForCreation extends BasicUser {
 	protected readonly _id?: string;
 	protected readonly _roles?: string[];
 	protected readonly _phoneNumber: string;
-	protected readonly _document: string;
+	protected readonly _document?: string;
 
 	constructor(user: TypeUserCreationAttributes) {
 		super(user);

@@ -102,7 +102,7 @@ export default class UserService {
 					// eslint-disable-next-line @typescript-eslint/naming-convention
 					Name: 'custom:CPF',
 					// eslint-disable-next-line @typescript-eslint/naming-convention
-					Value: document,
+					Value: document ?? '',
 				},
 			],
 		};
