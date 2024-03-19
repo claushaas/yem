@@ -1,8 +1,10 @@
 {
   "name": "yem-web",
+  "description": "Yoga em Movimento Web",
   "private": true,
   "sideEffects": false,
   "type": "module",
+  "main": "./build/server/index.js",
   "scripts": {
     "build": "remix vite:build",
     "dev": "remix vite:dev --host",
@@ -12,6 +14,7 @@
     "update": "npx npm-check-updates -i"
   },
   "dependencies": {
+    "@cloudflare/stream-react": "^1.9.1",
     "@heroicons/react": "^2.1.1",
     "@radix-ui/react-form": "^0.0.3",
     "@radix-ui/react-navigation-menu": "^1.1.4",
