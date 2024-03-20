@@ -3,9 +3,10 @@ import {Button, ButtonPreset, ButtonType} from '~/components/button';
 import {
 	type ActionFunctionArgs, redirect,
 } from '@remix-run/node';
-import {Form, useNavigation} from '@remix-run/react';
+import {Form, Link, useNavigation} from '@remix-run/react';
 import {yemApiRequest} from '~/utils/request.server';
 import {YemSpinner} from '~/components/yemSpinner';
+import {Separator} from '@radix-ui/react-separator';
 
 export const action = async ({request}: ActionFunctionArgs) => {
 	try {
@@ -62,6 +63,18 @@ const NewPassword = () => {
 						)}
 					</Form>
 				</RadixForm.Form>
+				<div className='m-3 w-[260px] mx-auto flex justify-center gap-1'>
+					<Link to='/login'>
+						<p className='text-center text-xs text-mauve-11 dark:text-mauvedark-10'>Fazer login</p>
+					</Link>
+					<Separator
+						className='bg-mauve-11 dark:bg-mauvedark-11 data-[orientation=horizontal]:h-px data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-4 data-[orientation=vertical]:w-px'
+						decorative
+						orientation='vertical' />
+					<Link to='/register'>
+						<p className='text-center text-xs text-mauve-11 dark:text-mauvedark-10'>Criar uma conta</p>
+					</Link>
+				</div>
 			</div>
 		</main>
 	);

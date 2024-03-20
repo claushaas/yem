@@ -1,3 +1,5 @@
+import 'newrelic';
+
 import App from './app.js';
 import {installGlobals} from '@remix-run/node';
 

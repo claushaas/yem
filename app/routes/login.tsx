@@ -6,10 +6,11 @@ import {
 import {
 	Form, Link, useLoaderData, useNavigation,
 } from '@remix-run/react';
-import {yemApiRequest} from '~/utils/request.server';
 import {getUserSession, commitUserSession} from '~/utils/session.server';
 import {type TypeUserSession} from '~/types/userSession.type';
 import {YemSpinner} from '~/components/yemSpinner';
+import UserService from '#/services/user.service';
+import {Separator} from '@radix-ui/react-separator';
 
 export const action = async ({request}: ActionFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
@@ -19,10 +20,9 @@ export const action = async ({request}: ActionFunctionArgs) => {
 		const username = formData.get('email');
 		const password = formData.get('password');
 
-		const response = await yemApiRequest.post('/users/login', {
-			username,
-			password,
-		});
+		const userService = new UserService();
+
+		const response = await userService.login(username as string, password as string);
 
 		const {id, email, roles, firstName, lastName, phoneNumber} = response.data.userData as TypeUserSession;
 
@@ -149,9 +149,16 @@ const Login = () => {
 						)}
 					</Form>
 				</RadixForm.Root>
-				<div className='m-3'>
+				<div className='m-3 w-[260px] mx-auto flex justify-center gap-1'>
 					<Link to='/new-password'>
-						<p className='text-center text-xs text-mauve-11 dark:text-mauvedark-10'>gerar uma nova senha</p>
+						<p className='text-center text-xs text-mauve-11 dark:text-mauvedark-10'>Gerar uma nova senha</p>
+					</Link>
+					<Separator
+						className='bg-mauve-11 dark:bg-mauvedark-11 data-[orientation=horizontal]:h-px data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-4 data-[orientation=vertical]:w-px'
+						decorative
+						orientation='vertical' />
+					<Link to='/register'>
+						<p className='text-center text-xs text-mauve-11 dark:text-mauvedark-10'>Criar uma conta</p>
 					</Link>
 				</div>
 			</div>

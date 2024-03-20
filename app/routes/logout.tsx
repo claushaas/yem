@@ -5,13 +5,10 @@ import {
 } from '@remix-run/node';
 import {Form, useNavigation} from '@remix-run/react';
 import {getUserSession, destroyUserSession} from '~/utils/session.server';
-import {yemApiRequest} from '~/utils/request.server';
 import {YemSpinner} from '~/components/yemSpinner';
 
 export const action = async ({request}: ActionFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
-
-	await yemApiRequest.get('/users/logout');
 
 	return redirect('/', {
 		headers: {

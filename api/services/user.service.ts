@@ -43,18 +43,23 @@ export default class UserService {
 	}
 
 	public async createOrFail(userData: TypeUserCreationAttributes): Promise<TypeServiceReturn<{userId: string}>> {
-		const maybeUser = await this._getUserData(userData.email);
+		logger.logDebug(`Finfing user ${typeof userData.phoneNumber}`);
+		const maybeUser = await this._verifyUserExists(userData.email);
+		logger.logDebug(`User ${userData.email} found: ${JSON.stringify(maybeUser)}`);
 
-		if (maybeUser.status === 'SUCCESSFUL') {
+		if (maybeUser.data) {
+			logger.logError(`User ${userData.email} already exists`);
 			throw new CustomError('CONFLICT', 'Usuário já existe');
 		}
 
+		logger.logDebug(`User ${JSON.stringify(userData)} not found, creating user`);
 		const newUserData = await this._create(userData);
+		logger.logDebug(`User ${userData.email} created successfully`);
 
 		return newUserData;
 	}
 
-	public async login(username: string, password: string): Promise<TypeServiceReturn<unknown>> {
+	public async login(username: string, password: string): Promise<TypeServiceReturn<{token: string; userData: TypeUser}>> {
 		const cleanUsername = username.trim().toLowerCase();
 
 		const params: InitiateAuthCommandInput = {
@@ -133,7 +138,9 @@ export default class UserService {
 	}
 
 	private async _create(userData: TypeUserCreationAttributes): Promise<TypeServiceReturn<{userId: string}>> {
+		logger.logDebug(`Creating user ${userData.email}`);
 		const newUser = new UserForCreation(userData);
+		logger.logDebug(`New user data: ${JSON.stringify(newUser)}`);
 
 		const {email, phoneNumber, firstName, lastName, roles, document} = newUser;
 
@@ -197,8 +204,11 @@ export default class UserService {
 			],
 		};
 
+		logger.logDebug(`Creating Cognito command for ${email} with data: ${JSON.stringify(paramsforUserCreation)}`);
 		const commandforUserCreation = new AdminCreateUserCommand(paramsforUserCreation);
 		const userCreationResponse = await this._awsClient.send(commandforUserCreation);
+		logger.logDebug(`User creation response: ${JSON.stringify(userCreationResponse.$metadata)}`);
+		logger.logDebug(`User creation response: ${JSON.stringify(userCreationResponse.User)}`);
 
 		if (userCreationResponse.$metadata.httpStatusCode !== 200) {
 			logger.logError(`Error creating user ${email}`);
@@ -207,13 +217,18 @@ export default class UserService {
 
 		logger.logDebug(`User ${email} created successfully: ${JSON.stringify(userCreationResponse.User)}`);
 
+		logger.logDebug(`Getting user id for user ${email}`);
 		const username: string = userCreationResponse.User?.Attributes?.find(attr => attr.Name === 'sub')?.Value ?? '';
+		logger.logDebug(`User id for user ${email} is ${username}`);
 
 		const password = generateSecurePassword();
 
+		logger.logDebug(`Setting user password for user ${username}`);
 		await this._setUserPassword(username, password);
+		logger.logDebug(`User password set successfully for user ${username}`);
 
 		try {
+			logger.logDebug(`Creating contact in Mautic for user ${email}`);
 			const response = await this._mauticService.createContact({
 				email,
 				firstName,
@@ -223,6 +238,7 @@ export default class UserService {
 			const mauticUserId = response.data.contact.id;
 
 			try {
+				logger.logDebug(`Adding user ${email} to segment 3`);
 				await this._mauticService.addContactToSegment(mauticUserId, 3);
 			} catch (error) {
 				logger.logError(`Error adding user ${email} to segment 3: ${(error as Error).message}`);
@@ -232,6 +248,7 @@ export default class UserService {
 		}
 
 		try {
+			logger.logDebug(`Sending welcome email and whatsapp message to user ${email}`);
 			await Promise.all([
 				this._mailService.sendEmail(welcomeEmailTemplate(firstName, email, password)),
 				this._botmakerService.sendWhatsappTemplateMessate(phoneNumber, 'senha', {
@@ -278,6 +295,29 @@ export default class UserService {
 		} catch (error) {
 			logger.logError(`Error setting user password for user ${username}: ${(error as Error).message}`);
 			throw new CustomError('UNKNOWN', 'Error setting user password');
+		}
+	}
+
+	private async _verifyUserExists(username: string): Promise<TypeServiceReturn<boolean>> {
+		try {
+			const cleanUsername = username.trim().toLowerCase();
+
+			await this._awsClient.send(new AdminGetUserCommand({
+			// eslint-disable-next-line @typescript-eslint/naming-convention
+				UserPoolId: process.env.COGNITO_USER_POOL_ID,
+				// eslint-disable-next-line @typescript-eslint/naming-convention
+				Username: cleanUsername,
+			}));
+			return {
+				status: 'SUCCESSFUL',
+				data: true,
+			};
+		} catch (error) {
+			logger.logError(`Error verifying user ${username} exists: ${(error as Error).message}`);
+			return {
+				status: 'SUCCESSFUL',
+				data: false,
+			};
 		}
 	}
 

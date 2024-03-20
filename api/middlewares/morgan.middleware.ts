@@ -8,7 +8,7 @@ const skip = () => {
 
 const stream: StreamOptions = {
 	write(message: string) {
-		logger.logInfo(message);
+		logger.logSilly(message);
 	},
 };
 

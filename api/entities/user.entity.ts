@@ -4,6 +4,7 @@ import {
 import Joi from 'joi';
 import CustomError from '../utils/CustomError.js';
 import {convertStringToStartCase} from '../utils/convertStringToStartCase.js';
+import {logger} from '#/utils/Logger.js';
 
 const basicUserSchema = Joi.object({
 	email: Joi.string().email().required(),
@@ -11,17 +12,14 @@ const basicUserSchema = Joi.object({
 	lastName: Joi.string().required(),
 });
 
-const userSchema = basicUserSchema.keys({
-	id: Joi.string().uuid().required(),
-	roles: Joi.array().items(Joi.string()),
-	phoneNumber: Joi.string().required(),
-});
-
 const mauticUserSchema = basicUserSchema;
 
-const userCreationSchema = userSchema.keys({
-	id: Joi.string().uuid(),
-	password: Joi.string().required().min(6),
+const userCreationSchema = Joi.object({
+	phoneNumber: Joi.string().required(),
+	email: Joi.string().email().required(),
+	firstName: Joi.string().required(),
+	lastName: Joi.string().required(),
+	roles: Joi.array().items(Joi.string()),
 	document: Joi.string(),
 });
 
@@ -67,29 +65,28 @@ export class MauticUserForCreation extends BasicUser {
 	}
 }
 
-export class UserForCreation extends BasicUser {
-	protected readonly _id?: string;
+export class UserForCreation {
+	protected readonly _email: string;
+	protected readonly _firstName: string;
+	protected readonly _lastName: string;
 	protected readonly _roles?: string[];
 	protected readonly _phoneNumber: string;
 	protected readonly _document?: string;
 
 	constructor(user: TypeUserCreationAttributes) {
-		super(user);
-
 		const {error} = userCreationSchema.validate(user);
 
 		if (error) {
+			logger.logError(`Error: ${JSON.stringify(error)}`);
 			throw new CustomError('UNPROCESSABLE_ENTITY', `Invalid user data: ${error.message}`);
 		}
 
-		this._id = user.id ?? '';
 		this._roles = user.roles ?? [];
-		this._phoneNumber = user.phoneNumber;
+		this._phoneNumber = user.phoneNumber.replace(/\s+/g, '');
 		this._document = user.document ?? '';
-	}
-
-	get id() {
-		return this._id;
+		this._email = user.email.toLowerCase();
+		this._firstName = convertStringToStartCase(user.firstName);
+		this._lastName = convertStringToStartCase(user.lastName);
 	}
 
 	get roles() {
@@ -102,5 +99,17 @@ export class UserForCreation extends BasicUser {
 
 	get document() {
 		return this._document;
+	}
+
+	get email() {
+		return this._email;
+	}
+
+	get firstName() {
+		return this._firstName;
+	}
+
+	get lastName() {
+		return this._lastName;
 	}
 }
