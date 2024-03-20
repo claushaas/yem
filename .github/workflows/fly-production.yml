@@ -1,7 +1,5 @@
 name: Fly Productcion Deploy
-defaults:
-  run:
-    working-directory: ./web
+
 on:
   push:
     branches:
