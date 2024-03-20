@@ -82,10 +82,10 @@ export class UserForCreation extends BasicUser {
 			throw new CustomError('UNPROCESSABLE_ENTITY', `Invalid user data: ${error.message}`);
 		}
 
-		this._id = user.id;
-		this._roles = user.roles;
+		this._id = user.id ?? '';
+		this._roles = user.roles ?? [];
 		this._phoneNumber = user.phoneNumber;
-		this._document = user.document;
+		this._document = user.document ?? '';
 	}
 
 	get id() {

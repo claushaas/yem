@@ -42,10 +42,10 @@ export default class UserController {
 			.json({message: 'User logged out successfully'});
 	}
 
-	public async create(req: Request, res: Response) {
+	public async createOrFail(req: Request, res: Response) {
 		const user = req.body as TypeUserCreationAttributes;
 
-		const {status, data} = await this._userService.create(user);
+		const {status, data} = await this._userService.createOrFail(user);
 
 		const statusCode = mapStatusHttp(status);
 

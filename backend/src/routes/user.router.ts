@@ -23,9 +23,9 @@ userRouter.post(
 );
 
 userRouter.post(
-	'/',
+	'/create-or-fail',
 	async (req: Request, res: Response) => {
-		await new UserController().create(req, res);
+		await new UserController().createOrFail(req, res);
 	},
 );
 

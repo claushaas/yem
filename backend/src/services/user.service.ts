@@ -42,7 +42,97 @@ export default class UserService {
 		this._mauticService = new MauticService();
 	}
 
-	public async create(userData: TypeUserCreationAttributes): Promise<TypeServiceReturn<unknown>> {
+	public async createOrFail(userData: TypeUserCreationAttributes): Promise<TypeServiceReturn<{userId: string}>> {
+		const maybeUser = await this._getUserData(userData.email);
+
+		if (maybeUser.status === 'SUCCESSFUL') {
+			throw new CustomError('CONFLICT', 'Usuário já existe');
+		}
+
+		const newUserData = await this._create(userData);
+
+		return newUserData;
+	}
+
+	public async login(username: string, password: string): Promise<TypeServiceReturn<unknown>> {
+		const cleanUsername = username.trim().toLowerCase();
+
+		const params: InitiateAuthCommandInput = {
+			// eslint-disable-next-line @typescript-eslint/naming-convention
+			AuthFlow: 'USER_PASSWORD_AUTH',
+			// eslint-disable-next-line @typescript-eslint/naming-convention
+			ClientId: process.env.COGNITO_CLIENT_ID,
+			// eslint-disable-next-line @typescript-eslint/naming-convention
+			AuthParameters: {
+				// eslint-disable-next-line @typescript-eslint/naming-convention
+				USERNAME: cleanUsername,
+				// eslint-disable-next-line @typescript-eslint/naming-convention
+				PASSWORD: password,
+			},
+		};
+
+		const command = new InitiateAuthCommand(params);
+		const response = await this._awsClient.send(command);
+
+		if (response.$metadata.httpStatusCode !== 200) {
+			throw new CustomError('UNAUTHORIZED', 'Usuário ou senha incorretos');
+		}
+
+		const {data: user} = await this._getUserData(cleanUsername);
+
+		let token = '';
+		try {
+			token = generateToken(user);
+		} catch (error) {
+			logger.logError(`Error generating token for user ${user.id}: ${(error as Error).message}`);
+			throw new CustomError('UNKNOWN', `Error generating token for user ${user.id}: ${(error as Error).message}`);
+		}
+
+		try {
+			await this._subscriptionService.createOrUpdateAllUserSubscriptions(user);
+		} catch (error) {
+			console.error('Error creating or updating subscriptions', error);
+		}
+
+		logger.logInfo(`User ${user.id} logged in successfully`);
+
+		return {
+			status: 'SUCCESSFUL',
+			data: {
+				token,
+				userData: user,
+			},
+		};
+	}
+
+	public async getNewPassword(email: string): Promise<TypeServiceReturn<unknown>> {
+		try {
+			const {data: user} = await this._getUserData(email);
+
+			const password = generateSecurePassword();
+
+			await this._setUserPassword(user.id, password);
+
+			await Promise.all([
+				this._mailService.sendEmail(newPassWordEmailTemplate(user.firstName, user.email, password)),
+				this._botmakerService.sendWhatsappTemplateMessate(user.phoneNumber, 'new_password', {
+					primeiroNome: user.firstName,
+					emailAluno: user.email,
+					senha: password,
+				}),
+			]);
+
+			return {
+				status: 'NO_CONTENT',
+				data: null,
+			};
+		} catch (error) {
+			logger.logError(`Error getting new password for user ${email}: ${(error as Error).message}`);
+			throw new CustomError('UNKNOWN', 'Error setting new password');
+		}
+	}
+
+	private async _create(userData: TypeUserCreationAttributes): Promise<TypeServiceReturn<{userId: string}>> {
 		const newUser = new UserForCreation(userData);
 
 		const {email, phoneNumber, firstName, lastName, roles, document} = newUser;
@@ -161,84 +251,6 @@ export default class UserService {
 				userId: username,
 			},
 		};
-	}
-
-	public async login(username: string, password: string): Promise<TypeServiceReturn<unknown>> {
-		const cleanUsername = username.trim().toLowerCase();
-
-		const params: InitiateAuthCommandInput = {
-			// eslint-disable-next-line @typescript-eslint/naming-convention
-			AuthFlow: 'USER_PASSWORD_AUTH',
-			// eslint-disable-next-line @typescript-eslint/naming-convention
-			ClientId: process.env.COGNITO_CLIENT_ID,
-			// eslint-disable-next-line @typescript-eslint/naming-convention
-			AuthParameters: {
-				// eslint-disable-next-line @typescript-eslint/naming-convention
-				USERNAME: cleanUsername,
-				// eslint-disable-next-line @typescript-eslint/naming-convention
-				PASSWORD: password,
-			},
-		};
-
-		const command = new InitiateAuthCommand(params);
-		const response = await this._awsClient.send(command);
-
-		if (response.$metadata.httpStatusCode !== 200) {
-			throw new CustomError('UNAUTHORIZED', 'Usuário ou senha incorretos');
-		}
-
-		const {data: user} = await this._getUserData(cleanUsername);
-
-		let token = '';
-		try {
-			token = generateToken(user);
-		} catch (error) {
-			logger.logError(`Error generating token for user ${user.id}: ${(error as Error).message}`);
-			throw new CustomError('UNKNOWN', `Error generating token for user ${user.id}: ${(error as Error).message}`);
-		}
-
-		try {
-			await this._subscriptionService.createOrUpdateAllUserSubscriptions(user);
-		} catch (error) {
-			console.error('Error creating or updating subscriptions', error);
-		}
-
-		logger.logInfo(`User ${user.id} logged in successfully`);
-
-		return {
-			status: 'SUCCESSFUL',
-			data: {
-				token,
-				userData: user,
-			},
-		};
-	}
-
-	public async getNewPassword(email: string): Promise<TypeServiceReturn<unknown>> {
-		try {
-			const {data: user} = await this._getUserData(email);
-
-			const password = generateSecurePassword();
-
-			await this._setUserPassword(user.id, password);
-
-			await Promise.all([
-				this._mailService.sendEmail(newPassWordEmailTemplate(user.firstName, user.email, password)),
-				this._botmakerService.sendWhatsappTemplateMessate(user.phoneNumber, 'new_password', {
-					primeiroNome: user.firstName,
-					emailAluno: user.email,
-					senha: password,
-				}),
-			]);
-
-			return {
-				status: 'NO_CONTENT',
-				data: null,
-			};
-		} catch (error) {
-			logger.logError(`Error getting new password for user ${email}: ${(error as Error).message}`);
-			throw new CustomError('UNKNOWN', 'Error setting new password');
-		}
 	}
 
 	private async _setUserPassword(username: string, password: string): Promise<TypeServiceReturn<unknown>> {

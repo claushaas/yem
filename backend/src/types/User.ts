@@ -17,6 +17,6 @@ export type TypeUser = TypeBasicUser & {
 	phoneNumber: string;
 };
 
-export type TypeUserCreationAttributes = TypeUser & {document: string};
+export type TypeUserCreationAttributes = TypeUser & {document?: string};
 
 export type TypeMauticUserCreationAttributes = TypeBasicUser;

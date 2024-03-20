@@ -9,6 +9,7 @@ export default function mapStatusHttp(status: TypeHttpStatus): TypeHttpStatusCod
 		case 'UNAUTHORIZED': return 401;
 		case 'UNPROCESSABLE_ENTITY': return 422;
 		case 'NO_CONTENT': return 204;
+		case 'CONFLICT': return 409;
 		default: return 500;
 	}
 }

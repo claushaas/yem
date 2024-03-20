@@ -29,7 +29,8 @@
     "isbot": "^5.1.2",
     "newrelic": "latest",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "react-phone-number-input": "^3.3.9"
   },
   "devDependencies": {
     "@radix-ui/colors": "^3.0.0",
