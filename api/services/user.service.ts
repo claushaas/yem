@@ -54,7 +54,7 @@ export default class UserService {
 		return newUserData;
 	}
 
-	public async login(username: string, password: string): Promise<TypeServiceReturn<unknown>> {
+	public async login(username: string, password: string): Promise<TypeServiceReturn<{token: string; userData: TypeUser}>> {
 		const cleanUsername = username.trim().toLowerCase();
 
 		const params: InitiateAuthCommandInput = {
