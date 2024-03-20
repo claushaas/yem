@@ -1,6 +1,6 @@
 import {
 	type TypeUserCreationAttributes, type TypeMauticUserCreationAttributes, type TypeBasicUser,
-} from '../types/User';
+} from '../types/User.js';
 import Joi from 'joi';
 import CustomError from '../utils/CustomError.js';
 import {convertStringToStartCase} from '../utils/convertStringToStartCase.js';

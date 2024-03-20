@@ -1,9 +1,17 @@
 # flyctl launch added from .gitignore
 **/node_modules
 
+.git
+.github
 .cache
 build
 **/.env
 **/.env.production
+**/.env.example
 fly.toml
 .DS_Store
+node_modules
+Dockerfile
+docker-compose-yml
+README.md
+.gitignore

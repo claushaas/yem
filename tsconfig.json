@@ -5,7 +5,8 @@
     "**/.server/**/*.ts",
     "**/.server/**/*.tsx",
     "**/.client/**/*.ts",
-    "**/.client/**/*.tsx"
+    "**/.client/**/*.tsx",
+    "src/utils/remixServerUtils.js"
   ],
   "compilerOptions": {
     "lib": [
@@ -22,12 +23,13 @@
     "esModuleInterop": true,
     "jsx": "react-jsx",
     "module": "ESNext",
-    "moduleResolution": "Bundler",
+    "moduleResolution": "Node",
     "resolveJsonModule": true,
-    "target": "ES2022",
+    "target": "ESNext",
     "strict": true,
     "allowJs": true,
     "skipLibCheck": true,
+    "outDir": "build",
     "forceConsistentCasingInFileNames": true,
     "baseUrl": ".",
     "paths": {
@@ -36,6 +38,6 @@
       ]
     },
     // Vite takes care of building everything, not tsc.
-    "noEmit": true
+    // "noEmit": true
   }
 }
