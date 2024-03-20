@@ -5,10 +5,10 @@
   "type": "module",
   "scripts": {
     "build": "remix vite:build && tsc --project tsconfig.json",
-    "build:express": "tsc --project tsconfig.json",
     "predev": "npx prisma migrate dev",
     "dev": "tsx watch --ignore ./vite*.mjs ./server.ts",
     "lint": "eslint --ignore-path .gitignore --cache --cache-location ./node_modules/.cache/eslint .",
+    "prestart": "npx prisma migrate deploy",
     "start": "node ./build/server.js",
     "typecheck": "tsc --noEmit --skipLibCheck --project tsconfig.json"
   },
