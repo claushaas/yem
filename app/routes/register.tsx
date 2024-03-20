@@ -1,15 +1,14 @@
-import React, {useState} from 'react';
+import {useState} from 'react';
 import * as RadixForm from '@radix-ui/react-form';
 import {Button, ButtonPreset} from '~/components/button';
 import {
 	json, type ActionFunctionArgs, type LoaderFunctionArgs, redirect,
 } from '@remix-run/node';
 import {
-	Form, Link, useLoaderData, useNavigation,
+	Form, useLoaderData, useNavigation,
 } from '@remix-run/react';
 import {yemApiRequest} from '~/utils/request.server';
 import {getUserSession, commitUserSession} from '~/utils/session.server';
-import {type TypeUserSession} from '~/types/userSession.type';
 import {YemSpinner} from '~/components/yemSpinner';
 
 import 'react-phone-number-input/style.css';
@@ -41,6 +40,7 @@ export const action = async ({request}: ActionFunctionArgs) => {
 			email,
 			phoneNumber,
 		});
+		console.log(response);
 	} catch (error) {
 		return null;
 	}

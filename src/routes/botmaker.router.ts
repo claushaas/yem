@@ -5,6 +5,7 @@ import {BotmakerController} from '../controllers/botmaker.controller.js';
 import validateAuthToken from '../middlewares/validateAuthToken.middleware.js';
 import verifyRole from '../middlewares/verifyRole.middleware.js';
 
+// eslint-disable-next-line new-cap
 const botmakerRouter = Router();
 
 botmakerRouter.use(validateAuthToken);

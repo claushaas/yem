@@ -1,6 +1,5 @@
 import * as NavigationMenu from '@radix-ui/react-navigation-menu';
 import {Link, useLocation} from '@remix-run/react';
-import React from 'react';
 
 type NavLinkProps = {
 	to: string;

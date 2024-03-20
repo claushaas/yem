@@ -1,5 +1,4 @@
 import type {MetaFunction} from '@remix-run/node';
-import React from 'react';
 import {Image} from '@unpic/react';
 import {buildImgSrc} from '~/utils/buildImgSrc';
 

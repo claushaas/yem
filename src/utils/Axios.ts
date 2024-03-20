@@ -17,7 +17,7 @@ export class Request {
 
 	public async post(
 		url: string,
-		data: any = {},
+		data: unknown = {},
 	): Promise<AxiosResponse> {
 		return this._request.post(url, data);
 	}
@@ -26,7 +26,7 @@ export class Request {
 		return this._request.put(url, data);
 	}
 
-	public async delete(url: string): Promise<any> {
+	public async delete(url: string): Promise<unknown> {
 		return this._request.delete(url);
 	}
 

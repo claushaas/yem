@@ -1,4 +1,3 @@
-import React from 'react';
 import {motion, AnimatePresence} from 'framer-motion';
 import YemReducerLogo from '~/assets/logo/logo-reduzido2-lilas.svg?react';
 

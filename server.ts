@@ -1,5 +1,5 @@
 import App from './app.js';
-import { installGlobals } from "@remix-run/node";
+import {installGlobals} from '@remix-run/node';
 
 installGlobals();
 

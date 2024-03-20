@@ -1,6 +1,5 @@
 import {PrismaClient} from '@prisma/client';
-import {type TypeUser} from '../types/User.js';
-import {type UserRoles} from '../types/User.js';
+import {type TypeUser, type UserRoles} from '../types/User.js';
 import Course from '../entities/course.entity.js';
 import type TypeCourse from '../types/Course.js';
 import CustomError from '../utils/CustomError.js';

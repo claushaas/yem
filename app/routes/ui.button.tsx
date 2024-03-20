@@ -1,4 +1,3 @@
-import React from 'react';
 import {Button, ButtonPreset} from '~/components/button';
 
 const ButtonUi = () => (

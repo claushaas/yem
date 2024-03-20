@@ -5,8 +5,8 @@ import errorMiddleware from './src/middlewares/error.middleware.js';
 import cookieParser from 'cookie-parser';
 import {logger} from './src/utils/Logger.js';
 import {morganMiddleware} from './src/middlewares/morgan.middleware.js';
-// import {limiter} from './src/middlewares/rateLimiter.middleware.js';
-import { viteDevServer, remixHandler } from './src/utils/remixServerUtils.js';
+import {limiter} from './src/middlewares/rateLimiter.middleware.js';
+import {viteDevServer, remixHandler} from './src/utils/remixServerUtils.js';
 
 export default class App {
 	public app: express.Express;
@@ -26,7 +26,10 @@ export default class App {
 	}
 
 	private initializeMiddlewares() {
-		// this.app.use(limiter);
+		if (process.env.NODE_ENV === 'production') {
+			this.app.use(limiter);
+		}
+
 		this.app.use(express.json());
 		this.app.use(cookieParser());
 		this.app.use(morganMiddleware);
@@ -36,12 +39,12 @@ export default class App {
 		} else {
 			// Vite fingerprints its assets so we can cache forever.
 			this.app.use(
-				"/assets",
-				express.static("build/client/assets", { immutable: true, maxAge: "1y" })
+				'/assets',
+				express.static('build/client/assets', {immutable: true, maxAge: '1y'}),
 			);
 		}
 
-		this.app.use(express.static("build/client", { maxAge: "1h" }));
+		this.app.use(express.static('build/client', {maxAge: '1h'}));
 
 		this.app.use('/api', router);
 
@@ -50,7 +53,7 @@ export default class App {
 			res.json({ok: true});
 		});
 
-		this.app.all("*", remixHandler);
+		this.app.all('*', remixHandler);
 	}
 
 	private initializeErrorHandling() {

@@ -34,7 +34,7 @@ export default class ModuleController {
 
 	public async getList(req: Request, res: Response) {
 		const {roles: userRoles} = res.locals.user as TypeUser;
-		const {courseId, parentId} = req.params;
+		const {parentId} = req.params;
 
 		const {status, data} = await this._service.getList(parentId, userRoles);
 

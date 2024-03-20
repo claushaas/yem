@@ -1,5 +1,3 @@
-import React from 'react';
-
 export enum ButtonPreset {
 	Primary = 'primary',
 	Secondary = 'secondary',

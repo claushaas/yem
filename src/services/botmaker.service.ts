@@ -39,7 +39,7 @@ export class BotmakerService {
 		} catch (error) {
 			logger.logError(`Error adding to blacklist: ${JSON.stringify((error as {
 				response: {
-					data: any;
+					data: unknown;
 				};
 			}).response.data)}`);
 			throw new CustomError('INVALID_DATA', `Error adding ${phoneNumber} to blacklist`);
@@ -82,7 +82,7 @@ export class BotmakerService {
 		} catch (error) {
 			logger.logError(`Error sending WP template: ${JSON.stringify((error as {
 				response: {
-					data: any;
+					data: unknown;
 				};
 			}).response.data)}`);
 			throw new CustomError('INVALID_DATA', (error as Error).message);

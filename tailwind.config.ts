@@ -4,7 +4,6 @@ import tailwindcssRadixColors from 'tailwindcss-radix-colors';
 import tailwindForms from '@tailwindcss/forms';
 import containerQuerys from '@tailwindcss/container-queries';
 import defaultTheme from 'tailwindcss/defaultTheme';
-import plugin from 'tailwindcss/plugin';
 import type {PluginAPI} from 'tailwindcss/types/config';
 
 export default {

@@ -1,7 +1,7 @@
 import {type Request, type Response, Router} from 'express';
 import UserController from '../controllers/user.controller.js';
-// Import validateAuthToken from '../middlewares/validateAuthToken.middleware.js';
 
+// eslint-disable-next-line new-cap
 const userRouter = Router();
 
 userRouter.post(
@@ -13,7 +13,6 @@ userRouter.post(
 
 userRouter.get(
 	'/logout',
-	// ValidateAuthToken,
 	(req: Request, res: Response) => new UserController().logout(req, res),
 );
 

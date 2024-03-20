@@ -6,6 +6,7 @@ import validateAuthToken from '../middlewares/validateAuthToken.middleware.js';
 import getUserData from '../middlewares/getUserData.middleware.js';
 import verifyRole from '../middlewares/verifyRole.middleware.js';
 
+// eslint-disable-next-line new-cap
 const courseRouter = Router();
 
 courseRouter.post(

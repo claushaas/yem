@@ -155,7 +155,7 @@ export class MauticService {
 		try {
 			const response = await this._request.get(url, params);
 
-			const contactId = Object.keys(response.data.contacts as Record<string, Record<string, any>>)[0];
+			const contactId = Object.keys(response.data.contacts as Record<string, Record<string, unknown>>)[0];
 
 			return {
 				status: 'SUCCESSFUL',

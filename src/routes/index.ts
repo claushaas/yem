@@ -5,6 +5,7 @@ import moduleRouter from './module.router.js';
 import lessonRouter from './lesson.router.js';
 import {botmakerRouter} from './botmaker.router.js';
 
+// eslint-disable-next-line new-cap
 const router = Router();
 
 router.use('/botmaker', botmakerRouter);

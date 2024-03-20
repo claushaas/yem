@@ -1,4 +1,4 @@
-import e, {
+import {
 	type Request, Router, type Response, type NextFunction,
 } from 'express';
 import validateAuthToken from '../middlewares/validateAuthToken.middleware.js';
@@ -6,6 +6,7 @@ import verifyRole from '../middlewares/verifyRole.middleware.js';
 import LessonController from '../controllers/lesson.controller.js';
 import getUserData from '../middlewares/getUserData.middleware.js';
 
+// eslint-disable-next-line new-cap
 const lessonRouter = Router();
 
 lessonRouter.post(

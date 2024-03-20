@@ -1,8 +1,7 @@
-import React from 'react';
 import * as RadixForm from '@radix-ui/react-form';
 import {Button, ButtonPreset, ButtonType} from '~/components/button';
 import {
-	json, type ActionFunctionArgs, type LoaderFunctionArgs, redirect,
+	type ActionFunctionArgs, redirect,
 } from '@remix-run/node';
 import {Form, useNavigation} from '@remix-run/react';
 import {getUserSession, destroyUserSession} from '~/utils/session.server';

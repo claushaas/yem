@@ -233,4 +233,4 @@ const countryCodes = {
 
 type TypeCountriesIsos = keyof typeof countryCodes;
 
-export const getCountryCode = (country: TypeCountriesIsos): number => countryCodes[country as keyof typeof countryCodes] ?? 0;
+export const getCountryCode = (country: TypeCountriesIsos): number => countryCodes[country] ?? 0;
