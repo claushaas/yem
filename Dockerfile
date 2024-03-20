@@ -62,10 +62,11 @@ ENV NODE_ENV production
 WORKDIR /app
 
 COPY package.json ./
+COPY prisma ./prisma
 COPY --from=prod-deps /app/node_modules ./node_modules
 COPY --from=builder /app/build/client ./build/client
 COPY --from=builder /app/build/server ./build/server
-COPY --from=builder /app/build/src ./build/src
+COPY --from=builder /app/build/api ./build/api
 COPY --from=builder /app/build/app.js ./build/app.js
 COPY --from=builder /app/build/server.js ./build/server.js
 
