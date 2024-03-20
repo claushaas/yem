@@ -70,4 +70,6 @@ COPY --from=builder /app/build/api ./build/api
 COPY --from=builder /app/build/app.js ./build/app.js
 COPY --from=builder /app/build/server.js ./build/server.js
 
+RUN npx prisma generate
+
 CMD ["npm", "run", "start"]
