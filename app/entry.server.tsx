@@ -1,5 +1,3 @@
-import 'newrelic';
-
 import {PassThrough} from 'node:stream';
 
 import type {EntryContext} from '@remix-run/node';
