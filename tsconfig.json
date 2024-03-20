@@ -35,6 +35,9 @@
     "paths": {
       "~/*": [
         "./app/*"
+      ],
+      "#/*": [
+        "./api/*"
       ]
     },
     // Vite takes care of building everything, not tsc.
