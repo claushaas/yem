@@ -21,10 +21,10 @@ export default class UserController {
 
 		return res.status(statusCode)
 			.cookie('access_token', token, {
-				// HttpOnly: true,
-				// secure: process.env.NODE_ENV === 'production',
+				httpOnly: true,
+				secure: process.env.NODE_ENV === 'production',
 				maxAge: 1000 * 60 * 60 * 24 * 365, // 1 year
-				// sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'none',
+				sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'none',
 			})
 			.json({
 				userData,
