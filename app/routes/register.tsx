@@ -5,21 +5,23 @@ import {
 	json, type ActionFunctionArgs, type LoaderFunctionArgs, redirect,
 } from '@remix-run/node';
 import {
-	Form, useLoaderData, useNavigation,
+	Form, Link, useLoaderData, useNavigation,
 } from '@remix-run/react';
-import {yemApiRequest} from '~/utils/request.server';
 import {getUserSession, commitUserSession} from '~/utils/session.server';
 import {YemSpinner} from '~/components/yemSpinner';
+import UserService from '#/services/user.service';
 
 import 'react-phone-number-input/style.css';
 import PhoneInput from 'react-phone-number-input';
 import {type E164Number} from 'libphonenumber-js/core';
+import type CustomError from '#/utils/CustomError';
+import {logger} from '#/utils/Logger';
 
 export const action = async ({request}: ActionFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 
 	if (userSession.has('id')) {
-		userSession.flash('error', 'Usuário ou senha inválidos');
+		userSession.flash('error', 'Usuário já logado, faça o login para continuar');
 		return redirect('/register', {
 			headers: {
 				'Set-Cookie': await commitUserSession(userSession),
@@ -34,18 +36,32 @@ export const action = async ({request}: ActionFunctionArgs) => {
 		const email = formData.get('email');
 		const phoneNumber = formData.get('phoneNumber');
 
-		const response = await yemApiRequest.post('/users/create-or-fail', {
-			firstName,
-			lastName,
-			email,
-			phoneNumber,
+		const userService = new UserService();
+
+		const response = await userService.createOrFail({
+			firstName: firstName as string,
+			lastName: lastName as string,
+			email: email as string,
+			phoneNumber: phoneNumber as string,
 		});
 		console.log(response);
-	} catch (error) {
-		return null;
-	}
 
-	return null;
+		userSession.flash('success', 'Usuário criado com sucesso, em alguns instantes você vai receber a senha por email e WhatsApp. Utilize-a em conjunto com seu email para fazer o login');
+
+		return redirect('/register', {
+			headers: {
+				'Set-Cookie': await commitUserSession(userSession),
+			},
+		});
+	} catch (error) {
+		logger.logError(`Error: ${(error as CustomError).message}`);
+		userSession.flash('error', (error as CustomError).message);
+		return redirect('/register', {
+			headers: {
+				'Set-Cookie': await commitUserSession(userSession),
+			},
+		});
+	}
 };
 
 export const loader = async ({request}: LoaderFunctionArgs) => {
@@ -56,6 +72,8 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
 	}
 
 	const data = {
+		error: userSession.get('error') as string | undefined,
+		success: userSession.get('success') as string | undefined,
 		// eslint-disable-next-line @typescript-eslint/naming-convention
 		ENV: {
 			// eslint-disable-next-line @typescript-eslint/naming-convention
@@ -69,6 +87,7 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
 const Register = () => {
 	const data: {
 		error?: string;
+		success?: string;
 		ENV: {
 			YEM_API_BASE_URL: string;
 		};
@@ -81,7 +100,11 @@ const Register = () => {
 
 	return (
 		<main className='flex flex-col flex-grow-[0.6]'>
-			<div className='my-auto'>
+			<div className='w-[260px] mx-auto my-auto flex flex-col'>
+				{data?.success
+					? <p className='text-center font-gothamMedium'>{data.success}</p>
+					: <p className='mb-3 text-center'>Preencha os dados abaixo para criar a sua conta do Yoga em Movimento. Com ela você poderá acessar os conteúdos gratuitos</p>
+				}
 				<RadixForm.Root method='post' asChild>
 					<Form action='/register' className='w-[260px] mx-auto flex flex-col'>
 						<RadixForm.Field name='firstName' className='grid mb-[10px]'>
@@ -185,7 +208,7 @@ const Register = () => {
 						}
 
 						<RadixForm.Submit asChild>
-							<Button disabled={isSubmitting} className='m-auto mt-2' text='Fazer Login' preset={ButtonPreset.Primary} />
+							<Button disabled={isSubmitting} className='m-auto mt-2' text='Criar Minha Conta' preset={ButtonPreset.Primary} />
 						</RadixForm.Submit>
 
 						{isSubmitting && (
@@ -193,6 +216,11 @@ const Register = () => {
 						)}
 					</Form>
 				</RadixForm.Root>
+				<div className='m-3 w-[260px] mx-auto flex justify-center gap-1'>
+					<Link to='/login'>
+						<p className='text-center text-xs text-mauve-11 dark:text-mauvedark-10'>Fazer login</p>
+					</Link>
+				</div>
 			</div>
 		</main>
 	);
