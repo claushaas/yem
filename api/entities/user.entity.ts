@@ -4,7 +4,7 @@ import {
 import Joi from 'joi';
 import CustomError from '../utils/CustomError.js';
 import {convertStringToStartCase} from '../utils/convertStringToStartCase.js';
-import {logger} from '#/utils/Logger.js';
+import {logger} from '../utils/Logger.js';
 
 const basicUserSchema = Joi.object({
 	email: Joi.string().email().required(),
