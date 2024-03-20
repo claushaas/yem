@@ -11,7 +11,9 @@
     "prestart": "npx prisma migrate deploy",
     "start": "node ./build/server.js",
     "typecheck": "tsc --noEmit --skipLibCheck --project tsconfig.json",
-    "update": "npx npm-check-updates -i"
+    "update": "npx npm-check-updates -i",
+    "up": "docker compose up -d --build",
+    "down": "docker compose down"
   },
   "dependencies": {
     "@remix-run/express": "^2.8.1",
