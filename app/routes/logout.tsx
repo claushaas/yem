@@ -22,7 +22,7 @@ const Logout = () => {
 	const isSubmitting = navigation.formAction === '/logout';
 
 	return (
-		<main className='flex flex-col flex-grow-[0.6]'>
+		<main className='flex flex-col flex-grow-[0.6] mt-20'>
 			<div className='w-[260px] mx-auto my-auto flex flex-col'>
 				<p className='mb-3 text-center'>Ao clicar no botão abaixo você fará o logout da Plataforma da Yoga em Movimento</p>
 				<RadixForm.Form action='/logout' asChild method='post' noValidate className='m-auto'>

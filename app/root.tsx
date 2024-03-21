@@ -10,6 +10,7 @@ import {type LoaderFunctionArgs, type LinksFunction, json} from '@remix-run/node
 import styles from '~/tailwind.css?url';
 import {NavBar} from '~/components/navBar';
 import {getUserSession} from './utils/session.server';
+import {Footer} from '~/components/footer';
 
 export const links: LinksFunction = () => [
 	{rel: 'stylesheet', href: styles},
@@ -49,9 +50,10 @@ export const Layout = ({children}: {children: ReactNode}) => (
 			<Meta />
 			<Links />
 		</head>
-		<body className='bg-mauve-2 dark:bg-mauvedark-2 min-h-screen flex flex-col'>
+		<body className='bg-mauve-2 dark:bg-mauvedark-2 min-h-screen flex flex-col justify-between'>
 			<NavBar />
 			{children}
+			<Footer />
 			<ScrollRestoration />
 			<Scripts />
 		</body>

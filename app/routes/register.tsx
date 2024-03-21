@@ -99,7 +99,7 @@ const Register = () => {
 	const [phoneNumberValue, setPhoneNumberValue] = useState<E164Number>('');
 
 	return (
-		<main className='flex flex-col flex-grow-[0.6]'>
+		<main className='flex flex-col flex-grow-[0.6] mt-20'>
 			<div className='w-[260px] mx-auto my-auto flex flex-col'>
 				{data?.success
 					? <p className='text-center font-gothamMedium'>{data.success}</p>
