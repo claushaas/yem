@@ -17,7 +17,7 @@ export const NavBar = () => {
 				</Link>
 			</div>
 			<NavigationMenu.Root
-				className='relative z-10 flex justify-center'
+				className='relative flex justify-center'
 			>
 				<NavigationMenu.List className='gap-3 center flex list-none items-center px-4 py-2 rounded-md shadow-sm shadow-mauve-11 dark:shadow-mauvedark-3 bg-mauve-4 dark:bg-mauvedark-3'>
 					{
