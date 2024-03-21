@@ -46,7 +46,7 @@ export const Testimony = ({
 				</div>
 				<Dialog.Close asChild>
 					<button
-						className='absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center'
+						className='absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center outline-none'
 						aria-label='Close'
 					>
 						<XMarkIcon aria-label='Close' className='hover:pointer absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px]' />
