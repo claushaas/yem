@@ -1,3 +1,4 @@
+app = "yem-web-staging"
 primary_region = 'gru'
 
 [build]
