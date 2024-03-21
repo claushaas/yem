@@ -1,3 +1,5 @@
+# syntax=docker/dockerfile:1.4
+
 FROM node:20-alpine AS base
 
 RUN apk update && apk add --no-cache tzdata
@@ -9,7 +11,7 @@ ENV NODE_ENV development
 
 WORKDIR /app
 
-COPY package*.json ./
+COPY --link package*.json ./
 
 RUN npm ci
 
@@ -19,8 +21,8 @@ ENV NODE_ENV production
 
 WORKDIR /app
 
-COPY --from=deps /app/node_modules ./node_modules
-COPY package*.json ./
+COPY --link --from=deps /app/node_modules ./node_modules
+COPY --link package*.json ./
 RUN npm prune --production
 
 
@@ -30,9 +32,9 @@ ENV NODE_ENV development
 
 WORKDIR /app
 
-COPY --from=deps /app/node_modules ./node_modules
-COPY package*.json ./
-COPY . .
+COPY --link --from=deps /app/node_modules ./node_modules
+COPY --link package*.json ./
+COPY --link . .
 
 RUN npx prisma generate
 
@@ -46,10 +48,10 @@ ENV NODE_ENV production
 
 WORKDIR /app
 
-COPY package*.json ./
-COPY --from=deps /app/node_modules ./node_modules
+COPY --link package*.json ./
+COPY --link --from=deps /app/node_modules ./node_modules
 
-COPY . .
+COPY --link . .
 
 RUN npx prisma generate
 
@@ -61,14 +63,14 @@ ENV NODE_ENV production
 
 WORKDIR /app
 
-COPY package.json ./
-COPY prisma ./prisma
-COPY --from=prod-deps /app/node_modules ./node_modules
-COPY --from=builder /app/build/client ./build/client
-COPY --from=builder /app/build/server ./build/server
-COPY --from=builder /app/build/api ./build/api
-COPY --from=builder /app/build/app.js ./build/app.js
-COPY --from=builder /app/build/server.js ./build/server.js
+COPY --link package.json ./
+COPY --link prisma ./prisma
+COPY --link --from=prod-deps /app/node_modules ./node_modules
+COPY --link --from=builder /app/build/client ./build/client
+COPY --link --from=builder /app/build/server ./build/server
+COPY --link --from=builder /app/build/api ./build/api
+COPY --link --from=builder /app/build/app.js ./build/app.js
+COPY --link --from=builder /app/build/server.js ./build/server.js
 
 RUN npx prisma generate
 
