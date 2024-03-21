@@ -29,7 +29,7 @@ const NewPassword = () => {
 	const isSubmitting = navigation.formAction === '/new-password';
 
 	return (
-		<main className='flex flex-col flex-grow-[0.6]'>
+		<main className='flex flex-col flex-grow-[0.6] mt-20'>
 			<div className='w-[260px] mx-auto my-auto flex flex-col'>
 				<p className='mb-3 text-center'>Para gerar uma nova senha, preencha o seu email de acesso abaixo e envie o formulário. Em poucos instantes você receberá a nova senha no seu email e no seu Whatsapp</p>
 				<RadixForm.Form action='/new-password'	asChild method='post' noValidate className='w-[260px] mx-auto my-auto flex flex-col'>

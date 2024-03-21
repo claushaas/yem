@@ -90,7 +90,7 @@ const Login = () => {
 	const isSubmitting = navigation.formAction === '/login';
 
 	return (
-		<main className='flex flex-col flex-grow-[0.6]'>
+		<main className='flex flex-col flex-grow-[0.6] mt-20'>
 			<div className='my-auto'>
 				<RadixForm.Root method='post' asChild>
 					<Form action='/login' className='w-[260px] mx-auto flex flex-col'>
