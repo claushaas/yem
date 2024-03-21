@@ -10,7 +10,7 @@ export const meta: MetaFunction = () => [
 
 const Index = () => (
 	<main>
-		<section id='welcome' className='flex max-w-[90%] mx-auto py-12 items-start gap-14 justify-center'>
+		<section id='welcome' className='flex max-w-[90%] mx-auto mb-20 sm:mb-32 py-12 items-start gap-14 justify-center'>
 			<div className='sm:max-w-[50%]'>
 				<h1 className='text-3xl xs:text-5xl xl:text-7xl text-left mb-4 text-purple-12 dark:text-purpledark-12'>
 					Transforme sua vida com a prática do Yoga, onde quer que esteja.
