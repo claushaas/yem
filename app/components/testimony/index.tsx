@@ -1,6 +1,6 @@
 import * as Dialog from '@radix-ui/react-dialog';
 import {Stream} from '@cloudflare/stream-react';
-import {PlayIcon} from '@heroicons/react/24/outline';
+import {PlayIcon, XMarkIcon} from '@heroicons/react/24/outline';
 
 type TestimonyProps = {
 	name: string;
@@ -26,7 +26,7 @@ export const Testimony = ({
 
 			<Dialog.Overlay className='bg-mauvea-12 dark:bg-mauvedarka-12 fixed inset-0' />
 
-			<Dialog.Content className='fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] p-10 bg-mauve-2 dark:bg-mauvedark-2 rounded-xl flex flex-col justify-center gap-8'>
+			<Dialog.Content className='fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] p-4 w-[80%] sm:p-10 sm:w-[600px] bg-mauve-2 dark:bg-mauvedark-2 rounded-xl flex flex-col justify-center gap-8'>
 				<div>
 					<Dialog.Title asChild>
 						<h1>{name}</h1>
@@ -35,13 +35,23 @@ export const Testimony = ({
 						<p className='italic'>{description}</p>
 					</Dialog.Description>
 				</div>
-				<div>
+				<div className='h-fit'>
 					<Stream
+						className='pt-[56.25%] relative *:absolute *:w-full *:h-full *:top-0 *:left-0 *:inset-0'
 						src={videoId}
 						controls
 						autoplay
+						responsive={false}
 					/>
 				</div>
+				<Dialog.Close asChild>
+					<button
+						className='absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center'
+						aria-label='Close'
+					>
+						<XMarkIcon aria-label='Close' className='hover:pointer absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px]' />
+					</button>
+				</Dialog.Close>
 			</Dialog.Content>
 
 		</Dialog.Portal>
