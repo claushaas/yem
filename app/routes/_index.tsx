@@ -10,7 +10,7 @@ export const meta: MetaFunction = () => [
 
 const Index = () => (
 	<main>
-		<section id='welcome' className='flex max-w-[90%] mx-auto mb-20 sm:mb-32 py-12 items-start gap-14 justify-center'>
+		<section id='welcome' className='flex max-w-[90%] mx-auto my-20 sm:my-32 py-12 items-start gap-14 justify-center'>
 			<div className='sm:max-w-[50%]'>
 				<h1 className='text-3xl xs:text-5xl xl:text-7xl text-left mb-4 text-purple-12 dark:text-purpledark-12'>
 					Transforme sua vida com a prática do Yoga, onde quer que esteja.
@@ -31,7 +31,7 @@ const Index = () => (
 				/>
 			</div>
 		</section>
-		<section id='testimonies' className='mx-auto max-w-max'>
+		<section id='testimonies' className='mx-auto max-w-max my-20 sm:my-32'>
 			<div className='px-6 pb-4 flex gap-4 overflow-x-scroll'>
 				<Testimony
 					name='Mylene Castro'
@@ -63,6 +63,15 @@ const Index = () => (
 					description='Aluna do Yoga em Movimento'
 					videoId='4236a529569cc65e2cb53aa24b572831'
 				/>
+			</div>
+		</section>
+		<section id='history' className='my-20 sm:my-32 max-w-[90%] mx-auto flex justify-center'>
+			<div className='max-w-screen-md w-full'>
+				<h1 className='text-purple-11 dark:text-purpledark-11 text-3xl xs:text-5xl xl:text-7xl text-left mb-5'>Yoga é para Todas Pessoas!</h1>
+				<h2 className='text-xl xs:text-2xl md:text-3xl lg:text-4xl text-purple-12 dark:text-purpledark-12 mb-4'>É nisso que acreditamos. E é por isso que existimos.</h2>
+				<p className='my-3 font-gothamMedium'>O Yoga em Movimento surgiu em 2010 no interior de São Paulo, do sonho de seus fundadores de espargir esse estilo de vida baseado na saúde e no autoconhecimento para cada vez mais pessoas.</p>
+				<p className='my-3 font-gothamMedium'>Para tornar o Yoga acessível para todas pessoas, de qualquer lugar, migramos em 2015 para o formato EAD, para podermos levar essa filosofia de vida a todos os cantos deste planeta.</p>
+				<p className='my-3 font-gothamMedium'>Desde então, nossa equipe de professores já formou mais de 1.000 professores. E junto com a Nossa Escola, já são mais de 14.000 alunos espalhados pelo mundo.</p>
 			</div>
 		</section>
 	</main>
