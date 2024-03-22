@@ -14,7 +14,7 @@ export const Footer = () => (
 			</div>
 			<div className='flex justify-center gap-4 items-center'>
 				<Link to='/termos-de-privacidade'>
-					<p>Termos de Privacidade</p>
+					<p className='text-center'>Termos de Privacidade</p>
 				</Link>
 				<Separator
 					className='bg-mauve-11 dark:bg-mauvedark-11 data-[orientation=horizontal]:h-px data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-4 data-[orientation=vertical]:w-px'
@@ -22,7 +22,7 @@ export const Footer = () => (
 					orientation='vertical'
 				/>
 				<Link to='/termos-de-uso'>
-					<p>Termos de Uso</p>
+					<p className='text-center'>Termos de Uso</p>
 				</Link>
 			</div>
 			<div>

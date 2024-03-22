@@ -1,8 +1,23 @@
 {
-  "name": "web2",
+  "name": "yoga-em-movimento",
+  "description": "Plataforma da Yoga em Movimento Ltda.",
+  "license": "UNLICENSED",
   "private": true,
+  "author": {
+    "name": "Claus Haas",
+    "email": "claus@yoga.app.br",
+    "url": "https://github.com/claushaas"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/claushaas/yem.git"
+  },
   "sideEffects": false,
   "type": "module",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "bugs:": "https://github.com/claushaas/yem/issues",
   "scripts": {
     "build": "remix vite:build && tsc --project tsconfig.json",
     "predev": "npx prisma migrate dev",
@@ -31,13 +46,12 @@
     "@remix-run/express": "^2.8.1",
     "@remix-run/node": "^2.8.1",
     "@remix-run/react": "^2.8.1",
-    "@tailwindcss/container-queries": "^0.1.1",
     "@unpic/react": "^0.1.11",
     "api": "^6.1.1",
     "axios": "^1.6.8",
     "compression": "^1.7.4",
     "cookie-parser": "^1.4.6",
-    "express": "^4.18.3",
+    "express": "^4.19.1",
     "express-async-errors": "^3.1.1",
     "express-rate-limit": "^7.2.0",
     "framer-motion": "^11.0.18",
@@ -77,17 +91,15 @@
     "eslint-plugin-jsx-a11y": "^6.8.0",
     "eslint-plugin-react": "^7.34.1",
     "eslint-plugin-react-hooks": "^4.6.0",
-    "postcss": "^8.4.37",
+    "postcss": "^8.4.38",
+    "remix-development-tools": "^4.0.10",
     "tailwindcss": "^3.4.1",
     "tailwindcss-radix": "^2.8.0",
     "tailwindcss-radix-colors": "^1.2.0",
     "tsx": "^4.7.1",
-    "typescript": "^5.4.2",
+    "typescript": "^5.4.3",
     "vite": "^5.2.2",
     "vite-plugin-svgr": "^4.2.0",
     "vite-tsconfig-paths": "^4.3.2"
-  },
-  "engines": {
-    "node": ">=18.0.0"
   }
 }
