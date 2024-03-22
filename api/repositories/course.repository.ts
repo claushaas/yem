@@ -1,12 +1,12 @@
-import {type IRepository} from '#/types/IRepository';
+import {type TypeRepository} from '#/types/IRepository';
 import {type SearchableEntity} from '#/types/ISearchService';
 import CustomError from '#/utils/CustomError';
-import { PrismaClient } from '@prisma/client';
+import {PrismaClient} from '@prisma/client';
 
-export class CourseRepository implements IRepository<SearchableEntity> {
+export class CourseRepository implements TypeRepository<SearchableEntity> {
 	constructor(private readonly _model: PrismaClient = new PrismaClient()) {}
-	
-	public async getAll() {
+
+	public async getAll(): Promise<SearchableEntity[]> {
 		const select = {
 			name: true,
 			description: true,
@@ -26,6 +26,6 @@ export class CourseRepository implements IRepository<SearchableEntity> {
 			throw new CustomError('NOT_FOUND', 'No courses found');
 		}
 
-		return coursesForStudents;
+		return coursesForStudents as SearchableEntity[];
 	}
 }

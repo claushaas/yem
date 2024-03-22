@@ -1,3 +1,3 @@
-export type IRepository<T> = {
-  getAll(): Promise<T[]>
-}
+export type TypeRepository<T> = {
+	getAll(): Promise<T[]>;
+};
