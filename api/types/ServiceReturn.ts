@@ -1,3 +1,3 @@
-import {type TypeHttpStatus} from './HTTPStatus.js';
+import {type THttpStatus} from './HTTPStatus.js';
 
-export type TypeServiceReturn<T> = {status: TypeHttpStatus; data: T};
+export type TServiceReturn<T> = {status: THttpStatus; data: T};

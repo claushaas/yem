@@ -1,14 +1,14 @@
 import {type Request, type Response} from 'express';
 import CourseService from '../services/course.service.js';
 import mapStatusHttp from '../utils/mapStatusHttp.js';
-import {type TypeUser} from '../types/User.js';
-import type TypeCourse from '../types/Course.js';
+import {type TUser} from '../types/User.js';
+import {type TCourse} from '../types/Course.js';
 import SearchService from '#/services/search.service.js';
 import {FuzzySearchEngine} from '#/engines/FuzzySearchEngine.js';
 import {CourseRepository} from '#/repositories/course.repository.js';
 import {logger} from '../utils/Logger.js';
 
-export default class CourseController {
+export class CourseController {
 	private readonly _service: CourseService;
 
 	constructor(service: CourseService = new CourseService()) {
@@ -16,7 +16,7 @@ export default class CourseController {
 	}
 
 	public async create(req: Request, res: Response) {
-		const courseData = req.body as TypeCourse;
+		const courseData = req.body as TCourse;
 
 		const {status, data} = await this._service.create(courseData);
 
@@ -26,7 +26,7 @@ export default class CourseController {
 	}
 
 	public async getAll(_req: Request, res: Response) {
-		const {roles: userRoles} = res.locals.user as TypeUser;
+		const {roles: userRoles} = res.locals.user as TUser;
 
 		const {status, data} = await this._service.getAll(userRoles);
 
@@ -37,7 +37,7 @@ export default class CourseController {
 
 	public async getById(req: Request, res: Response) {
 		const {id} = req.params;
-		const user = res.locals.user as TypeUser;
+		const user = res.locals.user as TUser;
 
 		const {status, data} = await this._service.getById(id, user);
 
@@ -48,7 +48,7 @@ export default class CourseController {
 
 	public async update(req: Request, res: Response) {
 		const {id} = req.params;
-		const courseData = req.body as TypeCourse;
+		const courseData = req.body as TCourse;
 
 		const {status, data} = await this._service.update(id, courseData);
 

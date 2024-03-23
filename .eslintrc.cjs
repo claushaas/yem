@@ -69,7 +69,6 @@ module.exports = {
 				'plugin:@typescript-eslint/recommended',
 				'plugin:import/recommended',
 				'plugin:import/typescript',
-				'xo-typescript',
 			],
 		},
 
@@ -81,4 +80,36 @@ module.exports = {
 			},
 		},
 	],
+	rules: {
+		'@typescript-eslint/naming-convention': [
+			'error',
+			{
+				selector: 'variable',
+				format: ['camelCase', 'UPPER_CASE', 'PascalCase', 'snake_case'],
+			},
+			{
+				selector: 'function',
+				format: ['camelCase', 'PascalCase'],
+			},
+			{
+				selector: 'typeLike',
+				format: ['PascalCase'],
+				prefix: ['T', 'I'],
+			},
+			{
+				selector: 'enumMember',
+				format: ['UPPER_CASE'],
+			},
+			{
+        selector: 'property',
+        format: ['camelCase', 'PascalCase', 'snake_case', 'UPPER_CASE'],
+        leadingUnderscore: 'allow',
+        trailingUnderscore: 'allow',
+      },
+			{
+				selector: 'class',
+				format: ['PascalCase'],
+			},
+		],
+	},
 };

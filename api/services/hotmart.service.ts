@@ -1,9 +1,9 @@
 import {Request} from '../utils/Axios.js';
-import CustomError from '../utils/CustomError.js';
-import {type TypeServiceReturn} from '../types/ServiceReturn.js';
+import {CustomError} from '../utils/CustomError.js';
+import {type TServiceReturn} from '../types/ServiceReturn.js';
 import {SecretService} from './secret.service.js';
-import {type TypeUser} from '../types/User.js';
-import {type TypeHotmartSubscription, type TypeSubscription} from '../types/Subscription.js';
+import {type TUser} from '../types/User.js';
+import {type THotmartSubscription, type TSubscription} from '../types/Subscription.js';
 import {logger} from '../utils/Logger.js';
 import axios from 'axios';
 
@@ -16,7 +16,7 @@ export class HotmartService {
 		this._secretService = new SecretService();
 	}
 
-	public async getUserSchoolSubscriptions(user: TypeUser): Promise<TypeServiceReturn<TypeSubscription[]>> {
+	public async getUserSchoolSubscriptions(user: TUser): Promise<TServiceReturn<TSubscription[]>> {
 		logger.logDebug('Starting to get user hotmart subscriptions');
 
 		const secrets = await this._secretService.getSecret();
@@ -24,16 +24,16 @@ export class HotmartService {
 
 		logger.logDebug('Creating new request for hotmart');
 		const request = new Request(baseUrl, {
-			'Content-Type': 'application/json',
 			// eslint-disable-next-line @typescript-eslint/naming-convention
+			'Content-Type': 'application/json',
 			Authorization: `Bearer ${secrets.data.hotmartApiAccessToken}`,
 		});
 
 		const url = '/payments/api/v1/subscriptions';
 		const params = {
-			// eslint-disable-next-line @typescript-eslint/naming-convention
+			// eslint-disable-next-line camelcase
 			subscriber_email: user.email,
-			// eslint-disable-next-line @typescript-eslint/naming-convention
+			// eslint-disable-next-line camelcase
 			product_id: '135340',
 		};
 
@@ -44,7 +44,7 @@ export class HotmartService {
 
 			return {
 				status: 'SUCCESSFUL',
-				data: response.data.items ? this._mapSubscriptions(response.data.items as TypeHotmartSubscription[], user) : [],
+				data: response.data.items ? this._mapSubscriptions(response.data.items as THotmartSubscription[], user) : [],
 			};
 		} catch (error) {
 			logger.logError(`Error getting user subscriptions on first try: ${JSON.stringify((error as Record<string, string>).data)}`);
@@ -55,8 +55,8 @@ export class HotmartService {
 
 				logger.logDebug('Trying to get user subscriptions again');
 				const request = new Request(baseUrl, {
-					'Content-Type': 'application/json',
 					// eslint-disable-next-line @typescript-eslint/naming-convention
+					'Content-Type': 'application/json',
 					Authorization: `Bearer ${newAccessToken}`,
 				});
 
@@ -64,7 +64,7 @@ export class HotmartService {
 
 				return {
 					status: 'SUCCESSFUL',
-					data: response.data.items ? this._mapSubscriptions(response.data.items as TypeHotmartSubscription[], user) : [],
+					data: response.data.items ? this._mapSubscriptions(response.data.items as THotmartSubscription[], user) : [],
 				};
 			} catch (error) {
 				console.log(error);
@@ -74,7 +74,7 @@ export class HotmartService {
 		}
 	}
 
-	private _mapSubscriptions(subscriptions: TypeHotmartSubscription[], user: TypeUser): TypeSubscription[] {
+	private _mapSubscriptions(subscriptions: THotmartSubscription[], user: TUser): TSubscription[] {
 		return subscriptions.map(subscription => ({
 			userId: user.id,
 			courseId: 'TODO: pesquisar id do curso pelo id do produto no hotmart',
@@ -98,16 +98,16 @@ export class HotmartService {
 				null,
 				{
 					headers: {
-						'Content-Type': 'application/json',
 						// eslint-disable-next-line @typescript-eslint/naming-convention
+						'Content-Type': 'application/json',
 						Authorization: process.env.HOTMART_API_BASIC ?? '',
 					},
 					params: {
-						// eslint-disable-next-line @typescript-eslint/naming-convention
+						// eslint-disable-next-line camelcase
 						grant_type: 'client_credentials',
-						// eslint-disable-next-line @typescript-eslint/naming-convention
+						// eslint-disable-next-line camelcase
 						client_id: process.env.HOTMART_API_CLIENT_ID ?? '',
-						// eslint-disable-next-line @typescript-eslint/naming-convention
+						// eslint-disable-next-line camelcase
 						client_secret: process.env.HOTMART_API_SECRET ?? '',
 					},
 				},

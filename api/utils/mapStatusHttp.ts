@@ -1,6 +1,6 @@
-import {type TypeHttpStatusCode, type TypeHttpStatus} from '../types/HTTPStatus.js';
+import {type THttpStatusCode, type THttpStatus} from '../types/HTTPStatus.js';
 
-export default function mapStatusHttp(status: TypeHttpStatus): TypeHttpStatusCode {
+export default function mapStatusHttp(status: THttpStatus): THttpStatusCode {
 	switch (status) {
 		case 'SUCCESSFUL': return 200;
 		case 'CREATED': return 201;

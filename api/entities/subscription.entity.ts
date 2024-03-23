@@ -1,5 +1,5 @@
-import {type TypeSubscription} from '../types/Subscription.js';
-import CustomError from '../utils/CustomError.js';
+import {type TSubscription} from '../types/Subscription.js';
+import {CustomError} from '../utils/CustomError.js';
 import Joi from 'joi';
 
 const subscriptionSchema = Joi.object({
@@ -10,14 +10,14 @@ const subscriptionSchema = Joi.object({
 	providerSubscriptionId: Joi.string().required(),
 });
 
-export default class Subscription implements TypeSubscription {
+export class Subscription implements TSubscription {
 	private readonly _userId: string;
 	private readonly _courseId: string;
 	private readonly _expiresAt: Date;
 	private readonly _provider: 'hotmart' | 'iugu';
 	private readonly _providerSubscriptionId: string;
 
-	constructor(subscription: TypeSubscription) {
+	constructor(subscription: TSubscription) {
 		const {error} = subscriptionSchema.validate(subscription);
 
 		if (error) {

@@ -1,6 +1,6 @@
-import type Role from '../types/Role.js';
-import {type UserRoles} from '../types/User.js';
+import {type TRole} from '../types/Role.js';
+import {type TUserRoles} from '../types/User.js';
 
-const testUserRoles = (couseRoles: Role[], userRoles: UserRoles) => couseRoles.some(role => userRoles.includes(role.name));
+const testUserRoles = (couseRoles: TRole[], userRoles: TUserRoles) => couseRoles.some(role => userRoles.includes(role.name));
 
 export default testUserRoles;

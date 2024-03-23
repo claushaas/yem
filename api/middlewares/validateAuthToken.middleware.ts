@@ -1,9 +1,9 @@
 import {type NextFunction, type Request, type Response} from 'express';
 import {verifyToken} from '../utils/jwt.js';
-import CustomError from '../utils/CustomError.js';
+import {CustomError} from '../utils/CustomError.js';
 import {logger} from '../utils/Logger.js';
 
-const validateAuthToken = (req: Request, res: Response, next: NextFunction) => {
+export const validateAuthToken = (req: Request, res: Response, next: NextFunction) => {
 	logger.logDebug('Validating token');
 	const token = req.cookies.access_token as string ?? undefined;
 
@@ -24,5 +24,3 @@ const validateAuthToken = (req: Request, res: Response, next: NextFunction) => {
 		throw new CustomError('UNAUTHORIZED', 'Token must be a valid token');
 	}
 };
-
-export default validateAuthToken;

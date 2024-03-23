@@ -1,10 +1,10 @@
 import {type Request, type Response} from 'express';
 import mapStatusHttp from '../utils/mapStatusHttp.js';
 import ModuleService from '../services/module.service.js';
-import {type TypeModule} from '../types/Module.js';
-import {type TypeUser} from '../types/User.js';
+import {type TModule} from '../types/Module.js';
+import {type TUser} from '../types/User.js';
 
-export default class ModuleController {
+export class ModuleController {
 	private readonly _service: ModuleService;
 
 	constructor(service: ModuleService = new ModuleService()) {
@@ -12,7 +12,7 @@ export default class ModuleController {
 	}
 
 	public async create(req: Request, res: Response) {
-		const moduleData = req.body as TypeModule;
+		const moduleData = req.body as TModule;
 
 		const {status, data} = await this._service.create(moduleData);
 
@@ -23,7 +23,7 @@ export default class ModuleController {
 
 	public async update(req: Request, res: Response) {
 		const {id} = req.params;
-		const moduleData = req.body as TypeModule;
+		const moduleData = req.body as TModule;
 
 		const {status, data} = await this._service.update(id, moduleData);
 
@@ -33,7 +33,7 @@ export default class ModuleController {
 	}
 
 	public async getList(req: Request, res: Response) {
-		const {roles: userRoles} = res.locals.user as TypeUser;
+		const {roles: userRoles} = res.locals.user as TUser;
 		const {parentId} = req.params;
 
 		const {status, data} = await this._service.getList(parentId, userRoles);
@@ -45,7 +45,7 @@ export default class ModuleController {
 
 	public async getById(req: Request, res: Response) {
 		const {courseId, id} = req.params;
-		const user = res.locals.user as TypeUser;
+		const user = res.locals.user as TUser;
 
 		const {status, data} = await this._service.getById(courseId, id, user);
 

@@ -1,7 +1,7 @@
 import express from 'express';
 import 'express-async-errors';
-import router from './api/routes/index.js';
-import errorMiddleware from './api/middlewares/error.middleware.js';
+import {router} from './api/routes/index.js';
+import {errorMiddleware} from './api/middlewares/error.middleware.js';
 import cookieParser from 'cookie-parser';
 import {logger} from './api/utils/Logger.js';
 import {morganMiddleware} from './api/middlewares/morgan.middleware.js';

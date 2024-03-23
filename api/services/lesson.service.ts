@@ -1,10 +1,10 @@
 import {PrismaClient} from '@prisma/client';
-import {type TypeUser} from '../types/User.js';
-import CustomError from '../utils/CustomError.js';
-import {type TypeLesson} from '../types/Lesson.js';
-import Lesson from '../entities/lesson.entity.js';
-import {type TypeUuid} from '../types/UUID.js';
-import {type TypeServiceReturn} from '../types/ServiceReturn.js';
+import {type TUser} from '../types/User.js';
+import {CustomError} from '../utils/CustomError.js';
+import {type TLesson} from '../types/Lesson.js';
+import {Lesson} from '../entities/lesson.entity.js';
+import {type TUuid} from '../types/UUID.js';
+import {type TServiceReturn} from '../types/ServiceReturn.js';
 
 export default class LessonService {
 	private readonly _model: PrismaClient;
@@ -13,7 +13,7 @@ export default class LessonService {
 		this._model = model;
 	}
 
-	public async create(lessonData: TypeLesson): Promise<TypeServiceReturn<unknown>> {
+	public async create(lessonData: TLesson): Promise<TServiceReturn<unknown>> {
 		const newLesson = new Lesson(lessonData);
 
 		const createdLesson = await this._model.lesson.create({
@@ -87,7 +87,7 @@ export default class LessonService {
 		};
 	}
 
-	public async update(id: TypeUuid, lessonData: TypeLesson): Promise<TypeServiceReturn<unknown>> {
+	public async update(id: TUuid, lessonData: TLesson): Promise<TServiceReturn<unknown>> {
 		const newLesson = new Lesson(lessonData);
 
 		const updatedLesson = await this._model.lesson.update({
@@ -168,7 +168,7 @@ export default class LessonService {
 		};
 	}
 
-	public async delete(id: TypeUuid): Promise<TypeServiceReturn<unknown>> {
+	public async delete(id: TUuid): Promise<TServiceReturn<unknown>> {
 		const deletedLesson = await this._model.lesson.update({
 			where: {
 				id,
@@ -188,7 +188,7 @@ export default class LessonService {
 		};
 	}
 
-	public async getList(moduleId: TypeUuid, user: TypeUser | undefined): Promise<TypeServiceReturn<unknown>> {
+	public async getList(moduleId: TUuid, user: TUser | undefined): Promise<TServiceReturn<unknown>> {
 		const lessonWhere = {
 			modules: {
 				some: {
@@ -264,7 +264,7 @@ export default class LessonService {
 		};
 	}
 
-	public async getById(courseId: TypeUuid, lessonId: TypeUuid, user: TypeUser | undefined): Promise<TypeServiceReturn<unknown>> {
+	public async getById(courseId: TUuid, lessonId: TUuid, user: TUser | undefined): Promise<TServiceReturn<unknown>> {
 		const course = await this._model.course.findUnique({
 			where: {
 				id: courseId,

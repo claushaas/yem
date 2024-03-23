@@ -1,11 +1,11 @@
 import {type NextFunction, type Request, type Response} from 'express';
-import CustomError from '../utils/CustomError.js';
-import {type TypeUser} from '../types/User.js';
+import {CustomError} from '../utils/CustomError.js';
+import {type TUser} from '../types/User.js';
 import {logger} from '../utils/Logger.js';
 
-const verifyRole = (req: Request, res: Response, next: NextFunction, role: string) => {
+export const verifyRole = (req: Request, res: Response, next: NextFunction, role: string) => {
 	logger.logDebug('Verifying role');
-	const data = res.locals as {user: TypeUser};
+	const data = res.locals as {user: TUser};
 
 	const roles = data?.user?.roles;
 
@@ -17,5 +17,3 @@ const verifyRole = (req: Request, res: Response, next: NextFunction, role: strin
 	logger.logDebug('Role verified');
 	next();
 };
-
-export default verifyRole;

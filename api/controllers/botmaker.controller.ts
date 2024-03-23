@@ -1,7 +1,7 @@
 import {type Request, type Response} from 'express';
 import {BotmakerService} from '../services/botmaker.service.js';
 import mapStatusHttp from '../utils/mapStatusHttp.js';
-import {type TypeWhatsappIntent} from '../types/WhatsappIntent.js';
+import {type TWhatsappIntent} from '../types/WhatsappIntent.js';
 
 export class BotmakerController {
 	private readonly _service: BotmakerService;
@@ -11,7 +11,7 @@ export class BotmakerController {
 	}
 
 	public async sendWhatsappTemplateMessate(req: Request, res: Response) {
-		const {userPhoneNumber, whatsappTemplateName, variables} = req.body as TypeWhatsappIntent;
+		const {userPhoneNumber, whatsappTemplateName, variables} = req.body as TWhatsappIntent;
 
 		const {status, data} = await this._service.sendWhatsappTemplateMessate(
 			userPhoneNumber,

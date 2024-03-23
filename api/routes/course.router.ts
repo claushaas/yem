@@ -1,10 +1,10 @@
 import {
 	type Request, Router, type Response, type NextFunction,
 } from 'express';
-import CourseController from '../controllers/course.controller.js';
-import validateAuthToken from '../middlewares/validateAuthToken.middleware.js';
-import getUserData from '../middlewares/getUserData.middleware.js';
-import verifyRole from '../middlewares/verifyRole.middleware.js';
+import {CourseController} from '../controllers/course.controller.js';
+import {validateAuthToken} from '../middlewares/validateAuthToken.middleware.js';
+import {getUserData} from '../middlewares/getUserData.middleware.js';
+import {verifyRole} from '../middlewares/verifyRole.middleware.js';
 
 // eslint-disable-next-line new-cap
 const courseRouter = Router();
@@ -65,4 +65,4 @@ courseRouter.get(
 	},
 );
 
-export default courseRouter;
+export {courseRouter};

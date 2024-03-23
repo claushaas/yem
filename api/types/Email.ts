@@ -1,4 +1,4 @@
-export type TypeEmailTemplate = {
+export type TEmailTemplate = {
 	to: string;
 	subject: string;
 	html: string;

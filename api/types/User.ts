@@ -1,26 +1,26 @@
-import {type TypeUuid} from './UUID.js';
+import {type TUuid} from './UUID.js';
 
-export type UserRoles = string[];
-type Email = string;
-type FirstName = string;
-type LastName = string;
+export type TUserRoles = string[];
+type TEmail = string;
+type TFirstName = string;
+type TLastName = string;
 
-export type TypeBasicUser = {
-	email: Email;
-	firstName: FirstName;
-	lastName: LastName;
+export type TBasicUser = {
+	email: TEmail;
+	firstName: TFirstName;
+	lastName: TLastName;
 };
 
-export type TypeUser = TypeBasicUser & {
-	id: TypeUuid;
-	roles?: UserRoles;
+export type TUser = TBasicUser & {
+	id: TUuid;
+	roles?: TUserRoles;
 	phoneNumber: string;
 };
 
-export type TypeUserCreationAttributes = TypeBasicUser & {
+export type TUserCreationAttributes = TBasicUser & {
 	document?: string;
-	roles?: UserRoles;
+	roles?: TUserRoles;
 	phoneNumber: string;
 };
 
-export type TypeMauticUserCreationAttributes = TypeBasicUser;
+export type TMauticUserCreationAttributes = TBasicUser;

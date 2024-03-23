@@ -1,9 +1,9 @@
-import {type InSearchService, type SearchableEntity} from '../types/ISearchService';
+import {type ISearchService, type TSearchableEntity} from '../types/ISearchService';
 import Fuse, {type IFuseOptions} from 'fuse.js';
 
-export class FuzzySearchEngine implements InSearchService.Engine<SearchableEntity> {
-	async searchItemsByTerm(term: string, items: SearchableEntity[]) {
-		const options: IFuseOptions<SearchableEntity> = {
+export class FuzzySearchEngine implements ISearchService.TEngine<TSearchableEntity> {
+	async searchItemsByTerm(term: string, items: TSearchableEntity[]) {
+		const options: IFuseOptions<TSearchableEntity> = {
 			includeScore: true,
 			shouldSort: true,
 			isCaseSensitive: false,

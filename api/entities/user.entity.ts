@@ -1,8 +1,8 @@
 import {
-	type TypeUserCreationAttributes, type TypeMauticUserCreationAttributes, type TypeBasicUser,
+	type TUserCreationAttributes, type TMauticUserCreationAttributes, type TBasicUser,
 } from '../types/User.js';
 import Joi from 'joi';
-import CustomError from '../utils/CustomError.js';
+import {CustomError} from '../utils/CustomError.js';
 import {convertStringToStartCase} from '../utils/convertStringToStartCase.js';
 import {logger} from '../utils/Logger.js';
 
@@ -28,7 +28,7 @@ class BasicUser {
 	protected readonly _firstName: string;
 	protected readonly _lastName: string;
 
-	constructor(user: TypeBasicUser) {
+	constructor(user: TBasicUser) {
 		const {error} = basicUserSchema.validate(user);
 
 		if (error) {
@@ -54,7 +54,7 @@ class BasicUser {
 }
 
 export class MauticUserForCreation extends BasicUser {
-	constructor(user: TypeMauticUserCreationAttributes) {
+	constructor(user: TMauticUserCreationAttributes) {
 		super(user);
 
 		const {error} = mauticUserSchema.validate(user);
@@ -73,7 +73,7 @@ export class UserForCreation {
 	protected readonly _phoneNumber: string;
 	protected readonly _document?: string;
 
-	constructor(user: TypeUserCreationAttributes) {
+	constructor(user: TUserCreationAttributes) {
 		const {error} = userCreationSchema.validate(user);
 
 		if (error) {

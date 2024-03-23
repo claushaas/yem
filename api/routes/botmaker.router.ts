@@ -2,8 +2,8 @@ import {
 	type Request, Router, type Response, type NextFunction,
 } from 'express';
 import {BotmakerController} from '../controllers/botmaker.controller.js';
-import validateAuthToken from '../middlewares/validateAuthToken.middleware.js';
-import verifyRole from '../middlewares/verifyRole.middleware.js';
+import {validateAuthToken} from '../middlewares/validateAuthToken.middleware.js';
+import {verifyRole} from '../middlewares/verifyRole.middleware.js';
 
 // eslint-disable-next-line new-cap
 const botmakerRouter = Router();

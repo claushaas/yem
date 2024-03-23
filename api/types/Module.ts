@@ -1,7 +1,7 @@
-import {type TypeTags} from './Tag.js';
-import {type TypeUuid} from './UUID.js';
+import {type TTags} from './Tag.js';
+import {type TUuid} from './UUID.js';
 
-export type TypeModule = {
+export type TModule = {
 	name: string;
 	description?: string;
 	content?: string;
@@ -9,12 +9,12 @@ export type TypeModule = {
 	thumbnailUrl: string;
 	publicationDate: Date;
 	published: boolean;
-	courses?: TypeUuid[];
-	lessons?: TypeUuid[];
-	subModules?: TypeUuid[];
-	belongToModules?: TypeUuid[];
-	tags?: TypeTags;
+	courses?: TUuid[];
+	lessons?: TUuid[];
+	subModules?: TUuid[];
+	belongToModules?: TUuid[];
+	tags?: TTags;
 	// Comments?: string[];
 };
 
-export type TypeModules = TypeModule[];
+export type TModules = TModule[];

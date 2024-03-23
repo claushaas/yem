@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/naming-convention */
+
 const countryCodes = {
 	AF: 93, // Afghanistan
 	AL: 355, // Albania
@@ -231,6 +231,6 @@ const countryCodes = {
 	ZW: 263, // Zimbabwe
 };
 
-type TypeCountriesIsos = keyof typeof countryCodes;
+type TCountriesIsos = keyof typeof countryCodes;
 
-export const getCountryCode = (country: TypeCountriesIsos): number => countryCodes[country] ?? 0;
+export const getCountryCode = (country: TCountriesIsos): number => countryCodes[country] ?? 0;

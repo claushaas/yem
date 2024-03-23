@@ -1,6 +1,6 @@
 import {Request} from '../utils/Axios.js';
-import CustomError from '../utils/CustomError.js';
-import {type TypeServiceReturn} from '../types/ServiceReturn.js';
+import {CustomError} from '../utils/CustomError.js';
+import {type TServiceReturn} from '../types/ServiceReturn.js';
 import {SecretService} from './secret.service.js';
 import {type AxiosResponse} from 'axios';
 import {logger} from '../utils/Logger.js';
@@ -14,13 +14,14 @@ export class BotmakerService {
 		this._secretService = new SecretService();
 	}
 
-	public async addToBlackList(phoneNumber: string): Promise<TypeServiceReturn<AxiosResponse>> {
+	public async addToBlackList(phoneNumber: string): Promise<TServiceReturn<AxiosResponse>> {
 		const {data: {botmakerApiAccessToken}} = await this._secretService.getSecret();
 
 		const request = new Request(baseUrl, {
-			'Content-Type': 'application/json',
 			// eslint-disable-next-line @typescript-eslint/naming-convention
+			'content-type': 'application/json',
 			Accept: 'application/json',
+			// eslint-disable-next-line @typescript-eslint/naming-convention
 			'access-token': botmakerApiAccessToken,
 		});
 
@@ -50,14 +51,15 @@ export class BotmakerService {
 		userPhoneNumber: string,
 		whatsappTemplateName: string,
 		variables: Record<string, string>,
-	): Promise<TypeServiceReturn<AxiosResponse>> {
+	): Promise<TServiceReturn<AxiosResponse>> {
 		logger.logDebug('Sending WP template');
 		const {data: {botmakerApiAccessToken}} = await this._secretService.getSecret();
 
 		const request = new Request(baseUrl, {
-			'Content-Type': 'application/json',
 			// eslint-disable-next-line @typescript-eslint/naming-convention
+			'Content-Type': 'application/json',
 			Accept: 'application/json',
+			// eslint-disable-next-line @typescript-eslint/naming-convention
 			'access-token': botmakerApiAccessToken,
 		});
 

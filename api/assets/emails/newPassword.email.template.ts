@@ -1,6 +1,6 @@
-import {type TypeEmailTemplate} from '../../types/Email.js';
+import {type TEmailTemplate} from '../../types/Email.js';
 
-export const newPassWordEmailTemplate = (firstName: string, to: string, password: string): TypeEmailTemplate => ({
+export const newPassWordEmailTemplate = (firstName: string, to: string, password: string): TEmailTemplate => ({
 	to,
 	subject: `${firstName}, seu acesso chegou!`,
 	html: `

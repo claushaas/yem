@@ -1,6 +1,5 @@
-import {type TypeHttpStatusCode} from './HTTPStatus.js';
+import {type THttpStatusCode} from './HTTPStatus.js';
 
-type TypeCustomError = {
-	statusCode?: TypeHttpStatusCode;
+export type TCustomError = {
+	statusCode?: THttpStatusCode;
 } & Error;
-export default TypeCustomError;

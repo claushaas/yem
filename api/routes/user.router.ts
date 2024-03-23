@@ -1,5 +1,5 @@
 import {type Request, type Response, Router} from 'express';
-import UserController from '../controllers/user.controller.js';
+import {UserController} from '../controllers/user.controller.js';
 
 // eslint-disable-next-line new-cap
 const userRouter = Router();
@@ -28,5 +28,5 @@ userRouter.post(
 	},
 );
 
-export default userRouter;
+export {userRouter};
 

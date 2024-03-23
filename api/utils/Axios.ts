@@ -5,7 +5,6 @@ export class Request {
 
 	constructor(baseUrl: string, headers: Record<string, string> = {}) {
 		this._request = axios.create({
-			// eslint-disable-next-line @typescript-eslint/naming-convention
 			baseURL: baseUrl,
 			headers,
 		});
