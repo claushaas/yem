@@ -1,5 +1,6 @@
 import {CustomError} from '../utils/custom-error.js';
 import {type ISearchService, type TSearchableEntity} from '../types/search-service.type.js';
+import {logger} from '#/utils/logger.js';
 
 export default class SearchService {
 	constructor(private readonly repository: ISearchService.TTypeRepository<TSearchableEntity>, private readonly engine: ISearchService.TEngine<TSearchableEntity>) {}
@@ -14,7 +15,8 @@ export default class SearchService {
 		try {
 			return await this.engine.searchItemsByTerm(term, items);
 		} catch (error) {
-			console.error((error as Error).message); // TODO send to logs
+			console.error((error as Error).message);
+			logger.logError(`search engine could not complete the search task for the term: ${term}`);
 			throw new CustomError('UNPROCESSABLE_ENTITY', `search engine could not complete the search task for the term: ${term}`);
 		}
 	}
