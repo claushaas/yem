@@ -19,7 +19,6 @@ export class Course implements TCourse {
 	private readonly _name: string;
 	private readonly _description?: string;
 	private readonly _content?: string;
-	private readonly _roles: string[];
 	private readonly _videoSourceUrl?: string;
 	private readonly _thumbnailUrl: string;
 	private readonly _publicationDate: Date;
@@ -36,7 +35,6 @@ export class Course implements TCourse {
 		this._name = course.name;
 		this._description = course.description;
 		this._content = course.content;
-		this._roles = course.roles;
 		this._videoSourceUrl = course.videoSourceUrl;
 		this._thumbnailUrl = course.thumbnailUrl;
 		this._publicationDate = course.publicationDate;
@@ -54,10 +52,6 @@ export class Course implements TCourse {
 
 	get content() {
 		return this._content;
-	}
-
-	get roles() {
-		return this._roles;
 	}
 
 	get videoSourceUrl() {

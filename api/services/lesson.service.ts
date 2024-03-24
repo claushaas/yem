@@ -283,11 +283,6 @@ export class LessonService {
 				modules: false,
 				comments: false,
 				tags: false,
-				roles: {
-					select: {
-						name: true,
-					},
-				},
 				subscriptions: {
 					where: {
 						userId: user?.id,

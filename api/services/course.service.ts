@@ -17,7 +17,6 @@ export class CourseService {
 
 		const createdCourse = await this._model.course.create({
 			include: {
-				roles: true,
 				tags: {
 					include: {
 						tagOption: {
@@ -41,12 +40,6 @@ export class CourseService {
 				thumbnailUrl: newCourse.thumbnailUrl,
 				publicationDate: newCourse.publicationDate,
 				published: newCourse.published,
-				roles: {
-					connectOrCreate: newCourse.roles.map(role => ({
-						where: {name: role},
-						create: {name: role},
-					})),
-				},
 				tags: {
 					connectOrCreate: newCourse.tags?.map(tag => ({
 						where: {
@@ -130,12 +123,6 @@ export class CourseService {
 	}
 
 	public async getById(id: string, user: TUser): Promise<TServiceReturn<unknown>> {
-		const includeRoles = {
-			select: {
-				name: true,
-			},
-		};
-
 		const includeModules = {
 			select: {
 				id: true,
@@ -167,7 +154,6 @@ export class CourseService {
 		if (user.roles?.includes('admin')) {
 			const course = await this._model.course.findUnique({
 				include: {
-					roles: includeRoles,
 					modules: includeModules,
 					comments: includeComments,
 				},
@@ -198,7 +184,6 @@ export class CourseService {
 						courseId: id,
 					},
 				},
-				roles: includeRoles,
 				modules: {
 					...includeModules,
 					where: {
@@ -246,7 +231,6 @@ export class CourseService {
 
 		const updatedCourse = await this._model.course.update({
 			include: {
-				roles: true,
 				tags: {
 					include: {
 						tagOption: {
@@ -273,12 +257,6 @@ export class CourseService {
 				thumbnailUrl: courseToUpdate.thumbnailUrl,
 				publicationDate: courseToUpdate.publicationDate,
 				published: courseToUpdate.published,
-				roles: {
-					connectOrCreate: courseToUpdate.roles.map(role => ({
-						where: {name: role},
-						create: {name: role},
-					})),
-				},
 				tags: {
 					connectOrCreate: courseToUpdate.tags?.map(tag => ({
 						where: {

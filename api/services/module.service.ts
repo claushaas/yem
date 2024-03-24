@@ -19,7 +19,6 @@ export class ModuleService {
 		const createdModule = await this._model.module.create({
 			include: {
 				course: true,
-				belongToModules: true,
 				tags: {
 					include: {
 						tagOption: {
@@ -45,9 +44,6 @@ export class ModuleService {
 				published: newModule.published,
 				course: {
 					connect: newModule.courses?.map(course => ({id: course})),
-				},
-				belongToModules: {
-					connect: newModule.belongToModules?.map(module => ({id: module})),
 				},
 				tags: {
 					connectOrCreate: newModule.tags?.map(tag => ({
@@ -96,7 +92,6 @@ export class ModuleService {
 		const updatedModule = await this._model.module.update({
 			include: {
 				course: true,
-				belongToModules: true,
 				tags: {
 					include: {
 						tagOption: {
@@ -125,9 +120,6 @@ export class ModuleService {
 				published: newModule.published,
 				course: {
 					connect: newModule.courses?.map(course => ({id: course})),
-				},
-				belongToModules: {
-					connect: newModule.belongToModules?.map(module => ({id: module})),
 				},
 				tags: {
 					connectOrCreate: newModule.tags?.map(tag => ({
@@ -193,30 +185,16 @@ export class ModuleService {
 			},
 		};
 
-		const moduleWhere = {
-
-			OR: [
-				{
+		if (userRoles.includes('admin')) {
+			const modules = await this._model.module.findMany({
+				select: moduleSelect,
+				where: {
 					course: {
 						some: {
 							id: parentId,
 						},
 					},
 				},
-				{
-					belongToModules: {
-						some: {
-							id: parentId,
-						},
-					},
-				},
-			],
-		};
-
-		if (userRoles.includes('admin')) {
-			const modules = await this._model.module.findMany({
-				select: moduleSelect,
-				where: moduleWhere,
 			});
 
 			if (modules.length === 0) {
@@ -232,8 +210,12 @@ export class ModuleService {
 		const modulesForStudents = await this._model.module.findMany({
 			select: moduleSelect,
 			where: {
-				...moduleWhere,
 				published: true,
+				course: {
+					some: {
+						id: parentId,
+					},
+				},
 			},
 		});
 
@@ -248,17 +230,6 @@ export class ModuleService {
 	}
 
 	public async getById(courseId: TUuid, id: TUuid, user: TUser): Promise<TServiceReturn<unknown>> {
-		const includeSubModules = {
-			select: {
-				id: true,
-				name: true,
-				description: true,
-				thumbnailUrl: true,
-				published: true,
-				publicationDate: true,
-			},
-		};
-
 		const includeTags = {
 			include: {
 				tagOption: {
@@ -309,7 +280,6 @@ export class ModuleService {
 					id,
 				},
 				include: {
-					subModules: includeSubModules,
 					lessons: includeLessons,
 					comments: includeComments,
 				},
@@ -331,12 +301,6 @@ export class ModuleService {
 				published: true,
 			},
 			include: {
-				subModules: {
-					...includeSubModules,
-					where: {
-						published: true,
-					},
-				},
 				lessons: {
 					...includeLessons,
 					where: {
@@ -383,11 +347,6 @@ export class ModuleService {
 				modules: false,
 				comments: false,
 				tags: false,
-				roles: {
-					select: {
-						name: true,
-					},
-				},
 				subscriptions: {
 					where: {
 						userId: user.id,
