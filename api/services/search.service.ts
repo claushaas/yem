@@ -1,5 +1,5 @@
 import {CustomError} from '../utils/custom-error.js';
-import {type ISearchService, type TSearchableEntity} from '../types/search-service.js';
+import {type ISearchService, type TSearchableEntity} from '../types/search-service.type.js';
 import {logger} from '../utils/logger.js';
 
 export default class SearchService {

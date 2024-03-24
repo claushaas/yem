@@ -1,4 +1,4 @@
-import {type TTags} from './tag-type.js';
+import {type TTags} from './tag.type.js';
 
 export type TCourse = {
 	name: string;

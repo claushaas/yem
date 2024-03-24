@@ -1,7 +1,7 @@
 import Joi from 'joi';
 import {
 	type TUserCreationAttributes, type TMauticUserCreationAttributes, type TBasicUser,
-} from '../types/user-type.js';
+} from '../types/user.type.js';
 import {CustomError} from '../utils/custom-error.js';
 import {convertStringToStartCase} from '../utils/convert-string-to-start-case.js';
 import {logger} from '../utils/logger.js';

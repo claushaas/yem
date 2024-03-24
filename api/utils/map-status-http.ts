@@ -1,4 +1,4 @@
-import {type THttpStatusCode, type THttpStatus} from '../types/http-status.js';
+import {type THttpStatusCode, type THttpStatus} from '../types/http-status.type.js';
 
 export function mapStatusHttp(status: THttpStatus): THttpStatusCode {
 	switch (status) {

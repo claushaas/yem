@@ -1,5 +1,5 @@
 import {type NextFunction, type Request, type Response} from 'express';
-import {type TCustomError} from '../types/custom-error.js';
+import {type TCustomError} from '../types/custom-error.type.js';
 import {logger} from '../utils/logger.js';
 
 export const errorMiddleware = (error: TCustomError, _request: Request, response: Response, _next: NextFunction) => {

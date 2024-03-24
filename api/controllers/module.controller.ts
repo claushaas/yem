@@ -1,8 +1,8 @@
 import {type Request, type Response} from 'express';
 import {mapStatusHttp} from '../utils/map-status-http.js';
 import {ModuleService} from '../services/module.service.js';
-import {type TModule} from '../types/module-type.js';
-import {type TUser} from '../types/user-type.js';
+import {type TModule} from '../types/module.type.js';
+import {type TUser} from '../types/user.type.js';
 
 export class ModuleController {
 	private readonly _service: ModuleService;

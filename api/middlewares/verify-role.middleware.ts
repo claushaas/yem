@@ -1,6 +1,6 @@
 import {type NextFunction, type Request, type Response} from 'express';
 import {CustomError} from '../utils/custom-error.js';
-import {type TUser} from '../types/user-type.js';
+import {type TUser} from '../types/user.type.js';
 import {logger} from '../utils/logger.js';
 
 export const verifyRole = (request: Request, response: Response, next: NextFunction, role: string) => {

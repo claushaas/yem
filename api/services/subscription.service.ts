@@ -1,8 +1,8 @@
 import {PrismaClient} from '@prisma/client';
-import {type TUser} from '../types/user-type.js';
-import {type TServiceReturn} from '../types/service-return.js';
+import {type TUser} from '../types/user.type.js';
+import {type TServiceReturn} from '../types/service-return.type.js';
 import {Subscription} from '../entities/subscription.entity.js';
-import {type TSubscription} from '../types/subscription-type.js';
+import {type TSubscription} from '../types/subscription.type.js';
 import {logger} from '../utils/logger.js';
 import {HotmartService} from './hotmart.service.js';
 import {IuguService} from './iugu.service.js';

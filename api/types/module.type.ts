@@ -1,5 +1,5 @@
-import {type TTags} from './tag-type.js';
-import {type TUuid} from './uuid-type.js';
+import {type TTags} from './tag.type.js';
+import {type TUuid} from './uuid.type.js';
 
 export type TModule = {
 	name: string;

@@ -1,8 +1,8 @@
 import {fromEnv} from '@aws-sdk/credential-providers';
 import {SecretsManagerClient, GetSecretValueCommand, UpdateSecretCommand} from '@aws-sdk/client-secrets-manager';
 import {CustomError} from '../utils/custom-error.js';
-import {type TServiceReturn} from '../types/service-return.js';
-import {type TSecret} from '../types/secret.js';
+import {type TServiceReturn} from '../types/service-return.type.js';
+import {type TSecret} from '../types/secret.type.js';
 import {logger} from '../utils/logger.js';
 
 export class SecretService {

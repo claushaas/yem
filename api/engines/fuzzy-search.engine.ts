@@ -1,5 +1,5 @@
 import Fuse, {type IFuseOptions} from 'fuse.js';
-import {type ISearchService, type TSearchableEntity} from '../types/search-service.js';
+import {type ISearchService, type TSearchableEntity} from '../types/search-service.type.js';
 
 export class FuzzySearchEngine implements ISearchService.TEngine<TSearchableEntity> {
 	async searchItemsByTerm(term: string, items: TSearchableEntity[]) {

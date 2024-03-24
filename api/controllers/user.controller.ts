@@ -1,8 +1,8 @@
 import {type Request, type Response} from 'express';
 import {UserService} from '../services/user.service.js';
 import {mapStatusHttp} from '../utils/map-status-http.js';
-import {type THttpStatus} from '../types/http-status.js';
-import {type TUser, type TUserCreationAttributes} from '../types/user-type.js';
+import {type THttpStatus} from '../types/http-status.type.js';
+import {type TUser, type TUserCreationAttributes} from '../types/user.type.js';
 import {logger} from '../utils/logger.js';
 
 export class UserController {
