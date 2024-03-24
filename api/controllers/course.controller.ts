@@ -4,9 +4,9 @@ import {mapStatusHttp} from '../utils/map-status-http.js';
 import {type TUser} from '../types/user.type.js';
 import {type TCourse} from '../types/course.type.js';
 import {logger} from '../utils/logger.js';
-import SearchService from '#/services/search.service.js';
-import {FuzzySearchEngine} from '#/engines/fuzzy-search.engine.js';
-import {CourseRepository} from '#/repositories/course.repository.js';
+import SearchService from '../services/search.service.js';
+import {FuzzySearchEngine} from '../engines/fuzzy-search.engine.js';
+import {CourseRepository} from '../repositories/course.repository.js';
 
 export class CourseController {
 	private readonly _service: CourseService;

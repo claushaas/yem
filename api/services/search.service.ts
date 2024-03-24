@@ -1,6 +1,6 @@
 import {CustomError} from '../utils/custom-error.js';
 import {type ISearchService, type TSearchableEntity} from '../types/search-service.type.js';
-import {logger} from '#/utils/logger.js';
+import {logger} from '../utils/logger.js';
 
 export default class SearchService {
 	constructor(private readonly repository: ISearchService.TTypeRepository<TSearchableEntity>, private readonly engine: ISearchService.TEngine<TSearchableEntity>) {}
