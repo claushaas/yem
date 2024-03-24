@@ -1,23 +1,22 @@
-import CustomError from '../utils/CustomError.js';
-import {type TypeServiceReturn} from '../types/ServiceReturn.js';
 import api from 'api';
-import {type TypeUser} from '../types/User.js';
-import {type TypeIuguSubscription, type TypeSubscription} from '../types/Subscription.js';
+import {CustomError} from '../utils/custom-error.js';
+import {type TServiceReturn} from '../types/service-return.js';
+import {type TUser} from '../types/user.js';
+import {type TIuguSubscription, type TSubscription} from '../types/subscription.js';
 
 export class IuguService {
 	private readonly _api: {
 		auth: (apiKey: string) => void;
-		listarAssinaturas: ({query}: {query: string}) => Promise<{data: {items: TypeIuguSubscription[]}}>;
+		listarAssinaturas: ({query}: {query: string}) => Promise<{data: {items: TIuguSubscription[]}}>;
 	};
 
 	constructor() {
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-		this._api = api('@iugu-dev/v1.0#40ap3flrqvhoz1');
+		this._api = api('@iugu-dev/v1.0#40ap3flrqvhoz1'); // eslint-disable-line @typescript-eslint/no-unsafe-assignment
 
 		this._api.auth(process.env.IUGU_API_TOKEN ?? '');
 	}
 
-	public async getUserSubscriptions(user: TypeUser): Promise<TypeServiceReturn<TypeSubscription[]>> {
+	public async getUserSubscriptions(user: TUser): Promise<TServiceReturn<TSubscription[]>> {
 		try {
 			const {data: {items}} = await this._api.listarAssinaturas({query: user.email});
 
@@ -37,7 +36,7 @@ export class IuguService {
 		}
 	}
 
-	private _mapSubscriptions(subscriptions: TypeIuguSubscription[], user: TypeUser): TypeSubscription[] {
+	private _mapSubscriptions(subscriptions: TIuguSubscription[], user: TUser): TSubscription[] {
 		return subscriptions.map(subscription => ({
 			userId: user.id,
 			courseId: 'pesquisar pelo id do curso pelo identificador do plano da iugu',

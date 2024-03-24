@@ -1,4 +1,4 @@
-export type TypeSubscription = {
+export type TSubscription = {
 	userId: string;
 	courseId: string;
 	expiresAt: Date;
@@ -6,7 +6,7 @@ export type TypeSubscription = {
 	providerSubscriptionId: string;
 };
 
-export type TypeHotmartSubscription = {
+export type THotmartSubscription = {
 	subscription_id: string;
 	date_next_charge: string;
 	product: {
@@ -14,7 +14,7 @@ export type TypeHotmartSubscription = {
 	};
 };
 
-export type TypeIuguSubscription = {
+export type TIuguSubscription = {
 	id: string;
 	plan_identifier: string;
 	expires_at: string;

@@ -8,21 +8,24 @@ import {
 	type MessageActionType,
 	AdminSetUserPasswordCommand,
 } from '@aws-sdk/client-cognito-identity-provider';
-import CustomError from '../utils/CustomError.js';
+import {CustomError} from '../utils/custom-error.js';
 import {generateToken} from '../utils/jwt.js';
-import {type TypeServiceReturn} from '../types/ServiceReturn.js';
-import SubscriptionService from './subscription.service.js';
-import {logger} from '../utils/Logger.js';
-import {type TypeUser, type TypeUserCreationAttributes} from '../types/User.js';
-import {MailService} from './mail.service.js';
+import {type TServiceReturn} from '../types/service-return.js';
+import {logger} from '../utils/logger.js';
+import {
+	type TUser,
+	type TUserCreationAttributes,
+} from '../types/user.js';
 import {welcomeEmailTemplate} from '../assets/emails/welcome.email.template.js';
-import {BotmakerService} from './botmaker.service.js';
-import {MauticService} from './mautic.service.js';
 import {UserForCreation} from '../entities/user.entity.js';
-import {generateSecurePassword} from '../utils/generateSecurePassword.js';
-import {newPassWordEmailTemplate} from '../assets/emails/newPassword.email.template.js';
+import {generateSecurePassword} from '../utils/generate-secure-password.js';
+import {newPassWordEmailTemplate} from '../assets/emails/new-password.email.template.js';
+import {MauticService} from './mautic.service.js';
+import {BotmakerService} from './botmaker.service.js';
+import {MailService} from './mail.service.js';
+import SubscriptionService from './subscription.service.js';
 
-export default class UserService {
+export class UserService {
 	private readonly _awsClient: CognitoIdentityProviderClient;
 	private readonly _subscriptionService: SubscriptionService;
 	private readonly _mailService: MailService;
@@ -30,10 +33,12 @@ export default class UserService {
 	private readonly _mauticService: MauticService;
 
 	constructor(
-		awsClient: CognitoIdentityProviderClient = new CognitoIdentityProviderClient({
-			region: process.env.AWS_REGION ?? 'us-east-1',
-			credentials: fromEnv(),
-		}),
+		awsClient: CognitoIdentityProviderClient = new CognitoIdentityProviderClient(
+			{
+				region: process.env.AWS_REGION ?? 'us-east-1',
+				credentials: fromEnv(),
+			},
+		),
 	) {
 		this._awsClient = awsClient;
 		this._subscriptionService = new SubscriptionService();
@@ -42,41 +47,45 @@ export default class UserService {
 		this._mauticService = new MauticService();
 	}
 
-	public async createOrFail(userData: TypeUserCreationAttributes): Promise<TypeServiceReturn<{userId: string}>> {
+	public async createOrFail(userData: TUserCreationAttributes): Promise<TServiceReturn<{userId: string}>> {
 		logger.logDebug(`Finfing user ${typeof userData.phoneNumber}`);
 		const maybeUser = await this._verifyUserExists(userData.email);
-		logger.logDebug(`User ${userData.email} found: ${JSON.stringify(maybeUser)}`);
+		logger.logDebug(
+			`User ${userData.email} found: ${JSON.stringify(maybeUser)}`,
+		);
 
 		if (maybeUser.data) {
 			logger.logError(`User ${userData.email} already exists`);
 			throw new CustomError('CONFLICT', 'Usuário já existe');
 		}
 
-		logger.logDebug(`User ${JSON.stringify(userData)} not found, creating user`);
+		logger.logDebug(
+			`User ${JSON.stringify(userData)} not found, creating user`,
+		);
 		const newUserData = await this._create(userData);
 		logger.logDebug(`User ${userData.email} created successfully`);
 
 		return newUserData;
 	}
 
-	public async login(username: string, password: string): Promise<TypeServiceReturn<{token: string; userData: TypeUser}>> {
+	public async login(username: string, password: string): Promise<TServiceReturn<{token: string; userData: TUser}>> {
 		const cleanUsername = username.trim().toLowerCase();
 
-		const params: InitiateAuthCommandInput = {
-			// eslint-disable-next-line @typescript-eslint/naming-convention
+		const parameters: InitiateAuthCommandInput = {
+
 			AuthFlow: 'USER_PASSWORD_AUTH',
-			// eslint-disable-next-line @typescript-eslint/naming-convention
+
 			ClientId: process.env.COGNITO_CLIENT_ID,
-			// eslint-disable-next-line @typescript-eslint/naming-convention
+
 			AuthParameters: {
-				// eslint-disable-next-line @typescript-eslint/naming-convention
+
 				USERNAME: cleanUsername,
-				// eslint-disable-next-line @typescript-eslint/naming-convention
+
 				PASSWORD: password,
 			},
 		};
 
-		const command = new InitiateAuthCommand(params);
+		const command = new InitiateAuthCommand(parameters);
 		const response = await this._awsClient.send(command);
 
 		if (response.$metadata.httpStatusCode !== 200) {
@@ -89,8 +98,13 @@ export default class UserService {
 		try {
 			token = generateToken(user);
 		} catch (error) {
-			logger.logError(`Error generating token for user ${user.id}: ${(error as Error).message}`);
-			throw new CustomError('UNKNOWN', `Error generating token for user ${user.id}: ${(error as Error).message}`);
+			logger.logError(
+				`Error generating token for user ${user.id}: ${(error as Error).message}`,
+			);
+			throw new CustomError(
+				'UNKNOWN',
+				`Error generating token for user ${user.id}: ${(error as Error).message}`,
+			);
 		}
 
 		try {
@@ -110,7 +124,7 @@ export default class UserService {
 		};
 	}
 
-	public async getNewPassword(email: string): Promise<TypeServiceReturn<unknown>> {
+	public async getNewPassword(email: string): Promise<TServiceReturn<unknown>> {
 		try {
 			const {data: user} = await this._getUserData(email);
 
@@ -119,12 +133,18 @@ export default class UserService {
 			await this._setUserPassword(user.id, password);
 
 			await Promise.all([
-				this._mailService.sendEmail(newPassWordEmailTemplate(user.firstName, user.email, password)),
-				this._botmakerService.sendWhatsappTemplateMessate(user.phoneNumber, 'new_password', {
-					primeiroNome: user.firstName,
-					emailAluno: user.email,
-					senha: password,
-				}),
+				this._mailService.sendEmail(
+					newPassWordEmailTemplate(user.firstName, user.email, password),
+				),
+				this._botmakerService.sendWhatsappTemplateMessate(
+					user.phoneNumber,
+					'new_password',
+					{
+						primeiroNome: user.firstName,
+						emailAluno: user.email,
+						senha: password,
+					},
+				),
 			]);
 
 			return {
@@ -132,93 +152,109 @@ export default class UserService {
 				data: null,
 			};
 		} catch (error) {
-			logger.logError(`Error getting new password for user ${email}: ${(error as Error).message}`);
+			logger.logError(
+				`Error getting new password for user ${email}: ${(error as Error).message}`,
+			);
 			throw new CustomError('UNKNOWN', 'Error setting new password');
 		}
 	}
 
-	private async _create(userData: TypeUserCreationAttributes): Promise<TypeServiceReturn<{userId: string}>> {
+	private async _create(userData: TUserCreationAttributes): Promise<TServiceReturn<{userId: string}>> {
 		logger.logDebug(`Creating user ${userData.email}`);
 		const newUser = new UserForCreation(userData);
 		logger.logDebug(`New user data: ${JSON.stringify(newUser)}`);
 
-		const {email, phoneNumber, firstName, lastName, roles, document} = newUser;
+		const {email, phoneNumber, firstName, lastName, roles, document}
+      = newUser;
 
 		const paramsforUserCreation = {
-			// eslint-disable-next-line @typescript-eslint/naming-convention
+
 			UserPoolId: process.env.COGNITO_USER_POOL_ID,
-			// eslint-disable-next-line @typescript-eslint/naming-convention
+
 			Username: email.toLowerCase(),
-			// eslint-disable-next-line @typescript-eslint/naming-convention
+
 			MessageAction: 'SUPPRESS' as MessageActionType,
-			// eslint-disable-next-line @typescript-eslint/naming-convention
+
 			UserAttributes: [
 				{
-					// eslint-disable-next-line @typescript-eslint/naming-convention
+
 					Name: 'email',
-					// eslint-disable-next-line @typescript-eslint/naming-convention
+
 					Value: email,
 				},
 				{
-					// eslint-disable-next-line @typescript-eslint/naming-convention
+
 					Name: 'email_verified',
-					// eslint-disable-next-line @typescript-eslint/naming-convention
+
 					Value: 'true',
 				},
 				{
-					// eslint-disable-next-line @typescript-eslint/naming-convention
+
 					Name: 'phone_number_verified',
-					// eslint-disable-next-line @typescript-eslint/naming-convention
+
 					Value: 'true',
 				},
 				{
-					// eslint-disable-next-line @typescript-eslint/naming-convention
+
 					Name: 'phone_number',
-					// eslint-disable-next-line @typescript-eslint/naming-convention
+
 					Value: phoneNumber,
 				},
 				{
-					// eslint-disable-next-line @typescript-eslint/naming-convention
+
 					Name: 'given_name',
-					// eslint-disable-next-line @typescript-eslint/naming-convention
+
 					Value: firstName,
 				},
 				{
-					// eslint-disable-next-line @typescript-eslint/naming-convention
+
 					Name: 'family_name',
-					// eslint-disable-next-line @typescript-eslint/naming-convention
+
 					Value: lastName,
 				},
 				{
-					// eslint-disable-next-line @typescript-eslint/naming-convention
+
 					Name: 'custom:roles',
-					// eslint-disable-next-line @typescript-eslint/naming-convention
+
 					Value: roles?.join('-') ?? 'iniciantes',
 				},
 				{
-					// eslint-disable-next-line @typescript-eslint/naming-convention
+
 					Name: 'custom:CPF',
-					// eslint-disable-next-line @typescript-eslint/naming-convention
+
 					Value: document ?? '',
 				},
 			],
 		};
 
-		logger.logDebug(`Creating Cognito command for ${email} with data: ${JSON.stringify(paramsforUserCreation)}`);
-		const commandforUserCreation = new AdminCreateUserCommand(paramsforUserCreation);
-		const userCreationResponse = await this._awsClient.send(commandforUserCreation);
-		logger.logDebug(`User creation response: ${JSON.stringify(userCreationResponse.$metadata)}`);
-		logger.logDebug(`User creation response: ${JSON.stringify(userCreationResponse.User)}`);
+		logger.logDebug(
+			`Creating Cognito command for ${email} with data: ${JSON.stringify(paramsforUserCreation)}`,
+		);
+		const commandforUserCreation = new AdminCreateUserCommand(
+			paramsforUserCreation,
+		);
+		const userCreationResponse = await this._awsClient.send(
+			commandforUserCreation,
+		);
+		logger.logDebug(
+			`User creation response: ${JSON.stringify(userCreationResponse.$metadata)}`,
+		);
+		logger.logDebug(
+			`User creation response: ${JSON.stringify(userCreationResponse.User)}`,
+		);
 
 		if (userCreationResponse.$metadata.httpStatusCode !== 200) {
 			logger.logError(`Error creating user ${email}`);
 			throw new CustomError('INVALID_DATA', 'Error creating user');
 		}
 
-		logger.logDebug(`User ${email} created successfully: ${JSON.stringify(userCreationResponse.User)}`);
+		logger.logDebug(
+			`User ${email} created successfully: ${JSON.stringify(userCreationResponse.User)}`,
+		);
 
 		logger.logDebug(`Getting user id for user ${email}`);
-		const username: string = userCreationResponse.User?.Attributes?.find(attr => attr.Name === 'sub')?.Value ?? '';
+		const username: string
+      = userCreationResponse.User?.Attributes?.find(attribute => attribute.Name === 'sub')?.Value ?? '';
 		logger.logDebug(`User id for user ${email} is ${username}`);
 
 		const password = generateSecurePassword();
@@ -241,25 +277,39 @@ export default class UserService {
 				logger.logDebug(`Adding user ${email} to segment 3`);
 				await this._mauticService.addContactToSegment(mauticUserId, 3);
 			} catch (error) {
-				logger.logError(`Error adding user ${email} to segment 3: ${(error as Error).message}`);
+				logger.logError(
+					`Error adding user ${email} to segment 3: ${(error as Error).message}`,
+				);
 			}
 		} catch (error) {
-			logger.logError(`Error creating contact in Mautic for user ${email}: ${(error as Error).message}`);
+			logger.logError(
+				`Error creating contact in Mautic for user ${email}: ${(error as Error).message}`,
+			);
 		}
 
 		try {
-			logger.logDebug(`Sending welcome email and whatsapp message to user ${email}`);
+			logger.logDebug(
+				`Sending welcome email and whatsapp message to user ${email}`,
+			);
 			await Promise.all([
-				this._mailService.sendEmail(welcomeEmailTemplate(firstName, email, password)),
-				this._botmakerService.sendWhatsappTemplateMessate(phoneNumber, 'senha', {
-					nome: firstName,
-					linkDaAreaDosAlunos: 'https://escola.yogaemmovimento.com',
-					usuario: email,
-					senha: password,
-				}),
+				this._mailService.sendEmail(
+					welcomeEmailTemplate(firstName, email, password),
+				),
+				this._botmakerService.sendWhatsappTemplateMessate(
+					phoneNumber,
+					'senha',
+					{
+						nome: firstName,
+						linkDaAreaDosAlunos: 'https://escola.yogaemmovimento.com',
+						usuario: email,
+						senha: password,
+					},
+				),
 			]);
 		} catch (error) {
-			logger.logError(`Error sending welcome email or whatsapp message to user ${email}: ${(error as Error).message}`);
+			logger.logError(
+				`Error sending welcome email or whatsapp message to user ${email}: ${(error as Error).message}`,
+			);
 		}
 
 		return {
@@ -270,50 +320,58 @@ export default class UserService {
 		};
 	}
 
-	private async _setUserPassword(username: string, password: string): Promise<TypeServiceReturn<unknown>> {
+	private async _setUserPassword(username: string, password: string): Promise<TServiceReturn<string>> {
 		try {
 			logger.logDebug(`Setting user password for user ${username}`);
-			const paramsForSettingUserPassword = {
-				// eslint-disable-next-line @typescript-eslint/naming-convention
+			const parametersForSettingUserPassword = {
+
 				UserPoolId: process.env.COGNITO_USER_POOL_ID,
-				// eslint-disable-next-line @typescript-eslint/naming-convention
+
 				Username: username,
-				// eslint-disable-next-line @typescript-eslint/naming-convention
+
 				Password: password,
-				// eslint-disable-next-line @typescript-eslint/naming-convention
+
 				Permanent: true,
 			};
 
-			const commandForSettingUserPassword = new AdminSetUserPasswordCommand(paramsForSettingUserPassword);
+			const commandForSettingUserPassword = new AdminSetUserPasswordCommand(
+				parametersForSettingUserPassword,
+			);
 			await this._awsClient.send(commandForSettingUserPassword);
 			logger.logDebug(`User password set successfully for user ${username}`);
 
 			return {
 				status: 'NO_CONTENT',
-				data: null,
+				data: 'User password set successfully',
 			};
 		} catch (error) {
-			logger.logError(`Error setting user password for user ${username}: ${(error as Error).message}`);
+			logger.logError(
+				`Error setting user password for user ${username}: ${(error as Error).message}`,
+			);
 			throw new CustomError('UNKNOWN', 'Error setting user password');
 		}
 	}
 
-	private async _verifyUserExists(username: string): Promise<TypeServiceReturn<boolean>> {
+	private async _verifyUserExists(username: string): Promise<TServiceReturn<boolean>> {
 		try {
 			const cleanUsername = username.trim().toLowerCase();
 
-			await this._awsClient.send(new AdminGetUserCommand({
-			// eslint-disable-next-line @typescript-eslint/naming-convention
-				UserPoolId: process.env.COGNITO_USER_POOL_ID,
-				// eslint-disable-next-line @typescript-eslint/naming-convention
-				Username: cleanUsername,
-			}));
+			await this._awsClient.send(
+				new AdminGetUserCommand({
+
+					UserPoolId: process.env.COGNITO_USER_POOL_ID,
+
+					Username: cleanUsername,
+				}),
+			);
 			return {
 				status: 'SUCCESSFUL',
 				data: true,
 			};
 		} catch (error) {
-			logger.logError(`Error verifying user ${username} exists: ${(error as Error).message}`);
+			logger.logError(
+				`Error verifying user ${username} exists: ${(error as Error).message}`,
+			);
 			return {
 				status: 'SUCCESSFUL',
 				data: false,
@@ -321,35 +379,38 @@ export default class UserService {
 		}
 	}
 
-	private async _getUserData(username: string): Promise<TypeServiceReturn<TypeUser>> {
+	private async _getUserData(username: string): Promise<TServiceReturn<TUser>> {
 		const cleanUsername = username.trim().toLowerCase();
 
-		const user = await this._awsClient.send(new AdminGetUserCommand({
-			// eslint-disable-next-line @typescript-eslint/naming-convention
-			UserPoolId: process.env.COGNITO_USER_POOL_ID,
-			// eslint-disable-next-line @typescript-eslint/naming-convention
-			Username: cleanUsername,
-		}));
+		const user = await this._awsClient.send(
+			new AdminGetUserCommand({
 
-		const cleanUser: TypeUser = {
-			id:
-				user.UserAttributes?.find(attr => attr.Name === 'sub')?.Value ?? '',
+				UserPoolId: process.env.COGNITO_USER_POOL_ID,
+
+				Username: cleanUsername,
+			}),
+		);
+
+		const cleanUser: TUser = {
+			id: user.UserAttributes?.find(attribute => attribute.Name === 'sub')?.Value ?? '',
 			email:
-				user.UserAttributes?.find(attr => attr.Name === 'email')?.Value ?? '',
+        user.UserAttributes?.find(attribute => attribute.Name === 'email')?.Value ?? '',
 			roles:
-				user.UserAttributes?.find(attr => attr.Name === 'custom:roles')?.Value?.split('-') ?? [],
+        user.UserAttributes?.find(attribute => attribute.Name === 'custom:roles')?.Value?.split('-') ?? [],
 			firstName:
-				user.UserAttributes?.find(attr => attr.Name === 'given_name')?.Value ?? '',
+        user.UserAttributes?.find(attribute => attribute.Name === 'given_name')?.Value ?? '',
 			lastName:
-				user.UserAttributes?.find(attr => attr.Name === 'family_name')?.Value ?? '',
+        user.UserAttributes?.find(attribute => attribute.Name === 'family_name')?.Value ?? '',
 			phoneNumber:
-				user.UserAttributes?.find(attr => attr.Name === 'phone_number')?.Value ?? '',
+        user.UserAttributes?.find(attribute => attribute.Name === 'phone_number')?.Value ?? '',
 		};
 
 		logger.logInfo(`User ${cleanUser.id} data retrieved successfully`);
 
 		if (!cleanUser.id) {
-			logger.logError(`Error getting user data: user id ${cleanUsername} not found`);
+			logger.logError(
+				`Error getting user data: user id ${cleanUsername} not found`,
+			);
 			throw new CustomError('NOT_FOUND', 'Usuário não encontrado');
 		}
 

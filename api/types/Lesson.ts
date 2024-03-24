@@ -1,17 +1,17 @@
-import {type TypeTags} from './Tag.js';
-import {type TypeUuid} from './UUID.js';
+import {type TTags} from './tag.js';
+import {type TUuid} from './uuid.js';
 
-export type TypeLessonType = 'video' | 'text' | 'courseWare';
+export type TLessonType = 'video' | 'text' | 'courseWare';
 
-export type TypeLesson = {
+export type TLesson = {
 	name: string;
-	type: TypeLessonType;
+	type: TLessonType;
 	description?: string;
 	content?: string;
 	videoSourceUrl?: string;
 	thumbnailUrl: string;
-	modules: TypeUuid[];
+	modules: TUuid[];
 	publicationDate: Date;
 	published: boolean;
-	tags?: TypeTags;
+	tags?: TTags;
 };

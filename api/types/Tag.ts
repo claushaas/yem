@@ -1,3 +1,3 @@
-export type TypeTag = [string, string];
+export type TTag = [string, string];
 
-export type TypeTags = TypeTag[];
+export type TTags = TTag[];

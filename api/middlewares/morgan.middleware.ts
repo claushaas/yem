@@ -1,5 +1,5 @@
 import morgan, {type StreamOptions} from 'morgan';
-import {logger} from '../utils/Logger.js';
+import {logger} from '../utils/logger.js';
 
 const skip = () => {
 	const env = process.env.NODE_ENV ?? 'development';

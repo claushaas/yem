@@ -5,14 +5,14 @@ class Request {
 
 	constructor(baseUrl: string, headers: Record<string, string> = {}) {
 		this._request = axios.create({
-			// eslint-disable-next-line @typescript-eslint/naming-convention
+
 			baseURL: baseUrl,
 			headers,
 		});
 	}
 
-	public async get(url: string, params: Record<string, string> = {}): Promise<AxiosResponse> {
-		return this._request.get(url, {params});
+	public async get(url: string, parameters: Record<string, string> = {}): Promise<AxiosResponse> {
+		return this._request.get(url, {params: parameters});
 	}
 
 	public async post(

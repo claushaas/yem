@@ -1,10 +1,10 @@
 import {
 	type NextFunction, type Request, type Response, Router,
 } from 'express';
-import ModuleController from '../controllers/module.controller.js';
-import validateAuthToken from '../middlewares/validateAuthToken.middleware.js';
-import verifyRole from '../middlewares/verifyRole.middleware.js';
-import getUserData from '../middlewares/getUserData.middleware.js';
+import {ModuleController} from '../controllers/module.controller.js';
+import {validateAuthToken} from '../middlewares/validate-auth-token.middleware.js';
+import {verifyRole} from '../middlewares/verify-role.middleware.js';
+import {getUserData} from '../middlewares/get-user-data.middleware.js';
 
 // eslint-disable-next-line new-cap
 const moduleRouter = Router();
@@ -12,50 +12,50 @@ const moduleRouter = Router();
 moduleRouter.post(
 	'/',
 	validateAuthToken,
-	(req: Request, res: Response, next: NextFunction) => {
-		verifyRole(req, res, next, 'admin');
+	(request: Request, response: Response, next: NextFunction) => {
+		verifyRole(request, response, next, 'admin');
 	},
-	async (req: Request, res: Response) => {
-		await new ModuleController().create(req, res);
+	async (request: Request, response: Response) => {
+		await new ModuleController().create(request, response);
 	},
 );
 
 moduleRouter.put(
 	'/:id',
 	validateAuthToken,
-	(req: Request, res: Response, next: NextFunction) => {
-		verifyRole(req, res, next, 'admin');
+	(request: Request, response: Response, next: NextFunction) => {
+		verifyRole(request, response, next, 'admin');
 	},
-	async (req: Request, res: Response) => {
-		await new ModuleController().update(req, res);
+	async (request: Request, response: Response) => {
+		await new ModuleController().update(request, response);
 	},
 );
 
 moduleRouter.delete(
 	'/:id',
 	validateAuthToken,
-	(req: Request, res: Response, next: NextFunction) => {
-		verifyRole(req, res, next, 'admin');
+	(request: Request, response: Response, next: NextFunction) => {
+		verifyRole(request, response, next, 'admin');
 	},
-	async (req: Request, res: Response) => {
-		await new ModuleController().delete(req, res);
+	async (request: Request, response: Response) => {
+		await new ModuleController().delete(request, response);
 	},
 );
 
 moduleRouter.get(
 	'/:courseId/:id',
 	getUserData,
-	async (req: Request, res: Response) => {
-		await new ModuleController().getById(req, res);
+	async (request: Request, response: Response) => {
+		await new ModuleController().getById(request, response);
 	},
 );
 
 moduleRouter.get(
 	'/:parentId',
 	getUserData,
-	async (req: Request, res: Response) => {
-		await new ModuleController().getList(req, res);
+	async (request: Request, response: Response) => {
+		await new ModuleController().getList(request, response);
 	},
 );
 
-export default moduleRouter;
+export {moduleRouter};
