@@ -1,9 +1,10 @@
-import CustomError from '../utils/CustomError';
-import {type InSearchService, type SearchableEntity} from '../types/ISearchService';
-import {logger} from '../utils/Logger';
+import {CustomError} from '../utils/custom-error.js';
+import {type ISearchService, type TSearchableEntity} from '../types/search-service.type.js';
+import {logger} from '../utils/logger.js';
 
 export default class SearchService {
-	constructor(private readonly repository: InSearchService.Repository<SearchableEntity>, private readonly engine: InSearchService.Engine<SearchableEntity>) {}
+	[x: string]: any;
+	constructor(private readonly repository: ISearchService.TTypeRepository<TSearchableEntity>, private readonly engine: ISearchService.TTypeRepository<TSearchableEntity>) {}
 
 	async searchByTerm(term: string) {
 		const items = await this.repository.getAll();
@@ -13,9 +14,10 @@ export default class SearchService {
 		}
 
 		try {
-			return await this.engine.searchItemsByTerm(term, items);
-		} catch (e) {
-			logger.logError((e as Error).message);
+			const result = await this.searchItemsByTerm(term, items); // eslint-disable-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
+			return result; // eslint-disable-line @typescript-eslint/no-unsafe-return
+		} catch (error) {
+			logger.logError((error as Error).message);
 			throw new CustomError('UNPROCESSABLE_ENTITY', `search engine could not complete the search task for the term: ${term}`);
 		}
 	}

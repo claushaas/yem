@@ -1,11 +1,11 @@
 import {PrismaClient} from '@prisma/client';
-import {type TypeUser} from '../types/User.js';
-import {type TypeServiceReturn} from '../types/ServiceReturn.js';
-import Subscription from '../entities/subscription.entity.js';
-import {type TypeSubscription} from '../types/Subscription.js';
+import {type TUser} from '../types/user.type.js';
+import {type TServiceReturn} from '../types/service-return.type.js';
+import {Subscription} from '../entities/subscription.entity.js';
+import {type TSubscription} from '../types/subscription.type.js';
+import {logger} from '../utils/logger.js';
 import {HotmartService} from './hotmart.service.js';
 import {IuguService} from './iugu.service.js';
-import {logger} from '../utils/Logger.js';
 
 export default class SubscriptionService {
 	private readonly _model: PrismaClient;
@@ -18,7 +18,7 @@ export default class SubscriptionService {
 		this._iuguService = new IuguService();
 	}
 
-	public async createOrUpdate(subscriptionData: TypeSubscription): Promise<TypeServiceReturn<unknown>> {
+	public async createOrUpdate(subscriptionData: TSubscription): Promise<TServiceReturn<Subscription>> {
 		const subscription = new Subscription(subscriptionData);
 
 		const createdOrUpdatedSubscription = await this._model.userSubscriptions.upsert({
@@ -52,7 +52,7 @@ export default class SubscriptionService {
 		};
 	}
 
-	public async createOrUpdateAllUserSubscriptions(user: TypeUser): Promise<TypeServiceReturn<unknown>> {
+	public async createOrUpdateAllUserSubscriptions(user: TUser): Promise<TServiceReturn<string>> {
 		try {
 			const {data: hotmartSubscriptions} = await this._hotmartService.getUserSchoolSubscriptions(user);
 
@@ -83,7 +83,7 @@ export default class SubscriptionService {
 
 		return {
 			status: 'NO_CONTENT',
-			data: null,
+			data: 'Subscriptions created or updated successfully',
 		};
 	}
 }

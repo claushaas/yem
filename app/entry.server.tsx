@@ -1,13 +1,10 @@
 import {PassThrough} from 'node:stream';
-
-import type {EntryContext} from '@remix-run/node';
-import {createReadableStreamFromReadable} from '@remix-run/node';
+import {createReadableStreamFromReadable, type EntryContext} from '@remix-run/node';
 import {RemixServer} from '@remix-run/react';
 import {isbot} from 'isbot';
 import {renderToPipeableStream} from 'react-dom/server';
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
-const ABORT_DELAY = 5_000;
+const ABORT_DELAY = 5000;
 
 export default async function handleRequest(
 	request: Request,

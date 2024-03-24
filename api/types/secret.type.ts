@@ -1,4 +1,4 @@
-export type TypeSecret = {
+export type TSecret = {
 	hotmartApiAccessToken: string;
 	botmakerApiAccessToken: string;
 };

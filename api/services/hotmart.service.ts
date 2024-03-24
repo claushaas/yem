@@ -1,11 +1,11 @@
-import {Request} from '../utils/Axios.js';
-import CustomError from '../utils/CustomError.js';
-import {type TypeServiceReturn} from '../types/ServiceReturn.js';
-import {SecretService} from './secret.service.js';
-import {type TypeUser} from '../types/User.js';
-import {type TypeHotmartSubscription, type TypeSubscription} from '../types/Subscription.js';
-import {logger} from '../utils/Logger.js';
 import axios from 'axios';
+import {Request} from '../utils/request.js';
+import {CustomError} from '../utils/custom-error.js';
+import {type TServiceReturn} from '../types/service-return.type.js';
+import {type TUser} from '../types/user.type.js';
+import {type THotmartSubscription, type TSubscription} from '../types/subscription.type.js';
+import {logger} from '../utils/logger.js';
+import {SecretService} from './secret.service.js';
 
 const baseUrl = process.env.HOTMART_API_URL ?? 'https://sandbox.hotmart.com/';
 
@@ -16,7 +16,7 @@ export class HotmartService {
 		this._secretService = new SecretService();
 	}
 
-	public async getUserSchoolSubscriptions(user: TypeUser): Promise<TypeServiceReturn<TypeSubscription[]>> {
+	public async getUserSchoolSubscriptions(user: TUser): Promise<TServiceReturn<TSubscription[]>> {
 		logger.logDebug('Starting to get user hotmart subscriptions');
 
 		const secrets = await this._secretService.getSecret();
@@ -24,27 +24,26 @@ export class HotmartService {
 
 		logger.logDebug('Creating new request for hotmart');
 		const request = new Request(baseUrl, {
-			'Content-Type': 'application/json',
-			// eslint-disable-next-line @typescript-eslint/naming-convention
+			'Content-Type': 'application/json', // eslint-disable-line @typescript-eslint/naming-convention
 			Authorization: `Bearer ${secrets.data.hotmartApiAccessToken}`,
 		});
 
 		const url = '/payments/api/v1/subscriptions';
-		const params = {
-			// eslint-disable-next-line @typescript-eslint/naming-convention
+		const parameters = {
+
 			subscriber_email: user.email,
-			// eslint-disable-next-line @typescript-eslint/naming-convention
+
 			product_id: '135340',
 		};
 
 		try {
 			logger.logDebug('Sending subscription request to hotmart');
-			const response = await request.get(url, params);
+			const response = await request.get(url, parameters);
 			logger.logDebug(`Got response: ${JSON.stringify(response.data)}`);
 
 			return {
 				status: 'SUCCESSFUL',
-				data: response.data.items ? this._mapSubscriptions(response.data.items as TypeHotmartSubscription[], user) : [],
+				data: response.data.items ? this._mapSubscriptions(response.data.items as THotmartSubscription[], user) : [],
 			};
 		} catch (error) {
 			logger.logError(`Error getting user subscriptions on first try: ${JSON.stringify((error as Record<string, string>).data)}`);
@@ -55,16 +54,15 @@ export class HotmartService {
 
 				logger.logDebug('Trying to get user subscriptions again');
 				const request = new Request(baseUrl, {
-					'Content-Type': 'application/json',
-					// eslint-disable-next-line @typescript-eslint/naming-convention
+					'Content-Type': 'application/json', // eslint-disable-line @typescript-eslint/naming-convention
 					Authorization: `Bearer ${newAccessToken}`,
 				});
 
-				const response = await request.get(url, params);
+				const response = await request.get(url, parameters);
 
 				return {
 					status: 'SUCCESSFUL',
-					data: response.data.items ? this._mapSubscriptions(response.data.items as TypeHotmartSubscription[], user) : [],
+					data: response.data.items ? this._mapSubscriptions(response.data.items as THotmartSubscription[], user) : [],
 				};
 			} catch (error) {
 				console.log(error);
@@ -74,7 +72,7 @@ export class HotmartService {
 		}
 	}
 
-	private _mapSubscriptions(subscriptions: TypeHotmartSubscription[], user: TypeUser): TypeSubscription[] {
+	private _mapSubscriptions(subscriptions: THotmartSubscription[], user: TUser): TSubscription[] {
 		return subscriptions.map(subscription => ({
 			userId: user.id,
 			courseId: 'TODO: pesquisar id do curso pelo id do produto no hotmart',
@@ -98,16 +96,15 @@ export class HotmartService {
 				null,
 				{
 					headers: {
-						'Content-Type': 'application/json',
-						// eslint-disable-next-line @typescript-eslint/naming-convention
+						'Content-Type': 'application/json', // eslint-disable-line @typescript-eslint/naming-convention
 						Authorization: process.env.HOTMART_API_BASIC ?? '',
 					},
 					params: {
-						// eslint-disable-next-line @typescript-eslint/naming-convention
+
 						grant_type: 'client_credentials',
-						// eslint-disable-next-line @typescript-eslint/naming-convention
+
 						client_id: process.env.HOTMART_API_CLIENT_ID ?? '',
-						// eslint-disable-next-line @typescript-eslint/naming-convention
+
 						client_secret: process.env.HOTMART_API_SECRET ?? '',
 					},
 				},

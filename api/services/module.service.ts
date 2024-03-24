@@ -1,19 +1,19 @@
 import {PrismaClient} from '@prisma/client';
-import {type TypeModule} from '../types/Module.js';
-import Module from '../entities/module.entity.js';
-import {type TypeUser, type UserRoles} from '../types/User.js';
-import {type TypeUuid} from '../types/UUID.js';
-import CustomError from '../utils/CustomError.js';
-import {type TypeServiceReturn} from '../types/ServiceReturn.js';
+import {type TModule} from '../types/module.type.js';
+import {Module} from '../entities/module.entity.js';
+import {type TUser, type TUserRoles} from '../types/user.type.js';
+import {type TUuid} from '../types/uuid.type.js';
+import {CustomError} from '../utils/custom-error.js';
+import {type TServiceReturn} from '../types/service-return.type.js';
 
-export default class ModuleService {
+export class ModuleService {
 	private readonly _model: PrismaClient;
 
 	constructor(model: PrismaClient = new PrismaClient()) {
 		this._model = model;
 	}
 
-	public async create(moduleData: TypeModule): Promise<TypeServiceReturn<unknown>> {
+	public async create(moduleData: TModule): Promise<TServiceReturn<unknown>> {
 		const newModule = new Module(moduleData);
 
 		const createdModule = await this._model.module.create({
@@ -90,7 +90,7 @@ export default class ModuleService {
 		};
 	}
 
-	public async update(id: TypeUuid, moduleData: TypeModule): Promise<TypeServiceReturn<unknown>> {
+	public async update(id: TUuid, moduleData: TModule): Promise<TServiceReturn<unknown>> {
 		const newModule = new Module(moduleData);
 
 		const updatedModule = await this._model.module.update({
@@ -170,7 +170,7 @@ export default class ModuleService {
 		};
 	}
 
-	public async getList(parentId: TypeUuid, userRoles: UserRoles = []): Promise<TypeServiceReturn<unknown>> {
+	public async getList(parentId: TUuid, userRoles: TUserRoles = []): Promise<TServiceReturn<unknown>> {
 		const moduleSelect = {
 			name: true,
 			description: true,
@@ -194,7 +194,7 @@ export default class ModuleService {
 		};
 
 		const moduleWhere = {
-			// eslint-disable-next-line @typescript-eslint/naming-convention
+
 			OR: [
 				{
 					course: {
@@ -247,7 +247,7 @@ export default class ModuleService {
 		};
 	}
 
-	public async getById(courseId: TypeUuid, id: TypeUuid, user: TypeUser): Promise<TypeServiceReturn<unknown>> {
+	public async getById(courseId: TUuid, id: TUuid, user: TUser): Promise<TServiceReturn<unknown>> {
 		const includeSubModules = {
 			select: {
 				id: true,
@@ -411,7 +411,7 @@ export default class ModuleService {
 		};
 	}
 
-	public async delete(id: TypeUuid): Promise<TypeServiceReturn<unknown>> {
+	public async delete(id: TUuid): Promise<TServiceReturn<unknown>> {
 		const module = await this._model.module.update({
 			where: {
 				id,

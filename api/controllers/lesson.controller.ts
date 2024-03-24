@@ -1,66 +1,66 @@
 import {type Request, type Response} from 'express';
-import mapStatusHttp from '../utils/mapStatusHttp.js';
-import LessonService from '../services/lesson.service.js';
-import {type TypeUser} from '../types/User.js';
-import {type TypeLesson} from '../types/Lesson.js';
+import {mapStatusHttp} from '../utils/map-status-http.js';
+import {LessonService} from '../services/lesson.service.js';
+import {type TUser} from '../types/user.type.js';
+import {type TLesson} from '../types/lesson.type.js';
 
-export default class LessonController {
+export class LessonController {
 	private readonly _service: LessonService;
 
 	constructor(service: LessonService = new LessonService()) {
 		this._service = service;
 	}
 
-	public async create(req: Request, res: Response) {
-		const lessonData = req.body as TypeLesson;
+	public async create(request: Request, response: Response) {
+		const lessonData = request.body as TLesson;
 
 		const {status, data} = await this._service.create(lessonData);
 
 		const statusCode = mapStatusHttp(status);
 
-		return res.status(statusCode).json(data);
+		return response.status(statusCode).json(data);
 	}
 
-	public async update(req: Request, res: Response) {
-		const lessonData = req.body as TypeLesson;
-		const {id} = req.params;
+	public async update(request: Request, response: Response) {
+		const lessonData = request.body as TLesson;
+		const {id} = request.params;
 
 		const {status, data} = await this._service.update(id, lessonData);
 
 		const statusCode = mapStatusHttp(status);
 
-		return res.status(statusCode).json(data);
+		return response.status(statusCode).json(data);
 	}
 
-	public async delete(req: Request, res: Response) {
-		const {id} = req.params;
+	public async delete(request: Request, response: Response) {
+		const {id} = request.params;
 
 		const {status, data} = await this._service.delete(id);
 
 		const statusCode = mapStatusHttp(status);
 
-		return res.status(statusCode).json(data);
+		return response.status(statusCode).json(data);
 	}
 
-	public async getList(req: Request, res: Response) {
-		const {moduleId} = req.params;
-		const {user} = res.locals as {user: TypeUser};
+	public async getList(request: Request, response: Response) {
+		const {moduleId} = request.params;
+		const {user} = response.locals as {user: TUser};
 
 		const {status, data} = await this._service.getList(moduleId, user);
 
 		const statusCode = mapStatusHttp(status);
 
-		return res.status(statusCode).json(data);
+		return response.status(statusCode).json(data);
 	}
 
-	public async getById(req: Request, res: Response) {
-		const {courseId, lessonId} = req.params;
-		const {user} = res.locals as {user: TypeUser};
+	public async getById(request: Request, response: Response) {
+		const {courseId, lessonId} = request.params;
+		const {user} = response.locals as {user: TUser};
 
 		const {status, data} = await this._service.getById(courseId, lessonId, user);
 
 		const statusCode = mapStatusHttp(status);
 
-		return res.status(statusCode).json(data);
+		return response.status(statusCode).json(data);
 	}
 }

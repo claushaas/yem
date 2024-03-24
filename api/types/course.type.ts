@@ -1,6 +1,6 @@
-import {type TypeTags} from './Tag.js';
+import {type TTags} from './tag.type.js';
 
-type TypeCourse = {
+export type TCourse = {
 	name: string;
 	description?: string;
 	content?: string;
@@ -9,7 +9,5 @@ type TypeCourse = {
 	thumbnailUrl: string;
 	publicationDate: Date;
 	published: boolean;
-	tags?: TypeTags;
+	tags?: TTags;
 };
-
-export default TypeCourse;

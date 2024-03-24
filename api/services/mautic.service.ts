@@ -1,8 +1,8 @@
-import {Request} from '../utils/Axios.js';
-import CustomError from '../utils/CustomError.js';
-import {type TypeServiceReturn} from '../types/ServiceReturn.js';
-import {type TypeMauticUserCreationAttributes} from '../types/User.js';
-import {logger} from '../utils/Logger.js';
+import {Request} from '../utils/request.js';
+import {CustomError} from '../utils/custom-error.js';
+import {type TServiceReturn} from '../types/service-return.type.js';
+import {type TMauticUserCreationAttributes} from '../types/user.type.js';
+import {logger} from '../utils/logger.js';
 import {MauticUserForCreation} from '../entities/user.entity.js';
 
 export class MauticService {
@@ -10,13 +10,12 @@ export class MauticService {
 
 	constructor() {
 		this._request = new Request(process.env.MAUTIC_API_URL!, {
-			'Content-Type': 'application/json',
-			// eslint-disable-next-line @typescript-eslint/naming-convention
+			'Content-Type': 'application/json', // eslint-disable-line @typescript-eslint/naming-convention
 			Authorization: `Basic ${Buffer.from(`${process.env.MAUTIC_API_USERNAME}:${process.env.MAUTIC_API_PASSWORD}`).toString('base64')}`,
 		});
 	}
 
-	public async createContact(user: TypeMauticUserCreationAttributes): Promise<TypeServiceReturn<{
+	public async createContact(user: TMauticUserCreationAttributes): Promise<TServiceReturn<{
 		contact: {
 			id: string;
 		};
@@ -49,7 +48,7 @@ export class MauticService {
 		}
 	}
 
-	public async addContactToSegment(contactId: string, segmentId: number): Promise<TypeServiceReturn<unknown>> {
+	public async addContactToSegment(contactId: string, segmentId: number): Promise<TServiceReturn<string>> {
 		const url = `/segments/${segmentId}/contact/${contactId}/add`;
 
 		try {
@@ -57,7 +56,7 @@ export class MauticService {
 
 			return {
 				status: 'NO_CONTENT',
-				data: null,
+				data: 'Contact added to segment successfully',
 			};
 		} catch (error) {
 			logger.logError(`Error adding contact ${contactId} to segment ${segmentId}: ${(error as Error).message}`);
@@ -65,7 +64,7 @@ export class MauticService {
 		}
 	}
 
-	public async updateContact(email: string, data: Partial<TypeMauticUserCreationAttributes>): Promise<TypeServiceReturn<unknown>> {
+	public async updateContact(email: string, data: Partial<TMauticUserCreationAttributes>): Promise<TServiceReturn<string>> {
 		const response = await this._getContactIdByEmail(email);
 		const contactId = response.data;
 
@@ -76,7 +75,7 @@ export class MauticService {
 
 			return {
 				status: 'NO_CONTENT',
-				data: null,
+				data: 'Contact updated successfully',
 			};
 		} catch (error) {
 			logger.logError(`Error updating contact ${contactId}: ${(error as Error).message}`);
@@ -84,7 +83,7 @@ export class MauticService {
 		}
 	}
 
-	public async deleteContact(email: string): Promise<TypeServiceReturn<string>> {
+	public async deleteContact(email: string): Promise<TServiceReturn<string>> {
 		const response = await this._getContactIdByEmail(email);
 		const contactId = response.data;
 
@@ -103,7 +102,7 @@ export class MauticService {
 		}
 	}
 
-	public async addToDoNotContactList(email: string): Promise<TypeServiceReturn<unknown>> {
+	public async addToDoNotContactList(email: string): Promise<TServiceReturn<unknown>> {
 		const response = await this._getContactIdByEmail(email);
 		const contactId = response.data;
 
@@ -122,7 +121,7 @@ export class MauticService {
 		}
 	}
 
-	public async removeFromDoNotContactList(email: string): Promise<TypeServiceReturn<unknown>> {
+	public async removeFromDoNotContactList(email: string): Promise<TServiceReturn<unknown>> {
 		const response = await this._getContactIdByEmail(email);
 		const contactId = response.data;
 
@@ -141,9 +140,9 @@ export class MauticService {
 		}
 	}
 
-	private async _getContactIdByEmail(email: string): Promise<TypeServiceReturn<string>> {
+	private async _getContactIdByEmail(email: string): Promise<TServiceReturn<string>> {
 		const url = '/contacts';
-		const params = {
+		const parameters = {
 			// eslint-disable-next-line @typescript-eslint/naming-convention
 			'where[0][col]': 'email',
 			// eslint-disable-next-line @typescript-eslint/naming-convention
@@ -153,7 +152,7 @@ export class MauticService {
 		};
 
 		try {
-			const response = await this._request.get(url, params);
+			const response = await this._request.get(url, parameters);
 
 			const contactId = Object.keys(response.data.contacts as Record<string, Record<string, unknown>>)[0];
 

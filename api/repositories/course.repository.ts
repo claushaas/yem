@@ -1,12 +1,16 @@
-import {type TypeRepository} from '#/types/IRepository';
-import {type SearchableEntity} from '#/types/ISearchService';
-import CustomError from '#/utils/CustomError';
 import {PrismaClient} from '@prisma/client';
+import {type TRepository} from '#/types/repository.type.js';
+import {type TSearchableEntity} from '#/types/search-service.type.js';
+import {CustomError} from '#/utils/custom-error.js';
 
-export class CourseRepository implements TypeRepository<SearchableEntity> {
-	constructor(private readonly _model: PrismaClient = new PrismaClient()) {}
+export class CourseRepository implements TRepository<TSearchableEntity> {
+	private readonly _model: PrismaClient;
 
-	public async getAll(): Promise<SearchableEntity[]> {
+	constructor(model: PrismaClient = new PrismaClient()) {
+		this._model = model;
+	}
+
+	public async getAll(): Promise<TSearchableEntity[]> {
 		const select = {
 			name: true,
 			description: true,
@@ -26,6 +30,6 @@ export class CourseRepository implements TypeRepository<SearchableEntity> {
 			throw new CustomError('NOT_FOUND', 'No courses found');
 		}
 
-		return coursesForStudents as SearchableEntity[];
+		return coursesForStudents as TSearchableEntity[];
 	}
 }

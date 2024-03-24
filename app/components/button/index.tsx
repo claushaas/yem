@@ -9,12 +9,12 @@ export enum ButtonType {
 	Reset = 'reset',
 }
 
-type ButtonProps = {
-	className?: string;
-	text?: string;
-	disabled?: boolean;
-	preset?: ButtonPreset;
-	type?: ButtonType;
+type ButtonProperties = {
+	readonly className?: string;
+	readonly text?: string;
+	readonly isDisabled?: boolean;
+	readonly preset?: ButtonPreset;
+	readonly type?: ButtonType;
 };
 
 const baseButtonClasses = `
@@ -42,7 +42,7 @@ const baseButtonClasses = `
 
 const classNames = (preset: ButtonPreset) => {
 	switch (preset) {
-		case ButtonPreset.Primary:
+		case ButtonPreset.Primary: {
 			return baseButtonClasses + `
 				bg-purple-9
 				dark:bg-purpledark-9
@@ -54,7 +54,9 @@ const classNames = (preset: ButtonPreset) => {
 				focus:ring-purple-9
 				shadow-purple-12
 			`;
-		case ButtonPreset.Secondary:
+		}
+
+		case ButtonPreset.Secondary: {
 			return baseButtonClasses + `
 				bg-purple-3
 				dark:bg-purpledark-3
@@ -66,21 +68,24 @@ const classNames = (preset: ButtonPreset) => {
 				active:dark:bg-purpledark-5
 				focus:ring-purple-3
 			`;
+		}
 	}
 };
 
-export const Button = ({
+export function Button({
 	className,
-	disabled = false,
+	isDisabled: disabled = false,
 	preset = ButtonPreset.Primary,
 	text = 'Clicar Aqui',
 	type = ButtonType.Button,
-}: ButtonProps) => (
-	<button
-		className={classNames(preset) + (className ? ` ${className}` : '')}
-		disabled={disabled}
-		type={type}
-	>
-		{text}
-	</button>
-);
+}: ButtonProperties) {
+	return (
+		<button
+			className={classNames(preset) + (className ? ` ${className}` : '')}
+			disabled={disabled}
+			type={type ?? ButtonType.Button} // eslint-disable-line react/button-has-type
+		>
+			{text}
+		</button>
+	);
+}

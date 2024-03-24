@@ -1,7 +1,6 @@
-import 'newrelic';
-
-import App from './app.js';
+import 'newrelic'; // eslint-disable-line import/no-unassigned-import
 import {installGlobals} from '@remix-run/node';
+import App from './app.js';
 
 installGlobals();
 
