@@ -1,10 +1,10 @@
 import {
 	type Request, Router, type Response, type NextFunction,
 } from 'express';
-import CourseController from '../controllers/course.controller.js';
-import validateAuthToken from '../middlewares/validateAuthToken.middleware.js';
-import getUserData from '../middlewares/getUserData.middleware.js';
-import verifyRole from '../middlewares/verifyRole.middleware.js';
+import {CourseController} from '../controllers/course.controller.js';
+import {validateAuthToken} from '../middlewares/validate-auth-token.middleware.js';
+import {getUserData} from '../middlewares/get-user-data.middleware.js';
+import {verifyRole} from '../middlewares/verify-role.middleware.js';
 
 // eslint-disable-next-line new-cap
 const courseRouter = Router();
@@ -12,50 +12,50 @@ const courseRouter = Router();
 courseRouter.post(
 	'/',
 	validateAuthToken,
-	(req: Request, res: Response, next: NextFunction) => {
-		verifyRole(req, res, next, 'admin');
+	(request: Request, response: Response, next: NextFunction) => {
+		verifyRole(request, response, next, 'admin');
 	},
-	async (req: Request, res: Response) => {
-		await new CourseController().create(req, res);
+	async (request: Request, response: Response) => {
+		await new CourseController().create(request, response);
 	},
 );
 
 courseRouter.get(
 	'/',
 	getUserData,
-	async (req: Request, res: Response) => {
-		await new CourseController().getAll(req, res);
+	async (request: Request, response: Response) => {
+		await new CourseController().getAll(request, response);
 	},
 );
 
 courseRouter.get(
 	'/:id',
 	getUserData,
-	async (req: Request, res: Response) => {
-		await new CourseController().getById(req, res);
+	async (request: Request, response: Response) => {
+		await new CourseController().getById(request, response);
 	},
 );
 
 courseRouter.put(
 	'/:id',
 	validateAuthToken,
-	(req: Request, res: Response, next: NextFunction) => {
-		verifyRole(req, res, next, 'admin');
+	(request: Request, response: Response, next: NextFunction) => {
+		verifyRole(request, response, next, 'admin');
 	},
-	async (req: Request, res: Response) => {
-		await new CourseController().update(req, res);
+	async (request: Request, response: Response) => {
+		await new CourseController().update(request, response);
 	},
 );
 
 courseRouter.delete(
 	'/:id',
 	validateAuthToken,
-	(req: Request, res: Response, next: NextFunction) => {
-		verifyRole(req, res, next, 'admin');
+	(request: Request, response: Response, next: NextFunction) => {
+		verifyRole(request, response, next, 'admin');
 	},
-	async (req: Request, res: Response) => {
-		await new CourseController().delete(req, res);
+	async (request: Request, response: Response) => {
+		await new CourseController().delete(request, response);
 	},
 );
 
-export default courseRouter;
+export {courseRouter};

@@ -1,7 +1,7 @@
 import {type Request, type Response} from 'express';
 import {BotmakerService} from '../services/botmaker.service.js';
-import mapStatusHttp from '../utils/mapStatusHttp.js';
-import {type TypeWhatsappIntent} from '../types/WhatsappIntent.js';
+import {mapStatusHttp} from '../utils/map-status-http.js';
+import {type TWhatsappIntent} from '../types/whatsapp-intent.type.js';
 
 export class BotmakerController {
 	private readonly _service: BotmakerService;
@@ -10,8 +10,12 @@ export class BotmakerController {
 		this._service = service;
 	}
 
-	public async sendWhatsappTemplateMessate(req: Request, res: Response) {
-		const {userPhoneNumber, whatsappTemplateName, variables} = req.body as TypeWhatsappIntent;
+	public async sendWhatsappTemplateMessate(
+		request: Request,
+		response: Response,
+	) {
+		const {userPhoneNumber, whatsappTemplateName, variables}
+      = request.body as TWhatsappIntent;
 
 		const {status, data} = await this._service.sendWhatsappTemplateMessate(
 			userPhoneNumber,
@@ -21,16 +25,16 @@ export class BotmakerController {
 
 		const statusCode = mapStatusHttp(status);
 
-		return res.status(statusCode).json(data);
+		return response.status(statusCode).json(data);
 	}
 
-	public async addToBlacklist(req: Request, res: Response) {
-		const {phoneNumber} = req.body as {phoneNumber: string};
+	public async addToBlacklist(request: Request, response: Response) {
+		const {phoneNumber} = request.body as {phoneNumber: string};
 
 		const {status, data} = await this._service.addToBlackList(phoneNumber);
 
 		const statusCode = mapStatusHttp(status);
 
-		return res.status(statusCode).json(data);
+		return response.status(statusCode).json(data);
 	}
 }

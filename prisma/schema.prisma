@@ -2,8 +2,7 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["driverAdapters"]
+  provider = "prisma-client-js"
 }
 
 datasource db {
@@ -16,7 +15,6 @@ model Course {
   name            String
   description     String?
   content         String?             @db.Text
-  roles           Role[]
   videoSourceUrl  String?
   thumbnailUrl    String
   createdAt       DateTime            @default(now())
@@ -33,16 +31,6 @@ model Course {
   @@map("courses")
 }
 
-model Role {
-  id          String   @id @default(uuid())
-  name        String
-  description String?
-  courses     Course[]
-
-  @@unique([name])
-  @@map("roles")
-}
-
 model Module {
   id              String              @id @default(uuid())
   name            String
@@ -55,8 +43,6 @@ model Module {
   updatedAt       DateTime            @updatedAt
   publicationDate DateTime
   published       Boolean             @default(false)
-  subModules      Module[]            @relation("SubModules")
-  belongToModules Module[]            @relation("SubModules")
   lessons         Lesson[]
   tags            TagOptionTagValue[]
   comments        Comment[]
@@ -168,21 +154,21 @@ model LessonProgress {
 }
 
 model UserSubscriptions {
-  id                     String       @id @default(uuid())
+  id                     String                    @id @default(uuid())
   userId                 String
   courseId               String
-  createdAt              DateTime     @default(now())
-  updatedAt              DateTime     @updatedAt
+  createdAt              DateTime                  @default(now())
+  updatedAt              DateTime                  @updatedAt
   expiresAt              DateTime
-  course                 Course       @relation(fields: [courseId], references: [id])
-  provider               ProviderType
+  course                 Course                    @relation(fields: [courseId], references: [id])
+  provider               SubscriptionProvidersType
   providerSubscriptionId String
 
   @@unique([userId, courseId, providerSubscriptionId])
   @@map("user_subscriptions")
 }
 
-enum ProviderType {
+enum SubscriptionProvidersType {
   hotmart
   iugu
 }

@@ -1,23 +1,22 @@
 import {PrismaClient} from '@prisma/client';
-import {type TypeUser, type UserRoles} from '../types/User.js';
-import Course from '../entities/course.entity.js';
-import type TypeCourse from '../types/Course.js';
-import CustomError from '../utils/CustomError.js';
-import {type TypeServiceReturn} from '../types/ServiceReturn.js';
+import {type TUser, type TUserRoles} from '../types/user.type.js';
+import {Course} from '../entities/course.entity.js';
+import {type TCourse} from '../types/course.type.js';
+import {CustomError} from '../utils/custom-error.js';
+import {type TServiceReturn} from '../types/service-return.type.js';
 
-export default class CourseService {
+export class CourseService {
 	private readonly _model: PrismaClient;
 
 	constructor(model: PrismaClient = new PrismaClient()) {
 		this._model = model;
 	}
 
-	public async create(courseData: TypeCourse): Promise<TypeServiceReturn<unknown>> {
+	public async create(courseData: TCourse): Promise<TServiceReturn<unknown>> {
 		const newCourse = new Course(courseData);
 
 		const createdCourse = await this._model.course.create({
 			include: {
-				roles: true,
 				tags: {
 					include: {
 						tagOption: {
@@ -41,12 +40,6 @@ export default class CourseService {
 				thumbnailUrl: newCourse.thumbnailUrl,
 				publicationDate: newCourse.publicationDate,
 				published: newCourse.published,
-				roles: {
-					connectOrCreate: newCourse.roles.map(role => ({
-						where: {name: role},
-						create: {name: role},
-					})),
-				},
 				tags: {
 					connectOrCreate: newCourse.tags?.map(tag => ({
 						where: {
@@ -88,7 +81,7 @@ export default class CourseService {
 		};
 	}
 
-	public async getAll(userRoles: UserRoles = []): Promise<TypeServiceReturn<unknown>> {
+	public async getAll(userRoles: TUserRoles = []): Promise<TServiceReturn<unknown>> {
 		const select = {
 			name: true,
 			description: true,
@@ -129,13 +122,7 @@ export default class CourseService {
 		};
 	}
 
-	public async getById(id: string, user: TypeUser): Promise<TypeServiceReturn<unknown>> {
-		const includeRoles = {
-			select: {
-				name: true,
-			},
-		};
-
+	public async getById(id: string, user: TUser): Promise<TServiceReturn<unknown>> {
 		const includeModules = {
 			select: {
 				id: true,
@@ -167,7 +154,6 @@ export default class CourseService {
 		if (user.roles?.includes('admin')) {
 			const course = await this._model.course.findUnique({
 				include: {
-					roles: includeRoles,
 					modules: includeModules,
 					comments: includeComments,
 				},
@@ -198,7 +184,6 @@ export default class CourseService {
 						courseId: id,
 					},
 				},
-				roles: includeRoles,
 				modules: {
 					...includeModules,
 					where: {
@@ -241,12 +226,11 @@ export default class CourseService {
 		};
 	}
 
-	public async update(id: string, courseData: TypeCourse): Promise<TypeServiceReturn<unknown>> {
+	public async update(id: string, courseData: TCourse): Promise<TServiceReturn<unknown>> {
 		const courseToUpdate = new Course(courseData);
 
 		const updatedCourse = await this._model.course.update({
 			include: {
-				roles: true,
 				tags: {
 					include: {
 						tagOption: {
@@ -273,12 +257,6 @@ export default class CourseService {
 				thumbnailUrl: courseToUpdate.thumbnailUrl,
 				publicationDate: courseToUpdate.publicationDate,
 				published: courseToUpdate.published,
-				roles: {
-					connectOrCreate: courseToUpdate.roles.map(role => ({
-						where: {name: role},
-						create: {name: role},
-					})),
-				},
 				tags: {
 					connectOrCreate: courseToUpdate.tags?.map(tag => ({
 						where: {
@@ -324,7 +302,7 @@ export default class CourseService {
 		};
 	}
 
-	public async delete(id: string): Promise<TypeServiceReturn<unknown>> {
+	public async delete(id: string): Promise<TServiceReturn<unknown>> {
 		const deletedCourse = await this._model.course.update({
 			where: {
 				id,

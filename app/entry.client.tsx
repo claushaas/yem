@@ -6,7 +6,7 @@ startTransition(() => {
 	hydrateRoot(
 		document,
 		<StrictMode>
-			<RemixBrowser />
+			<RemixBrowser/>
 		</StrictMode>,
 	);
 });

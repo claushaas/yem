@@ -1,9 +1,10 @@
-import {Request} from '../utils/Axios.js';
-import CustomError from '../utils/CustomError.js';
-import {type TypeServiceReturn} from '../types/ServiceReturn.js';
-import {SecretService} from './secret.service.js';
 import {type AxiosResponse} from 'axios';
-import {logger} from '../utils/Logger.js';
+import {Request} from '../utils/request.js';
+import {CustomError} from '../utils/custom-error.js';
+import {type TServiceReturn} from '../types/service-return.type.js';
+import {logger} from '../utils/logger.util.js';
+import {SecretService} from './secret.service.js';
+
 const baseUrl = process.env.BOTMAKER_API_URL ?? 'https://api.botmaker.com/v2.0';
 const whatsappChannelId = process.env.BOTMAKER_WHATSAPP_CHANNEL_ID;
 
@@ -14,14 +15,13 @@ export class BotmakerService {
 		this._secretService = new SecretService();
 	}
 
-	public async addToBlackList(phoneNumber: string): Promise<TypeServiceReturn<AxiosResponse>> {
+	public async addToBlackList(phoneNumber: string): Promise<TServiceReturn<AxiosResponse>> {
 		const {data: {botmakerApiAccessToken}} = await this._secretService.getSecret();
 
 		const request = new Request(baseUrl, {
-			'Content-Type': 'application/json',
-			// eslint-disable-next-line @typescript-eslint/naming-convention
+			'content-type': 'application/json', // eslint-disable-line @typescript-eslint/naming-convention
 			Accept: 'application/json',
-			'access-token': botmakerApiAccessToken,
+			'access-token': botmakerApiAccessToken, // eslint-disable-line @typescript-eslint/naming-convention
 		});
 
 		const url = '/notifications/contacts-blacklist';
@@ -50,15 +50,14 @@ export class BotmakerService {
 		userPhoneNumber: string,
 		whatsappTemplateName: string,
 		variables: Record<string, string>,
-	): Promise<TypeServiceReturn<AxiosResponse>> {
+	): Promise<TServiceReturn<AxiosResponse>> {
 		logger.logDebug('Sending WP template');
 		const {data: {botmakerApiAccessToken}} = await this._secretService.getSecret();
 
 		const request = new Request(baseUrl, {
-			'Content-Type': 'application/json',
-			// eslint-disable-next-line @typescript-eslint/naming-convention
+			'Content-Type': 'application/json', // eslint-disable-line @typescript-eslint/naming-convention
 			Accept: 'application/json',
-			'access-token': botmakerApiAccessToken,
+			'access-token': botmakerApiAccessToken, // eslint-disable-line @typescript-eslint/naming-convention
 		});
 
 		const url = '/chats-actions/trigger-intent';

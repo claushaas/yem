@@ -1,7 +1,7 @@
-import {type TypeModule} from '../types/Module.js';
-import CustomError from '../utils/CustomError.js';
-import {type TypeTags} from '../types/Tag.js';
 import Joi from 'joi';
+import {type TModule} from '../types/module.type.js';
+import {CustomError} from '../utils/custom-error.js';
+import {type TTags} from '../types/tag.type.js';
 
 const moduleSchema = Joi.object({
 	name: Joi.string().required().min(3).max(35),
@@ -18,7 +18,7 @@ const moduleSchema = Joi.object({
 	tags: Joi.array().items(Joi.array().items(Joi.string()).min(2).max(2)).unique(),
 });
 
-export default class Module implements TypeModule {
+export class Module implements TModule {
 	private readonly _name: string;
 	private readonly _description?: string;
 	private readonly _content?: string;
@@ -30,9 +30,9 @@ export default class Module implements TypeModule {
 	private readonly _lessons?: string[];
 	private readonly _subModules?: string[];
 	private readonly _belongToModules?: string[];
-	private readonly _tags?: TypeTags;
+	private readonly _tags?: TTags;
 
-	constructor(module: TypeModule) {
+	constructor(module: TModule) {
 		const {error} = moduleSchema.validate(module);
 
 		if (error) {

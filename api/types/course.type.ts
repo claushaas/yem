@@ -1,15 +1,12 @@
-import {type TypeTags} from './Tag.js';
+import {type TTags} from './tag.type.js';
 
-type TypeCourse = {
+export type TCourse = {
 	name: string;
 	description?: string;
 	content?: string;
-	roles: string[];
 	videoSourceUrl?: string;
 	thumbnailUrl: string;
 	publicationDate: Date;
 	published: boolean;
-	tags?: TypeTags;
+	tags?: TTags;
 };
-
-export default TypeCourse;

@@ -1,9 +1,9 @@
 import {SESv2Client, SendEmailCommand} from '@aws-sdk/client-sesv2';
 import {fromEnv} from '@aws-sdk/credential-providers';
-import CustomError from '../utils/CustomError.js';
-import {logger} from '../utils/Logger.js';
-import type {TypeServiceReturn} from '../types/ServiceReturn.js';
-import {type TypeEmailTemplate} from '../types/Email.js';
+import {CustomError} from '../utils/custom-error.js';
+import {logger} from '../utils/logger.util.js';
+import type {TServiceReturn} from '../types/service-return.type.js';
+import {type TEmailTemplate} from '../types/email-template.type.js';
 
 export class MailService {
 	private readonly _awsClient: SESv2Client;
@@ -17,49 +17,49 @@ export class MailService {
 		this._awsClient = awsClient;
 	}
 
-	public async sendEmail(template: TypeEmailTemplate): Promise<TypeServiceReturn<string>> {
+	public async sendEmail(template: TEmailTemplate): Promise<TServiceReturn<string>> {
 		logger.logDebug('Sending email');
-		const params = {
-			// eslint-disable-next-line @typescript-eslint/naming-convention
+		const parameters = {
+
 			Content: {
-				// eslint-disable-next-line @typescript-eslint/naming-convention
+
 				Simple: {
-					// eslint-disable-next-line @typescript-eslint/naming-convention
+
 					Body: {
-						// eslint-disable-next-line @typescript-eslint/naming-convention
+
 						Html: {
-							// eslint-disable-next-line @typescript-eslint/naming-convention
+
 							Data: template.html,
-							// eslint-disable-next-line @typescript-eslint/naming-convention
-							ChartSet: 'UTF-8',
+
+							ChartSet: 'utf8',
 						},
-						// eslint-disable-next-line @typescript-eslint/naming-convention
+
 						Text: {
-							// eslint-disable-next-line @typescript-eslint/naming-convention
+
 							Data: template.text,
-							// eslint-disable-next-line @typescript-eslint/naming-convention
-							ChartSet: 'UTF-8',
+
+							ChartSet: 'utf8',
 						},
 					},
-					// eslint-disable-next-line @typescript-eslint/naming-convention
+
 					Subject: {
-						// eslint-disable-next-line @typescript-eslint/naming-convention
+
 						Data: template.subject,
-						// eslint-disable-next-line @typescript-eslint/naming-convention
-						ChartSet: 'UTF-8',
+
+						ChartSet: 'utf8',
 					},
 				},
 			},
-			// eslint-disable-next-line @typescript-eslint/naming-convention
+
 			Destination: {
-				// eslint-disable-next-line @typescript-eslint/naming-convention
+
 				ToAddresses: [template.to],
 			},
-			// eslint-disable-next-line @typescript-eslint/naming-convention
+
 			FromEmailAddress: 'contato@yogaemmovimento.com',
 		};
 
-		const command = new SendEmailCommand(params);
+		const command = new SendEmailCommand(parameters);
 		try {
 			await this._awsClient.send(command);
 			logger.logDebug('Email sent successfully');

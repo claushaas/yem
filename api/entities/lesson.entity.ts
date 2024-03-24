@@ -1,8 +1,8 @@
-import {type TypeLessonType, type TypeLesson} from '../types/Lesson.js';
-import CustomError from '../utils/CustomError.js';
-import {type TypeTags} from '../types/Tag.js';
 import Joi from 'joi';
-import {type TypeUuid} from '../types/UUID.js';
+import {type TLessonType, type TLesson} from '../types/lesson.type.js';
+import {CustomError} from '../utils/custom-error.js';
+import {type TTags} from '../types/tag.type.js';
+import {type TUuid} from '../types/uuid.type.js';
 
 const lessonSchema = Joi.object({
 	name: Joi.string().required().min(3).max(35),
@@ -17,19 +17,19 @@ const lessonSchema = Joi.object({
 	tags: Joi.array().items(Joi.array().items(Joi.string()).min(2).max(2)).unique(),
 });
 
-export default class Lesson implements TypeLesson {
+export class Lesson implements TLesson {
 	private readonly _name: string;
-	private readonly _type: TypeLessonType;
+	private readonly _type: TLessonType;
 	private readonly _description?: string;
 	private readonly _content?: string;
 	private readonly _videoSourceUrl?: string;
 	private readonly _thumbnailUrl: string;
-	private readonly _modules: TypeUuid[];
+	private readonly _modules: TUuid[];
 	private readonly _publicationDate: Date;
 	private readonly _published: boolean;
-	private readonly _tags?: TypeTags;
+	private readonly _tags?: TTags;
 
-	constructor(lesson: TypeLesson) {
+	constructor(lesson: TLesson) {
 		const {error} = lessonSchema.validate(lesson);
 
 		if (error) {

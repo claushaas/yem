@@ -1,25 +1,24 @@
 import {PrismaClient} from '@prisma/client';
-import {type TypeModule} from '../types/Module.js';
-import Module from '../entities/module.entity.js';
-import {type TypeUser, type UserRoles} from '../types/User.js';
-import {type TypeUuid} from '../types/UUID.js';
-import CustomError from '../utils/CustomError.js';
-import {type TypeServiceReturn} from '../types/ServiceReturn.js';
+import {type TModule} from '../types/module.type.js';
+import {Module} from '../entities/module.entity.js';
+import {type TUser, type TUserRoles} from '../types/user.type.js';
+import {type TUuid} from '../types/uuid.type.js';
+import {CustomError} from '../utils/custom-error.js';
+import {type TServiceReturn} from '../types/service-return.type.js';
 
-export default class ModuleService {
+export class ModuleService {
 	private readonly _model: PrismaClient;
 
 	constructor(model: PrismaClient = new PrismaClient()) {
 		this._model = model;
 	}
 
-	public async create(moduleData: TypeModule): Promise<TypeServiceReturn<unknown>> {
+	public async create(moduleData: TModule): Promise<TServiceReturn<unknown>> {
 		const newModule = new Module(moduleData);
 
 		const createdModule = await this._model.module.create({
 			include: {
 				course: true,
-				belongToModules: true,
 				tags: {
 					include: {
 						tagOption: {
@@ -45,9 +44,6 @@ export default class ModuleService {
 				published: newModule.published,
 				course: {
 					connect: newModule.courses?.map(course => ({id: course})),
-				},
-				belongToModules: {
-					connect: newModule.belongToModules?.map(module => ({id: module})),
 				},
 				tags: {
 					connectOrCreate: newModule.tags?.map(tag => ({
@@ -90,13 +86,12 @@ export default class ModuleService {
 		};
 	}
 
-	public async update(id: TypeUuid, moduleData: TypeModule): Promise<TypeServiceReturn<unknown>> {
+	public async update(id: TUuid, moduleData: TModule): Promise<TServiceReturn<unknown>> {
 		const newModule = new Module(moduleData);
 
 		const updatedModule = await this._model.module.update({
 			include: {
 				course: true,
-				belongToModules: true,
 				tags: {
 					include: {
 						tagOption: {
@@ -125,9 +120,6 @@ export default class ModuleService {
 				published: newModule.published,
 				course: {
 					connect: newModule.courses?.map(course => ({id: course})),
-				},
-				belongToModules: {
-					connect: newModule.belongToModules?.map(module => ({id: module})),
 				},
 				tags: {
 					connectOrCreate: newModule.tags?.map(tag => ({
@@ -170,7 +162,7 @@ export default class ModuleService {
 		};
 	}
 
-	public async getList(parentId: TypeUuid, userRoles: UserRoles = []): Promise<TypeServiceReturn<unknown>> {
+	public async getList(parentId: TUuid, userRoles: TUserRoles = []): Promise<TServiceReturn<unknown>> {
 		const moduleSelect = {
 			name: true,
 			description: true,
@@ -193,30 +185,16 @@ export default class ModuleService {
 			},
 		};
 
-		const moduleWhere = {
-			// eslint-disable-next-line @typescript-eslint/naming-convention
-			OR: [
-				{
+		if (userRoles.includes('admin')) {
+			const modules = await this._model.module.findMany({
+				select: moduleSelect,
+				where: {
 					course: {
 						some: {
 							id: parentId,
 						},
 					},
 				},
-				{
-					belongToModules: {
-						some: {
-							id: parentId,
-						},
-					},
-				},
-			],
-		};
-
-		if (userRoles.includes('admin')) {
-			const modules = await this._model.module.findMany({
-				select: moduleSelect,
-				where: moduleWhere,
 			});
 
 			if (modules.length === 0) {
@@ -232,8 +210,12 @@ export default class ModuleService {
 		const modulesForStudents = await this._model.module.findMany({
 			select: moduleSelect,
 			where: {
-				...moduleWhere,
 				published: true,
+				course: {
+					some: {
+						id: parentId,
+					},
+				},
 			},
 		});
 
@@ -247,18 +229,7 @@ export default class ModuleService {
 		};
 	}
 
-	public async getById(courseId: TypeUuid, id: TypeUuid, user: TypeUser): Promise<TypeServiceReturn<unknown>> {
-		const includeSubModules = {
-			select: {
-				id: true,
-				name: true,
-				description: true,
-				thumbnailUrl: true,
-				published: true,
-				publicationDate: true,
-			},
-		};
-
+	public async getById(courseId: TUuid, id: TUuid, user: TUser): Promise<TServiceReturn<unknown>> {
 		const includeTags = {
 			include: {
 				tagOption: {
@@ -309,7 +280,6 @@ export default class ModuleService {
 					id,
 				},
 				include: {
-					subModules: includeSubModules,
 					lessons: includeLessons,
 					comments: includeComments,
 				},
@@ -331,12 +301,6 @@ export default class ModuleService {
 				published: true,
 			},
 			include: {
-				subModules: {
-					...includeSubModules,
-					where: {
-						published: true,
-					},
-				},
 				lessons: {
 					...includeLessons,
 					where: {
@@ -383,11 +347,6 @@ export default class ModuleService {
 				modules: false,
 				comments: false,
 				tags: false,
-				roles: {
-					select: {
-						name: true,
-					},
-				},
 				subscriptions: {
 					where: {
 						userId: user.id,
@@ -411,7 +370,7 @@ export default class ModuleService {
 		};
 	}
 
-	public async delete(id: TypeUuid): Promise<TypeServiceReturn<unknown>> {
+	public async delete(id: TUuid): Promise<TServiceReturn<unknown>> {
 		const module = await this._model.module.update({
 			where: {
 				id,

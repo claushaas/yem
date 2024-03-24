@@ -1,10 +1,10 @@
-import {
-	type TypeUserCreationAttributes, type TypeMauticUserCreationAttributes, type TypeBasicUser,
-} from '../types/User.js';
 import Joi from 'joi';
-import CustomError from '../utils/CustomError.js';
-import {convertStringToStartCase} from '../utils/convertStringToStartCase.js';
-import {logger} from '../utils/Logger.js';
+import {
+	type TUserCreationAttributes, type TMauticUserCreationAttributes, type TBasicUser,
+} from '../types/user.type.js';
+import {CustomError} from '../utils/custom-error.js';
+import {convertStringToStartCase} from '../utils/convert-string-to-start-case.js';
+import {logger} from '../utils/logger.util.js';
 
 const basicUserSchema = Joi.object({
 	email: Joi.string().email().required(),
@@ -28,7 +28,7 @@ class BasicUser {
 	protected readonly _firstName: string;
 	protected readonly _lastName: string;
 
-	constructor(user: TypeBasicUser) {
+	constructor(user: TBasicUser) {
 		const {error} = basicUserSchema.validate(user);
 
 		if (error) {
@@ -54,7 +54,7 @@ class BasicUser {
 }
 
 export class MauticUserForCreation extends BasicUser {
-	constructor(user: TypeMauticUserCreationAttributes) {
+	constructor(user: TMauticUserCreationAttributes) {
 		super(user);
 
 		const {error} = mauticUserSchema.validate(user);
@@ -73,7 +73,7 @@ export class UserForCreation {
 	protected readonly _phoneNumber: string;
 	protected readonly _document?: string;
 
-	constructor(user: TypeUserCreationAttributes) {
+	constructor(user: TUserCreationAttributes) {
 		const {error} = userCreationSchema.validate(user);
 
 		if (error) {
@@ -82,7 +82,7 @@ export class UserForCreation {
 		}
 
 		this._roles = user.roles ?? [];
-		this._phoneNumber = user.phoneNumber.replace(/\s+/g, '');
+		this._phoneNumber = user.phoneNumber.replaceAll(/\s+/g, '');
 		this._document = user.document ?? '';
 		this._email = user.email.toLowerCase();
 		this._firstName = convertStringToStartCase(user.firstName);

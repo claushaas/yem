@@ -1,16 +1,16 @@
 import * as RadixForm from '@radix-ui/react-form';
-import {Button, ButtonPreset} from '~/components/button';
 import {
 	json, type ActionFunctionArgs, type LoaderFunctionArgs, redirect,
 } from '@remix-run/node';
 import {
 	Form, Link, useLoaderData, useNavigation,
 } from '@remix-run/react';
-import {getUserSession, commitUserSession} from '~/utils/session.server';
-import {type TypeUserSession} from '~/types/userSession.type';
-import {YemSpinner} from '~/components/yemSpinner';
-import UserService from '#/services/user.service';
 import {Separator} from '@radix-ui/react-separator';
+import {Button, ButtonPreset} from '~/components/button/index.js';
+import {getUserSession, commitUserSession} from '~/utils/session.server';
+import {type TypeUserSession} from '~/types/user-session.type';
+import {YemSpinner} from '~/components/yemSpinner/index.js';
+import {UserService} from '#/services/user.service';
 
 export const action = async ({request}: ActionFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
@@ -35,10 +35,10 @@ export const action = async ({request}: ActionFunctionArgs) => {
 
 		return redirect('/', {
 			headers: {
-				'Set-Cookie': await commitUserSession(userSession),
+				'Set-Cookie': await commitUserSession(userSession), // eslint-disable-line @typescript-eslint/naming-convention
 			},
 		});
-	} catch (error) {
+	} catch {
 		userSession.unset('id');
 		userSession.unset('email');
 		userSession.unset('roles');
@@ -49,7 +49,7 @@ export const action = async ({request}: ActionFunctionArgs) => {
 
 		return redirect('/login', {
 			headers: {
-				'Set-Cookie': await commitUserSession(userSession),
+				'Set-Cookie': await commitUserSession(userSession), // eslint-disable-line @typescript-eslint/naming-convention
 			},
 		});
 	}
@@ -64,21 +64,19 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
 
 	const data = {
 		error: userSession.get('error') as string | undefined,
-		// eslint-disable-next-line @typescript-eslint/naming-convention
 		ENV: {
-			// eslint-disable-next-line @typescript-eslint/naming-convention
 			YEM_API_BASE_URL: process.env.YEM_API_BASE_URL,
 		},
 	};
 
 	return json(data, {
 		headers: {
-			'Set-Cookie': await commitUserSession(userSession),
+			'Set-Cookie': await commitUserSession(userSession), // eslint-disable-line @typescript-eslint/naming-convention
 		},
 	});
 };
 
-const Login = () => {
+function Login() {
 	const data: {
 		error?: string;
 		ENV: {
@@ -92,7 +90,7 @@ const Login = () => {
 	return (
 		<main className='flex flex-col flex-grow-[0.6] mt-20'>
 			<div className='my-auto'>
-				<RadixForm.Root method='post' asChild>
+				<RadixForm.Root asChild method='post'>
 					<Form action='/login' className='w-[260px] mx-auto flex flex-col'>
 						<RadixForm.Field className='grid mb-[10px]' name='email'>
 							<div className='flex items-baseline justify-between'>
@@ -108,10 +106,10 @@ const Login = () => {
 							</div>
 							<RadixForm.Control asChild>
 								<input
+									required
 									disabled={isSubmitting}
 									className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
 									type='email'
-									required
 								/>
 							</RadixForm.Control>
 						</RadixForm.Field>
@@ -126,10 +124,10 @@ const Login = () => {
 							</div>
 							<RadixForm.Control asChild>
 								<input
+									required
 									disabled={isSubmitting}
 									className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
 									type='password'
-									required
 								/>
 							</RadixForm.Control>
 						</RadixForm.Field>
@@ -139,13 +137,12 @@ const Login = () => {
 							</RadixForm.FormControl>
 						</RadixForm.Field>
 						{data?.error
-						&& <p className='text-center text-mauve-12 dark:text-mauvedark-11 font-gothamMedium'>{data.error}</p>
-						}
+						&& <p className='text-center text-mauve-12 dark:text-mauvedark-11 font-gothamMedium'>{data.error}</p>}
 						<RadixForm.Submit asChild>
-							<Button disabled={isSubmitting} className='m-auto mt-2' text='Fazer Login' preset={ButtonPreset.Primary} />
+							<Button isDisabled={isSubmitting} className='m-auto mt-2' text='Fazer Login' preset={ButtonPreset.Primary}/>
 						</RadixForm.Submit>
 						{isSubmitting && (
-							<YemSpinner />
+							<YemSpinner/>
 						)}
 					</Form>
 				</RadixForm.Root>
@@ -154,9 +151,9 @@ const Login = () => {
 						<p className='text-center text-xs text-mauve-11 dark:text-mauvedark-10'>Gerar uma nova senha</p>
 					</Link>
 					<Separator
-						className='bg-mauve-11 dark:bg-mauvedark-11 data-[orientation=horizontal]:h-px data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-4 data-[orientation=vertical]:w-px'
 						decorative
-						orientation='vertical' />
+						className='bg-mauve-11 dark:bg-mauvedark-11 data-[orientation=horizontal]:h-px data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-4 data-[orientation=vertical]:w-px'
+						orientation='vertical'/>
 					<Link to='/register'>
 						<p className='text-center text-xs text-mauve-11 dark:text-mauvedark-10'>Criar uma conta</p>
 					</Link>
@@ -164,6 +161,6 @@ const Login = () => {
 			</div>
 		</main>
 	);
-};
+}
 
 export default Login;
