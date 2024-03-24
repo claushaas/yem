@@ -1,7 +1,7 @@
 import {type Request, type Response} from 'express';
 import {BotmakerService} from '../services/botmaker.service.js';
 import {mapStatusHttp} from '../utils/map-status-http.js';
-import {type TWhatsappIntent} from '../types/whatsapp-intent.js';
+import {type TWhatsappIntent} from '../types/whatsapp-intent.type.js';
 
 export class BotmakerController {
 	private readonly _service: BotmakerService;
