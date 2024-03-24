@@ -11,7 +11,7 @@ import {
 import {CustomError} from '../utils/custom-error.js';
 import {generateToken} from '../utils/jwt.js';
 import {type TServiceReturn} from '../types/service-return.type.js';
-import {logger} from '../utils/logger.js';
+import {logger} from '../utils/logger'; // eslint-disable-line import/extensions
 import {
 	type TUser,
 	type TUserCreationAttributes,
@@ -48,7 +48,7 @@ export class UserService {
 	}
 
 	public async createOrFail(userData: TUserCreationAttributes): Promise<TServiceReturn<{userId: string}>> {
-		logger.logDebug(`Finfing user ${typeof userData.phoneNumber}`);
+		logger.logDebug(`Finding user ${typeof userData.phoneNumber}`);
 		const maybeUser = await this._verifyUserExists(userData.email);
 		logger.logDebug(
 			`User ${userData.email} found: ${JSON.stringify(maybeUser)}`,
