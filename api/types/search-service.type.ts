@@ -1,9 +1,13 @@
 import {type TRepository} from './repository.type.js';
 
 export type TSearchableEntity = {
+	id: string;
 	name: string;
 	description: string | undefined;
 	tags?: string[];
+	thumbnailUrl: string;
+	published: boolean;
+	publicationDate: Date;
 };
 
 export type TSearchService<T> = {
