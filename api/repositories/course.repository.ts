@@ -12,6 +12,7 @@ export class CourseRepository implements TRepository<TSearchableEntity> {
 
 	public async getAll(): Promise<TSearchableEntity[]> {
 		const select = {
+			id: true,
 			name: true,
 			description: true,
 			thumbnailUrl: true,
