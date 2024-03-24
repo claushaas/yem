@@ -3,7 +3,7 @@ import {SecretsManagerClient, GetSecretValueCommand, UpdateSecretCommand} from '
 import {CustomError} from '../utils/custom-error.js';
 import {type TServiceReturn} from '../types/service-return.type.js';
 import {type TSecret} from '../types/secret.type.js';
-import {logger} from '../utils/logger.js';
+import {logger} from '../utils/logger.util.js';
 
 export class SecretService {
 	private readonly _awsClient: SecretsManagerClient;

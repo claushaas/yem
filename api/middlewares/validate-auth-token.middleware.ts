@@ -1,7 +1,7 @@
 import {type NextFunction, type Request, type Response} from 'express';
 import {verifyToken} from '../utils/jwt.js';
 import {CustomError} from '../utils/custom-error.js';
-import {logger} from '../utils/logger.js';
+import {logger} from '../utils/logger.util.js';
 
 export const validateAuthToken = (request: Request, response: Response, next: NextFunction) => {
 	logger.logDebug('Validating token');

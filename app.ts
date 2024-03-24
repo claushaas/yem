@@ -3,7 +3,7 @@ import 'express-async-errors'; // eslint-disable-line import/no-unassigned-impor
 import cookieParser from 'cookie-parser';
 import {router} from './api/routes/index.js';
 import {errorMiddleware} from './api/middlewares/error.middleware.js';
-import {logger} from './api/utils/logger.js';
+import {logger} from './api/utils/logger.util.js';
 import {morganMiddleware} from './api/middlewares/morgan.middleware.js';
 import {limiter} from './api/middlewares/rate-limiter.middleware.js';
 import {viteDevelopmentServer, remixHandler} from './api/utils/remix-server-utils.js';

@@ -2,7 +2,7 @@ import {type AxiosResponse} from 'axios';
 import {Request} from '../utils/request.js';
 import {CustomError} from '../utils/custom-error.js';
 import {type TServiceReturn} from '../types/service-return.type.js';
-import {logger} from '../utils/logger.js';
+import {logger} from '../utils/logger.util.js';
 import {SecretService} from './secret.service.js';
 
 const baseUrl = process.env.BOTMAKER_API_URL ?? 'https://api.botmaker.com/v2.0';
