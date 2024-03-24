@@ -15,7 +15,7 @@ import {logger} from '../utils/logger.js';
 import {
 	type TUser,
 	type TUserCreationAttributes,
-} from '../types/user.js';
+} from '../types/user-type.js';
 import {welcomeEmailTemplate} from '../assets/emails/welcome.email.template.js';
 import {UserForCreation} from '../entities/user.entity.js';
 import {generateSecurePassword} from '../utils/generate-secure-password.js';

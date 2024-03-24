@@ -1,7 +1,7 @@
 import {Request} from '../utils/request.js';
 import {CustomError} from '../utils/custom-error.js';
 import {type TServiceReturn} from '../types/service-return.js';
-import {type TMauticUserCreationAttributes} from '../types/user.js';
+import {type TMauticUserCreationAttributes} from '../types/user-type.js';
 import {logger} from '../utils/logger.js';
 import {MauticUserForCreation} from '../entities/user.entity.js';
 

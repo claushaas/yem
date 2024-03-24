@@ -1,9 +1,9 @@
 import {PrismaClient} from '@prisma/client';
-import {type TUser} from '../types/user.js';
+import {type TUser} from '../types/user-type.js';
 import {CustomError} from '../utils/custom-error.js';
-import {type TLesson} from '../types/lesson.js';
+import {type TLesson} from '../types/lesson-type.js';
 import {Lesson} from '../entities/lesson.entity.js';
-import {type TUuid} from '../types/uuid.js';
+import {type TUuid} from '../types/uuid-type.js';
 import {type TServiceReturn} from '../types/service-return.js';
 
 export class LessonService {

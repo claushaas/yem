@@ -2,8 +2,8 @@ import axios from 'axios';
 import {Request} from '../utils/request.js';
 import {CustomError} from '../utils/custom-error.js';
 import {type TServiceReturn} from '../types/service-return.js';
-import {type TUser} from '../types/user.js';
-import {type THotmartSubscription, type TSubscription} from '../types/subscription.js';
+import {type TUser} from '../types/user-type.js';
+import {type THotmartSubscription, type TSubscription} from '../types/subscription-type.js';
 import {logger} from '../utils/logger.js';
 import {SecretService} from './secret.service.js';
 

@@ -1,8 +1,8 @@
 import api from 'api';
 import {CustomError} from '../utils/custom-error.js';
 import {type TServiceReturn} from '../types/service-return.js';
-import {type TUser} from '../types/user.js';
-import {type TIuguSubscription, type TSubscription} from '../types/subscription.js';
+import {type TUser} from '../types/user-type.js';
+import {type TIuguSubscription, type TSubscription} from '../types/subscription-type.js';
 
 export class IuguService {
 	private readonly _api: {

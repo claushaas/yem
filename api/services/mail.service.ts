@@ -3,7 +3,7 @@ import {fromEnv} from '@aws-sdk/credential-providers';
 import {CustomError} from '../utils/custom-error.js';
 import {logger} from '../utils/logger.js';
 import type {TServiceReturn} from '../types/service-return.js';
-import {type TEmailTemplate} from '../types/email.js';
+import {type TEmailTemplate} from '../types/email-type.js';
 
 export class MailService {
 	private readonly _awsClient: SESv2Client;

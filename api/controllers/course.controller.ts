@@ -1,8 +1,8 @@
 import {type Request, type Response} from 'express';
 import {CourseService} from '../services/course.service.js';
 import {mapStatusHttp} from '../utils/map-status-http.js';
-import {type TUser} from '../types/user.js';
-import {type TCourse} from '../types/course.js';
+import {type TUser} from '../types/user-type.js';
+import {type TCourse} from '../types/course-type.js';
 import {logger} from '../utils/logger.js';
 import SearchService from '#/services/search.service.js';
 import {FuzzySearchEngine} from '#/engines/fuzzy-search.engine.js';

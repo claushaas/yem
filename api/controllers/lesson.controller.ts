@@ -1,8 +1,8 @@
 import {type Request, type Response} from 'express';
 import {mapStatusHttp} from '../utils/map-status-http.js';
 import {LessonService} from '../services/lesson.service.js';
-import {type TUser} from '../types/user.js';
-import {type TLesson} from '../types/lesson.js';
+import {type TUser} from '../types/user-type.js';
+import {type TLesson} from '../types/lesson-type.js';
 
 export class LessonController {
 	private readonly _service: LessonService;

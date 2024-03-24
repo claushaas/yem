@@ -1,8 +1,8 @@
 import {PrismaClient} from '@prisma/client';
-import {type TModule} from '../types/module.js';
+import {type TModule} from '../types/module-type.js';
 import {Module} from '../entities/module.entity.js';
-import {type TUser, type TUserRoles} from '../types/user.js';
-import {type TUuid} from '../types/uuid.js';
+import {type TUser, type TUserRoles} from '../types/user-type.js';
+import {type TUuid} from '../types/uuid-type.js';
 import {CustomError} from '../utils/custom-error.js';
 import {type TServiceReturn} from '../types/service-return.js';
 
