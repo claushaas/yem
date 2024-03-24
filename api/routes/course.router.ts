@@ -58,11 +58,4 @@ courseRouter.delete(
 	},
 );
 
-courseRouter.get(
-	'/search/:term',
-	async (request: Request, response: Response) => {
-		await new CourseController().search(request, response);
-	},
-);
-
 export {courseRouter};

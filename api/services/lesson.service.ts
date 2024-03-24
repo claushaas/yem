@@ -1,10 +1,12 @@
 import {PrismaClient} from '@prisma/client';
+import Fuse, {type IFuseOptions} from 'fuse.js';
 import {type TUser} from '../types/user.type.js';
 import {CustomError} from '../utils/custom-error.js';
 import {type TLesson} from '../types/lesson.type.js';
 import {Lesson} from '../entities/lesson.entity.js';
 import {type TUuid} from '../types/uuid.type.js';
 import {type TServiceReturn} from '../types/service-return.type.js';
+import {type TSearchableEntity} from '../types/searchable.type.js';
 
 export class LessonService {
 	private readonly _model: PrismaClient;
@@ -188,7 +190,7 @@ export class LessonService {
 		};
 	}
 
-	public async getList(moduleId: TUuid, user: TUser | undefined): Promise<TServiceReturn<unknown>> {
+	public async getList(moduleId: TUuid, user: TUser | undefined): Promise<TServiceReturn<TSearchableEntity[]>> {
 		const lessonWhere = {
 			modules: {
 				some: {
@@ -261,6 +263,28 @@ export class LessonService {
 		return {
 			status: 'SUCCESSFUL',
 			data: lessons,
+		};
+	}
+
+	public async search(moduleId: TUuid, user: TUser | undefined, term: string): Promise<TServiceReturn<TSearchableEntity[]>> {
+		const {data} = await this.getList(moduleId, user);
+
+		const searchOptions: IFuseOptions<TSearchableEntity> = {
+			includeScore: true,
+			shouldSort: true,
+			isCaseSensitive: false,
+			threshold: 0.3,
+			minMatchCharLength: 1,
+			keys: ['name', 'description'],
+		};
+
+		const fuse = new Fuse(data, searchOptions);
+
+		const searchResults = fuse.search(term).map(result => result.item);
+
+		return {
+			status: 'SUCCESSFUL',
+			data: searchResults,
 		};
 	}
 
