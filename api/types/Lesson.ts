@@ -1,5 +1,5 @@
-import {type TTags} from './Tag.js';
-import {type TUuid} from './UUID.js';
+import {type TTags} from './tag.js';
+import {type TUuid} from './uuid.js';
 
 export type TLessonType = 'video' | 'text' | 'courseWare';
 

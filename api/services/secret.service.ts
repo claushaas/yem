@@ -1,9 +1,9 @@
 import {fromEnv} from '@aws-sdk/credential-providers';
-import CustomError from '../utils/CustomError.js';
 import {SecretsManagerClient, GetSecretValueCommand, UpdateSecretCommand} from '@aws-sdk/client-secrets-manager';
-import {type TypeServiceReturn} from '../types/ServiceReturn.js';
-import {type TypeSecret} from '../types/Secret.js';
-import {logger} from '../utils/Logger.js';
+import {CustomError} from '../utils/custom-error.js';
+import {type TServiceReturn} from '../types/service-return.js';
+import {type TSecret} from '../types/secret.js';
+import {logger} from '../utils/logger.js';
 
 export class SecretService {
 	private readonly _awsClient: SecretsManagerClient;
@@ -19,15 +19,15 @@ export class SecretService {
 		this._awsSecretId = process.env.AWS_SECRET_ID ?? '';
 	}
 
-	public async getSecret(): Promise<TypeServiceReturn<TypeSecret>> {
+	public async getSecret(): Promise<TServiceReturn<TSecret>> {
 		try {
 			logger.logDebug('Getting secret');
-			const params = {
-			// eslint-disable-next-line @typescript-eslint/naming-convention
+			const parameters = {
+
 				SecretId: this._awsSecretId,
 			};
 
-			const command = new GetSecretValueCommand(params);
+			const command = new GetSecretValueCommand(parameters);
 			const response = await this._awsClient.send(command);
 
 			if (response.$metadata.httpStatusCode !== 200) {
@@ -36,25 +36,25 @@ export class SecretService {
 
 			return {
 				status: 'SUCCESSFUL',
-				data: JSON.parse(response.SecretString ?? '{}') as TypeSecret,
+				data: JSON.parse(response.SecretString ?? '{}') as TSecret,
 			};
-		} catch (error) {
+		} catch {
 			logger.logError('Error getting secret');
 			throw new CustomError('UNKNOWN', 'Erro ao buscar secret');
 		}
 	}
 
-	public async setSecret(secret: Record<string, string>): Promise<TypeServiceReturn<string>> {
+	public async setSecret(secret: Record<string, string>): Promise<TServiceReturn<string>> {
 		try {
 			logger.logDebug('Setting secret');
-			const params = {
-				// eslint-disable-next-line @typescript-eslint/naming-convention
+			const parameters = {
+
 				SecretId: this._awsSecretId,
-				// eslint-disable-next-line @typescript-eslint/naming-convention
+
 				SecretString: JSON.stringify(secret),
 			};
 
-			const command = new UpdateSecretCommand(params);
+			const command = new UpdateSecretCommand(parameters);
 			const response = await this._awsClient.send(command);
 
 			if (response.$metadata.httpStatusCode !== 200) {
@@ -65,7 +65,7 @@ export class SecretService {
 				status: 'NO_CONTENT',
 				data: response.Name ?? '',
 			};
-		} catch (error) {
+		} catch {
 			logger.logError('Error setting secret');
 			throw new CustomError('UNKNOWN', 'Erro ao setar secret');
 		}

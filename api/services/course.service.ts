@@ -1,11 +1,11 @@
 import {PrismaClient} from '@prisma/client';
-import {type TUser, type TUserRoles} from '../types/User.js';
+import {type TUser, type TUserRoles} from '../types/user.js';
 import {Course} from '../entities/course.entity.js';
-import {type TCourse} from '../types/Course.js';
-import {CustomError} from '../utils/CustomError.js';
-import {type TServiceReturn} from '../types/ServiceReturn.js';
+import {type TCourse} from '../types/course.js';
+import {CustomError} from '../utils/custom-error.js';
+import {type TServiceReturn} from '../types/service-return.js';
 
-export default class CourseService {
+export class CourseService {
 	private readonly _model: PrismaClient;
 
 	constructor(model: PrismaClient = new PrismaClient()) {

@@ -1,4 +1,4 @@
-import {type TRepository} from './IRepository';
+import {type TRepository} from './repository.js';
 
 export type TSearchableEntity = {
 	name: string;

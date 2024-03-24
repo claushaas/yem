@@ -1,4 +1,4 @@
-import {type TUuid} from './UUID.js';
+import {type TUuid} from './uuid.js';
 
 export type TUserRoles = string[];
 type TEmail = string;

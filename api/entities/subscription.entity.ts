@@ -1,6 +1,6 @@
-import {type TSubscription} from '../types/Subscription.js';
-import {CustomError} from '../utils/CustomError.js';
 import Joi from 'joi';
+import {type TSubscription} from '../types/subscription.js';
+import {CustomError} from '../utils/custom-error.js';
 
 const subscriptionSchema = Joi.object({
 	userId: Joi.string().uuid().required(),

@@ -6,25 +6,25 @@ const userRouter = Router();
 
 userRouter.post(
 	'/login',
-	async (req: Request, res: Response) => {
-		await new UserController().login(req, res);
+	async (request: Request, response: Response) => {
+		await new UserController().login(request, response);
 	},
 );
 
 userRouter.get(
 	'/logout',
-	(req: Request, res: Response) => new UserController().logout(req, res),
+	(request: Request, response: Response) => new UserController().logout(request, response),
 );
 
 userRouter.post(
 	'/new-password',
-	async (req: Request, res: Response) => new UserController().getNewPassword(req, res),
+	async (request: Request, response: Response) => new UserController().getNewPassword(request, response),
 );
 
 userRouter.post(
 	'/create-or-fail',
-	async (req: Request, res: Response) => {
-		await new UserController().createOrFail(req, res);
+	async (request: Request, response: Response) => {
+		await new UserController().createOrFail(request, response);
 	},
 );
 

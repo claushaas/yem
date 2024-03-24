@@ -1,12 +1,12 @@
 import {PrismaClient} from '@prisma/client';
-import {type TUser} from '../types/User.js';
-import {CustomError} from '../utils/CustomError.js';
-import {type TLesson} from '../types/Lesson.js';
+import {type TUser} from '../types/user.js';
+import {CustomError} from '../utils/custom-error.js';
+import {type TLesson} from '../types/lesson.js';
 import {Lesson} from '../entities/lesson.entity.js';
-import {type TUuid} from '../types/UUID.js';
-import {type TServiceReturn} from '../types/ServiceReturn.js';
+import {type TUuid} from '../types/uuid.js';
+import {type TServiceReturn} from '../types/service-return.js';
 
-export default class LessonService {
+export class LessonService {
 	private readonly _model: PrismaClient;
 
 	constructor(model: PrismaClient = new PrismaClient()) {

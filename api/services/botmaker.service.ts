@@ -1,9 +1,10 @@
-import {Request} from '../utils/Axios.js';
-import {CustomError} from '../utils/CustomError.js';
-import {type TServiceReturn} from '../types/ServiceReturn.js';
-import {SecretService} from './secret.service.js';
 import {type AxiosResponse} from 'axios';
-import {logger} from '../utils/Logger.js';
+import {Request} from '../utils/request.js';
+import {CustomError} from '../utils/custom-error.js';
+import {type TServiceReturn} from '../types/service-return.js';
+import {logger} from '../utils/logger.js';
+import {SecretService} from './secret.service.js';
+
 const baseUrl = process.env.BOTMAKER_API_URL ?? 'https://api.botmaker.com/v2.0';
 const whatsappChannelId = process.env.BOTMAKER_WHATSAPP_CHANNEL_ID;
 
@@ -18,11 +19,9 @@ export class BotmakerService {
 		const {data: {botmakerApiAccessToken}} = await this._secretService.getSecret();
 
 		const request = new Request(baseUrl, {
-			// eslint-disable-next-line @typescript-eslint/naming-convention
-			'content-type': 'application/json',
+			'content-type': 'application/json', // eslint-disable-line @typescript-eslint/naming-convention
 			Accept: 'application/json',
-			// eslint-disable-next-line @typescript-eslint/naming-convention
-			'access-token': botmakerApiAccessToken,
+			'access-token': botmakerApiAccessToken, // eslint-disable-line @typescript-eslint/naming-convention
 		});
 
 		const url = '/notifications/contacts-blacklist';
@@ -56,11 +55,9 @@ export class BotmakerService {
 		const {data: {botmakerApiAccessToken}} = await this._secretService.getSecret();
 
 		const request = new Request(baseUrl, {
-			// eslint-disable-next-line @typescript-eslint/naming-convention
-			'Content-Type': 'application/json',
+			'Content-Type': 'application/json', // eslint-disable-line @typescript-eslint/naming-convention
 			Accept: 'application/json',
-			// eslint-disable-next-line @typescript-eslint/naming-convention
-			'access-token': botmakerApiAccessToken,
+			'access-token': botmakerApiAccessToken, // eslint-disable-line @typescript-eslint/naming-convention
 		});
 
 		const url = '/chats-actions/trigger-intent';

@@ -1,10 +1,10 @@
+import Joi from 'joi';
 import {
 	type TUserCreationAttributes, type TMauticUserCreationAttributes, type TBasicUser,
-} from '../types/User.js';
-import Joi from 'joi';
-import {CustomError} from '../utils/CustomError.js';
-import {convertStringToStartCase} from '../utils/convertStringToStartCase.js';
-import {logger} from '../utils/Logger.js';
+} from '../types/user.js';
+import {CustomError} from '../utils/custom-error.js';
+import {convertStringToStartCase} from '../utils/convert-string-to-start-case.js';
+import {logger} from '../utils/logger.js';
 
 const basicUserSchema = Joi.object({
 	email: Joi.string().email().required(),
@@ -82,7 +82,7 @@ export class UserForCreation {
 		}
 
 		this._roles = user.roles ?? [];
-		this._phoneNumber = user.phoneNumber.replace(/\s+/g, '');
+		this._phoneNumber = user.phoneNumber.replaceAll(/\s+/g, '');
 		this._document = user.document ?? '';
 		this._email = user.email.toLowerCase();
 		this._firstName = convertStringToStartCase(user.firstName);

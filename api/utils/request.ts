@@ -10,8 +10,8 @@ export class Request {
 		});
 	}
 
-	public async get(url: string, params: Record<string, string> = {}): Promise<AxiosResponse> {
-		return this._request.get(url, {params});
+	public async get(url: string, parameters: Record<string, string> = {}): Promise<AxiosResponse> {
+		return this._request.get(url, {params: parameters});
 	}
 
 	public async post(

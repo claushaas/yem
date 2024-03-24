@@ -1,11 +1,11 @@
-import {Request} from '../utils/Axios.js';
-import {CustomError} from '../utils/CustomError.js';
-import {type TServiceReturn} from '../types/ServiceReturn.js';
-import {SecretService} from './secret.service.js';
-import {type TUser} from '../types/User.js';
-import {type THotmartSubscription, type TSubscription} from '../types/Subscription.js';
-import {logger} from '../utils/Logger.js';
 import axios from 'axios';
+import {Request} from '../utils/request.js';
+import {CustomError} from '../utils/custom-error.js';
+import {type TServiceReturn} from '../types/service-return.js';
+import {type TUser} from '../types/user.js';
+import {type THotmartSubscription, type TSubscription} from '../types/subscription.js';
+import {logger} from '../utils/logger.js';
+import {SecretService} from './secret.service.js';
 
 const baseUrl = process.env.HOTMART_API_URL ?? 'https://sandbox.hotmart.com/';
 
@@ -24,22 +24,21 @@ export class HotmartService {
 
 		logger.logDebug('Creating new request for hotmart');
 		const request = new Request(baseUrl, {
-			// eslint-disable-next-line @typescript-eslint/naming-convention
-			'Content-Type': 'application/json',
+			'Content-Type': 'application/json', // eslint-disable-line @typescript-eslint/naming-convention
 			Authorization: `Bearer ${secrets.data.hotmartApiAccessToken}`,
 		});
 
 		const url = '/payments/api/v1/subscriptions';
-		const params = {
-			// eslint-disable-next-line camelcase
+		const parameters = {
+
 			subscriber_email: user.email,
-			// eslint-disable-next-line camelcase
+
 			product_id: '135340',
 		};
 
 		try {
 			logger.logDebug('Sending subscription request to hotmart');
-			const response = await request.get(url, params);
+			const response = await request.get(url, parameters);
 			logger.logDebug(`Got response: ${JSON.stringify(response.data)}`);
 
 			return {
@@ -55,12 +54,11 @@ export class HotmartService {
 
 				logger.logDebug('Trying to get user subscriptions again');
 				const request = new Request(baseUrl, {
-					// eslint-disable-next-line @typescript-eslint/naming-convention
-					'Content-Type': 'application/json',
+					'Content-Type': 'application/json', // eslint-disable-line @typescript-eslint/naming-convention
 					Authorization: `Bearer ${newAccessToken}`,
 				});
 
-				const response = await request.get(url, params);
+				const response = await request.get(url, parameters);
 
 				return {
 					status: 'SUCCESSFUL',
@@ -98,16 +96,15 @@ export class HotmartService {
 				null,
 				{
 					headers: {
-						// eslint-disable-next-line @typescript-eslint/naming-convention
-						'Content-Type': 'application/json',
+						'Content-Type': 'application/json', // eslint-disable-line @typescript-eslint/naming-convention
 						Authorization: process.env.HOTMART_API_BASIC ?? '',
 					},
 					params: {
-						// eslint-disable-next-line camelcase
+
 						grant_type: 'client_credentials',
-						// eslint-disable-next-line camelcase
+
 						client_id: process.env.HOTMART_API_CLIENT_ID ?? '',
-						// eslint-disable-next-line camelcase
+
 						client_secret: process.env.HOTMART_API_SECRET ?? '',
 					},
 				},

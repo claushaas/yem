@@ -1,7 +1,7 @@
-import {type TRepository} from '#/types/IRepository';
-import {type TSearchableEntity} from '#/types/ISearchService';
-import {CustomError} from '#/utils/CustomError';
 import {PrismaClient} from '@prisma/client';
+import {type TRepository} from '#/types/repository.js';
+import {type TSearchableEntity} from '#/types/search-service.js';
+import {CustomError} from '#/utils/custom-error.js';
 
 export class CourseRepository implements TRepository<TSearchableEntity> {
 	private readonly _model: PrismaClient;

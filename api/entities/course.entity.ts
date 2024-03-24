@@ -1,7 +1,7 @@
-import {type TCourse} from '../types/Course.js';
 import Joi from 'joi';
-import {CustomError} from '../utils/CustomError.js';
-import {type TTags} from '../types/Tag.js';
+import {type TCourse} from '../types/course.js';
+import {CustomError} from '../utils/custom-error.js';
+import {type TTags} from '../types/tag.js';
 
 const courseSchema = Joi.object({
 	name: Joi.string().required().min(3).max(35),

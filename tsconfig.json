@@ -6,7 +6,7 @@
     "**/.server/**/*.tsx",
     "**/.client/**/*.ts",
     "**/.client/**/*.tsx",
-    "api/utils/remixServerUtils.js",
+    "api/utils/remix-server-utils.js",
     "**/api/**/*.ts",
     "**/api/**/*.tsx",
   ],

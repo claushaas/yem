@@ -1,9 +1,9 @@
 import {SESv2Client, SendEmailCommand} from '@aws-sdk/client-sesv2';
 import {fromEnv} from '@aws-sdk/credential-providers';
-import {CustomError} from '../utils/CustomError.js';
-import {logger} from '../utils/Logger.js';
-import type {TServiceReturn} from '../types/ServiceReturn.js';
-import {type TEmailTemplate} from '../types/Email.js';
+import {CustomError} from '../utils/custom-error.js';
+import {logger} from '../utils/logger.js';
+import type {TServiceReturn} from '../types/service-return.js';
+import {type TEmailTemplate} from '../types/email.js';
 
 export class MailService {
 	private readonly _awsClient: SESv2Client;
@@ -19,7 +19,7 @@ export class MailService {
 
 	public async sendEmail(template: TEmailTemplate): Promise<TServiceReturn<string>> {
 		logger.logDebug('Sending email');
-		const params = {
+		const parameters = {
 
 			Content: {
 
@@ -31,14 +31,14 @@ export class MailService {
 
 							Data: template.html,
 
-							ChartSet: 'UTF-8',
+							ChartSet: 'utf8',
 						},
 
 						Text: {
 
 							Data: template.text,
 
-							ChartSet: 'UTF-8',
+							ChartSet: 'utf8',
 						},
 					},
 
@@ -46,7 +46,7 @@ export class MailService {
 
 						Data: template.subject,
 
-						ChartSet: 'UTF-8',
+						ChartSet: 'utf8',
 					},
 				},
 			},
@@ -59,7 +59,7 @@ export class MailService {
 			FromEmailAddress: 'contato@yogaemmovimento.com',
 		};
 
-		const command = new SendEmailCommand(params);
+		const command = new SendEmailCommand(parameters);
 		try {
 			await this._awsClient.send(command);
 			logger.logDebug('Email sent successfully');

@@ -1,4 +1,3 @@
-
 const countryCodes = {
 	AF: 93, // Afghanistan
 	AL: 355, // Albania

@@ -1,7 +1,7 @@
-import {type TModule} from '../types/Module.js';
-import {CustomError} from '../utils/CustomError.js';
-import {type TTags} from '../types/Tag.js';
 import Joi from 'joi';
+import {type TModule} from '../types/module.js';
+import {CustomError} from '../utils/custom-error.js';
+import {type TTags} from '../types/tag.js';
 
 const moduleSchema = Joi.object({
 	name: Joi.string().required().min(3).max(35),

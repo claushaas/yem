@@ -1,8 +1,8 @@
-import {CustomError} from '../utils/CustomError.js';
-import {type TServiceReturn} from '../types/ServiceReturn.js';
 import api from 'api';
-import {type TUser} from '../types/User.js';
-import {type TIuguSubscription, type TSubscription} from '../types/Subscription.js';
+import {CustomError} from '../utils/custom-error.js';
+import {type TServiceReturn} from '../types/service-return.js';
+import {type TUser} from '../types/user.js';
+import {type TIuguSubscription, type TSubscription} from '../types/subscription.js';
 
 export class IuguService {
 	private readonly _api: {
@@ -11,7 +11,7 @@ export class IuguService {
 	};
 
 	constructor() {
-		this._api = api('@iugu-dev/v1.0#40ap3flrqvhoz1');
+		this._api = api('@iugu-dev/v1.0#40ap3flrqvhoz1'); // eslint-disable-line @typescript-eslint/no-unsafe-assignment
 
 		this._api.auth(process.env.IUGU_API_TOKEN ?? '');
 	}
