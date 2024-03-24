@@ -3,10 +3,6 @@ import {CourseService} from '../services/course.service.js';
 import {mapStatusHttp} from '../utils/map-status-http.js';
 import {type TUser} from '../types/user.type.js';
 import {type TCourse} from '../types/course.type.js';
-import {logger} from '../utils/logger.js';
-import SearchService from '../services/search.service.js';
-import {FuzzySearchEngine} from '../engines/fuzzy-search.engine.js';
-import {CourseRepository} from '../repositories/course.repository.js';
 
 export class CourseController {
 	private readonly _service: CourseService;
@@ -65,14 +61,5 @@ export class CourseController {
 		const statusCode = mapStatusHttp(status);
 
 		return response.status(statusCode).json(data);
-	}
-
-	public async search(request: Request, response: Response) {
-		const {term} = request.params;
-
-		const searchService = new SearchService(new CourseRepository(), new FuzzySearchEngine());
-		logger.logDebug(`Searching for term: ${JSON.stringify(await searchService.searchByTerm(term))}`);
-
-		return response.status(200).json(await searchService.searchByTerm(term));
 	}
 }
