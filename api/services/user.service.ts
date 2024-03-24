@@ -11,7 +11,7 @@ import {
 import {CustomError} from '../utils/custom-error.js';
 import {generateToken} from '../utils/jwt.js';
 import {type TServiceReturn} from '../types/service-return.type.js';
-import {logger} from '../utils/logger'; // eslint-disable-line import/extensions
+import {logger} from '../utils/logger.util.js';
 import {
 	type TUser,
 	type TUserCreationAttributes,

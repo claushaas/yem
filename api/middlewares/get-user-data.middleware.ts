@@ -1,7 +1,7 @@
 import {type NextFunction, type Request, type Response} from 'express';
 import {verifyToken} from '../utils/jwt.js';
 import {type TUser} from '../types/user.type.js';
-import {logger} from '../utils/logger.js';
+import {logger} from '../utils/logger.util.js';
 
 export const getUserData = (request: Request, response: Response, next: NextFunction) => {
 	logger.logDebug('Getting user data');

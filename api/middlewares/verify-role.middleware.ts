@@ -1,7 +1,7 @@
 import {type NextFunction, type Request, type Response} from 'express';
 import {CustomError} from '../utils/custom-error.js';
 import {type TUser} from '../types/user.type.js';
-import {logger} from '../utils/logger.js';
+import {logger} from '../utils/logger.util.js';
 
 export const verifyRole = (request: Request, response: Response, next: NextFunction, role: string) => {
 	logger.logDebug('Verifying role');

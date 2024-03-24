@@ -2,7 +2,7 @@ import {Request} from '../utils/request.js';
 import {CustomError} from '../utils/custom-error.js';
 import {type TServiceReturn} from '../types/service-return.type.js';
 import {type TMauticUserCreationAttributes} from '../types/user.type.js';
-import {logger} from '../utils/logger.js';
+import {logger} from '../utils/logger.util.js';
 import {MauticUserForCreation} from '../entities/user.entity.js';
 
 export class MauticService {

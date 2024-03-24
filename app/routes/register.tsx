@@ -14,7 +14,7 @@ import {YemSpinner} from '~/components/yemSpinner/index.js';
 import {UserService} from '#/services/user.service';
 import {Button, ButtonPreset} from '~/components/button/index.js';
 import type {CustomError} from '#/utils/custom-error';
-import {logger} from '#/utils/logger.js';
+import {logger} from '#/utils/logger.util.js';
 
 export const action = async ({request}: ActionFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
