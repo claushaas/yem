@@ -7,7 +7,6 @@ import {type TypeUserSession} from '~/types/user-session.type';
 
 export function NavigateBar({userData}: {readonly userData: TypeUserSession | undefined}) {
 	const {pathname} = useLocation();
-	console.log(pathname);
 
 	return (
 		<header className='max-xs:max-w-[95%] max-w-[90%] mx-auto my-4 flex justify-between items-center w-[-webkit-fill-available]'>
