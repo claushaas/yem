@@ -20,23 +20,23 @@ export function NavigateBar({userData}: {readonly userData: TypeUserSession | un
 				className='relative flex justify-center'
 			>
 				<NavigationMenu.List className='gap-3 center flex list-none items-center px-4 py-2 rounded-md shadow-sm shadow-mauve-11 dark:shadow-mauvedark-3 bg-mauve-4 dark:bg-mauvedark-3'>
-					{
-						!userData && (
-							<>
-								<NavigationMenu.Item>
-									<div className='py-1.5 leading-none'>
-										<NavigateLink to='/login'>
-											<p>Login</p>
-										</NavigateLink>
-									</div>
-								</NavigationMenu.Item>
-								<Separator.Root
-									decorative
-									className='bg-mauve-11 dark:bg-mauvedark-11 data-[orientation=horizontal]:h-px data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-4 data-[orientation=vertical]:w-px'
-									orientation='vertical'/>
-							</>
-						)
-					}
+					{!userData && pathname !== '/login' && (
+						<>
+							<NavigationMenu.Item>
+								<div className='py-1.5 leading-none'>
+									<NavigationMenu.Link asChild>
+										<Link to='/login'>
+											<p>Entrar</p>
+										</Link>
+									</NavigationMenu.Link>
+								</div>
+							</NavigationMenu.Item>
+							<Separator.Root
+								decorative
+								className='bg-mauve-11 dark:bg-mauvedark-11 data-[orientation=horizontal]:h-px data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-4 data-[orientation=vertical]:w-px'
+								orientation='vertical'/>
+						</>
+					)}
 					<NavigationMenu.Item>
 						<NavigationMenu.Trigger className='center m-0 flex list-none py-1 leading-none'>
 							<p className='mr-1'>Menu</p>
@@ -47,6 +47,7 @@ export function NavigateBar({userData}: {readonly userData: TypeUserSession | un
 							<ul className='grid grid-cols-2 gap-3'>
 								{pathname !== '/' && <NavigateLink to='/'>Home</NavigateLink>}
 								{userData?.roles.includes('admin') && pathname !== '/admin' && <NavigateLink to='/admin'>Admin</NavigateLink>}
+								{pathname !== '/courses' && <NavigateLink to='/courses'>Cursos</NavigateLink>}
 								{userData && pathname !== '/logout' && <NavigateLink to='/logout'>Sair</NavigateLink>}
 							</ul>
 						</NavigationMenu.Content>
