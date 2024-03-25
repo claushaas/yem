@@ -65,7 +65,6 @@ export class HotmartService {
 					data: response.data.items ? this._mapSubscriptions(response.data.items as THotmartSubscription[], user) : [],
 				};
 			} catch (error) {
-				console.log(error);
 				logger.logError(`Error getting user subscriptions on second try: ${JSON.stringify((error as Record<string, string>).data)}`);
 				throw new CustomError('INVALID_DATA', (error as Error).message);
 			}
