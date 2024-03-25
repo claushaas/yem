@@ -1,4 +1,4 @@
-function TermosDePrivacidade() {
+export default function TermosDePrivacidade() {
 	return (
 		<main className='my-20 max-w-[90%] mx-auto'>
 			<div className='max-w-screen-md'>
@@ -136,5 +136,3 @@ function TermosDePrivacidade() {
 		</main>
 	);
 }
-
-export default TermosDePrivacidade;

@@ -1,4 +1,4 @@
-function TermosDeUso() {
+export default function TermosDeUso() {
 	return (
 		<main className='my-20 max-w-[90%] mx-auto'>
 			<div className='max-w-screen-md'>
@@ -54,5 +54,3 @@ function TermosDeUso() {
 		</main>
 	);
 }
-
-export default TermosDeUso;

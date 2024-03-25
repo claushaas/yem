@@ -9,7 +9,7 @@ import {Separator} from '@radix-ui/react-separator';
 import {Button, ButtonPreset} from '~/components/button/index.js';
 import {getUserSession, commitUserSession} from '~/utils/session.server';
 import {type TypeUserSession} from '~/types/user-session.type';
-import {YemSpinner} from '~/components/yemSpinner/index.js';
+import {YemSpinner} from '~/components/yem-spinner/index.js';
 import {UserService} from '#/services/user.service';
 
 export const action = async ({request}: ActionFunctionArgs) => {
@@ -76,7 +76,7 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
 	});
 };
 
-function Login() {
+export default function Login() {
 	const data: {
 		error?: string;
 		ENV: {
@@ -162,5 +162,3 @@ function Login() {
 		</main>
 	);
 }
-
-export default Login;

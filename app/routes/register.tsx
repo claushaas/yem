@@ -10,7 +10,7 @@ import 'react-phone-number-input/style.css';
 import PhoneInput from 'react-phone-number-input';
 import {type E164Number} from 'libphonenumber-js/core'; // eslint-disable-line import/no-extraneous-dependencies
 import {getUserSession, commitUserSession} from '~/utils/session.server';
-import {YemSpinner} from '~/components/yemSpinner/index.js';
+import {YemSpinner} from '~/components/yem-spinner/index.js';
 import {UserService} from '#/services/user.service';
 import {Button, ButtonPreset} from '~/components/button/index.js';
 import type {CustomError} from '#/utils/custom-error';
@@ -81,7 +81,7 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
 	return json(data);
 };
 
-function Register() {
+export default function Register() {
 	const data: {
 		error?: string;
 		success?: string;
@@ -220,5 +220,3 @@ function Register() {
 		</main>
 	);
 }
-
-export default Register;

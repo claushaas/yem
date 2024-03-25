@@ -6,7 +6,7 @@ import {Form, Link, useNavigation} from '@remix-run/react';
 import {Separator} from '@radix-ui/react-separator';
 import {Button, ButtonPreset, ButtonType} from '~/components/button/index.js';
 import {yemApiRequest} from '~/utils/request.server';
-import {YemSpinner} from '~/components/yemSpinner/index.js';
+import {YemSpinner} from '~/components/yem-spinner/index.js';
 
 export const action = async ({request}: ActionFunctionArgs) => {
 	try {
@@ -24,7 +24,7 @@ export const action = async ({request}: ActionFunctionArgs) => {
 	}
 };
 
-function NewPassword() {
+export default function NewPassword() {
 	const navigation = useNavigation();
 	const isSubmitting = navigation.formAction === '/new-password';
 
@@ -79,5 +79,3 @@ function NewPassword() {
 		</main>
 	);
 }
-
-export default NewPassword;
