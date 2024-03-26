@@ -7,6 +7,7 @@ import {Separator} from '@radix-ui/react-separator';
 import {Button, ButtonPreset, ButtonType} from '~/components/button/index.js';
 import {yemApiRequest} from '~/utils/request.server';
 import {YemSpinner} from '~/components/yem-spinner/index.js';
+import {logger} from '#/utils/logger.util';
 
 export const action = async ({request}: ActionFunctionArgs) => {
 	try {
@@ -19,7 +20,7 @@ export const action = async ({request}: ActionFunctionArgs) => {
 
 		return redirect('/login');
 	} catch (error) {
-		console.log(error);
+		logger.logError(`Error generating new password: ${(error as Error).message}`);
 		return redirect('/login');
 	}
 };

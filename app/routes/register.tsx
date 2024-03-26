@@ -12,7 +12,7 @@ import {type E164Number} from 'libphonenumber-js/core'; // eslint-disable-line i
 import {getUserSession, commitUserSession} from '~/utils/session.server';
 import {YemSpinner} from '~/components/yem-spinner/index.js';
 import {UserService} from '#/services/user.service';
-import {Button, ButtonPreset} from '~/components/button/index.js';
+import {Button, ButtonPreset, ButtonType} from '~/components/button/index.js';
 import type {CustomError} from '#/utils/custom-error';
 import {logger} from '#/utils/logger.util.js';
 
@@ -43,7 +43,6 @@ export const action = async ({request}: ActionFunctionArgs) => {
 			email: email as string,
 			phoneNumber: phoneNumber as string,
 		});
-		console.log(response);
 
 		userSession.flash('success', 'Usuário criado com sucesso, em alguns instantes você vai receber a senha por email e WhatsApp. Utilize-a em conjunto com seu email para fazer o login');
 
@@ -203,7 +202,7 @@ export default function Register() {
 						&& <p className='text-center text-mauve-12 dark:text-mauvedark-11 font-gothamMedium'>{data.error}</p>}
 
 						<RadixForm.Submit asChild>
-							<Button isDisabled={isSubmitting} className='m-auto mt-2' text='Criar Minha Conta' preset={ButtonPreset.Primary}/>
+							<Button isDisabled={isSubmitting} className='m-auto mt-2' text='Criar Minha Conta' preset={ButtonPreset.Primary} type={ButtonType.Submit}/>
 						</RadixForm.Submit>
 
 						{isSubmitting && (

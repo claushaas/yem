@@ -81,8 +81,16 @@ export class CourseService {
 		};
 	}
 
-	public async getAll(userRoles: TUserRoles = []): Promise<TServiceReturn<unknown>> {
+	public async getAll(userRoles: TUserRoles = []): Promise<TServiceReturn<Array<{
+		id: string;
+		name: string;
+		description?: string;
+		thumbnailUrl: string;
+		publicationDate: Date;
+		published: boolean;
+	}>>> {
 		const select = {
+			id: true,
 			name: true,
 			description: true,
 			thumbnailUrl: true,
@@ -101,7 +109,14 @@ export class CourseService {
 
 			return {
 				status: 'SUCCESSFUL',
-				data: courses,
+				data: courses as Array<{
+					id: string;
+					name: string;
+					description?: string;
+					thumbnailUrl: string;
+					publicationDate: Date;
+					published: boolean;
+				}>,
 			};
 		}
 
@@ -118,7 +133,14 @@ export class CourseService {
 
 		return {
 			status: 'SUCCESSFUL',
-			data: coursesForStudents,
+			data: coursesForStudents as Array<{
+				id: string;
+				name: string;
+				description?: string;
+				thumbnailUrl: string;
+				publicationDate: Date;
+				published: boolean;
+			}>,
 		};
 	}
 

@@ -1,3 +1,5 @@
+import React, {type LegacyRef, forwardRef} from 'react';
+
 export enum ButtonPreset {
 	Primary = 'primary',
 	Secondary = 'secondary',
@@ -72,20 +74,27 @@ const classNames = (preset: ButtonPreset) => {
 	}
 };
 
-export function Button({
+export const Button = React.forwardRef(({
 	className,
 	isDisabled: disabled = false,
 	preset = ButtonPreset.Primary,
 	text = 'Clicar Aqui',
 	type = ButtonType.Button,
-}: ButtonProperties) {
-	return (
-		<button
-			className={classNames(preset) + (className ? ` ${className}` : '')}
-			disabled={disabled}
-			type={type ?? ButtonType.Button} // eslint-disable-line react/button-has-type
-		>
-			{text}
-		</button>
-	);
-}
+}: ButtonProperties, forwardedReference: LegacyRef<HTMLButtonElement>) => (
+	<button
+		ref={forwardedReference}
+		className={classNames(preset) + (className ? ` ${className}` : '')}
+		disabled={disabled}
+		type={type ?? ButtonType.Button} // eslint-disable-line react/button-has-type
+	>
+		{text}
+	</button>
+));
+
+Button.defaultProps = {
+	className: ButtonPreset.Primary,
+	isDisabled: false,
+	preset: ButtonPreset.Primary,
+	text: 'Clicar Aqui',
+	type: ButtonType.Button,
+};
