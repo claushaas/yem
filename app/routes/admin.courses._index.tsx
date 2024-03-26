@@ -58,7 +58,7 @@ export default function Courses() {
 					</Dialog.Content>
 				</Dialog.Portal>
 			</Dialog.Root>
-			<div className='flex gap-4 my-4'>
+			<div className='flex gap-4 my-4 flex-wrap'>
 				{courses?.map(course => (
 					<ClassCard key={course.id} course={course} to={`./${course.id}`}/>
 				))}
