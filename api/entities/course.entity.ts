@@ -9,7 +9,7 @@ const courseSchema = Joi.object({
 	content: Joi.string(),
 	roles: Joi.array().items(Joi.string()).required(),
 	videoSourceUrl: Joi.string().uri(),
-	thumbnailUrl: Joi.string().required().uri(),
+	thumbnailUrl: Joi.string().required(),
 	publicationDate: Joi.date().required().default(new Date()),
 	published: Joi.boolean().required().default(true),
 	tags: Joi.array().items(Joi.array().items(Joi.string()).min(2).max(2)).unique(),

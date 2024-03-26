@@ -1,13 +1,12 @@
 import {XMarkIcon} from '@heroicons/react/24/outline';
 import * as Dialog from '@radix-ui/react-dialog';
 import {json, type LoaderFunctionArgs} from '@remix-run/node';
-import {Link, useLoaderData} from '@remix-run/react';
-import {Image} from '@unpic/react';
+import {useLoaderData} from '@remix-run/react';
 import {CourseService} from '#/services/course.service';
 import {Button, ButtonPreset, ButtonType} from '~/components/button/index.js';
 import {getUserSession} from '~/utils/session.server.js';
 import {logger} from '#/utils/logger.util.js';
-import {buildImgSource} from '~/utils/build-image-source.js';
+import {ClassCard} from '~/components/course-card/index.js';
 
 export const loader = async ({request}: LoaderFunctionArgs) => {
 	const {data: userData} = await getUserSession(request.headers.get('Cookie'));
@@ -61,25 +60,7 @@ export default function Courses() {
 			</Dialog.Root>
 			<div className='flex gap-4 my-4'>
 				{courses?.map(course => (
-					<div key={course.id} className='portrait:w-48 w-80 portrait:h-80 h-48 relative'>
-						<Image
-							className='absolute top-0 left-0 w-full h-full rounded-xl -z-10'
-							src={buildImgSource('78c0c3ab-7da6-46e8-742e-fd0e4b08b900')}
-							cdn='cloudflare_images'
-							layout='constrained'
-							width={320}
-							height={320}
-							alt='Mulher praticando Yoga'
-						/>
-						<Link to={`./${course.id}`}>
-							<div className='absolute top-0 left-0 h-full w-full rounded-xl bg-mauvea-10 p-4'>
-								<h2 className='text-mauve-3'>
-									{course.name}
-								</h2>
-								<p className='text-mauve-5'>{course.description}</p>
-							</div>
-						</Link>
-					</div>
+					<ClassCard key={course.id} course={course} to={`./${course.id}`}/>
 				))}
 			</div>
 		</>
