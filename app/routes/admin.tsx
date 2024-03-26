@@ -16,9 +16,15 @@ export default function Admin() {
 
 	return userData?.roles.includes('admin') && (
 		<div className='flex max-w-[95%] w-full mx-auto flex-col sm:flex-row gap-4'>
-			<aside className='w-64 p-3 bg-mauve-3 dark:bg-mauvedark-3 shadow-sm shadow-mauve-11 dark:shadow-mauvedark-3 rounded-lg h-fit'>
+			<aside className='w-64 p-3 bg-mauve-3 dark:bg-mauvedark-3 shadow-sm shadow-mauve-11 dark:shadow-mauvedark-3 rounded-lg h-fit flex flex-col gap-3'>
+				<Link to='/admin/students'>
+					<p>Alunos</p>
+				</Link>
 				<Link to='/admin/courses'>
 					<p>Cursos</p>
+				</Link>
+				<Link to='/admin/comments'>
+					<p>Comentários</p>
 				</Link>
 			</aside>
 			<main className='flex-grow flex-shrink p-3'>
