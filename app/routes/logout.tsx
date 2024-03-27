@@ -5,7 +5,7 @@ import {
 import {Form, useNavigation} from '@remix-run/react';
 import {Button, ButtonPreset, ButtonType} from '~/components/button/index.js';
 import {getUserSession, destroyUserSession} from '~/utils/session.server';
-import {YemSpinner} from '~/components/yemSpinner/index.js';
+import {YemSpinner} from '~/components/yem-spinner/index.js';
 
 export const action = async ({request}: ActionFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
@@ -17,7 +17,7 @@ export const action = async ({request}: ActionFunctionArgs) => {
 	});
 };
 
-function Logout() {
+export default function Logout() {
 	const navigation = useNavigation();
 	const isSubmitting = navigation.formAction === '/logout';
 
@@ -39,5 +39,3 @@ function Logout() {
 		</main>
 	);
 }
-
-export default Logout;

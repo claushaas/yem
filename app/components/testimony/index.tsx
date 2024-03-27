@@ -24,7 +24,6 @@ export function Testimony({
 			</Dialog.Trigger>
 
 			<Dialog.Portal>
-
 				<Dialog.Overlay className='bg-mauvea-12 dark:bg-mauvedarka-12 fixed inset-0'/>
 
 				<Dialog.Content className='fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] p-4 w-[80%] sm:p-10 sm:w-[600px] bg-mauve-2 dark:bg-mauvedark-2 rounded-xl flex flex-col justify-center gap-8'>

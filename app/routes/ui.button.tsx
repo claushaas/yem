@@ -1,6 +1,6 @@
 import {Button, ButtonPreset} from '~/components/button/index.js';
 
-function ButtonUi() {
+export default function ButtonUi() {
 	return (
 		<>
 			<h1>Buttons</h1>
@@ -13,5 +13,3 @@ function ButtonUi() {
 		</>
 	);
 }
-
-export default ButtonUi;

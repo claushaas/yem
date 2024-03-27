@@ -1,18 +1,21 @@
-import {PrismaClient} from '@prisma/client';
+import {Prisma, type PrismaClient} from '@prisma/client';
 import {type TUser, type TUserRoles} from '../types/user.type.js';
 import {Course} from '../entities/course.entity.js';
-import {type TCourse} from '../types/course.type.js';
+import {
+	type TPrismaPayloadGetCourseById, type TCourse, type TPrismaPayloadGetAllCourses, type TPrismaPayloadCreateCourse, type TPrismaPayloadUpdateCourse,
+} from '../types/course.type.js';
 import {CustomError} from '../utils/custom-error.js';
 import {type TServiceReturn} from '../types/service-return.type.js';
+import {db} from '../database/db.js';
 
 export class CourseService {
 	private readonly _model: PrismaClient;
 
-	constructor(model: PrismaClient = new PrismaClient()) {
+	constructor(model: PrismaClient = db) {
 		this._model = model;
 	}
 
-	public async create(courseData: TCourse): Promise<TServiceReturn<unknown>> {
+	public async create(courseData: TCourse): Promise<TServiceReturn<TPrismaPayloadCreateCourse>> {
 		const newCourse = new Course(courseData);
 
 		const createdCourse = await this._model.course.create({
@@ -81,8 +84,9 @@ export class CourseService {
 		};
 	}
 
-	public async getAll(userRoles: TUserRoles = []): Promise<TServiceReturn<unknown>> {
+	public async getAll(userRoles: TUserRoles = []): Promise<TServiceReturn<TPrismaPayloadGetAllCourses>> {
 		const select = {
+			id: true,
 			name: true,
 			description: true,
 			thumbnailUrl: true,
@@ -122,7 +126,7 @@ export class CourseService {
 		};
 	}
 
-	public async getById(id: string, user: TUser): Promise<TServiceReturn<unknown>> {
+	public async getById(id: string, user: TUser): Promise<TServiceReturn<TPrismaPayloadGetCourseById>> {
 		const includeModules = {
 			select: {
 				id: true,
@@ -226,7 +230,7 @@ export class CourseService {
 		};
 	}
 
-	public async update(id: string, courseData: TCourse): Promise<TServiceReturn<unknown>> {
+	public async update(id: string, courseData: TCourse): Promise<TServiceReturn<TPrismaPayloadUpdateCourse>> {
 		const courseToUpdate = new Course(courseData);
 
 		const updatedCourse = await this._model.course.update({
@@ -302,7 +306,7 @@ export class CourseService {
 		};
 	}
 
-	public async delete(id: string): Promise<TServiceReturn<unknown>> {
+	public async delete(id: string): Promise<TServiceReturn<string>> {
 		const deletedCourse = await this._model.course.update({
 			where: {
 				id,
@@ -318,7 +322,7 @@ export class CourseService {
 
 		return {
 			status: 'NO_CONTENT',
-			data: null,
+			data: 'Course unpublished',
 		};
 	}
 }

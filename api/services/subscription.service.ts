@@ -1,9 +1,10 @@
-import {PrismaClient} from '@prisma/client';
+import {type PrismaClient} from '@prisma/client';
 import {type TUser} from '../types/user.type.js';
 import {type TServiceReturn} from '../types/service-return.type.js';
 import {Subscription} from '../entities/subscription.entity.js';
 import {type TSubscription} from '../types/subscription.type.js';
 import {logger} from '../utils/logger.util.js';
+import {db} from '../database/db.js';
 import {HotmartService} from './hotmart.service.js';
 import {IuguService} from './iugu.service.js';
 
@@ -12,7 +13,7 @@ export default class SubscriptionService {
 	private readonly _hotmartService: HotmartService;
 	private readonly _iuguService: IuguService;
 
-	constructor(model: PrismaClient = new PrismaClient()) {
+	constructor(model: PrismaClient = db) {
 		this._model = model;
 		this._hotmartService = new HotmartService();
 		this._iuguService = new IuguService();

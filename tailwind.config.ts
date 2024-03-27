@@ -9,6 +9,7 @@ export default {
 	content: ['./app/**/*.{js,jsx,ts,tsx}'],
 	theme: {
 		screens: {
+			portrait: {raw: '(orientation: portrait)'},
 			xs: '475px',
 			...defaultTheme.screens,
 		},

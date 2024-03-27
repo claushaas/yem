@@ -1,15 +1,16 @@
-import {type ReactNode} from 'react';
 import {
 	Links,
 	Meta,
 	Outlet,
 	Scripts,
 	ScrollRestoration,
+	useLoaderData,
 } from '@remix-run/react';
 import {type LoaderFunctionArgs, type LinksFunction, json} from '@remix-run/node';
 import {getUserSession} from './utils/session.server.js';
+import {type TypeUserSession} from './types/user-session.type.js';
 import styles from '~/tailwind.css?url';
-import {NavigateBar} from '~/components/navBar/index.js';
+import {NavigateBar} from '~/components/navigation-bar/index.js';
 import {Footer} from '~/components/footer/index.js';
 
 export const links: LinksFunction = () => [
@@ -35,7 +36,9 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
 	return json({userData: null});
 };
 
-export function Layout({children}: {readonly children: ReactNode}) {
+function App() {
+	const data = useLoaderData() as {userData?: TypeUserSession | undefined} ?? {};
+	const userData = data?.userData;
 	return (
 		<html lang='pt-BR' className='notranslate' translate='no'>
 			<head>
@@ -52,18 +55,14 @@ export function Layout({children}: {readonly children: ReactNode}) {
 				<Links/>
 			</head>
 			<body className='bg-mauve-2 dark:bg-mauvedark-2 min-h-screen flex flex-col justify-between'>
-				<NavigateBar/>
-				{children}
+				<NavigateBar userData={userData}/>
+				<Outlet context={{userData}}/>
 				<Footer/>
 				<ScrollRestoration/>
 				<Scripts/>
 			</body>
 		</html>
 	);
-}
-
-function App() {
-	return <Outlet/>;
 }
 
 export default App;

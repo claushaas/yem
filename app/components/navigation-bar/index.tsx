@@ -1,13 +1,12 @@
 import {Bars4Icon} from '@heroicons/react/24/outline';
 import * as NavigationMenu from '@radix-ui/react-navigation-menu';
 import * as Separator from '@radix-ui/react-separator';
-import {Link, useLoaderData} from '@remix-run/react';
-import {NavigateLink} from '~/components/navBar/navLink/index.js';
+import {Link, useLocation} from '@remix-run/react';
+import {NavigateLink} from '~/components/navigation-bar/navigation-link/index.js';
 import {type TypeUserSession} from '~/types/user-session.type';
 
-export function NavigateBar() {
-	const data = useLoaderData() as {userData?: TypeUserSession | undefined} ?? {};
-	const userData = data?.userData;
+export function NavigateBar({userData}: {readonly userData: TypeUserSession | undefined}) {
+	const {pathname} = useLocation();
 
 	return (
 		<header className='max-xs:max-w-[95%] max-w-[90%] mx-auto my-4 flex justify-between items-center w-[-webkit-fill-available]'>
@@ -20,39 +19,35 @@ export function NavigateBar() {
 				className='relative flex justify-center'
 			>
 				<NavigationMenu.List className='gap-3 center flex list-none items-center px-4 py-2 rounded-md shadow-sm shadow-mauve-11 dark:shadow-mauvedark-3 bg-mauve-4 dark:bg-mauvedark-3'>
-					{
-						!userData && (
-							<>
-								<NavigationMenu.Item>
-									<div className='py-1.5 leading-none'>
-										<NavigateLink to='/login'>
-											<p>Login</p>
-										</NavigateLink>
-									</div>
-								</NavigationMenu.Item>
-								<Separator.Root
-									decorative
-									className='bg-mauve-11 dark:bg-mauvedark-11 data-[orientation=horizontal]:h-px data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-4 data-[orientation=vertical]:w-px'
-									orientation='vertical'/>
-							</>
-						)
-					}
+					{!userData && pathname !== '/login' && (
+						<>
+							<NavigationMenu.Item>
+								<div className='py-1.5 leading-none'>
+									<NavigationMenu.Link asChild>
+										<Link to='/login'>
+											<p>Entrar</p>
+										</Link>
+									</NavigationMenu.Link>
+								</div>
+							</NavigationMenu.Item>
+							<Separator.Root
+								decorative
+								className='bg-mauve-11 dark:bg-mauvedark-11 data-[orientation=horizontal]:h-px data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-4 data-[orientation=vertical]:w-px'
+								orientation='vertical'/>
+						</>
+					)}
 					<NavigationMenu.Item>
 						<NavigationMenu.Trigger className='center m-0 flex list-none py-1 leading-none'>
 							<p className='mr-1'>Menu</p>
 							<Bars4Icon
 								className='size-4'/>
 						</NavigationMenu.Trigger>
-						<NavigationMenu.Content className='data-[motion=from-start]:animate-enterFromLeft data-[motion=from-end]:animate-enterFromRight data-[motion=to-start]:animate-exitToLeft data-[motion=to-end]:animate-exitToRight px-4 py-2 bg-mauve-4 dark:bg-mauvedark-6 absolute top-0 right-0 rounded-md max-xs:w-[calc(100vw_-_calc(100vw_*_5_/_100))] w-72'>
-							<ul className=''>
-								{
-									userData && (
-										<li className='text-mauve-11 dark:text-mauvedark-11'>
-											<NavigateLink to='/logout'>Sair</NavigateLink>
-										</li>
-									)
-								}
-								<li className='text-mauve-11 dark:text-mauvedark-11'>Item 2</li>
+						<NavigationMenu.Content className='data-[motion=from-start]:animate-enterFromLeft data-[motion=from-end]:animate-enterFromRight data-[motion=to-start]:animate-exitToLeft data-[motion=to-end]:animate-exitToRight px-4 py-2 bg-mauve-3 dark:bg-mauvedark-3 absolute top-0 right-0 rounded-md max-xs:w-[calc(100vw_-_calc(100vw_*_5_/_100))] w-72'>
+							<ul className='grid grid-cols-2 gap-3'>
+								{pathname !== '/' && <NavigateLink to='/'>Home</NavigateLink>}
+								{userData?.roles.includes('admin') && pathname !== '/admin' && <NavigateLink to='/admin'>Admin</NavigateLink>}
+								{pathname !== '/courses' && <NavigateLink to='/courses'>Cursos</NavigateLink>}
+								{userData && pathname !== '/logout' && <NavigateLink to='/logout'>Sair</NavigateLink>}
 							</ul>
 						</NavigationMenu.Content>
 					</NavigationMenu.Item>
