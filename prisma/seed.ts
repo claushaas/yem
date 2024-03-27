@@ -30,7 +30,7 @@ const main = async () => {
 			id: '16c63aa1-8122-4327-a990-56ec2e636808',
 			name: 'Módulo 1',
 			description: 'Introdução ao Yoga',
-			thumbnailUrl: 'https://d1k8tin4cdb6jb.cloudfront.net/formacao_em_yoga-curso.jpg',
+			thumbnailUrl: 'd9fd2efe-ee41-45d6-25a5-4ec50aad7000',
 			publicationDate: new Date('2024-03-25 17:30:00'),
 			course: {
 				connect: {
@@ -48,7 +48,7 @@ const main = async () => {
 			id: '0a609d33-97e1-4400-bd64-4834c8387950',
 			name: 'Aulas Práticas',
 			description: 'Práticas de Yoga',
-			thumbnailUrl: 'https://d1k8tin4cdb6jb.cloudfront.net/formacao_em_yoga-curso.jpg',
+			thumbnailUrl: '78c0c3ab-7da6-46e8-742e-fd0e4b08b900',
 			publicationDate: new Date('2024-03-25 18:30:00'),
 			course: {
 				connect: {

@@ -1,19 +1,22 @@
-import {PrismaClient} from '@prisma/client';
-import {type TModule} from '../types/module.type.js';
+import {type PrismaClient} from '@prisma/client';
+import {
+	type TPrismaPayloadCreateModule, type TModule, type TPrismaPayloadUpdateModule, type TPrismaPayloadGetModulesList, type TPrismaPayloadGetModuleById,
+} from '../types/module.type.js';
 import {Module} from '../entities/module.entity.js';
 import {type TUser, type TUserRoles} from '../types/user.type.js';
 import {type TUuid} from '../types/uuid.type.js';
 import {CustomError} from '../utils/custom-error.js';
 import {type TServiceReturn} from '../types/service-return.type.js';
+import {db} from '../database/db.js';
 
 export class ModuleService {
 	private readonly _model: PrismaClient;
 
-	constructor(model: PrismaClient = new PrismaClient()) {
+	constructor(model: PrismaClient = db) {
 		this._model = model;
 	}
 
-	public async create(moduleData: TModule): Promise<TServiceReturn<unknown>> {
+	public async create(moduleData: TModule): Promise<TServiceReturn<TPrismaPayloadCreateModule>> {
 		const newModule = new Module(moduleData);
 
 		const createdModule = await this._model.module.create({
@@ -86,7 +89,7 @@ export class ModuleService {
 		};
 	}
 
-	public async update(id: TUuid, moduleData: TModule): Promise<TServiceReturn<unknown>> {
+	public async update(id: TUuid, moduleData: TModule): Promise<TServiceReturn<TPrismaPayloadUpdateModule>> {
 		const newModule = new Module(moduleData);
 
 		const updatedModule = await this._model.module.update({
@@ -162,7 +165,7 @@ export class ModuleService {
 		};
 	}
 
-	public async getList(parentId: TUuid, userRoles: TUserRoles = []): Promise<TServiceReturn<unknown>> {
+	public async getList(parentId: TUuid, userRoles: TUserRoles = []): Promise<TServiceReturn<TPrismaPayloadGetModulesList>> {
 		const moduleSelect = {
 			name: true,
 			description: true,
@@ -229,7 +232,7 @@ export class ModuleService {
 		};
 	}
 
-	public async getById(courseId: TUuid, id: TUuid, user: TUser): Promise<TServiceReturn<unknown>> {
+	public async getById(courseId: TUuid, id: TUuid, user: TUser): Promise<TServiceReturn<TPrismaPayloadGetModuleById>> {
 		const includeTags = {
 			include: {
 				tagOption: {
@@ -370,7 +373,7 @@ export class ModuleService {
 		};
 	}
 
-	public async delete(id: TUuid): Promise<TServiceReturn<unknown>> {
+	public async delete(id: TUuid): Promise<TServiceReturn<string>> {
 		const module = await this._model.module.update({
 			where: {
 				id,
@@ -386,7 +389,7 @@ export class ModuleService {
 
 		return {
 			status: 'NO_CONTENT',
-			data: null,
+			data: 'Module unpublished',
 		};
 	}
 }
