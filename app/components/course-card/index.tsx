@@ -4,7 +4,7 @@ import {motion} from 'framer-motion';
 import {buildImgSource} from '~/utils/build-image-source.js';
 
 type ClassCardPropierties = {
-	readonly course: Record<string, string | boolean | null>; // eslint-disable-line @typescript-eslint/ban-types
+	readonly course: Record<string, any>;
 	readonly to: string;
 };
 
