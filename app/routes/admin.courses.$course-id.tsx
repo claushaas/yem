@@ -1,8 +1,11 @@
 import {json, type LoaderFunctionArgs} from '@remix-run/node';
+import {Outlet, useLoaderData} from '@remix-run/react';
 import {CourseService} from '#/services/course.service';
 import {getUserSession} from '~/utils/session.server';
 import {type TUser} from '#/types/user.type';
 import {logger} from '#/utils/logger.util';
+import {type TPrismaPayloadGetCourseById} from '#/types/course.type';
+import {CourseCard} from '~/components/course-card/index.js';
 
 export const loader = async ({request, params}: LoaderFunctionArgs) => {
 	const {data: userData} = await getUserSession(request.headers.get('Cookie'));
@@ -18,9 +21,26 @@ export const loader = async ({request, params}: LoaderFunctionArgs) => {
 };
 
 export default function Course() {
+	const {course} = useLoaderData<{course: TPrismaPayloadGetCourseById | undefined}>();
+
 	return (
-		<div>
-			<h1>Detalhes do curso</h1>
-		</div>
+		<>
+			<div>
+				<h1>{course?.name}</h1>
+				<h2>{course?.description}</h2>
+				<p>Data de publicação: {course?.publicationDate}</p>
+				<p>Está publicado: {course?.published ? 'sim' : 'não'}</p>
+				<p>Está com matrículas abertas: {course?.isSelling ? 'sim' : 'não'}</p>
+			</div>
+			<div>
+				<h3>Módulos</h3>
+				<div>
+					{course?.modules.map(module => (
+						<CourseCard key={module.id} course={module} to={`./${module.id}`}/>
+					))}
+				</div>
+			</div>
+			<Outlet/>
+		</>
 	);
 }
