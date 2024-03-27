@@ -7,7 +7,7 @@ import {CourseService} from '#/services/course.service';
 import {Button, ButtonPreset, ButtonType} from '~/components/button/index.js';
 import {getUserSession} from '~/utils/session.server.js';
 import {logger} from '#/utils/logger.util.js';
-import {ClassCard} from '~/components/course-card/index.js';
+import {CourseCard} from '~/components/course-card/index.js';
 
 export const loader = async ({request}: LoaderFunctionArgs) => {
 	const {data: userData} = await getUserSession(request.headers.get('Cookie'));
@@ -100,7 +100,7 @@ export default function Courses() {
 			</Dialog.Root>
 			<div className='flex gap-4 my-4 flex-wrap'>
 				{courses?.map(course => (
-					<ClassCard key={course.id} course={course} to={`./${course.id}`}/>
+					<CourseCard key={course.id} course={course} to={`./${course.id}`}/>
 				))}
 			</div>
 		</>

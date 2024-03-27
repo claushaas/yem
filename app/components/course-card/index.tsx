@@ -4,11 +4,11 @@ import {motion} from 'framer-motion';
 import {buildImgSource} from '~/utils/build-image-source.js';
 
 type ClassCardPropierties = {
-	readonly course: Record<string, string | boolean>;
+	readonly course: Record<string, string | boolean | null>; // eslint-disable-line @typescript-eslint/ban-types
 	readonly to: string;
 };
 
-export function ClassCard({course, to}: ClassCardPropierties) {
+export function CourseCard({course, to}: ClassCardPropierties) {
 	return (
 		<motion.div
 			whileHover={{
