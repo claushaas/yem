@@ -3,6 +3,9 @@ import * as Dialog from '@radix-ui/react-dialog';
 import {json, type LoaderFunctionArgs} from '@remix-run/node';
 import {Form, useLoaderData} from '@remix-run/react';
 import * as RadixForm from '@radix-ui/react-form';
+import {useEffect, useRef, useState} from 'react';
+// Import type Quill from 'quill';
+import {useQuill} from 'react-quilljs';
 import {CourseService} from '#/services/course.service';
 import {Button, ButtonPreset, ButtonType} from '~/components/button/index.js';
 import {getUserSession} from '~/utils/session.server.js';
@@ -25,6 +28,8 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
 
 export default function Courses() {
 	const {courses} = useLoaderData<typeof loader>();
+	const {quill, quillRef} = useQuill();
+
 	return (
 		<>
 			<Dialog.Root>
@@ -84,6 +89,7 @@ export default function Courses() {
 										</RadixForm.Field>
 									</Form>
 								</RadixForm.Root>
+
 							</div>
 						</div>
 						<Dialog.Close asChild>
@@ -103,6 +109,7 @@ export default function Courses() {
 					<CourseCard key={course.id} course={course} to={`./${course.id}`}/>
 				))}
 			</div>
+			<div ref={quillRef}/>
 		</>
 	);
 }
