@@ -1,4 +1,4 @@
-import {PrismaClient} from '@prisma/client';
+import {type PrismaClient} from '@prisma/client';
 import Fuse, {type IFuseOptions} from 'fuse.js';
 import {type TUser} from '../types/user.type.js';
 import {CustomError} from '../utils/custom-error.js';
@@ -7,11 +7,12 @@ import {Lesson} from '../entities/lesson.entity.js';
 import {type TUuid} from '../types/uuid.type.js';
 import {type TServiceReturn} from '../types/service-return.type.js';
 import {type TSearchableEntity} from '../types/searchable.type.js';
+import {db} from '../database/db.js';
 
 export class LessonService {
 	private readonly _model: PrismaClient;
 
-	constructor(model: PrismaClient = new PrismaClient()) {
+	constructor(model: PrismaClient = db) {
 		this._model = model;
 	}
 
