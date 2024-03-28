@@ -1,44 +1,70 @@
 import {
-	Suspense, lazy, useEffect, useRef, useState,
+	useEffect, useRef, useState,
 } from 'react';
-import type Quill from 'quill';
-import {YemSpinner} from '../yem-spinner/index.js';
+import Quill from 'quill';
+import 'quill/dist/quill.snow.css';
+import 'quill/dist/quill.core.css';
 
 type EditorProperties = {
-	setQuill: (quill: Quill) => void;
+	readonly setQuill: (quill: Quill) => void;
 };
 
-const Editor = lazy(async () => {
-	const {default: Quill} = await import('quill');
-	return {
-		default: function Default({setQuill}: EditorProperties) { // eslint-disable-line func-name-matching, func-names
-			const quillReference = useRef(null);
+const Editor = ({setQuill}: EditorProperties) => { // eslint-disable-line react/function-component-definition
+	const quillTextBox = useRef(null);
 
-			useEffect(() => {
-				if (quillReference.current) {
-					const quillInstance = new Quill(quillReference.current, {
-						debug: 'info',
-						modules: {
-							toolbar: true,
-						},
-						placeholder: 'Compose an epic...',
-						theme: 'snow',
-					});
+	useEffect(() => {
+		if (quillTextBox.current) {
+			const quillInstance = new Quill(quillTextBox.current, {
+				// Debug: 'info',
+				placeholder: 'Compose an epic...',
+				modules: {
+					toolbar: {
+						controls: [
+							['bold', 'italic', 'underline', 'strike'],
+							[{align: []}],
 
-					setQuill(quillInstance);
-				}
-			}, [setQuill]);
+							[{list: 'ordered'}, {list: 'bullet'}],
+							[{indent: '-1'}, {indent: '+1'}],
 
-			return <div ref={quillReference}/>;
-		},
-	};
-});
+							[{size: ['small', false, 'large', 'huge']}],
+							[{header: [1, 2, 3, 4, 5, 6, false]}],
+							['link', 'image', 'video'],
+							[{color: []}, {background: []}],
+
+							['clean'],
+						],
+					},
+				},
+				theme: 'snow',
+			});
+
+			setQuill(quillInstance);
+		}
+	}, [setQuill]);
+
+	return (
+		<div>
+			<div ref={quillTextBox} id='editor'/>
+		</div>
+	);
+};
 
 export default function TextEditor() {
 	const [quill, setQuill] = useState<Quill | null>(null); // eslint-disable-line @typescript-eslint/ban-types
+
+	useEffect(() => {
+		if (quill) {
+			quill.on('text-change', () => {
+				console.log('text-change', quill.getSemanticHTML());
+			});
+		}
+	}, [quill]);
+
+	if (!document) {
+		return null;
+	}
+
 	return (
-		<Suspense fallback={<YemSpinner/>}>
-			<Editor setQuill={setQuill}/>
-		</Suspense>
+		<Editor setQuill={setQuill}/>
 	);
 }
