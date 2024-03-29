@@ -45,4 +45,8 @@
     @apply stroke-mauve-11;
     @apply dark:stroke-mauvedark-11;
   }
+
+  .quill > .ql-toolbar:first-child {
+    display: none !important;
+  }
 }

@@ -25,6 +25,7 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
 
 export default function Courses() {
 	const {courses} = useLoaderData<typeof loader>();
+
 	return (
 		<>
 			<Dialog.Root>
@@ -84,6 +85,7 @@ export default function Courses() {
 										</RadixForm.Field>
 									</Form>
 								</RadixForm.Root>
+
 							</div>
 						</div>
 						<Dialog.Close asChild>
