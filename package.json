@@ -48,7 +48,6 @@
     "@remix-run/node": "^2.8.1",
     "@remix-run/react": "^2.8.1",
     "@unpic/react": "^0.1.11",
-    "api": "^6.1.1",
     "axios": "^1.6.8",
     "compression": "^1.7.4",
     "cookie-parser": "^1.4.6",
