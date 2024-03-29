@@ -68,7 +68,7 @@ export class UserService {
 		return newUserData;
 	}
 
-	public async login(username: string, password: string): Promise<TServiceReturn<{token: string; userData: TUser}>> {
+	public async login(username: string, password: string): Promise<TServiceReturn<{userData: TUser}>> {
 		const cleanUsername = username.trim().toLowerCase();
 
 		const parameters: InitiateAuthCommandInput = {
@@ -94,19 +94,6 @@ export class UserService {
 
 		const {data: user} = await this._getUserData(cleanUsername);
 
-		let token = '';
-		try {
-			token = generateToken(user);
-		} catch (error) {
-			logger.logError(
-				`Error generating token for user ${user.id}: ${(error as Error).message}`,
-			);
-			throw new CustomError(
-				'UNKNOWN',
-				`Error generating token for user ${user.id}: ${(error as Error).message}`,
-			);
-		}
-
 		try {
 			await this._subscriptionService.createOrUpdateAllUserSubscriptions(user);
 		} catch (error) {
@@ -118,7 +105,6 @@ export class UserService {
 		return {
 			status: 'SUCCESSFUL',
 			data: {
-				token,
 				userData: user,
 			},
 		};
