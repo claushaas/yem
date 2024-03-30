@@ -1,15 +1,15 @@
 import {
-	useEffect, useRef, useState,
+	useEffect, useRef,
 } from 'react';
 import Quill from 'quill';
 import 'quill/dist/quill.snow.css';
-import 'quill/dist/quill.core.css';
+// Import 'quill/dist/quill.core.css';
 
 type EditorProperties = {
 	readonly setQuill: (quill: Quill) => void;
 };
 
-const Editor = ({setQuill}: EditorProperties) => { // eslint-disable-line react/function-component-definition
+export const Editor = ({setQuill}: EditorProperties) => { // eslint-disable-line react/function-component-definition
 	const quillTextBox = useRef(null);
 
 	useEffect(() => {
@@ -49,22 +49,20 @@ const Editor = ({setQuill}: EditorProperties) => { // eslint-disable-line react/
 	);
 };
 
-export default function TextEditor() {
-	const [quill, setQuill] = useState<Quill | null>(null); // eslint-disable-line @typescript-eslint/ban-types
+// Export default function TextEditor() {
+// 	const [quill, setQuill] = useState<Quill | null>(null); // eslint-disable-line @typescript-eslint/ban-types
 
-	useEffect(() => {
-		if (quill) {
-			quill.on('text-change', () => {
-				console.log('text-change', quill.getSemanticHTML());
-			});
-		}
-	}, [quill]);
+// 	useEffect(() => {
+// 		if (quill) {
+// 			quill.on('text-change', () => {
+// 				console.log('text-change', quill.getSemanticHTML());
+// 			});
+// 		}
+// 	}, [quill]);
 
-	if (!document) {
-		return null;
-	}
-
-	return (
-		<Editor setQuill={setQuill}/>
-	);
-}
+// 	return (
+// 		<ClientOnly fallback={<YemSpinner/>}>
+// 			{() => <Editor setQuill={setQuill}/>}
+// 		</ClientOnly>
+// 	);
+// }
