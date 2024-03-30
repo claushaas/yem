@@ -36,6 +36,22 @@
     @apply text-mauve-12;
     @apply dark:text-mauvedark-11;
   }
+  h1 {
+    @apply text-4xl;
+    @apply my-2;
+  }
+  h2 {
+    @apply text-3xl;
+    @apply my-2;
+  }
+  h3 {
+    @apply text-2xl;
+    @apply my-2;
+  }
+  h4 {
+    @apply text-xl;
+    @apply my-2;
+  }
   p {
     @apply font-gothamBook;
     @apply text-mauve-11;
