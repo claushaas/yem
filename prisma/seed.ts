@@ -11,6 +11,7 @@ const main = async () => {
 				description: 'Curso de formação em Yoga',
 				thumbnailUrl: 'd9fd2efe-ee41-45d6-25a5-4ec50aad7000',
 				publicationDate: new Date('2024-03-25 17:00:00'),
+				content: '{"ops":[{"insert":"agora esse curso tem um conteúdo com "},{"attributes":{"link":"https://claushaas.dev"},"insert":"link"},{"insert":"\\n"}]}',
 			},
 			{
 				id: '0d36f1ba-7e39-406c-95cc-ab11a98a0de0',
