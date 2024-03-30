@@ -1,4 +1,4 @@
-import {Prisma, type PrismaClient} from '@prisma/client';
+import {type PrismaClient} from '@prisma/client';
 import {type TUser, type TUserRoles} from '../types/user.type.js';
 import {Course} from '../entities/course.entity.js';
 import {
@@ -43,6 +43,7 @@ export class CourseService {
 				thumbnailUrl: newCourse.thumbnailUrl,
 				publicationDate: newCourse.publicationDate,
 				published: newCourse.published,
+				isSelling: newCourse.isSelling,
 				tags: {
 					connectOrCreate: newCourse.tags?.map(tag => ({
 						where: {
