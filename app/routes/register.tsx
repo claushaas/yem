@@ -205,9 +205,8 @@ export default function Register() {
 							<Button isDisabled={isSubmitting} className='m-auto mt-2' text='Criar Minha Conta' preset={ButtonPreset.Primary} type={ButtonType.Submit}/>
 						</RadixForm.Submit>
 
-						{isSubmitting && (
-							<YemSpinner/>
-						)}
+						{isSubmitting && <YemSpinner/>}
+
 					</Form>
 				</RadixForm.Root>
 				<div className='m-3 w-[260px] mx-auto flex justify-center gap-1'>
