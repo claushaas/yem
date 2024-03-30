@@ -34,14 +34,6 @@ export const loader = async ({request, params}: LoaderFunctionArgs) => {
 	try {
 		const {data: course} = await new CourseService().getById(courseId!, userSession.data as TUser);
 
-		if (course.content) {
-			const {ops} = JSON.parse(course.content) as OpIterator;
-			const converter = new QuillDeltaToHtmlConverter(ops, {
-				multiLineParagraph: false,
-			});
-			course.content = converter.convert();
-		}
-
 		return json<CourseLoaderData>({
 			course,
 			error: userSession.get('error') as string | undefined,
@@ -120,10 +112,18 @@ export default function Course() {
 	} = useLoaderData<CourseLoaderData>();
 
 	const [quill, setQuill] = useState<Quill | null>(null); // eslint-disable-line @typescript-eslint/ban-types
-	const [content, setContent] = useState<string>('');
+	const [content, setContent] = useState(course?.content ?? '');
 	const [open, setOpen] = useState<boolean>(false);
 	const navigation = useNavigation();
 	const isSubmitting = navigation.formAction === '/admin/courses';
+
+	const {ops} = course?.content ? JSON.parse(course?.content) as OpIterator : {ops: []};
+	const contentConverter = new QuillDeltaToHtmlConverter(ops, {
+		multiLineParagraph: false,
+	});
+
+	const defaultDate = new Date(course?.publicationDate ?? new Date());
+	defaultDate.setHours(defaultDate.getHours() - 3);
 
 	useEffect(() => {
 		if (success) {
@@ -140,10 +140,10 @@ export default function Course() {
 	}, [quill]);
 
 	useEffect(() => {
-		if (course?.content?.length && quill) {
+		if (course?.content && quill) {
 			quill.setContents(JSON.parse(course.content) as Delta);
 		}
-	}, []); // eslint-disable-line react-hooks/exhaustive-deps
+	}, [quill]); // eslint-disable-line react-hooks/exhaustive-deps
 
 	return course && (
 		<>
@@ -166,7 +166,7 @@ export default function Course() {
 				<Dialog.Portal>
 					<Dialog.Overlay className='bg-mauvea-12 fixed inset-0'/>
 
-					<Dialog.Content className='fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] p-4 max-w-screen-lg w-[90%] bg-mauve-2 dark:bg-mauvedark-2 rounded-xl flex flex-col justify-center gap-8'>
+					<Dialog.Content className='fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] p-4 max-w-screen-lg w-[90%] bg-mauve-2 dark:bg-mauvedark-2 rounded-xl overflow-y-auto max-h-[90%]'>
 						<div>
 							<Dialog.Title asChild>
 								<h1 className='mb-4'>
@@ -277,7 +277,7 @@ export default function Course() {
 											</div>
 											<RadixForm.Control asChild>
 												<input
-													defaultValue={new Date(course.publicationDate).toISOString().slice(0, 16)}
+													defaultValue={defaultDate.toISOString().slice(0, 16)}
 													disabled={isSubmitting}
 													type='datetime-local'
 													min={3}
@@ -350,14 +350,14 @@ export default function Course() {
 			<div>
 				<h1>{course.name}</h1>
 				<h2>{course.description}</h2>
-				<p>Data de publicação: {course.publicationDate}</p>
+				<p>Data de publicação: {new Date(course.publicationDate).toLocaleString('pt-BR')}</p>
 				<p>Está publicado: {course.published ? 'sim' : 'não'}</p>
 				<p>Está com matrículas abertas: {course?.isSelling ? 'sim' : 'não'}</p>
 				{course.content && (
 					<>
 						<h2>Conteúdo do curso:</h2>
 						{/* eslint-disable-next-line @typescript-eslint/naming-convention, react/no-danger */}
-						<div dangerouslySetInnerHTML={{__html: course.content}} className='p-4 rounded-lg border-2 border-mauve-6 dark:border-mauvedark-6 max-w-screen-lg'/>
+						<div dangerouslySetInnerHTML={{__html: contentConverter.convert()}} className='p-4 rounded-lg border-2 border-mauve-6 dark:border-mauvedark-6 max-w-screen-lg'/>
 					</>
 				)}
 			</div>
