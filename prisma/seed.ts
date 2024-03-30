@@ -10,7 +10,7 @@ const main = async () => {
 				name: 'Formação em Yoga',
 				description: 'Curso de formação em Yoga',
 				thumbnailUrl: 'd9fd2efe-ee41-45d6-25a5-4ec50aad7000',
-				publicationDate: new Date('2024-03-25 17:00:00'),
+				publicationDate: new Date('2024-03-25 17:00:00-03:00'),
 				content: '{"ops":[{"insert":"agora esse curso tem um conteúdo com "},{"attributes":{"link":"https://claushaas.dev"},"insert":"link"},{"insert":"\\n"}]}',
 			},
 			{
@@ -18,7 +18,7 @@ const main = async () => {
 				name: 'Escola Online',
 				description: 'Aulas e Treinamentos de Yoga',
 				thumbnailUrl: '78c0c3ab-7da6-46e8-742e-fd0e4b08b900',
-				publicationDate: new Date('2024-03-25 18:00:00'),
+				publicationDate: new Date('2024-03-25 18:00:00-03:00'),
 			},
 		],
 	});
