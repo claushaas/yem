@@ -34,10 +34,17 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
 			error: userSession.get('error') as string | undefined,
 			success: userSession.get('success') as string | undefined,
 			courses,
+		}, {
+			headers: {
+				'Set-Cookie': await commitUserSession(userSession), // eslint-disable-line @typescript-eslint/naming-convention
+			},
 		});
 	} catch (error) {
 		logger.logDebug(`Error getting courses: ${(error as Error).message}`);
-		return json({courses: []});
+		return json({
+			courses: [],
+			error: 'Erro ao carregar cursos',
+		});
 	}
 };
 
@@ -59,8 +66,6 @@ export const action = async ({request}: ActionFunctionArgs) => {
 				isSelling: Boolean(formData.get('isSelling')),
 			};
 
-			console.log(newCourse);
-
 			await new CourseService().create(newCourse);
 
 			userSession.flash('success', `Curso ${newCourse.name} criado com sucesso`);
@@ -78,8 +83,8 @@ export const action = async ({request}: ActionFunctionArgs) => {
 				'Set-Cookie': await commitUserSession(userSession), // eslint-disable-line @typescript-eslint/naming-convention
 			},
 		});
-	} catch {
-		logger.logError('Error creating course');
+	} catch (error) {
+		logger.logError(`Error creating course: ${(error as Error).message}`);
 		userSession.flash('error', 'Erro ao criar curso');
 		return redirect('/admin/courses', {
 			headers: {
@@ -97,8 +102,15 @@ export default function Courses() {
 	} = useLoaderData<CoursesLoaderData>();
 	const [quill, setQuill] = useState<Quill | null>(null); // eslint-disable-line @typescript-eslint/ban-types
 	const [content, setContent] = useState<string>('');
+	const [open, setOpen] = useState<boolean>(false);
 	const navigation = useNavigation();
 	const isSubmitting = navigation.formAction === '/admin/courses';
+
+	useEffect(() => {
+		if (success) {
+			setOpen(false);
+		}
+	}, [success]);
 
 	useEffect(() => {
 		if (quill) {
@@ -115,7 +127,7 @@ export default function Courses() {
 					{success ?? error}
 				</p>
 			)}
-			<Dialog.Root>
+			<Dialog.Root open={open} onOpenChange={setOpen}>
 				<Dialog.Trigger asChild>
 					<div className='w-fit'>
 						<Button
@@ -129,7 +141,7 @@ export default function Courses() {
 				<Dialog.Portal>
 					<Dialog.Overlay className='bg-mauvea-12 fixed inset-0'/>
 
-					<Dialog.Content className='fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] p-4 max-w-[90%] w-full bg-mauve-2 dark:bg-mauvedark-2 rounded-xl flex flex-col justify-center gap-8'>
+					<Dialog.Content className='fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] p-4 max-w-screen-lg w-[90%] bg-mauve-2 dark:bg-mauvedark-2 rounded-xl flex flex-col justify-center gap-8'>
 						<div>
 							<Dialog.Title asChild>
 								<h1 className='mb-4'>
@@ -192,7 +204,7 @@ export default function Courses() {
 										</RadixForm.Field>
 
 										<ClientOnly fallback={<YemSpinner/>}>
-											{() => <Editor setQuill={setQuill}/>}
+											{() => <Editor setQuill={setQuill} placeholder='Adicione aqui o conteúdo do curso, que só aparece para os alunos...'/>}
 										</ClientOnly>
 
 										<RadixForm.Field name='videoSourceUrl'>
@@ -280,7 +292,7 @@ export default function Courses() {
 										</RadixForm.Field>
 
 										<RadixForm.Submit asChild>
-											<Button isDisabled={isSubmitting} className='m-auto mt-2' text='Criar Curso' preset={ButtonPreset.Primary} type={ButtonType.Submit}/>
+											<Button key='Criar Curso' isDisabled={isSubmitting} className='m-auto mt-2' text='Criar Curso' preset={ButtonPreset.Primary} type={ButtonType.Submit}/>
 										</RadixForm.Submit>
 
 										{isSubmitting && <YemSpinner/>}
