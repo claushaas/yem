@@ -7,7 +7,7 @@ const courseSchema = Joi.object({
 	name: Joi.string().required().min(3).max(35),
 	description: Joi.string().min(10).max(150),
 	content: Joi.string(),
-	videoSourceUrl: Joi.string().uri(),
+	videoSourceUrl: Joi.string(),
 	thumbnailUrl: Joi.string().required(),
 	publicationDate: Joi.date().required().default(new Date()),
 	published: Joi.boolean().required().default(true),
