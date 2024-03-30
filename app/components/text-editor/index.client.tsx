@@ -7,16 +7,16 @@ import 'quill/dist/quill.snow.css';
 
 type EditorProperties = {
 	readonly setQuill: (quill: Quill) => void;
+	readonly placeholder?: string;
 };
 
-export const Editor = ({setQuill}: EditorProperties) => { // eslint-disable-line react/function-component-definition
+export const Editor = ({setQuill, placeholder = 'Escreva aqui o seu comentário'}: EditorProperties) => { // eslint-disable-line react/function-component-definition
 	const quillTextBox = useRef(null);
 
 	useEffect(() => {
 		if (quillTextBox.current) {
 			const quillInstance = new Quill(quillTextBox.current, {
-				// Debug: 'info',
-				placeholder: 'Compose an epic...',
+				placeholder,
 				modules: {
 					toolbar: {
 						controls: [
@@ -40,7 +40,7 @@ export const Editor = ({setQuill}: EditorProperties) => { // eslint-disable-line
 
 			setQuill(quillInstance);
 		}
-	}, [setQuill]);
+	}, [setQuill]); // eslint-disable-line react-hooks/exhaustive-deps
 
 	return (
 		<div>
@@ -48,21 +48,3 @@ export const Editor = ({setQuill}: EditorProperties) => { // eslint-disable-line
 		</div>
 	);
 };
-
-// Export default function TextEditor() {
-// 	const [quill, setQuill] = useState<Quill | null>(null); // eslint-disable-line @typescript-eslint/ban-types
-
-// 	useEffect(() => {
-// 		if (quill) {
-// 			quill.on('text-change', () => {
-// 				console.log('text-change', quill.getSemanticHTML());
-// 			});
-// 		}
-// 	}, [quill]);
-
-// 	return (
-// 		<ClientOnly fallback={<YemSpinner/>}>
-// 			{() => <Editor setQuill={setQuill}/>}
-// 		</ClientOnly>
-// 	);
-// }
