@@ -9,6 +9,7 @@ export type TCourse = {
 	thumbnailUrl: string;
 	publicationDate: Date;
 	published: boolean;
+	isSelling: boolean;
 	tags?: TTags;
 };
 

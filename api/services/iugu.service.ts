@@ -1,24 +1,27 @@
-import api from 'api';
 import {CustomError} from '../utils/custom-error.js';
 import {type TServiceReturn} from '../types/service-return.type.js';
 import {type TUser} from '../types/user.type.js';
 import {type TIuguSubscription, type TSubscription} from '../types/subscription.type.js';
+import {Request} from '../utils/request.js';
+import {logger} from '../utils/logger.util.js';
 
 export class IuguService {
-	private readonly _api: {
-		auth: (apiKey: string) => void;
-		listarAssinaturas: ({query}: {query: string}) => Promise<{data: {items: TIuguSubscription[]}}>;
-	};
+	private readonly _request: Request;
 
 	constructor() {
-		this._api = api('@iugu-dev/v1.0#40ap3flrqvhoz1'); // eslint-disable-line @typescript-eslint/no-unsafe-assignment
-
-		this._api.auth(process.env.IUGU_API_TOKEN ?? '');
+		this._request = new Request(process.env.IUGU_API_URL ?? '', {
+			Authorization: `Basic ${Buffer.from(`${process.env.IUGU_API_TOKEN}:`).toString('base64')}`,
+		});
 	}
 
 	public async getUserSubscriptions(user: TUser): Promise<TServiceReturn<TSubscription[]>> {
+		logger.logDebug(`Getting subscriptions for user ${user.email}`);
 		try {
-			const {data: {items}} = await this._api.listarAssinaturas({query: user.email});
+			const {data: {items}} = await this._request.get('/subscriptions', {
+				query: user.email,
+			}) as {data: {items: TIuguSubscription[]}};
+
+			logger.logDebug(`Found ${items.length} subscriptions for user ${user.email}`);
 
 			if (!items || items.length === 0) {
 				return {

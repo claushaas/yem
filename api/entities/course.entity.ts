@@ -7,11 +7,11 @@ const courseSchema = Joi.object({
 	name: Joi.string().required().min(3).max(35),
 	description: Joi.string().min(10).max(150),
 	content: Joi.string(),
-	roles: Joi.array().items(Joi.string()).required(),
-	videoSourceUrl: Joi.string().uri(),
+	videoSourceUrl: Joi.string(),
 	thumbnailUrl: Joi.string().required(),
 	publicationDate: Joi.date().required().default(new Date()),
 	published: Joi.boolean().required().default(true),
+	isSelling: Joi.boolean().required().default(false),
 	tags: Joi.array().items(Joi.array().items(Joi.string()).min(2).max(2)).unique(),
 });
 
@@ -23,6 +23,7 @@ export class Course implements TCourse {
 	private readonly _thumbnailUrl: string;
 	private readonly _publicationDate: Date;
 	private readonly _published: boolean;
+	private readonly _isSelling: boolean;
 	private readonly _tags?: TTags;
 
 	constructor(course: TCourse) {
@@ -39,6 +40,7 @@ export class Course implements TCourse {
 		this._thumbnailUrl = course.thumbnailUrl;
 		this._publicationDate = course.publicationDate;
 		this._published = course.published;
+		this._isSelling = course.isSelling;
 		this._tags = course.tags;
 	}
 
@@ -68,6 +70,10 @@ export class Course implements TCourse {
 
 	get published() {
 		return this._published;
+	}
+
+	get isSelling() {
+		return this._isSelling;
 	}
 
 	get tags() {

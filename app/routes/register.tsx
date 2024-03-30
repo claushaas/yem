@@ -37,7 +37,7 @@ export const action = async ({request}: ActionFunctionArgs) => {
 
 		const userService = new UserService();
 
-		const response = await userService.createOrFail({
+		await userService.createOrFail({
 			firstName: firstName as string,
 			lastName: lastName as string,
 			email: email as string,
@@ -72,9 +72,6 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
 	const data = {
 		error: userSession.get('error') as string | undefined,
 		success: userSession.get('success') as string | undefined,
-		ENV: {
-			YEM_API_BASE_URL: process.env.YEM_API_BASE_URL,
-		},
 	};
 
 	return json(data);
@@ -84,9 +81,6 @@ export default function Register() {
 	const data: {
 		error?: string;
 		success?: string;
-		ENV: {
-			YEM_API_BASE_URL: string;
-		};
 	} = useLoaderData();
 
 	const navigation = useNavigation();
@@ -205,9 +199,8 @@ export default function Register() {
 							<Button isDisabled={isSubmitting} className='m-auto mt-2' text='Criar Minha Conta' preset={ButtonPreset.Primary} type={ButtonType.Submit}/>
 						</RadixForm.Submit>
 
-						{isSubmitting && (
-							<YemSpinner/>
-						)}
+						{isSubmitting && <YemSpinner/>}
+
 					</Form>
 				</RadixForm.Root>
 				<div className='m-3 w-[260px] mx-auto flex justify-center gap-1'>
