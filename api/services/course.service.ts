@@ -262,6 +262,7 @@ export class CourseService {
 				thumbnailUrl: courseToUpdate.thumbnailUrl,
 				publicationDate: courseToUpdate.publicationDate,
 				published: courseToUpdate.published,
+				isSelling: courseToUpdate.isSelling,
 				tags: {
 					connectOrCreate: courseToUpdate.tags?.map(tag => ({
 						where: {
