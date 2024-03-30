@@ -108,5 +108,12 @@ export type TPrismaPayloadGetModuleById = Prisma.ModuleGetPayload<{
 				};
 			};
 		};
+		course: {
+			select: {
+				id: true;
+				name: true;
+				subscriptions: true;
+			};
+		};
 	};
 }>;
