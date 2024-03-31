@@ -6,15 +6,13 @@ import {type TTags} from '../types/tag.type.js';
 const moduleSchema = Joi.object({
 	name: Joi.string().required().min(3).max(35),
 	description: Joi.string().min(10).max(150),
-	content: Joi.string(),
-	videoSourceUrl: Joi.string().uri(),
-	thumbnailUrl: Joi.string().required().uri(),
+	content: Joi.string().allow(''),
+	videoSourceUrl: Joi.string(),
+	thumbnailUrl: Joi.string().required(),
 	publicationDate: Joi.date().required().default(new Date()),
 	published: Joi.boolean().required().default(true),
 	courses: Joi.array().items(Joi.string().uuid()),
 	lessons: Joi.array().items(Joi.string().uuid()),
-	subModules: Joi.array().items(Joi.string().uuid()),
-	belongToModules: Joi.array().items(Joi.string().uuid()),
 	tags: Joi.array().items(Joi.array().items(Joi.string()).min(2).max(2)).unique(),
 });
 
@@ -28,8 +26,6 @@ export class Module implements TModule {
 	private readonly _published: boolean;
 	private readonly _courses?: string[];
 	private readonly _lessons?: string[];
-	private readonly _subModules?: string[];
-	private readonly _belongToModules?: string[];
 	private readonly _tags?: TTags;
 
 	constructor(module: TModule) {
@@ -48,8 +44,6 @@ export class Module implements TModule {
 		this._published = module.published;
 		this._courses = module.courses;
 		this._lessons = module.lessons;
-		this._subModules = module.subModules;
-		this._belongToModules = module.belongToModules;
 		this._tags = module.tags;
 	}
 
@@ -87,14 +81,6 @@ export class Module implements TModule {
 
 	get lessons() {
 		return this._lessons;
-	}
-
-	get subModules() {
-		return this._subModules;
-	}
-
-	get belongToModules() {
-		return this._belongToModules;
 	}
 
 	get tags() {

@@ -20,6 +20,8 @@ import {CourseCard} from '~/components/course-card/index.js';
 import {Button, ButtonPreset, ButtonType} from '~/components/button/index.js';
 import {Editor} from '~/components/text-editor/index.client.js';
 import {YemSpinner} from '~/components/yem-spinner/index.js';
+import {ModuleService} from '#/services/module.service';
+import {type TUuid} from '#/types/uuid.type';
 
 type CourseLoaderData = {
 	error: string | undefined;
@@ -65,29 +67,65 @@ export const action = async ({request, params}: ActionFunctionArgs) => {
 		if ((userSession.get('roles') as string[])?.includes('admin')) {
 			const formData = await request.formData();
 
-			const courseToUpdate = {
-				name: formData.get('name') as string,
-				description: formData.get('description') as string,
-				content: formData.get('content') as string,
-				videoSourceUrl: formData.get('videoSourceUrl') as string,
-				thumbnailUrl: formData.get('thumbnailUrl') as string,
-				publicationDate: new Date(formData.get('publicationDate') as string),
-				published: Boolean(formData.get('published')),
-				isSelling: Boolean(formData.get('isSelling')),
-			};
+			switch (formData.get('type')) {
+				case 'editCourse': {
+					const courseToUpdate = {
+						name: formData.get('name') as string,
+						description: formData.get('description') as string,
+						content: formData.get('content') as string,
+						videoSourceUrl: formData.get('videoSourceUrl') as string,
+						thumbnailUrl: formData.get('thumbnailUrl') as string,
+						publicationDate: new Date(formData.get('publicationDate') as string),
+						published: Boolean(formData.get('published')),
+						isSelling: Boolean(formData.get('isSelling')),
+					};
 
-			await new CourseService().update(courseId!, courseToUpdate);
+					await new CourseService().update(courseId!, courseToUpdate);
 
-			userSession.flash('success', 'Curso atualizado com sucesso');
+					userSession.flash('success', 'Curso atualizado com sucesso');
 
-			return redirect(`/admin/courses/${courseId}`, {
-				headers: {
-					'Set-Cookie': await commitUserSession(userSession), // eslint-disable-line @typescript-eslint/naming-convention
-				},
-			});
+					return redirect(`/admin/courses/${courseId}`, {
+						headers: {
+							'Set-Cookie': await commitUserSession(userSession), // eslint-disable-line @typescript-eslint/naming-convention
+						},
+					});
+				}
+
+				case 'newModule': {
+					const moduleToCreate = {
+						name: formData.get('name') as string,
+						description: formData.get('description') as string,
+						content: formData.get('content') as string,
+						videoSourceUrl: formData.get('videoSourceUrl') as string,
+						thumbnailUrl: formData.get('thumbnailUrl') as string,
+						courses: [formData.get('course')] as TUuid[],
+						publicationDate: new Date(formData.get('publicationDate') as string),
+						published: Boolean(formData.get('published')),
+					};
+
+					await new ModuleService().create(moduleToCreate);
+
+					userSession.flash('success', 'Módulo criado com sucesso');
+
+					return redirect(`/admin/courses/${courseId}`, {
+						headers: {
+							'Set-Cookie': await commitUserSession(userSession), // eslint-disable-line @typescript-eslint/naming-convention
+						},
+					});
+				}
+
+				default: {
+					userSession.flash('error', 'Tipo de ação não reconhecido');
+					return redirect(`/admin/courses/${courseId}`, {
+						headers: {
+							'Set-Cookie': await commitUserSession(userSession), // eslint-disable-line @typescript-eslint/naming-convention
+						},
+					});
+				}
+			}
 		}
 
-		userSession.flash('error', 'Você não tem permissão para editar cursos');
+		userSession.flash('error', 'Você não tem permissão para editar cursos ou adicionar novos módulos');
 		return redirect(`/admin/courses/${courseId}`, {
 			headers: {
 				'Set-Cookie': await commitUserSession(userSession), // eslint-disable-line @typescript-eslint/naming-convention
@@ -111,11 +149,14 @@ export default function Course() {
 		success,
 	} = useLoaderData<CourseLoaderData>();
 
-	const [quill, setQuill] = useState<Quill | null>(null); // eslint-disable-line @typescript-eslint/ban-types
-	const [content, setContent] = useState(course?.content ?? '');
-	const [open, setOpen] = useState<boolean>(false);
+	const [courseEditQuill, setCourseEditQuill] = useState<Quill | null>(null); // eslint-disable-line @typescript-eslint/ban-types
+	const [newModuleQuill, setNewModuleQuill] = useState<Quill | null>(null); // eslint-disable-line @typescript-eslint/ban-types
+	const [courseEditQuillContent, setCourseEditQuillContent] = useState(course?.content ?? '');
+	const [newModuleQuillContent, setNewModuleQuillContent] = useState('');
+	const [courseEditDialogIsOpen, setCourseEditDialogIsOpen] = useState<boolean>(false);
+	const [newModuleDialogIsOpen, setNewModuleDialogIsOpen] = useState<boolean>(false);
 	const navigation = useNavigation();
-	const isSubmitting = navigation.formAction === '/admin/courses';
+	const isSubmittingAnyForm = navigation.formAction === '/admin/courses';
 
 	const {ops} = course?.content ? JSON.parse(course?.content) as OpIterator : {ops: []};
 	const contentConverter = new QuillDeltaToHtmlConverter(ops, {
@@ -127,23 +168,32 @@ export default function Course() {
 
 	useEffect(() => {
 		if (success) {
-			setOpen(false);
+			setCourseEditDialogIsOpen(false);
+			setNewModuleDialogIsOpen(false);
 		}
 	}, [success]);
 
 	useEffect(() => {
-		if (quill) {
-			quill.on('text-change', () => {
-				setContent(JSON.stringify(quill.getContents()));
+		if (courseEditQuill) {
+			courseEditQuill.on('text-change', () => {
+				setNewModuleQuillContent(JSON.stringify(courseEditQuill.getContents()));
 			});
 		}
-	}, [quill]);
+	}, [courseEditQuill]);
 
 	useEffect(() => {
-		if (course?.content && quill) {
-			quill.setContents(JSON.parse(course.content) as Delta);
+		if (newModuleQuill) {
+			newModuleQuill.on('text-change', () => {
+				setCourseEditQuillContent(JSON.stringify(newModuleQuill.getContents()));
+			});
 		}
-	}, [quill]); // eslint-disable-line react-hooks/exhaustive-deps
+	}, [newModuleQuill]);
+
+	useEffect(() => {
+		if (course?.content && courseEditQuill) {
+			courseEditQuill.setContents(JSON.parse(course.content) as Delta);
+		}
+	}, [courseEditQuill]); // eslint-disable-line react-hooks/exhaustive-deps
 
 	return course && (
 		<>
@@ -152,16 +202,19 @@ export default function Course() {
 					{success ?? error}
 				</p>
 			)}
-			<Dialog.Root open={open} onOpenChange={setOpen}>
-				<Dialog.Trigger asChild>
-					<div className='w-fit'>
-						<Button
-							preset={ButtonPreset.Primary}
-							text='Editar o Curso'
-							type={ButtonType.Button}
-						/>
-					</div>
-				</Dialog.Trigger>
+			<Dialog.Root open={courseEditDialogIsOpen} onOpenChange={setCourseEditDialogIsOpen}>
+				<div className='flex items-center gap-5'>
+					<h1>{course.name}</h1>
+					<Dialog.Trigger asChild>
+						<div className='w-fit'>
+							<Button
+								preset={ButtonPreset.Primary}
+								text='Editar o Curso'
+								type={ButtonType.Button}
+							/>
+						</div>
+					</Dialog.Trigger>
+				</div>
 
 				<Dialog.Portal>
 					<Dialog.Overlay className='bg-mauvea-12 fixed inset-0'/>
@@ -187,7 +240,7 @@ export default function Course() {
 												<input
 													required
 													defaultValue={course.name}
-													disabled={isSubmitting}
+													disabled={isSubmittingAnyForm}
 													type='text'
 													min={8}
 													className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
@@ -205,7 +258,7 @@ export default function Course() {
 												<input
 													required
 													defaultValue={course.description ?? ''}
-													disabled={isSubmitting}
+													disabled={isSubmittingAnyForm}
 													type='text'
 													min={8}
 													className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
@@ -221,17 +274,17 @@ export default function Course() {
 											</div>
 											<RadixForm.Control asChild>
 												<input
-													disabled={isSubmitting}
+													disabled={isSubmittingAnyForm}
 													type='text'
 													min={8}
 													className='hidden'
-													value={content}
+													value={courseEditQuillContent}
 												/>
 											</RadixForm.Control>
 										</RadixForm.Field>
 
 										<ClientOnly fallback={<YemSpinner/>}>
-											{() => <Editor setQuill={setQuill} placeholder='Adicione aqui o conteúdo do curso, que só aparece para os alunos...'/>}
+											{() => <Editor setQuill={setCourseEditQuill} placeholder='Adicione aqui o conteúdo do curso, que só aparece para os alunos...'/>}
 										</ClientOnly>
 
 										<RadixForm.Field name='videoSourceUrl'>
@@ -243,7 +296,7 @@ export default function Course() {
 											<RadixForm.Control asChild>
 												<input
 													defaultValue={course.videoSourceUrl ?? ''}
-													disabled={isSubmitting}
+													disabled={isSubmittingAnyForm}
 													type='text'
 													min={3}
 													className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
@@ -261,7 +314,7 @@ export default function Course() {
 												<input
 													required
 													defaultValue={course.thumbnailUrl}
-													disabled={isSubmitting}
+													disabled={isSubmittingAnyForm}
 													type='text'
 													min={3}
 													className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
@@ -278,7 +331,7 @@ export default function Course() {
 											<RadixForm.Control asChild>
 												<input
 													defaultValue={defaultDate.toISOString().slice(0, 16)}
-													disabled={isSubmitting}
+													disabled={isSubmittingAnyForm}
 													type='datetime-local'
 													min={3}
 													className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
@@ -295,7 +348,7 @@ export default function Course() {
 											<RadixForm.Control asChild>
 												<Switch.Root
 													defaultChecked={course.published}
-													disabled={isSubmitting}
+													disabled={isSubmittingAnyForm}
 													className='w-[42px] h-[25px] bg-blacka-6 rounded-full relative shadow-[0_2px_10px] shadow-blacka-4 focus:shadow-[0_0_0_2px] focus:shadow-black data-[state=checked]:bg-black outline-none cursor-default'
 												>
 													<Switch.Thumb
@@ -314,7 +367,7 @@ export default function Course() {
 											<RadixForm.Control asChild>
 												<Switch.Root
 													defaultChecked={course.isSelling}
-													disabled={isSubmitting}
+													disabled={isSubmittingAnyForm}
 													className='w-[42px] h-[25px] bg-blacka-6 rounded-full relative shadow-[0_2px_10px] shadow-blacka-4 focus:shadow-[0_0_0_2px] focus:shadow-black data-[state=checked]:bg-black outline-none cursor-default'
 												>
 													<Switch.Thumb
@@ -324,11 +377,22 @@ export default function Course() {
 											</RadixForm.Control>
 										</RadixForm.Field>
 
+										<RadixForm.Field name='type'>
+											<RadixForm.Control asChild>
+												<input
+													disabled={isSubmittingAnyForm}
+													type='text'
+													className='hidden'
+													value='editCourse'
+												/>
+											</RadixForm.Control>
+										</RadixForm.Field>
+
 										<RadixForm.Submit asChild>
-											<Button key='Editar o Curso' isDisabled={isSubmitting} className='m-auto mt-2' text='Editar o Curso' preset={ButtonPreset.Primary} type={ButtonType.Submit}/>
+											<Button key='Editar o Curso' isDisabled={isSubmittingAnyForm} className='m-auto mt-2' text='Editar o Curso' preset={ButtonPreset.Primary} type={ButtonType.Submit}/>
 										</RadixForm.Submit>
 
-										{isSubmitting && <YemSpinner/>}
+										{isSubmittingAnyForm && <YemSpinner/>}
 
 									</Form>
 								</RadixForm.Root>
@@ -347,8 +411,8 @@ export default function Course() {
 					</Dialog.Content>
 				</Dialog.Portal>
 			</Dialog.Root>
+
 			<div>
-				<h1>{course.name}</h1>
 				<h2>{course.description}</h2>
 				<p>Data de publicação: {new Date(course.publicationDate).toLocaleString('pt-BR')}</p>
 				<p>Está publicado: {course.published ? 'sim' : 'não'}</p>
@@ -361,13 +425,214 @@ export default function Course() {
 					</>
 				)}
 			</div>
+
 			<div>
-				<h2>Módulos</h2>
-				<div>
+
+				<Dialog.Root open={newModuleDialogIsOpen} onOpenChange={setNewModuleDialogIsOpen}>
+
+					<div className='flex items-center gap-5'>
+						<h2>Módulos</h2>
+						<Dialog.Trigger asChild>
+							<div className='w-fit'>
+								<Button
+									preset={ButtonPreset.Primary}
+									text='Adicionar Novo Módulo'
+									type={ButtonType.Button}
+								/>
+							</div>
+						</Dialog.Trigger>
+					</div>
+
+					<Dialog.Portal>
+						<Dialog.Overlay className='bg-mauvea-12 fixed inset-0'/>
+
+						<Dialog.Content className='fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] p-4 max-w-screen-lg w-[90%] bg-mauve-2 dark:bg-mauvedark-2 rounded-xl overflow-y-auto max-h-[90%]'>
+							<div>
+								<Dialog.Title asChild>
+									<h1 className='mb-4'>
+										Adicionar Novo Módulo
+									</h1>
+								</Dialog.Title>
+
+								<div>
+									<RadixForm.Root asChild>
+										<Form method='post' action={`/admin/courses/${course.id}`} className='flex flex-col gap-3'>
+
+											<RadixForm.Field name='name'>
+												<div className='flex items-baseline justify-between'>
+													<RadixForm.Label>
+														<p>Nome</p>
+													</RadixForm.Label>
+												</div>
+												<RadixForm.Control asChild>
+													<input
+														required
+														disabled={isSubmittingAnyForm}
+														type='text'
+														min={8}
+														className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
+													/>
+												</RadixForm.Control>
+											</RadixForm.Field>
+
+											<RadixForm.Field name='description'>
+												<div className='flex items-baseline justify-between'>
+													<RadixForm.Label>
+														<p>Descrição</p>
+													</RadixForm.Label>
+												</div>
+												<RadixForm.Control asChild>
+													<input
+														required
+														disabled={isSubmittingAnyForm}
+														type='text'
+														min={8}
+														className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
+													/>
+												</RadixForm.Control>
+											</RadixForm.Field>
+
+											<RadixForm.Field name='content'>
+												<div className='flex items-baseline justify-between'>
+													<RadixForm.Label>
+														<p>Conteúdo</p>
+													</RadixForm.Label>
+												</div>
+												<RadixForm.Control asChild>
+													<input
+														disabled={isSubmittingAnyForm}
+														type='text'
+														min={8}
+														className='hidden'
+														value={newModuleQuillContent}
+													/>
+												</RadixForm.Control>
+											</RadixForm.Field>
+
+											<ClientOnly fallback={<YemSpinner/>}>
+												{() => <Editor setQuill={setNewModuleQuill} placeholder='Adicione aqui o conteúdo do módulo, que só aparece para os alunos...'/>}
+											</ClientOnly>
+
+											<RadixForm.Field name='videoSourceUrl'>
+												<div className='flex items-baseline justify-between'>
+													<RadixForm.Label>
+														<p>Vídeo</p>
+													</RadixForm.Label>
+												</div>
+												<RadixForm.Control asChild>
+													<input
+														disabled={isSubmittingAnyForm}
+														type='text'
+														min={3}
+														className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
+													/>
+												</RadixForm.Control>
+											</RadixForm.Field>
+
+											<RadixForm.Field name='thumbnailUrl'>
+												<div className='flex items-baseline justify-between'>
+													<RadixForm.Label>
+														<p>Imagem de capa</p>
+													</RadixForm.Label>
+												</div>
+												<RadixForm.Control asChild>
+													<input
+														required
+														disabled={isSubmittingAnyForm}
+														type='text'
+														min={3}
+														className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
+													/>
+												</RadixForm.Control>
+											</RadixForm.Field>
+
+											<RadixForm.Field name='course'>
+												<RadixForm.Control asChild>
+													<input
+														disabled={isSubmittingAnyForm}
+														type='text'
+														className='hidden'
+														value={course.id}
+													/>
+												</RadixForm.Control>
+											</RadixForm.Field>
+
+											<RadixForm.Field name='type'>
+												<RadixForm.Control asChild>
+													<input
+														disabled={isSubmittingAnyForm}
+														type='text'
+														className='hidden'
+														value='newModule'
+													/>
+												</RadixForm.Control>
+											</RadixForm.Field>
+
+											<RadixForm.Field name='publicationDate'>
+												<div className='flex items-baseline justify-between'>
+													<RadixForm.Label>
+														<p>Data de publicação</p>
+													</RadixForm.Label>
+												</div>
+												<RadixForm.Control asChild>
+													<input
+														disabled={isSubmittingAnyForm}
+														type='datetime-local'
+														min={3}
+														className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
+													/>
+												</RadixForm.Control>
+											</RadixForm.Field>
+
+											<RadixForm.Field name='published'>
+												<div className='flex items-baseline justify-between'>
+													<RadixForm.Label>
+														<p>Está publicado</p>
+													</RadixForm.Label>
+												</div>
+												<RadixForm.Control asChild>
+													<Switch.Root
+														disabled={isSubmittingAnyForm}
+														className='w-[42px] h-[25px] bg-blacka-6 rounded-full relative shadow-[0_2px_10px] shadow-blacka-4 focus:shadow-[0_0_0_2px] focus:shadow-black data-[state=checked]:bg-black outline-none cursor-default'
+													>
+														<Switch.Thumb
+															className='block w-[21px] h-[21px] bg-white rounded-full shadow-[0_2px_2px] shadow-blackA4 transition-transform duration-100 translate-x-0.5 will-change-transform data-[state=checked]:translate-x-[19px]'
+														/>
+													</Switch.Root>
+												</RadixForm.Control>
+											</RadixForm.Field>
+
+											<RadixForm.Submit asChild>
+												<Button isDisabled={isSubmittingAnyForm} className='m-auto mt-2' text='Criar Novo Módulo' preset={ButtonPreset.Primary} type={ButtonType.Submit}/>
+											</RadixForm.Submit>
+
+											{isSubmittingAnyForm && <YemSpinner/>}
+
+										</Form>
+									</RadixForm.Root>
+								</div>
+							</div>
+
+							<Dialog.Close asChild>
+								<button
+									type='button'
+									className='absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center outline-none'
+									aria-label='Close'
+								>
+									<XMarkIcon aria-label='Close' className='hover:pointer absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px]'/>
+								</button>
+							</Dialog.Close>
+						</Dialog.Content>
+					</Dialog.Portal>
+
+				</Dialog.Root>
+
+				<div className='flex gap-4 my-4 flex-wrap'>
 					{course.modules.map(module => (
 						<CourseCard key={module.id} course={module} to={`./${module.id}`}/>
 					))}
 				</div>
+
 			</div>
 		</>
 	);
