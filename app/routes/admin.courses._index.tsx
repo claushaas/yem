@@ -128,15 +128,18 @@ export default function Courses() {
 				</p>
 			)}
 			<Dialog.Root open={open} onOpenChange={setOpen}>
-				<Dialog.Trigger asChild>
-					<div className='w-fit'>
-						<Button
-							preset={ButtonPreset.Primary}
-							text='Adicionar Novo Curso'
-							type={ButtonType.Button}
-						/>
-					</div>
-				</Dialog.Trigger>
+				<div className='flex items-center gap-5'>
+					<h1>Cursos</h1>
+					<Dialog.Trigger asChild>
+						<div className='w-fit'>
+							<Button
+								preset={ButtonPreset.Primary}
+								text='Adicionar Novo Curso'
+								type={ButtonType.Button}
+							/>
+						</div>
+					</Dialog.Trigger>
+				</div>
 
 				<Dialog.Portal>
 					<Dialog.Overlay className='bg-mauvea-12 fixed inset-0'/>
@@ -231,6 +234,7 @@ export default function Courses() {
 											</div>
 											<RadixForm.Control asChild>
 												<input
+													required
 													disabled={isSubmitting}
 													type='text'
 													min={3}
