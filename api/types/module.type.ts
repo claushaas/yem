@@ -12,8 +12,6 @@ export type TModule = {
 	published: boolean;
 	courses?: TUuid[];
 	lessons?: TUuid[];
-	subModules?: TUuid[];
-	belongToModules?: TUuid[];
 	tags?: TTags;
 	// Comments?: string[];
 };
@@ -106,6 +104,13 @@ export type TPrismaPayloadGetModuleById = Prisma.ModuleGetPayload<{
 						userId: true;
 					};
 				};
+			};
+		};
+		course: {
+			select: {
+				id: true;
+				name: true;
+				subscriptions: true;
 			};
 		};
 	};

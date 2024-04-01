@@ -31,7 +31,7 @@ export function CourseCard({course, to}: ClassCardPropierties) {
 					<h2 className='text-mauve-3 drop-shadow-md'>
 						{course.name}
 					</h2>
-					<p className='text-mauve-5'>{course.description}</p>
+					<p className='text-mauve-5 text-ellipsis line-clamp-3'>{course.description}</p>
 				</div>
 			</Link>
 		</motion.div>

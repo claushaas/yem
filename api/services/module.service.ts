@@ -277,6 +277,24 @@ export class ModuleService {
 			},
 		};
 
+		const includeCourse = {
+			where: {
+				id: courseId,
+			},
+			select: {
+				id: true,
+				name: true,
+				subscriptions: {
+					where: {
+						userId: user.id,
+						expiresAt: {
+							gte: new Date(),
+						},
+					},
+				},
+			},
+		};
+
 		if (user.roles?.includes('admin')) {
 			const module = await this._model.module.findUnique({
 				where: {
@@ -285,6 +303,7 @@ export class ModuleService {
 				include: {
 					lessons: includeLessons,
 					comments: includeComments,
+					course: includeCourse,
 				},
 			});
 
@@ -325,6 +344,7 @@ export class ModuleService {
 						published: true,
 					},
 				},
+				course: includeCourse,
 			},
 		});
 
@@ -332,34 +352,7 @@ export class ModuleService {
 			throw new CustomError('NOT_FOUND', 'Module not found');
 		}
 
-		const course = await this._model.course.findUnique({
-			where: {
-				id: courseId,
-			},
-			select: {
-				id: false,
-				name: false,
-				description: false,
-				content: false,
-				videoSourceUrl: false,
-				thumbnailUrl: false,
-				createdAt: false,
-				updatedAt: false,
-				publicationDate: false,
-				published: false,
-				modules: false,
-				comments: false,
-				tags: false,
-				subscriptions: {
-					where: {
-						userId: user.id,
-						courseId,
-					},
-				},
-			},
-		});
-
-		const hasActiveSubscription = course?.subscriptions.some(subscription => subscription.expiresAt > new Date());
+		const hasActiveSubscription = rawModule.course?.some(course => course.subscriptions.length > 0);
 
 		const returnableModule = {
 			...rawModule,
