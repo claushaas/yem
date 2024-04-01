@@ -11,11 +11,12 @@ import {useEffect, useState} from 'react';
 import {ClientOnly} from 'remix-utils/client-only';
 import * as Switch from '@radix-ui/react-switch';
 import {XMarkIcon} from '@heroicons/react/24/outline';
+import Select from 'react-select';
 import {CourseService} from '#/services/course.service';
 import {commitUserSession, getUserSession} from '~/utils/session.server';
 import {type TUser} from '#/types/user.type';
 import {logger} from '#/utils/logger.util';
-import {type TPrismaPayloadGetCourseById} from '#/types/course.type';
+import {type TPrismaPayloadGetAllCourses, type TPrismaPayloadGetCourseById} from '#/types/course.type';
 import {CourseCard} from '~/components/course-card/index.js';
 import {Button, ButtonPreset, ButtonType} from '~/components/button/index.js';
 import {Editor} from '~/components/text-editor/index.client.js';
@@ -27,6 +28,7 @@ type CourseLoaderData = {
 	error: string | undefined;
 	success: string | undefined;
 	course: TPrismaPayloadGetCourseById | undefined;
+	courses: TPrismaPayloadGetAllCourses | undefined;
 };
 
 export const loader = async ({request, params}: LoaderFunctionArgs) => {
@@ -34,10 +36,13 @@ export const loader = async ({request, params}: LoaderFunctionArgs) => {
 	const {'course-id': courseId} = params;
 
 	try {
-		const {data: course} = await new CourseService().getById(courseId!, userSession.data as TUser);
+		const courseService = new CourseService();
+		const {data: course} = await courseService.getById(courseId!, userSession.data as TUser);
+		const {data: courses} = await courseService.getAll(userSession.get('roles') as string[]);
 
 		return json<CourseLoaderData>({
 			course,
+			courses,
 			error: userSession.get('error') as string | undefined,
 			success: userSession.get('success') as string | undefined,
 		}, {
@@ -49,6 +54,7 @@ export const loader = async ({request, params}: LoaderFunctionArgs) => {
 		logger.logError(`Error getting course: ${(error as Error).message}`);
 		return json<CourseLoaderData>({
 			course: undefined,
+			courses: undefined,
 			error: 'Erro ao buscar curso',
 			success: undefined,
 		}, {
@@ -98,7 +104,7 @@ export const action = async ({request, params}: ActionFunctionArgs) => {
 						content: formData.get('content') as string,
 						videoSourceUrl: formData.get('videoSourceUrl') as string,
 						thumbnailUrl: formData.get('thumbnailUrl') as string,
-						courses: [formData.get('course')] as TUuid[],
+						courses: (formData.get('course') as string).split(','),
 						publicationDate: new Date(formData.get('publicationDate') as string),
 						published: Boolean(formData.get('published')),
 					};
@@ -145,6 +151,7 @@ export const action = async ({request, params}: ActionFunctionArgs) => {
 export default function Course() {
 	const {
 		course,
+		courses,
 		error,
 		success,
 	} = useLoaderData<CourseLoaderData>();
@@ -155,6 +162,7 @@ export default function Course() {
 	const [newModuleQuillContent, setNewModuleQuillContent] = useState('');
 	const [courseEditDialogIsOpen, setCourseEditDialogIsOpen] = useState<boolean>(false);
 	const [newModuleDialogIsOpen, setNewModuleDialogIsOpen] = useState<boolean>(false);
+	const [coursesValue, setCoursesValue] = useState<Array<{value: string; label: string}>>(course ? [{value: course.id, label: course.name}] : []);
 	const navigation = useNavigation();
 	const isSubmittingAnyForm = navigation.formAction === '/admin/courses';
 
@@ -547,14 +555,27 @@ export default function Course() {
 											</RadixForm.Field>
 
 											<RadixForm.Field name='course'>
+												<div className='flex items-baseline justify-between'>
+													<RadixForm.Label>
+														<p>Cursos</p>
+													</RadixForm.Label>
+												</div>
 												<RadixForm.Control asChild>
 													<input
 														disabled={isSubmittingAnyForm}
 														type='text'
 														className='hidden'
-														value={course.id}
+														value={coursesValue.map(course => course.value).join(',')}
 													/>
 												</RadixForm.Control>
+												<Select
+													isMulti
+													value={coursesValue}
+													options={courses?.map(course => ({value: course.id, label: course.name}))}
+													onChange={selectedOption => {
+														setCoursesValue(selectedOption as Array<{value: string; label: string}>);
+													}}
+												/>
 											</RadixForm.Field>
 
 											<RadixForm.Field name='type'>

@@ -1,6 +1,6 @@
 import type {MetaFunction} from '@remix-run/node';
 import {Image} from '@unpic/react';
-import {buildImgSource} from '~/utils/build-image-source.js';
+import {buildImgSource} from '~/utils/build-cloudflare-image-source.js';
 import {Testimony} from '~/components/testimony/index.js';
 
 export const meta: MetaFunction = () => [
