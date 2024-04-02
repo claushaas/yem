@@ -6,8 +6,8 @@ import {Form, Link, useNavigation} from '@remix-run/react';
 import {Separator} from '@radix-ui/react-separator';
 import {Button, ButtonPreset, ButtonType} from '~/components/button/index.js';
 import {YemSpinner} from '~/components/yem-spinner/index.js';
-import {logger} from '#/utils/logger.util';
-import {UserService} from '#/services/user.service';
+import {logger} from '~/utils/logger.util';
+import {UserService} from '~/services/user.service';
 
 export const action = async ({request}: ActionFunctionArgs) => {
 	try {

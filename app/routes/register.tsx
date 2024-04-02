@@ -11,10 +11,10 @@ import PhoneInput from 'react-phone-number-input';
 import {type E164Number} from 'libphonenumber-js/core'; // eslint-disable-line import/no-extraneous-dependencies
 import {getUserSession, commitUserSession} from '~/utils/session.server';
 import {YemSpinner} from '~/components/yem-spinner/index.js';
-import {UserService} from '#/services/user.service';
+import {UserService} from '~/services/user.service';
 import {Button, ButtonPreset, ButtonType} from '~/components/button/index.js';
-import type {CustomError} from '#/utils/custom-error';
-import {logger} from '#/utils/logger.util.js';
+import type {CustomError} from '~/utils/custom-error';
+import {logger} from '~/utils/logger.util.js';
 
 export const action = async ({request}: ActionFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
