@@ -8,9 +8,10 @@ const lessonSchema = Joi.object({
 	name: Joi.string().required().min(3).max(35),
 	type: Joi.string().required().valid('video', 'text', 'courseWare'),
 	description: Joi.string().min(10).max(150),
-	content: Joi.string(),
-	videoSourceUrl: Joi.string().uri(),
-	thumbnailUrl: Joi.string().required().uri(),
+	content: Joi.string().allow(''),
+	videoSourceUrl: Joi.string(),
+	duration: Joi.number().min(1).max(200),
+	thumbnailUrl: Joi.string().required(),
 	modules: Joi.array().items(Joi.string().uuid()).required(),
 	publicationDate: Joi.date().required().default(new Date()),
 	published: Joi.boolean().required().default(true),
@@ -23,6 +24,7 @@ export class Lesson implements TLesson {
 	private readonly _description?: string;
 	private readonly _content?: string;
 	private readonly _videoSourceUrl?: string;
+	private readonly _duration?: number;
 	private readonly _thumbnailUrl: string;
 	private readonly _modules: TUuid[];
 	private readonly _publicationDate: Date;
@@ -41,6 +43,7 @@ export class Lesson implements TLesson {
 		this._description = lesson.description;
 		this._content = lesson.content;
 		this._videoSourceUrl = lesson.videoSourceUrl;
+		this._duration = lesson.duration;
 		this._thumbnailUrl = lesson.thumbnailUrl;
 		this._modules = lesson.modules;
 		this._publicationDate = lesson.publicationDate;
@@ -66,6 +69,10 @@ export class Lesson implements TLesson {
 
 	get videoSourceUrl() {
 		return this._videoSourceUrl;
+	}
+
+	get duration() {
+		return this._duration;
 	}
 
 	get thumbnailUrl() {
