@@ -9,17 +9,16 @@ import {
 	AdminSetUserPasswordCommand,
 } from '@aws-sdk/client-cognito-identity-provider';
 import {CustomError} from '../utils/custom-error.js';
-import {generateToken} from '../utils/jwt.js';
 import {type TServiceReturn} from '../types/service-return.type.js';
 import {logger} from '../utils/logger.util.js';
 import {
 	type TUser,
 	type TUserCreationAttributes,
 } from '../types/user.type.js';
-import {welcomeEmailTemplate} from '../assets/emails/welcome.email.template.js';
+import {welcomeEmailTemplate} from '../private-assets/emails/welcome.email.template.js';
 import {UserForCreation} from '../entities/user.entity.js';
 import {generateSecurePassword} from '../utils/generate-secure-password.js';
-import {newPassWordEmailTemplate} from '../assets/emails/new-password.email.template.js';
+import {newPassWordEmailTemplate} from '../private-assets/emails/new-password.email.template.js';
 import {MauticService} from './mautic.service.js';
 import {BotmakerService} from './botmaker.service.js';
 import {MailService} from './mail.service.js';

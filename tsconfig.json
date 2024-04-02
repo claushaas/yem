@@ -6,7 +6,7 @@
     "**/.server/**/*.tsx",
     "**/.client/**/*.ts",
     "**/.client/**/*.tsx",
-    "api/utils/remix-server-utils.js",
+    "app/utils/remix-server-utils.js",
     "**/api/**/*.ts",
     "**/api/**/*.tsx",
   ],
@@ -43,6 +43,6 @@
       ]
     },
     // Vite takes care of building everything, not tsc.
-    // "noEmit": true
+    "noEmit": true
   }
 }

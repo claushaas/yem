@@ -17,19 +17,19 @@ import {
 } from '@heroicons/react/24/outline';
 import Select from 'react-select';
 import {ClientOnly} from 'remix-utils/client-only';
-import {logger} from '#/utils/logger.util';
+import {logger} from '~/utils/logger.util';
 import {commitUserSession, getUserSession} from '~/utils/session.server';
-import {ModuleService} from '#/services/module.service';
-import {LessonService} from '#/services/lesson.service';
-import {type TUser} from '#/types/user.type';
-import {type TPrismaPayloadGetModuleById} from '#/types/module.type';
+import {ModuleService} from '~/services/module.service';
+import {LessonService} from '~/services/lesson.service';
+import {type TUser} from '~/types/user.type';
+import {type TPrismaPayloadGetModuleById} from '~/types/module.type';
 import {CourseCard} from '~/components/course-card/index.js';
 import {Button, ButtonPreset, ButtonType} from '~/components/button/index.js';
 import {Editor} from '~/components/text-editor/index.client.js';
 import {YemSpinner} from '~/components/yem-spinner/index.js';
-import {CourseService} from '#/services/course.service';
-import {type TPrismaPayloadGetAllCourses} from '#/types/course.type';
-import {type TLessonType} from '#/types/lesson.type';
+import {CourseService} from '~/services/course.service';
+import {type TPrismaPayloadGetAllCourses} from '~/types/course.type';
+import {type TLessonType} from '~/types/lesson.type';
 
 type ModuleLoaderData = {
 	error: string | undefined;
