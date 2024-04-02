@@ -171,4 +171,5 @@ model UserSubscriptions {
 enum SubscriptionProvidersType {
   hotmart
   iugu
+  manual
 }

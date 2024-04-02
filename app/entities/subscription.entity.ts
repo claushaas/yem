@@ -6,7 +6,7 @@ const subscriptionSchema = Joi.object({
 	userId: Joi.string().uuid().required(),
 	courseId: Joi.string().uuid().required(),
 	expiresAt: Joi.date().required(),
-	provider: Joi.string().valid('hotmart', 'iugu').required(),
+	provider: Joi.string().valid('hotmart', 'iugu', 'manual').required(),
 	providerSubscriptionId: Joi.string().required(),
 });
 
@@ -14,7 +14,7 @@ export class Subscription implements TSubscription {
 	private readonly _userId: string;
 	private readonly _courseId: string;
 	private readonly _expiresAt: Date;
-	private readonly _provider: 'hotmart' | 'iugu';
+	private readonly _provider: 'hotmart' | 'iugu' | 'manual';
 	private readonly _providerSubscriptionId: string;
 
 	constructor(subscription: TSubscription) {
