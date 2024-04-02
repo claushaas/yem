@@ -113,5 +113,18 @@ export type TPrismaPayloadGetLessonById = Prisma.LessonGetPayload<{
 			};
 		};
 		lessonProgress: true;
+		modules: {
+			select: {
+				id: true;
+				name: true;
+				course: {
+					select: {
+						id: true;
+						name: true;
+						subscriptions: true;
+					};
+				};
+			};
+		};
 	};
 }>;

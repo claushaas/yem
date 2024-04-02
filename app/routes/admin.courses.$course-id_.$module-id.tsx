@@ -153,6 +153,7 @@ export default function Module() {
 		error,
 		success,
 	} = useLoaderData<ModuleLoaderData>();
+
 	const {
 		'course-id': courseId,
 		'module-id': moduleId,
@@ -212,6 +213,7 @@ export default function Module() {
 					{success ?? error}
 				</p>
 			)}
+
 			<Dialog.Root open={moduleEditDialogIsOpen} onOpenChange={setModuleEditDialogIsOpen}>
 				<div className='flex items-center gap-5'>
 					<h1>{module.name}</h1>
@@ -230,188 +232,186 @@ export default function Module() {
 					<Dialog.Overlay className='bg-mauvea-12 fixed inset-0'/>
 
 					<Dialog.Content className='fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] p-4 max-w-screen-lg w-[90%] bg-mauve-2 dark:bg-mauvedark-2 rounded-xl overflow-y-auto max-h-[90%]'>
-						<div>
-							<Dialog.Title asChild>
-								<h1 className='mb-4'>
-									{`Editar o Módulo ${module.name}`}
-								</h1>
-							</Dialog.Title>
+						<Dialog.Title asChild>
+							<h1 className='mb-4'>
+								{`Editar o Módulo ${module.name}`}
+							</h1>
+						</Dialog.Title>
 
-							<RadixForm.Root asChild>
-								<Form method='post' action={`/admin/courses/${courseId}/${moduleId}`} className='flex flex-col gap-3'>
+						<RadixForm.Root asChild>
+							<Form method='post' action={`/admin/courses/${courseId}/${moduleId}`} className='flex flex-col gap-3'>
 
-									<RadixForm.Field name='name'>
-										<div className='flex items-baseline justify-between'>
-											<RadixForm.Label>
-												<p>Nome</p>
-											</RadixForm.Label>
-										</div>
-										<RadixForm.Control asChild>
-											<input
-												required
-												defaultValue={module.name}
-												disabled={isSubmittingAnyForm}
-												type='text'
-												min={8}
-												className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
-											/>
-										</RadixForm.Control>
-									</RadixForm.Field>
-
-									<RadixForm.Field name='description'>
-										<div className='flex items-baseline justify-between'>
-											<RadixForm.Label>
-												<p>Descrição</p>
-											</RadixForm.Label>
-										</div>
-										<RadixForm.Control asChild>
-											<input
-												required
-												defaultValue={module.description ?? ''}
-												disabled={isSubmittingAnyForm}
-												type='text'
-												min={8}
-												className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
-											/>
-										</RadixForm.Control>
-									</RadixForm.Field>
-
-									<RadixForm.Field name='content'>
-										<div className='flex items-baseline justify-between'>
-											<RadixForm.Label>
-												<p>Conteúdo</p>
-											</RadixForm.Label>
-										</div>
-										<RadixForm.Control asChild>
-											<input
-												disabled={isSubmittingAnyForm}
-												type='text'
-												min={8}
-												className='hidden'
-												value={moduleEditQuillContent}
-											/>
-										</RadixForm.Control>
-									</RadixForm.Field>
-
-									<ClientOnly fallback={<YemSpinner/>}>
-										{() => <Editor setQuill={setModuleEditQuill} placeholder='Adicione aqui o conteúdo do módulo, que só aparece para os alunos...'/>}
-									</ClientOnly>
-
-									<RadixForm.Field name='videoSourceUrl'>
-										<div className='flex items-baseline justify-between'>
-											<RadixForm.Label>
-												<p>Vídeo</p>
-											</RadixForm.Label>
-										</div>
-										<RadixForm.Control asChild>
-											<input
-												defaultValue={module.videoSourceUrl ?? ''}
-												disabled={isSubmittingAnyForm}
-												type='text'
-												min={3}
-												className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
-											/>
-										</RadixForm.Control>
-									</RadixForm.Field>
-
-									<RadixForm.Field name='thumbnailUrl'>
-										<div className='flex items-baseline justify-between'>
-											<RadixForm.Label>
-												<p>Imagem de capa</p>
-											</RadixForm.Label>
-										</div>
-										<RadixForm.Control asChild>
-											<input
-												required
-												defaultValue={module.thumbnailUrl}
-												disabled={isSubmittingAnyForm}
-												type='text'
-												min={3}
-												className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
-											/>
-										</RadixForm.Control>
-									</RadixForm.Field>
-
-									<RadixForm.Field name='course'>
-										<div className='flex items-baseline justify-between'>
-											<RadixForm.Label>
-												<p>Cursos</p>
-											</RadixForm.Label>
-										</div>
-										<RadixForm.Control asChild>
-											<input
-												disabled={isSubmittingAnyForm}
-												type='text'
-												className='hidden'
-												value={coursesValue.map(course => course.value).join(',')}
-											/>
-										</RadixForm.Control>
-										<Select
-											isMulti
-											value={coursesValue}
-											options={courses?.map(course => ({value: course.id, label: course.name}))}
-											onChange={selectedOption => {
-												setCoursesValue(selectedOption as Array<{value: string; label: string}>);
-											}}
+								<RadixForm.Field name='name'>
+									<div className='flex items-baseline justify-between'>
+										<RadixForm.Label>
+											<p>Nome</p>
+										</RadixForm.Label>
+									</div>
+									<RadixForm.Control asChild>
+										<input
+											required
+											defaultValue={module.name}
+											disabled={isSubmittingAnyForm}
+											type='text'
+											min={8}
+											className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
 										/>
-									</RadixForm.Field>
+									</RadixForm.Control>
+								</RadixForm.Field>
 
-									<RadixForm.Field name='publicationDate'>
-										<div className='flex items-baseline justify-between'>
-											<RadixForm.Label>
-												<p>Data de publicação</p>
-											</RadixForm.Label>
-										</div>
-										<RadixForm.Control asChild>
-											<input
-												defaultValue={defaultDate.toISOString().slice(0, 16)}
-												disabled={isSubmittingAnyForm}
-												type='datetime-local'
-												min={3}
-												className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
+								<RadixForm.Field name='description'>
+									<div className='flex items-baseline justify-between'>
+										<RadixForm.Label>
+											<p>Descrição</p>
+										</RadixForm.Label>
+									</div>
+									<RadixForm.Control asChild>
+										<input
+											required
+											defaultValue={module.description ?? ''}
+											disabled={isSubmittingAnyForm}
+											type='text'
+											min={8}
+											className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
+										/>
+									</RadixForm.Control>
+								</RadixForm.Field>
+
+								<RadixForm.Field name='content'>
+									<div className='flex items-baseline justify-between'>
+										<RadixForm.Label>
+											<p>Conteúdo</p>
+										</RadixForm.Label>
+									</div>
+									<RadixForm.Control asChild>
+										<input
+											disabled={isSubmittingAnyForm}
+											type='text'
+											min={8}
+											className='hidden'
+											value={moduleEditQuillContent}
+										/>
+									</RadixForm.Control>
+								</RadixForm.Field>
+
+								<ClientOnly fallback={<YemSpinner/>}>
+									{() => <Editor setQuill={setModuleEditQuill} placeholder='Adicione aqui o conteúdo do módulo, que só aparece para os alunos...'/>}
+								</ClientOnly>
+
+								<RadixForm.Field name='videoSourceUrl'>
+									<div className='flex items-baseline justify-between'>
+										<RadixForm.Label>
+											<p>Vídeo</p>
+										</RadixForm.Label>
+									</div>
+									<RadixForm.Control asChild>
+										<input
+											defaultValue={module.videoSourceUrl ?? ''}
+											disabled={isSubmittingAnyForm}
+											type='text'
+											min={3}
+											className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
+										/>
+									</RadixForm.Control>
+								</RadixForm.Field>
+
+								<RadixForm.Field name='thumbnailUrl'>
+									<div className='flex items-baseline justify-between'>
+										<RadixForm.Label>
+											<p>Imagem de capa</p>
+										</RadixForm.Label>
+									</div>
+									<RadixForm.Control asChild>
+										<input
+											required
+											defaultValue={module.thumbnailUrl}
+											disabled={isSubmittingAnyForm}
+											type='text'
+											min={3}
+											className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
+										/>
+									</RadixForm.Control>
+								</RadixForm.Field>
+
+								<RadixForm.Field name='course'>
+									<div className='flex items-baseline justify-between'>
+										<RadixForm.Label>
+											<p>Cursos</p>
+										</RadixForm.Label>
+									</div>
+									<RadixForm.Control asChild>
+										<input
+											disabled={isSubmittingAnyForm}
+											type='text'
+											className='hidden'
+											value={coursesValue.map(course => course.value).join(',')}
+										/>
+									</RadixForm.Control>
+									<Select
+										isMulti
+										value={coursesValue}
+										options={courses?.map(course => ({value: course.id, label: course.name}))}
+										onChange={selectedOption => {
+											setCoursesValue(selectedOption as Array<{value: string; label: string}>);
+										}}
+									/>
+								</RadixForm.Field>
+
+								<RadixForm.Field name='publicationDate'>
+									<div className='flex items-baseline justify-between'>
+										<RadixForm.Label>
+											<p>Data de publicação</p>
+										</RadixForm.Label>
+									</div>
+									<RadixForm.Control asChild>
+										<input
+											defaultValue={defaultDate.toISOString().slice(0, 16)}
+											disabled={isSubmittingAnyForm}
+											type='datetime-local'
+											min={3}
+											className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
+										/>
+									</RadixForm.Control>
+								</RadixForm.Field>
+
+								<RadixForm.Field name='published'>
+									<div className='flex items-baseline justify-between'>
+										<RadixForm.Label>
+											<p>Está publicado</p>
+										</RadixForm.Label>
+									</div>
+									<RadixForm.Control asChild>
+										<Switch.Root
+											defaultChecked={module.published}
+											disabled={isSubmittingAnyForm}
+											className='w-[42px] h-[25px] bg-blacka-6 rounded-full relative shadow-[0_2px_10px] shadow-blacka-4 focus:shadow-[0_0_0_2px] focus:shadow-black data-[state=checked]:bg-black outline-none cursor-default'
+										>
+											<Switch.Thumb
+												className='block w-[21px] h-[21px] bg-white rounded-full shadow-[0_2px_2px] shadow-blackA4 transition-transform duration-100 translate-x-0.5 will-change-transform data-[state=checked]:translate-x-[19px]'
 											/>
-										</RadixForm.Control>
-									</RadixForm.Field>
+										</Switch.Root>
+									</RadixForm.Control>
+								</RadixForm.Field>
 
-									<RadixForm.Field name='published'>
-										<div className='flex items-baseline justify-between'>
-											<RadixForm.Label>
-												<p>Está publicado</p>
-											</RadixForm.Label>
-										</div>
-										<RadixForm.Control asChild>
-											<Switch.Root
-												defaultChecked={module.published}
-												disabled={isSubmittingAnyForm}
-												className='w-[42px] h-[25px] bg-blacka-6 rounded-full relative shadow-[0_2px_10px] shadow-blacka-4 focus:shadow-[0_0_0_2px] focus:shadow-black data-[state=checked]:bg-black outline-none cursor-default'
-											>
-												<Switch.Thumb
-													className='block w-[21px] h-[21px] bg-white rounded-full shadow-[0_2px_2px] shadow-blackA4 transition-transform duration-100 translate-x-0.5 will-change-transform data-[state=checked]:translate-x-[19px]'
-												/>
-											</Switch.Root>
-										</RadixForm.Control>
-									</RadixForm.Field>
+								<RadixForm.Field name='formType'>
+									<RadixForm.Control asChild>
+										<input
+											disabled={isSubmittingAnyForm}
+											type='text'
+											className='hidden'
+											value='editModule'
+										/>
+									</RadixForm.Control>
+								</RadixForm.Field>
 
-									<RadixForm.Field name='formType'>
-										<RadixForm.Control asChild>
-											<input
-												disabled={isSubmittingAnyForm}
-												type='text'
-												className='hidden'
-												value='editModule'
-											/>
-										</RadixForm.Control>
-									</RadixForm.Field>
+								<RadixForm.Submit asChild>
+									<Button isDisabled={isSubmittingAnyForm} className='m-auto mt-2' text='Editar o Módulo' preset={ButtonPreset.Primary} type={ButtonType.Submit}/>
+								</RadixForm.Submit>
 
-									<RadixForm.Submit asChild>
-										<Button key='Editar o Curso' isDisabled={isSubmittingAnyForm} className='m-auto mt-2' text='Editar o Curso' preset={ButtonPreset.Primary} type={ButtonType.Submit}/>
-									</RadixForm.Submit>
+								{isSubmittingAnyForm && <YemSpinner/>}
 
-									{isSubmittingAnyForm && <YemSpinner/>}
-
-								</Form>
-							</RadixForm.Root>
-						</div>
+							</Form>
+						</RadixForm.Root>
 
 						<Dialog.Close asChild>
 							<button
@@ -432,7 +432,7 @@ export default function Module() {
 				<p>Está publicado: {module.published ? 'sim' : 'não'}</p>
 				{module.content && (
 					<>
-						<h2>Conteúdo do curso:</h2>
+						<h2>Conteúdo do Módulo:</h2>
 						{/* eslint-disable-next-line @typescript-eslint/naming-convention, react/no-danger */}
 						<div dangerouslySetInnerHTML={{__html: contentConverter.convert()}} className='p-4 rounded-lg border-2 border-mauve-6 dark:border-mauvedark-6 max-w-screen-lg'/>
 					</>
@@ -466,6 +466,7 @@ export default function Module() {
 
 							<RadixForm.Root asChild>
 								<Form method='post' action={`/admin/courses/${courseId}/${moduleId}`} className='flex flex-col gap-3'>
+
 									<RadixForm.Field name='name'>
 										<div className='flex items-baseline justify-between'>
 											<RadixForm.Label>

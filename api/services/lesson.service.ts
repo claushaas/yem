@@ -290,47 +290,14 @@ export class LessonService {
 		};
 	}
 
-	public async getById(courseId: TUuid, lessonId: TUuid, user: TUser | undefined): Promise<TServiceReturn<TPrismaPayloadGetLessonById>> {
-		const course = await this._model.course.findUnique({
-			where: {
-				id: courseId,
-			},
-			select: {
-				id: false,
-				name: false,
-				description: false,
-				content: false,
-				videoSourceUrl: false,
-				thumbnailUrl: false,
-				createdAt: false,
-				updatedAt: false,
-				publicationDate: false,
-				published: false,
-				modules: false,
-				comments: false,
-				tags: false,
-				subscriptions: {
-					where: {
-						userId: user?.id,
-						courseId,
-					},
-				},
-			},
-		});
-
-		const lessonWhere = {
-			id: lessonId,
-		};
-
-		const hasActiveSubscription = course?.subscriptions.some(subscription => subscription.expiresAt > new Date());
-
+	public async getById(courseId: TUuid, moduleId: TUuid, lessonId: TUuid, user: TUser | undefined): Promise<TServiceReturn<TPrismaPayloadGetLessonById>> {
 		const lessonSelect = {
 			id: true,
 			name: true,
 			type: true,
 			description: true,
-			content: Boolean(hasActiveSubscription),
-			videoSourceUrl: Boolean(hasActiveSubscription),
+			content: true,
+			videoSourceUrl: true,
 			duration: true,
 			thumbnailUrl: true,
 			publicationDate: true,
@@ -351,7 +318,7 @@ export class LessonService {
 			},
 			comments: {
 				where: {
-					published: user ? true : undefined,
+					published: true,
 				},
 				select: {
 					id: true,
@@ -375,32 +342,38 @@ export class LessonService {
 					userId: user?.id,
 				},
 			},
-		};
-
-		if (user?.roles?.includes('admin')) {
-			const lesson = await this._model.lesson.findUnique({
-				where: lessonWhere,
-				select: {
-					...lessonSelect,
-					content: true,
-					videoSourceUrl: true,
+			modules: {
+				where: {
+					id: moduleId,
 				},
-			});
-
-			if (!lesson) {
-				throw new CustomError('NOT_FOUND', 'Lesson not found');
-			}
-
-			return {
-				status: 'SUCCESSFUL',
-				data: lesson,
-			};
-		}
+				select: {
+					id: true,
+					name: true,
+					course: {
+						where: {
+							id: courseId,
+						},
+						select: {
+							id: true,
+							name: true,
+							subscriptions: {
+								where: {
+									userId: user?.id,
+									courseId,
+									expiresAt: {
+										gte: new Date(),
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		};
 
 		const lesson = await this._model.lesson.findUnique({
 			where: {
-				...lessonWhere,
-				published: true,
+				id: lessonId,
 			},
 			select: lessonSelect,
 		});
@@ -409,9 +382,26 @@ export class LessonService {
 			throw new CustomError('NOT_FOUND', 'Lesson not found');
 		}
 
+		const hasActiveSubscription = lesson?.modules?.some(
+			module => module.course?.some(
+				course => course.subscriptions.length > 0,
+			),
+		);
+
+		if (user?.roles?.includes('admin')) {
+			return {
+				status: 'SUCCESSFUL',
+				data: lesson,
+			};
+		}
+
 		return {
 			status: 'SUCCESSFUL',
-			data: lesson,
+			data: {
+				...lesson,
+				content: hasActiveSubscription ? lesson.content : '',
+				videoSourceUrl: hasActiveSubscription ? lesson.videoSourceUrl : '',
+			},
 		};
 	}
 }
