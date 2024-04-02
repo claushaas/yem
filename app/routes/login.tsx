@@ -3,7 +3,7 @@ import {
 	json, type ActionFunctionArgs, type LoaderFunctionArgs, redirect,
 } from '@remix-run/node';
 import {
-	Form, Link, useLoaderData, useNavigation,
+	Form, Link, type MetaFunction, useLoaderData, useNavigation,
 } from '@remix-run/react';
 import {Separator} from '@radix-ui/react-separator';
 import {Button, ButtonPreset, ButtonType} from '~/components/button/index.js';
@@ -11,6 +11,11 @@ import {getUserSession, commitUserSession} from '~/utils/session.server';
 import {type TypeUserSession} from '~/types/user-session.type';
 import {YemSpinner} from '~/components/yem-spinner/index.js';
 import {UserService} from '~/services/user.service';
+
+export const meta: MetaFunction = () => [
+	{title: 'Yoga em Movimento - Entrar'},
+	{name: 'description', content: 'Faça o login para acessar a plataforma do Yoga em Movimento.'},
+];
 
 export const action = async ({request}: ActionFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));

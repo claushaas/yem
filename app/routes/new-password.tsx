@@ -2,12 +2,19 @@ import * as RadixForm from '@radix-ui/react-form';
 import {
 	type ActionFunctionArgs, redirect,
 } from '@remix-run/node';
-import {Form, Link, useNavigation} from '@remix-run/react';
+import {
+	Form, Link, type MetaFunction, useNavigation,
+} from '@remix-run/react';
 import {Separator} from '@radix-ui/react-separator';
 import {Button, ButtonPreset, ButtonType} from '~/components/button/index.js';
 import {YemSpinner} from '~/components/yem-spinner/index.js';
 import {logger} from '~/utils/logger.util';
 import {UserService} from '~/services/user.service';
+
+export const meta: MetaFunction = () => [
+	{title: 'Yoga em Movimento - Nova Senha'},
+	{name: 'description', content: 'Gere uma nova senha para acessar a plataforma do Yoga em Movimento.'},
+];
 
 export const action = async ({request}: ActionFunctionArgs) => {
 	try {
