@@ -22,7 +22,7 @@ function Index() {
 				</div>
 				<div>
 					<Image
-						className='max-sm:hidden'
+						className='hidden sm:block'
 						src={buildImgSource('0bccd83e-9399-4753-5093-468094deed00')}
 						cdn='cloudflare_images'
 						layout='constrained'

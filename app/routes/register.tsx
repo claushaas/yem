@@ -4,7 +4,7 @@ import {
 	json, type ActionFunctionArgs, type LoaderFunctionArgs, redirect,
 } from '@remix-run/node';
 import {
-	Form, Link, useLoaderData, useNavigation,
+	Form, Link, type MetaFunction, useLoaderData, useNavigation,
 } from '@remix-run/react';
 import 'react-phone-number-input/style.css';
 import PhoneInput from 'react-phone-number-input';
@@ -15,6 +15,11 @@ import {UserService} from '~/services/user.service';
 import {Button, ButtonPreset, ButtonType} from '~/components/button/index.js';
 import type {CustomError} from '~/utils/custom-error';
 import {logger} from '~/utils/logger.util.js';
+
+export const meta: MetaFunction = () => [
+	{title: 'Yoga em Movimento - Cadastro'},
+	{name: 'description', content: 'Crie sua conta no Yoga em Movimento e tenha acesso a conteúdos exclusivos.'},
+];
 
 export const action = async ({request}: ActionFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));

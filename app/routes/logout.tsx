@@ -2,10 +2,15 @@ import * as RadixForm from '@radix-ui/react-form';
 import {
 	type ActionFunctionArgs, redirect,
 } from '@remix-run/node';
-import {Form, useNavigation} from '@remix-run/react';
+import {Form, type MetaFunction, useNavigation} from '@remix-run/react';
 import {Button, ButtonPreset, ButtonType} from '~/components/button/index.js';
 import {getUserSession, destroyUserSession} from '~/utils/session.server';
 import {YemSpinner} from '~/components/yem-spinner/index.js';
+
+export const meta: MetaFunction = () => [
+	{title: 'Yoga em Movimento - Sair'},
+	{name: 'description', content: 'Faça o logout da plataforma do Yoga em Movimento.'},
+];
 
 export const action = async ({request}: ActionFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));

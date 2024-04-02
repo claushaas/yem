@@ -13,6 +13,7 @@ export function NavigateBar({userData}: {readonly userData: TypeUserSession | un
 			<div className='w-72'>
 				<Link to='/'>
 					<div className='inline before:bg-[url("./assets/logo/logo-reduzido-colorido.svg")] sm:before:bg-[url("./assets/logo/logo-retangular-colorido.svg")] max-xs:before:h-14 before:h-20 before:block before:bg-no-repeat'/>
+					<p className='hidden'>Home</p>
 				</Link>
 			</div>
 			<NavigationMenu.Root
