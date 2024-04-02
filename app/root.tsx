@@ -39,6 +39,7 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
 function App() {
 	const data = useLoaderData() as {userData?: TypeUserSession | undefined} ?? {};
 	const userData = data?.userData;
+
 	return (
 		<html lang='pt-BR' className='notranslate font-gothamBook' translate='no'>
 			<head>
