@@ -23,7 +23,7 @@ WORKDIR /app
 
 COPY --link --from=deps /app/node_modules ./node_modules
 COPY --link package*.json ./
-RUN npm prune --production
+RUN npm prune --omit=dev
 
 
 FROM base AS dev
@@ -60,6 +60,7 @@ RUN npm run build
 FROM base AS prod
 
 ENV NODE_ENV production
+ENV PORT 3000
 
 WORKDIR /app
 
@@ -68,9 +69,6 @@ COPY --link prisma ./prisma
 COPY --link --from=prod-deps /app/node_modules ./node_modules
 COPY --link --from=builder /app/build/client ./build/client
 COPY --link --from=builder /app/build/server ./build/server
-COPY --link --from=builder /app/build/api ./build/api
-COPY --link --from=builder /app/build/app.js ./build/app.js
-COPY --link --from=builder /app/build/server.js ./build/server.js
 
 RUN npx prisma generate
 
