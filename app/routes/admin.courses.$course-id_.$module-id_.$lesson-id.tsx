@@ -16,11 +16,11 @@ import {
 	XMarkIcon, ChevronDownIcon, ChevronUpIcon, CheckIcon,
 } from '@heroicons/react/24/outline';
 import {ClientOnly} from 'remix-utils/client-only';
-import {LessonService} from '#/services/lesson.service';
-import {type TUser} from '#/types/user.type';
-import {logger} from '#/utils/logger.util';
+import {LessonService} from '~/services/lesson.service';
+import {type TUser} from '~/types/user.type';
+import {logger} from '~/utils/logger.util';
 import {commitUserSession, getUserSession} from '~/utils/session.server';
-import {type TLessonType, type TPrismaPayloadGetLessonById} from '#/types/lesson.type';
+import {type TLessonType, type TPrismaPayloadGetLessonById} from '~/types/lesson.type';
 import {Button, ButtonPreset, ButtonType} from '~/components/button/index.js';
 import {Editor} from '~/components/text-editor/index.client.js';
 import {YemSpinner} from '~/components/yem-spinner/index.js';

@@ -1,12 +1,10 @@
 import express from 'express';
 import 'express-async-errors'; // eslint-disable-line import/no-unassigned-import
-import cookieParser from 'cookie-parser';
-import {router} from './api/routes/index.js';
-import {errorMiddleware} from './api/middlewares/error.middleware.js';
-import {logger} from './api/utils/logger.util.js';
-import {morganMiddleware} from './api/middlewares/morgan.middleware.js';
-import {limiter} from './api/middlewares/rate-limiter.middleware.js';
-import {viteDevelopmentServer, remixHandler} from './api/utils/remix-server-utils.js';
+import {errorMiddleware} from './app/middlewares/error.middleware.js';
+import {logger} from './app/utils/logger.util.js';
+import {morganMiddleware} from './app/middlewares/morgan.middleware.js';
+import {limiter} from './app/middlewares/rate-limiter.middleware.js';
+import {viteDevelopmentServer, remixHandler} from './app/utils/remix-server-utils.js';
 
 export default class App {
 	public app: express.Express;
@@ -30,8 +28,6 @@ export default class App {
 			this.app.use(limiter);
 		}
 
-		this.app.use(express.json());
-		this.app.use(cookieParser());
 		this.app.use(morganMiddleware);
 
 		if (viteDevelopmentServer) {
@@ -45,8 +41,6 @@ export default class App {
 		}
 
 		this.app.use(express.static('build/client', {maxAge: '1h'}));
-
-		this.app.use('/api', router);
 
 		this.app.get('/health', (_request, response) => {
 			logger.logInfo('Health check');
