@@ -1,7 +1,7 @@
 import {Link} from '@remix-run/react';
 import {Image} from '@unpic/react';
 import {motion} from 'framer-motion';
-import {buildImgSource} from '~/utils/build-image-source.js';
+import {buildImgSource} from '~/utils/build-cloudflare-image-source.js';
 
 type ClassCardPropierties = {
 	readonly course: Record<string, any>;

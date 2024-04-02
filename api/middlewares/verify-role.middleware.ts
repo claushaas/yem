@@ -3,7 +3,7 @@ import {CustomError} from '../utils/custom-error.js';
 import {type TUser} from '../types/user.type.js';
 import {logger} from '../utils/logger.util.js';
 
-export const verifyRole = (request: Request, response: Response, next: NextFunction, role: string) => {
+export const verifyRole = (_request: Request, response: Response, next: NextFunction, role: string) => {
 	logger.logDebug('Verifying role');
 	const data = response.locals as {user: TUser};
 

@@ -5,18 +5,16 @@ import {
 import {Form, Link, useNavigation} from '@remix-run/react';
 import {Separator} from '@radix-ui/react-separator';
 import {Button, ButtonPreset, ButtonType} from '~/components/button/index.js';
-import {yemApiRequest} from '~/utils/request.server';
 import {YemSpinner} from '~/components/yem-spinner/index.js';
 import {logger} from '#/utils/logger.util';
+import {UserService} from '#/services/user.service';
 
 export const action = async ({request}: ActionFunctionArgs) => {
 	try {
 		const formData = await request.formData();
 		const email = formData.get('email');
 
-		await yemApiRequest.post('/users/new-password', {
-			email,
-		});
+		await new UserService().getNewPassword(email as string);
 
 		return redirect('/login');
 	} catch (error) {

@@ -40,7 +40,7 @@ function App() {
 	const data = useLoaderData() as {userData?: TypeUserSession | undefined} ?? {};
 	const userData = data?.userData;
 	return (
-		<html lang='pt-BR' className='notranslate' translate='no'>
+		<html lang='pt-BR' className='notranslate font-gothamBook' translate='no'>
 			<head>
 				<meta charSet='utf-8'/>
 				<meta httpEquiv='X-UA-Compatible' content='IE=edge'/>

@@ -1,4 +1,5 @@
-import React, {type LegacyRef, forwardRef} from 'react';
+import {type LegacyRef, forwardRef} from 'react';
+import {motion} from 'framer-motion';
 
 export enum ButtonPreset {
 	Primary = 'primary',
@@ -21,7 +22,7 @@ type ButtonProperties = {
 
 const baseButtonClasses = `
 	px-4
-	py-1
+	py-2.5
 	rounded-lg
 	shadow-sm
 	transition-colors
@@ -74,21 +75,27 @@ const classNames = (preset: ButtonPreset) => {
 	}
 };
 
-export const Button = React.forwardRef(({
+export const Button = forwardRef(({
 	className,
 	isDisabled: disabled = false,
 	preset = ButtonPreset.Primary,
 	text = 'Clicar Aqui',
 	type = ButtonType.Button,
 }: ButtonProperties, forwardedReference: LegacyRef<HTMLButtonElement>) => (
-	<button
+	<motion.button
 		ref={forwardedReference}
+		whileHover={{
+			scale: 1.05,
+			transition: {
+				duration: 0.5,
+			},
+		}}
 		className={classNames(preset) + (className ? ` ${className}` : '')}
 		disabled={disabled}
-		type={type ?? ButtonType.Button} // eslint-disable-line react/button-has-type
+		type={type ?? ButtonType.Button}
 	>
-		{text}
-	</button>
+		<span className='font-gothamBold leading-none drop-shadow-sm'>{text}</span>
+	</motion.button>
 ));
 
 Button.defaultProps = {

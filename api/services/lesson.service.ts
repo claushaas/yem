@@ -2,7 +2,9 @@ import {type PrismaClient} from '@prisma/client';
 import Fuse, {type IFuseOptions} from 'fuse.js';
 import {type TUser} from '../types/user.type.js';
 import {CustomError} from '../utils/custom-error.js';
-import {type TLesson} from '../types/lesson.type.js';
+import {
+	type TPrismaPayloadCreateLesson, type TLesson, type TPrismaPayloadUpdateLesson, type TPrismaPayloadGetLessonList, type TPrismaPayloadGetLessonById,
+} from '../types/lesson.type.js';
 import {Lesson} from '../entities/lesson.entity.js';
 import {type TUuid} from '../types/uuid.type.js';
 import {type TServiceReturn} from '../types/service-return.type.js';
@@ -16,7 +18,7 @@ export class LessonService {
 		this._model = model;
 	}
 
-	public async create(lessonData: TLesson): Promise<TServiceReturn<unknown>> {
+	public async create(lessonData: TLesson): Promise<TServiceReturn<TPrismaPayloadCreateLesson>> {
 		const newLesson = new Lesson(lessonData);
 
 		const createdLesson = await this._model.lesson.create({
@@ -43,6 +45,7 @@ export class LessonService {
 				description: newLesson.description,
 				content: newLesson.content,
 				videoSourceUrl: newLesson.videoSourceUrl,
+				duration: newLesson.duration,
 				thumbnailUrl: newLesson.thumbnailUrl,
 				publicationDate: newLesson.publicationDate,
 				published: newLesson.published,
@@ -90,8 +93,8 @@ export class LessonService {
 		};
 	}
 
-	public async update(id: TUuid, lessonData: TLesson): Promise<TServiceReturn<unknown>> {
-		const newLesson = new Lesson(lessonData);
+	public async update(id: TUuid, lessonData: TLesson): Promise<TServiceReturn<TPrismaPayloadUpdateLesson>> {
+		const lessoToUpdate = new Lesson(lessonData);
 
 		const updatedLesson = await this._model.lesson.update({
 			where: {
@@ -115,19 +118,20 @@ export class LessonService {
 				},
 			},
 			data: {
-				name: newLesson.name,
-				type: newLesson.type,
-				description: newLesson.description,
-				content: newLesson.content,
-				videoSourceUrl: newLesson.videoSourceUrl,
-				thumbnailUrl: newLesson.thumbnailUrl,
-				publicationDate: newLesson.publicationDate,
-				published: newLesson.published,
+				name: lessoToUpdate.name,
+				type: lessoToUpdate.type,
+				description: lessoToUpdate.description,
+				content: lessoToUpdate.content,
+				videoSourceUrl: lessoToUpdate.videoSourceUrl,
+				duration: lessoToUpdate.duration,
+				thumbnailUrl: lessoToUpdate.thumbnailUrl,
+				publicationDate: lessoToUpdate.publicationDate,
+				published: lessoToUpdate.published,
 				modules: {
-					connect: newLesson.modules.map(module => ({id: module})),
+					connect: lessoToUpdate.modules.map(module => ({id: module})),
 				},
 				tags: {
-					connectOrCreate: newLesson.tags?.map(tag => ({
+					connectOrCreate: lessoToUpdate.tags?.map(tag => ({
 						where: {
 							tag: {
 								tagOptionName: tag[0],
@@ -171,7 +175,7 @@ export class LessonService {
 		};
 	}
 
-	public async delete(id: TUuid): Promise<TServiceReturn<unknown>> {
+	public async delete(id: TUuid): Promise<TServiceReturn<string>> {
 		const deletedLesson = await this._model.lesson.update({
 			where: {
 				id,
@@ -187,11 +191,11 @@ export class LessonService {
 
 		return {
 			status: 'NO_CONTENT',
-			data: null,
+			data: 'Lesson unpublished',
 		};
 	}
 
-	public async getList(moduleId: TUuid, user: TUser | undefined): Promise<TServiceReturn<TSearchableEntity[]>> {
+	public async getList(moduleId: TUuid, user: TUser | undefined): Promise<TServiceReturn<TPrismaPayloadGetLessonList>> {
 		const lessonWhere = {
 			modules: {
 				some: {
@@ -200,12 +204,13 @@ export class LessonService {
 			},
 		};
 
-		const lessonSelectWithoutUserId = {
+		const lessonSelect = {
 			id: true,
 			name: true,
 			type: true,
 			description: true,
 			thumbnailUrl: true,
+			duration: true,
 			publicationDate: true,
 			published: true,
 			tags: {
@@ -222,10 +227,6 @@ export class LessonService {
 					},
 				},
 			},
-		};
-
-		const lessonSelectWithUserId = {
-			...lessonSelectWithoutUserId,
 			lessonProgress: {
 				where: {
 					userId: user?.id,
@@ -236,7 +237,7 @@ export class LessonService {
 		if (user?.roles?.includes('admin')) {
 			const lessons = await this._model.lesson.findMany({
 				where: lessonWhere,
-				select: lessonSelectWithUserId,
+				select: lessonSelect,
 			});
 
 			if (!lessons) {
@@ -254,7 +255,7 @@ export class LessonService {
 				...lessonWhere,
 				published: true,
 			},
-			select: user ? lessonSelectWithUserId : lessonSelectWithoutUserId,
+			select: lessonSelect,
 		});
 
 		if (!lessons) {
@@ -267,7 +268,7 @@ export class LessonService {
 		};
 	}
 
-	public async search(moduleId: TUuid, user: TUser | undefined, term: string): Promise<TServiceReturn<TSearchableEntity[]>> {
+	public async search(moduleId: TUuid, user: TUser | undefined, term: string): Promise<TServiceReturn<TPrismaPayloadGetLessonList>> {
 		const {data} = await this.getList(moduleId, user);
 
 		const searchOptions: IFuseOptions<TSearchableEntity> = {
@@ -289,7 +290,7 @@ export class LessonService {
 		};
 	}
 
-	public async getById(courseId: TUuid, lessonId: TUuid, user: TUser | undefined): Promise<TServiceReturn<unknown>> {
+	public async getById(courseId: TUuid, lessonId: TUuid, user: TUser | undefined): Promise<TServiceReturn<TPrismaPayloadGetLessonById>> {
 		const course = await this._model.course.findUnique({
 			where: {
 				id: courseId,
@@ -323,13 +324,14 @@ export class LessonService {
 
 		const hasActiveSubscription = course?.subscriptions.some(subscription => subscription.expiresAt > new Date());
 
-		const lessonSelectWithoutUserId = {
+		const lessonSelect = {
 			id: true,
 			name: true,
 			type: true,
 			description: true,
 			content: Boolean(hasActiveSubscription),
 			videoSourceUrl: Boolean(hasActiveSubscription),
+			duration: true,
 			thumbnailUrl: true,
 			publicationDate: true,
 			published: true,
@@ -368,10 +370,6 @@ export class LessonService {
 					},
 				},
 			},
-		};
-
-		const lessonSelectWithUserId = {
-			...lessonSelectWithoutUserId,
 			lessonProgress: {
 				where: {
 					userId: user?.id,
@@ -383,7 +381,7 @@ export class LessonService {
 			const lesson = await this._model.lesson.findUnique({
 				where: lessonWhere,
 				select: {
-					...lessonSelectWithUserId,
+					...lessonSelect,
 					content: true,
 					videoSourceUrl: true,
 				},
@@ -404,7 +402,7 @@ export class LessonService {
 				...lessonWhere,
 				published: true,
 			},
-			select: user ? lessonSelectWithUserId : lessonSelectWithoutUserId,
+			select: lessonSelect,
 		});
 
 		if (!lesson) {
