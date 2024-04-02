@@ -2,7 +2,7 @@ export type TSubscription = {
 	userId: string;
 	courseId: string;
 	expiresAt: Date;
-	provider: 'hotmart' | 'iugu';
+	provider: 'hotmart' | 'iugu' | 'manual';
 	providerSubscriptionId: string;
 };
 

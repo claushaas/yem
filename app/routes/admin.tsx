@@ -1,8 +1,13 @@
 import {
-	Link, Outlet, useNavigate, useOutletContext,
+	Link, type MetaFunction, Outlet, useNavigate, useOutletContext,
 } from '@remix-run/react';
 import {useEffect} from 'react';
 import {type TypeUserSession} from '~/types/user-session.type';
+
+export const meta: MetaFunction = () => [
+	{title: 'Yoga em Movimento - Área Administrativa'},
+	{name: 'description', content: 'Área para executar as funções administrativas e pedagógicas do Yoga em Movimento.'},
+];
 
 export default function Admin() {
 	const {userData} = useOutletContext<{userData: TypeUserSession}>();
@@ -25,6 +30,9 @@ export default function Admin() {
 				</Link>
 				<Link to='/admin/comments'>
 					<p>Comentários</p>
+				</Link>
+				<Link to='/admin/tags'>
+					<p>Tags</p>
 				</Link>
 			</aside>
 			<main className='flex-grow flex-shrink p-3'>

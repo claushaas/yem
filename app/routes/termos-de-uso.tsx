@@ -1,3 +1,10 @@
+import {type MetaFunction} from '@remix-run/react';
+
+export const meta: MetaFunction = () => [
+	{title: 'Yoga em Movimento - Termos de Uso'},
+	{name: 'description', content: 'Termos de uso do site Yoga em Movimento.'},
+];
+
 export default function TermosDeUso() {
 	return (
 		<main className='my-20 max-w-[90%] mx-auto'>
