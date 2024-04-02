@@ -15,21 +15,25 @@
     font-family: 'GothamRoundedBold';
     font-style:  bold;
     src: url('./assets/fonts/GothamRoundedBold.ttf') format('truetype');
+    font-display: swap;
   }
   @font-face {
     font-family: 'GothamRoundedBook';
     font-style:  normal;
     src: url('./assets/fonts/GothamRoundedBook.ttf') format('truetype');
+    font-display: swap;
   }
   @font-face {
     font-family: 'GothamRoundedLight';
     font-style:  light;
     src: url('./assets/fonts/GothamRoundedLight.ttf') format('truetype');
+    font-display: swap;
   }
   @font-face {
     font-family: 'GothamRoundedMedium';
     font-style:  medium;
     src: url('./assets/fonts/GothamRoundedMedium.ttf') format('truetype');
+    font-display: swap;
   }
   h1, h2, h3, h4, h5, h6 {
     @apply font-gothamBold;
