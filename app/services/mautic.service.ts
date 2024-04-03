@@ -102,7 +102,7 @@ export class MauticService {
 		}
 	}
 
-	public async addToDoNotContactList(email: string): Promise<TServiceReturn<unknown>> {
+	public async addToDoNotContactList(email: string): Promise<TServiceReturn<string>> {
 		const response = await this._getContactIdByEmail(email);
 		const contactId = response.data;
 
@@ -113,7 +113,7 @@ export class MauticService {
 
 			return {
 				status: 'NO_CONTENT',
-				data: null,
+				data: 'Contact added to do not contact list successfully',
 			};
 		} catch (error) {
 			logger.logError(`Error adding contact ${contactId} to do not contact list: ${(error as Error).message}`);
@@ -121,7 +121,7 @@ export class MauticService {
 		}
 	}
 
-	public async removeFromDoNotContactList(email: string): Promise<TServiceReturn<unknown>> {
+	public async removeFromDoNotContactList(email: string): Promise<TServiceReturn<string>> {
 		const response = await this._getContactIdByEmail(email);
 		const contactId = response.data;
 
@@ -132,7 +132,7 @@ export class MauticService {
 
 			return {
 				status: 'NO_CONTENT',
-				data: null,
+				data: 'Contact removed from do not contact list successfully',
 			};
 		} catch (error) {
 			logger.logError(`Error removing contact ${contactId} from do not contact list: ${(error as Error).message}`);

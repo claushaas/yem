@@ -8,7 +8,7 @@ export const meta: MetaFunction = () => [
 	{name: 'description', content: 'Seja muito bem-vindo à Yoga em Movimento!'},
 ];
 
-function Index() {
+export default function Index() {
 	return (
 		<main>
 			<section id='welcome' className='flex max-w-[90%] mx-auto my-20 sm:my-32 py-12 items-start gap-14 justify-center'>
@@ -78,5 +78,3 @@ function Index() {
 		</main>
 	);
 }
-
-export default Index;

@@ -20,42 +20,27 @@ export class MailService {
 	public async sendEmail(template: TEmailTemplate): Promise<TServiceReturn<string>> {
 		logger.logDebug('Sending email');
 		const parameters = {
-
 			Content: {
-
 				Simple: {
-
 					Body: {
-
 						Html: {
-
 							Data: template.html,
-
 							ChartSet: 'utf8',
 						},
-
 						Text: {
-
 							Data: template.text,
-
 							ChartSet: 'utf8',
 						},
 					},
-
 					Subject: {
-
 						Data: template.subject,
-
 						ChartSet: 'utf8',
 					},
 				},
 			},
-
 			Destination: {
-
 				ToAddresses: [template.to],
 			},
-
 			FromEmailAddress: 'contato@yogaemmovimento.com',
 		};
 

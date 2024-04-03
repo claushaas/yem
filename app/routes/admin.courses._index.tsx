@@ -3,10 +3,13 @@ import * as Dialog from '@radix-ui/react-dialog';
 import {
 	type ActionFunctionArgs, json, type LoaderFunctionArgs, redirect,
 } from '@remix-run/node';
-import {Form, useLoaderData, useNavigation} from '@remix-run/react';
+import {
+	Await,
+	Form, defer, useLoaderData, useNavigation,
+} from '@remix-run/react';
 import * as RadixForm from '@radix-ui/react-form';
 import type Quill from 'quill';
-import {useEffect, useState} from 'react';
+import {Suspense, useEffect, useState} from 'react';
 import {ClientOnly} from 'remix-utils/client-only';
 import * as Switch from '@radix-ui/react-switch';
 import {CourseService} from '~/services/course.service';
@@ -18,19 +21,20 @@ import {Editor} from '~/components/text-editor/index.client.js';
 import {YemSpinner} from '~/components/yem-spinner/index.js';
 import {type TUserRoles} from '~/types/user.type';
 import {type TPrismaPayloadGetAllCourses} from '~/types/course.type';
+import {type TServiceReturn} from '~/types/service-return.type';
 
 type CoursesLoaderData = {
 	error: string | undefined;
 	success: string | undefined;
-	courses: TPrismaPayloadGetAllCourses;
+	courses: Promise<TServiceReturn<TPrismaPayloadGetAllCourses>>;
 };
 
 export const loader = async ({request}: LoaderFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 
 	try {
-		const {data: courses} = await new CourseService().getAll(userSession.get('roles') as TUserRoles);
-		return json<CoursesLoaderData>({
+		const courses = new CourseService().getAll(userSession.get('roles') as TUserRoles);
+		return defer<CoursesLoaderData>({
 			error: userSession.get('error') as string | undefined,
 			success: userSession.get('success') as string | undefined,
 			courses,
@@ -318,10 +322,15 @@ export default function Courses() {
 					</Dialog.Content>
 				</Dialog.Portal>
 			</Dialog.Root>
+
 			<div className='flex gap-4 my-4 flex-wrap'>
-				{courses?.map(course => (
-					<CourseCard key={course?.id} course={course ?? {}} to={`./${course?.id}`}/>
-				))}
+				<Suspense fallback={<YemSpinner/>}>
+					<Await resolve={courses as TServiceReturn<TPrismaPayloadGetAllCourses>}>
+						{courses => courses?.data?.map(course => (
+							<CourseCard key={course?.id} course={course ?? {}} to={`./${course?.id}`}/>
+						))}
+					</Await>
+				</Suspense>
 			</div>
 		</>
 	);
