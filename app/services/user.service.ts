@@ -109,7 +109,7 @@ export class UserService {
 		};
 	}
 
-	public async getNewPassword(email: string): Promise<TServiceReturn<unknown>> {
+	public async getNewPassword(email: string): Promise<TServiceReturn<string>> {
 		try {
 			const {data: user} = await this._getUserData(email);
 
@@ -134,7 +134,7 @@ export class UserService {
 
 			return {
 				status: 'NO_CONTENT',
-				data: null,
+				data: 'New password sent successfully',
 			};
 		} catch (error) {
 			logger.logError(
