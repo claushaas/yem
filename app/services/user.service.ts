@@ -48,7 +48,7 @@ export class UserService {
 
 	public async createOrFail(userData: TUserCreationAttributes): Promise<TServiceReturn<{userId: string}>> {
 		logger.logDebug(`Finding user ${typeof userData.phoneNumber}`);
-		const maybeUser = await this._verifyUserExists(userData.email);
+		const maybeUser = await this.verifyUserExists(userData.email);
 		logger.logDebug(
 			`User ${userData.email} found: ${JSON.stringify(maybeUser)}`,
 		);
@@ -91,7 +91,7 @@ export class UserService {
 			throw new CustomError('UNAUTHORIZED', 'Usuário ou senha incorretos');
 		}
 
-		const {data: user} = await this._getUserData(cleanUsername);
+		const {data: user} = await this.getUserData(cleanUsername);
 
 		try {
 			await this._subscriptionService.createOrUpdateAllUserSubscriptions(user);
@@ -111,7 +111,7 @@ export class UserService {
 
 	public async getNewPassword(email: string): Promise<TServiceReturn<string>> {
 		try {
-			const {data: user} = await this._getUserData(email);
+			const {data: user} = await this.getUserData(email);
 
 			const password = generateSecurePassword();
 
@@ -142,6 +142,76 @@ export class UserService {
 			);
 			throw new CustomError('UNKNOWN', 'Error setting new password');
 		}
+	}
+
+	public async verifyUserExists(username: string): Promise<TServiceReturn<boolean>> {
+		try {
+			const cleanUsername = username.trim().toLowerCase();
+
+			await this._awsClient.send(
+				new AdminGetUserCommand({
+
+					UserPoolId: process.env.COGNITO_USER_POOL_ID,
+
+					Username: cleanUsername,
+				}),
+			);
+			return {
+				status: 'SUCCESSFUL',
+				data: true,
+			};
+		} catch (error) {
+			logger.logError(
+				`Error verifying user ${username} exists: ${(error as Error).message}`,
+			);
+			return {
+				status: 'SUCCESSFUL',
+				data: false,
+			};
+		}
+	}
+
+	public async getUserData(username: string): Promise<TServiceReturn<TUser>> {
+		const cleanUsername = username.trim().toLowerCase();
+
+		const user = await this._awsClient.send(
+			new AdminGetUserCommand({
+
+				UserPoolId: process.env.COGNITO_USER_POOL_ID,
+
+				Username: cleanUsername,
+			}),
+		);
+
+		const cleanUser: TUser = {
+			id: user.UserAttributes?.find(attribute => attribute.Name === 'sub')?.Value ?? '',
+			email:
+        user.UserAttributes?.find(attribute => attribute.Name === 'email')?.Value ?? '',
+			roles:
+        user.UserAttributes?.find(attribute => attribute.Name === 'custom:roles')?.Value?.split('-') ?? [],
+			firstName:
+        user.UserAttributes?.find(attribute => attribute.Name === 'given_name')?.Value ?? '',
+			lastName:
+        user.UserAttributes?.find(attribute => attribute.Name === 'family_name')?.Value ?? '',
+			phoneNumber:
+        user.UserAttributes?.find(attribute => attribute.Name === 'phone_number')?.Value ?? '',
+			document:
+				user.UserAttributes?.find(attribute => attribute.Name === 'custom:CPF')?.Value ?? '',
+		};
+
+		logger.logInfo(`User ${cleanUser.id} data retrieved successfully`);
+
+		if (!cleanUser.id) {
+			logger.logError(
+				`Error getting user data: user id ${cleanUsername} not found`,
+			);
+			throw new CustomError('NOT_FOUND', 'Usuário não encontrado');
+		}
+
+		return {
+			status: 'SUCCESSFUL',
+			data: cleanUser,
+		};
 	}
 
 	private async _create(userData: TUserCreationAttributes): Promise<TServiceReturn<{userId: string}>> {
@@ -335,73 +405,5 @@ export class UserService {
 			);
 			throw new CustomError('UNKNOWN', 'Error setting user password');
 		}
-	}
-
-	private async _verifyUserExists(username: string): Promise<TServiceReturn<boolean>> {
-		try {
-			const cleanUsername = username.trim().toLowerCase();
-
-			await this._awsClient.send(
-				new AdminGetUserCommand({
-
-					UserPoolId: process.env.COGNITO_USER_POOL_ID,
-
-					Username: cleanUsername,
-				}),
-			);
-			return {
-				status: 'SUCCESSFUL',
-				data: true,
-			};
-		} catch (error) {
-			logger.logError(
-				`Error verifying user ${username} exists: ${(error as Error).message}`,
-			);
-			return {
-				status: 'SUCCESSFUL',
-				data: false,
-			};
-		}
-	}
-
-	private async _getUserData(username: string): Promise<TServiceReturn<TUser>> {
-		const cleanUsername = username.trim().toLowerCase();
-
-		const user = await this._awsClient.send(
-			new AdminGetUserCommand({
-
-				UserPoolId: process.env.COGNITO_USER_POOL_ID,
-
-				Username: cleanUsername,
-			}),
-		);
-
-		const cleanUser: TUser = {
-			id: user.UserAttributes?.find(attribute => attribute.Name === 'sub')?.Value ?? '',
-			email:
-        user.UserAttributes?.find(attribute => attribute.Name === 'email')?.Value ?? '',
-			roles:
-        user.UserAttributes?.find(attribute => attribute.Name === 'custom:roles')?.Value?.split('-') ?? [],
-			firstName:
-        user.UserAttributes?.find(attribute => attribute.Name === 'given_name')?.Value ?? '',
-			lastName:
-        user.UserAttributes?.find(attribute => attribute.Name === 'family_name')?.Value ?? '',
-			phoneNumber:
-        user.UserAttributes?.find(attribute => attribute.Name === 'phone_number')?.Value ?? '',
-		};
-
-		logger.logInfo(`User ${cleanUser.id} data retrieved successfully`);
-
-		if (!cleanUser.id) {
-			logger.logError(
-				`Error getting user data: user id ${cleanUsername} not found`,
-			);
-			throw new CustomError('NOT_FOUND', 'Usuário não encontrado');
-		}
-
-		return {
-			status: 'SUCCESSFUL',
-			data: cleanUser,
-		};
 	}
 }
