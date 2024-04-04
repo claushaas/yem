@@ -100,10 +100,6 @@ export class CourseService {
 				select,
 			});
 
-			if (courses.length === 0) {
-				throw new CustomError('NOT_FOUND', 'No courses found');
-			}
-
 			return {
 				status: 'SUCCESSFUL',
 				data: courses,
@@ -116,10 +112,6 @@ export class CourseService {
 				published: true,
 			},
 		});
-
-		if (coursesForStudents.length === 0) {
-			throw new CustomError('NOT_FOUND', 'No courses found');
-		}
 
 		return {
 			status: 'SUCCESSFUL',
