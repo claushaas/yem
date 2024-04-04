@@ -90,7 +90,7 @@ export const action = async ({request, params}: ActionFunctionArgs) => {
 						content: formData.get('content') as string,
 						videoSourceUrl: formData.get('videoSourceUrl') as string,
 						thumbnailUrl: formData.get('thumbnailUrl') as string,
-						course: (formData.get('course') as string).split(','),
+						courses: (formData.get('course') as string).split(','),
 						publicationDate: new Date(formData.get('publicationDate') as string),
 						published: Boolean(formData.get('published')),
 					};
