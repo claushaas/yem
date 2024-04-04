@@ -25,11 +25,11 @@ export default function Admin() {
 				<Link to='/admin/students'>
 					<p>Alunos</p>
 				</Link>
-				<Link to='/admin/courses'>
-					<p>Cursos</p>
-				</Link>
 				<Link to='/admin/comments'>
 					<p>Comentários</p>
+				</Link>
+				<Link to='/admin/courses'>
+					<p>Cursos</p>
 				</Link>
 				<Link to='/admin/tags'>
 					<p>Tags</p>
