@@ -24,4 +24,8 @@ export type TUserCreationAttributes = TBasicUser & {
 	phoneNumber: string;
 };
 
-export type TMauticUserCreationAttributes = TBasicUser;
+export type TMauticUserCreationAttributes = {
+	email: TEmail;
+	firstname: TFirstName;
+	lastname: TLastName;
+};
