@@ -65,8 +65,10 @@ export class MauticService {
 	}
 
 	public async updateContact(email: string, data: Partial<TMauticUserCreationAttributes>): Promise<TServiceReturn<string>> {
+		logger.logDebug(`Updating contact ${email}`);
 		const response = await this._getContactIdByEmail(email);
 		const contactId = response.data;
+		logger.logDebug(`Contact ${email} has id ${contactId}`);
 
 		const url = `/contacts/${contactId}/edit`;
 

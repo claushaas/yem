@@ -95,7 +95,7 @@ export const action = async ({request, params}: ActionFunctionArgs) => {
 			userSession.flash('success', 'Aula criada com sucesso');
 		} catch (error) {
 			logger.logError(`Error updating lesson: ${(error as Error).message}`);
-			userSession.set('error', (error as Error).message);
+			userSession.flash('error', (error as Error).message);
 			return redirect(`/admin/courses/${courseId}/${moduleId}/${lessonId}`, {
 				headers: {
 					'Set-Cookie': await commitUserSession(userSession), // eslint-disable-line @typescript-eslint/naming-convention
