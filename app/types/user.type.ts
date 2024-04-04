@@ -15,6 +15,7 @@ export type TUser = TBasicUser & {
 	id: TUuid;
 	roles?: TUserRoles;
 	phoneNumber: string;
+	document?: string;
 };
 
 export type TUserCreationAttributes = TBasicUser & {
