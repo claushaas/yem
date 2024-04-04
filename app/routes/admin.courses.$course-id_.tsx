@@ -164,16 +164,16 @@ export default function Course() {
 	defaultDate.setHours(defaultDate.getHours() - 3);
 
 	useEffect(() => {
-		if (success) {
+		if (success ?? error) {
 			setCourseEditDialogIsOpen(false);
 			setNewModuleDialogIsOpen(false);
 		}
-	}, [success]);
+	}, [success, error]);
 
 	useEffect(() => {
 		if (courseEditQuill) {
 			courseEditQuill.on('text-change', () => {
-				setNewModuleQuillContent(JSON.stringify(courseEditQuill.getContents()));
+				setCourseEditQuillContent(JSON.stringify(courseEditQuill.getContents()));
 			});
 		}
 	}, [courseEditQuill]);
@@ -181,7 +181,7 @@ export default function Course() {
 	useEffect(() => {
 		if (newModuleQuill) {
 			newModuleQuill.on('text-change', () => {
-				setCourseEditQuillContent(JSON.stringify(newModuleQuill.getContents()));
+				setNewModuleQuillContent(JSON.stringify(newModuleQuill.getContents()));
 			});
 		}
 	}, [newModuleQuill]);
