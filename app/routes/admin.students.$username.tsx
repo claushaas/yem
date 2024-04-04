@@ -7,6 +7,7 @@ import {
 import * as Dialog from '@radix-ui/react-dialog';
 import * as RadixForm from '@radix-ui/react-form';
 import {useEffect, useState} from 'react';
+import {XMarkIcon} from '@heroicons/react/24/outline';
 import {Button, ButtonPreset, ButtonType} from '~/components/button/index.js';
 import {UserService} from '~/services/user.service';
 import {type TUser} from '~/types/user.type';
@@ -266,6 +267,16 @@ export default function Student() {
 									{isSubmittingAnyForm && <YemSpinner/>}
 								</Form>
 							</RadixForm.Root>
+
+							<Dialog.Close asChild>
+								<button
+									type='button'
+									className='absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center outline-none'
+									aria-label='Close'
+								>
+									<XMarkIcon aria-label='Close' className='hover:pointer absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px]'/>
+								</button>
+							</Dialog.Close>
 						</Dialog.Content>
 					</Dialog.Portal>
 				</Dialog.Root>
@@ -347,6 +358,16 @@ export default function Student() {
 									{isSubmittingAnyForm && <YemSpinner/>}
 								</Form>
 							</RadixForm.Root>
+
+							<Dialog.Close asChild>
+								<button
+									type='button'
+									className='absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center outline-none'
+									aria-label='Close'
+								>
+									<XMarkIcon aria-label='Close' className='hover:pointer absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px]'/>
+								</button>
+							</Dialog.Close>
 						</Dialog.Content>
 					</Dialog.Portal>
 				</Dialog.Root>
@@ -418,6 +439,16 @@ export default function Student() {
 									{isSubmittingAnyForm && <YemSpinner/>}
 								</Form>
 							</RadixForm.Root>
+
+							<Dialog.Close asChild>
+								<button
+									type='button'
+									className='absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center outline-none'
+									aria-label='Close'
+								>
+									<XMarkIcon aria-label='Close' className='hover:pointer absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px]'/>
+								</button>
+							</Dialog.Close>
 						</Dialog.Content>
 					</Dialog.Portal>
 				</Dialog.Root>
@@ -490,6 +521,16 @@ export default function Student() {
 									{isSubmittingAnyForm && <YemSpinner/>}
 								</Form>
 							</RadixForm.Root>
+
+							<Dialog.Close asChild>
+								<button
+									type='button'
+									className='absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center outline-none'
+									aria-label='Close'
+								>
+									<XMarkIcon aria-label='Close' className='hover:pointer absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px]'/>
+								</button>
+							</Dialog.Close>
 						</Dialog.Content>
 					</Dialog.Portal>
 				</Dialog.Root>
