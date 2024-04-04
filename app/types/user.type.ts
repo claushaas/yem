@@ -15,6 +15,7 @@ export type TUser = TBasicUser & {
 	id: TUuid;
 	roles?: TUserRoles;
 	phoneNumber: string;
+	document?: string;
 };
 
 export type TUserCreationAttributes = TBasicUser & {
@@ -23,4 +24,8 @@ export type TUserCreationAttributes = TBasicUser & {
 	phoneNumber: string;
 };
 
-export type TMauticUserCreationAttributes = TBasicUser;
+export type TMauticUserCreationAttributes = {
+	email: TEmail;
+	firstname: TFirstName;
+	lastname: TLastName;
+};

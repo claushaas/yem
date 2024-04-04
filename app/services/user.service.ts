@@ -7,6 +7,7 @@ import {
 	AdminCreateUserCommand,
 	type MessageActionType,
 	AdminSetUserPasswordCommand,
+	AdminUpdateUserAttributesCommand,
 } from '@aws-sdk/client-cognito-identity-provider';
 import {CustomError} from '../utils/custom-error.js';
 import {type TServiceReturn} from '../types/service-return.type.js';
@@ -48,7 +49,7 @@ export class UserService {
 
 	public async createOrFail(userData: TUserCreationAttributes): Promise<TServiceReturn<{userId: string}>> {
 		logger.logDebug(`Finding user ${typeof userData.phoneNumber}`);
-		const maybeUser = await this._verifyUserExists(userData.email);
+		const maybeUser = await this.verifyUserExists(userData.email);
 		logger.logDebug(
 			`User ${userData.email} found: ${JSON.stringify(maybeUser)}`,
 		);
@@ -91,7 +92,7 @@ export class UserService {
 			throw new CustomError('UNAUTHORIZED', 'Usuário ou senha incorretos');
 		}
 
-		const {data: user} = await this._getUserData(cleanUsername);
+		const {data: user} = await this.getUserData(cleanUsername);
 
 		try {
 			await this._subscriptionService.createOrUpdateAllUserSubscriptions(user);
@@ -111,7 +112,7 @@ export class UserService {
 
 	public async getNewPassword(email: string): Promise<TServiceReturn<string>> {
 		try {
-			const {data: user} = await this._getUserData(email);
+			const {data: user} = await this.getUserData(email);
 
 			const password = generateSecurePassword();
 
@@ -144,6 +145,187 @@ export class UserService {
 		}
 	}
 
+	public async verifyUserExists(username: string): Promise<TServiceReturn<boolean>> {
+		try {
+			const cleanUsername = username.trim().toLowerCase();
+
+			await this._awsClient.send(
+				new AdminGetUserCommand({
+
+					UserPoolId: process.env.COGNITO_USER_POOL_ID,
+
+					Username: cleanUsername,
+				}),
+			);
+			return {
+				status: 'SUCCESSFUL',
+				data: true,
+			};
+		} catch (error) {
+			logger.logError(
+				`Error verifying user ${username} exists: ${(error as Error).message}`,
+			);
+			return {
+				status: 'SUCCESSFUL',
+				data: false,
+			};
+		}
+	}
+
+	public async getUserData(username: string): Promise<TServiceReturn<TUser>> {
+		const cleanUsername = username.trim().toLowerCase();
+
+		const user = await this._awsClient.send(
+			new AdminGetUserCommand({
+
+				UserPoolId: process.env.COGNITO_USER_POOL_ID,
+
+				Username: cleanUsername,
+			}),
+		);
+
+		const cleanUser: TUser = {
+			id: user.UserAttributes?.find(attribute => attribute.Name === 'sub')?.Value ?? '',
+			email:
+        user.UserAttributes?.find(attribute => attribute.Name === 'email')?.Value ?? '',
+			roles:
+        user.UserAttributes?.find(attribute => attribute.Name === 'custom:roles')?.Value?.split('-') ?? [],
+			firstName:
+        user.UserAttributes?.find(attribute => attribute.Name === 'given_name')?.Value ?? '',
+			lastName:
+        user.UserAttributes?.find(attribute => attribute.Name === 'family_name')?.Value ?? '',
+			phoneNumber:
+        user.UserAttributes?.find(attribute => attribute.Name === 'phone_number')?.Value ?? '',
+			document:
+				user.UserAttributes?.find(attribute => attribute.Name === 'custom:CPF')?.Value ?? '',
+		};
+
+		logger.logInfo(`User ${cleanUser.id} data retrieved successfully`);
+
+		if (!cleanUser.id) {
+			logger.logError(
+				`Error getting user data: user id ${cleanUsername} not found`,
+			);
+			throw new CustomError('NOT_FOUND', 'Usuário não encontrado');
+		}
+
+		return {
+			status: 'SUCCESSFUL',
+			data: cleanUser,
+		};
+	}
+
+	public async updateUserName(id: string, email: string, firstName: string, lastName: string) {
+		const parameters = {
+			UserAttributes: [
+				{
+					Name: 'given_name',
+					Value: firstName,
+				},
+				{
+					Name: 'family_name',
+					Value: lastName,
+				},
+			],
+			UserPoolId: process.env.COGNITO_USER_POOL_ID,
+			Username: id,
+		};
+
+		const command = new AdminUpdateUserAttributesCommand(parameters);
+
+		try {
+			await Promise.all([
+				this._awsClient.send(command),
+				this._mauticService.updateContact(email, {
+					firstname: firstName,
+					lastname: lastName,
+				}),
+			]);
+		} catch (error) {
+			logger.logError(`Error updating name ${(error as Error).message}`);
+			throw new CustomError('UNKNOWN', `Error updating name ${(error as Error).message}`);
+		}
+	}
+
+	public async updateUserEmail(id: string, oldEmail: string, newEmail: string) {
+		const parameters = {
+			UserAttributes: [
+				{
+					Name: 'email',
+					Value: newEmail,
+				},
+				{
+					Name: 'email_verified',
+					Value: 'true',
+				},
+			],
+			UserPoolId: process.env.COGNITO_USER_POOL_ID,
+			Username: id,
+		};
+
+		const command = new AdminUpdateUserAttributesCommand(parameters);
+
+		try {
+			await Promise.all([
+				this._awsClient.send(command),
+				this._mauticService.updateContact(oldEmail, {
+					email: newEmail,
+				}),
+			]);
+		} catch (error) {
+			logger.logError(`Error updating email ${(error as Error).message}`);
+			throw new CustomError('UNKNOWN', `Error updating email ${(error as Error).message}`);
+		}
+	}
+
+	public async updateUserPhoneNumber(id: string, phoneNumber: string) {
+		const parameters = {
+			UserAttributes: [
+				{
+					Name: 'phone_number',
+					Value: phoneNumber,
+				},
+				{
+					Name: 'phone_number_verified',
+					Value: 'true',
+				},
+			],
+			UserPoolId: process.env.COGNITO_USER_POOL_ID,
+			Username: id,
+		};
+
+		const command = new AdminUpdateUserAttributesCommand(parameters);
+
+		try {
+			await	this._awsClient.send(command);
+		} catch (error) {
+			logger.logError(`Error updating phone number ${(error as Error).message}`);
+			throw new CustomError('UNKNOWN', `Error updating phone number ${(error as Error).message}`);
+		}
+	}
+
+	public async updateUserDocument(id: string, document: string) {
+		const parameters = {
+			UserAttributes: [
+				{
+					Name: 'custom:CPF',
+					Value: document,
+				},
+			],
+			UserPoolId: process.env.COGNITO_USER_POOL_ID,
+			Username: id,
+		};
+
+		const command = new AdminUpdateUserAttributesCommand(parameters);
+
+		try {
+			await	this._awsClient.send(command);
+		} catch (error) {
+			logger.logError(`Error updating document ${(error as Error).message}`);
+			throw new CustomError('UNKNOWN', `Error updating document ${(error as Error).message}`);
+		}
+	}
+
 	private async _create(userData: TUserCreationAttributes): Promise<TServiceReturn<{userId: string}>> {
 		logger.logDebug(`Creating user ${userData.email}`);
 		const newUser = new UserForCreation(userData);
@@ -162,51 +344,35 @@ export class UserService {
 
 			UserAttributes: [
 				{
-
 					Name: 'email',
-
 					Value: email,
 				},
 				{
-
 					Name: 'email_verified',
-
 					Value: 'true',
 				},
 				{
-
 					Name: 'phone_number_verified',
-
 					Value: 'true',
 				},
 				{
-
 					Name: 'phone_number',
-
 					Value: phoneNumber,
 				},
 				{
-
 					Name: 'given_name',
-
 					Value: firstName,
 				},
 				{
-
 					Name: 'family_name',
-
 					Value: lastName,
 				},
 				{
-
 					Name: 'custom:roles',
-
 					Value: roles?.join('-') ?? 'iniciantes',
 				},
 				{
-
 					Name: 'custom:CPF',
-
 					Value: document ?? '',
 				},
 			],
@@ -252,8 +418,8 @@ export class UserService {
 			logger.logDebug(`Creating contact in Mautic for user ${email}`);
 			const response = await this._mauticService.createContact({
 				email,
-				firstName,
-				lastName,
+				firstname: firstName,
+				lastname: lastName,
 			});
 
 			const mauticUserId = response.data.contact.id;
@@ -335,73 +501,5 @@ export class UserService {
 			);
 			throw new CustomError('UNKNOWN', 'Error setting user password');
 		}
-	}
-
-	private async _verifyUserExists(username: string): Promise<TServiceReturn<boolean>> {
-		try {
-			const cleanUsername = username.trim().toLowerCase();
-
-			await this._awsClient.send(
-				new AdminGetUserCommand({
-
-					UserPoolId: process.env.COGNITO_USER_POOL_ID,
-
-					Username: cleanUsername,
-				}),
-			);
-			return {
-				status: 'SUCCESSFUL',
-				data: true,
-			};
-		} catch (error) {
-			logger.logError(
-				`Error verifying user ${username} exists: ${(error as Error).message}`,
-			);
-			return {
-				status: 'SUCCESSFUL',
-				data: false,
-			};
-		}
-	}
-
-	private async _getUserData(username: string): Promise<TServiceReturn<TUser>> {
-		const cleanUsername = username.trim().toLowerCase();
-
-		const user = await this._awsClient.send(
-			new AdminGetUserCommand({
-
-				UserPoolId: process.env.COGNITO_USER_POOL_ID,
-
-				Username: cleanUsername,
-			}),
-		);
-
-		const cleanUser: TUser = {
-			id: user.UserAttributes?.find(attribute => attribute.Name === 'sub')?.Value ?? '',
-			email:
-        user.UserAttributes?.find(attribute => attribute.Name === 'email')?.Value ?? '',
-			roles:
-        user.UserAttributes?.find(attribute => attribute.Name === 'custom:roles')?.Value?.split('-') ?? [],
-			firstName:
-        user.UserAttributes?.find(attribute => attribute.Name === 'given_name')?.Value ?? '',
-			lastName:
-        user.UserAttributes?.find(attribute => attribute.Name === 'family_name')?.Value ?? '',
-			phoneNumber:
-        user.UserAttributes?.find(attribute => attribute.Name === 'phone_number')?.Value ?? '',
-		};
-
-		logger.logInfo(`User ${cleanUser.id} data retrieved successfully`);
-
-		if (!cleanUser.id) {
-			logger.logError(
-				`Error getting user data: user id ${cleanUsername} not found`,
-			);
-			throw new CustomError('NOT_FOUND', 'Usuário não encontrado');
-		}
-
-		return {
-			status: 'SUCCESSFUL',
-			data: cleanUser,
-		};
 	}
 }
