@@ -27,14 +27,15 @@ export const action = async ({request}: ActionFunctionArgs) => {
 
 	try {
 		const formData = await request.formData();
+		const username = formData.get('username') as string;
 
-		const {data: existUser} = await new UserService().verifyUserExists(formData.get('username') as string);
+		const {data: existUser} = await new UserService().verifyUserExists(username);
 
 		if (existUser) {
-			return redirect(`/admin/students/${formData.get('username') as string}`);
+			return redirect(`/admin/students/${username}`);
 		}
 
-		userSession.flash('error', 'Usuário não encontrado.');
+		userSession.flash('error', `Usuário ${username} não encontrado`);
 
 		return redirect('/admin/students', {
 			headers: {

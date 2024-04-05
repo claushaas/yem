@@ -92,7 +92,7 @@ export const action = async ({request, params}: ActionFunctionArgs) => {
 
 			await new LessonService().update(lessonId!, lessonToUpdate);
 
-			userSession.flash('success', 'Aula criada com sucesso');
+			userSession.flash('success', `Aula ${lessonToUpdate.name} atualizada com sucesso!`);
 		} catch (error) {
 			logger.logError(`Error updating lesson: ${(error as Error).message}`);
 			userSession.flash('error', (error as Error).message);

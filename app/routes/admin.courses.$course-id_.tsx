@@ -89,7 +89,7 @@ export const action = async ({request, params}: ActionFunctionArgs) => {
 
 					await new CourseService().update(courseId!, courseToUpdate);
 
-					userSession.flash('success', 'Curso atualizado com sucesso');
+					userSession.flash('success', `Curso ${courseToUpdate.name} atualizado com sucesso`);
 					break;
 				}
 
@@ -107,7 +107,7 @@ export const action = async ({request, params}: ActionFunctionArgs) => {
 
 					await new ModuleService().create(moduleToCreate);
 
-					userSession.flash('success', 'Módulo criado com sucesso');
+					userSession.flash('success', `Módulo ${moduleToCreate.name} criado com sucesso`);
 					break;
 				}
 

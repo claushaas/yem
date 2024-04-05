@@ -65,7 +65,7 @@ export const action = async ({request, params}: ActionFunctionArgs) => {
 
 				await userService.updateUserName(id, email, firstName, lastName);
 
-				userSession.flash('success', 'Nome do aluno atualizado com sucesso');
+				userSession.flash('success', `Nome do aluno atualizado com sucesso para ${firstName} ${lastName}`);
 				return redirect(`/admin/students/${username}`, {
 					headers: {
 						'Set-Cookie': await commitUserSession(userSession), // eslint-disable-line @typescript-eslint/naming-convention
@@ -80,7 +80,7 @@ export const action = async ({request, params}: ActionFunctionArgs) => {
 
 				await userService.updateUserEmail(id, oldEmail, newEmail);
 
-				userSession.flash('success', 'Email do aluno atualizado com sucesso');
+				userSession.flash('success', `Email do aluno atualizado com sucesso para ${newEmail}`);
 
 				return redirect(`/admin/students/${newEmail}`, {
 					headers: {
@@ -95,7 +95,7 @@ export const action = async ({request, params}: ActionFunctionArgs) => {
 
 				await userService.updateUserPhoneNumber(id, phoneNumber);
 
-				userSession.flash('success', 'Telefone do aluno atualizado com sucesso');
+				userSession.flash('success', `Telefone do aluno atualizado com sucesso para ${phoneNumber}`);
 
 				return redirect(`/admin/students/${username}`, {
 					headers: {
@@ -110,7 +110,7 @@ export const action = async ({request, params}: ActionFunctionArgs) => {
 
 				await userService.updateUserDocument(id, document);
 
-				userSession.flash('success', 'Documento do aluno atualizado com sucesso');
+				userSession.flash('success', `Documento do aluno atualizado com sucesso para ${document}`);
 
 				return redirect(`/admin/students/${username}`, {
 					headers: {
