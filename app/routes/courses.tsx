@@ -8,7 +8,7 @@ export const meta: MetaFunction = () => [
 export default function Courses() {
 	return (
 		<main>
-			<h1>Lista de cursos</h1>
+			<h1>Lista de cursos aqui</h1>
 		</main>
 	);
 }
