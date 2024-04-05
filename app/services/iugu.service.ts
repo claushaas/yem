@@ -1,9 +1,12 @@
 import {CustomError} from '../utils/custom-error.js';
 import {type TServiceReturn} from '../types/service-return.type.js';
 import {type TUser} from '../types/user.type.js';
-import {type TIuguSubscription, type TSubscription} from '../types/subscription.type.js';
+import {
+	type TIuguSubscriptionResponse, type TIuguSubscription, type TSubscription, type TPlanIdentifier,
+} from '../types/subscription.type.js';
 import {Request} from '../utils/request.js';
 import {logger} from '../utils/logger.util.js';
+import {convertSubscriptionIdentifierToCourseId} from '~/utils/subscription-identifier-to-course-id.js';
 
 export class IuguService {
 	private readonly _request: Request;
@@ -39,10 +42,23 @@ export class IuguService {
 		}
 	}
 
+	public async getSubscriptionById(subscriptionId: string): Promise<TServiceReturn<TIuguSubscriptionResponse>> {
+		try {
+			const {data} = await this._request.get(`/subscriptions/${subscriptionId}`) as {data: TIuguSubscriptionResponse};
+
+			return {
+				status: 'SUCCESSFUL',
+				data,
+			};
+		} catch (error) {
+			throw new CustomError('INVALID_DATA', (error as Error).message);
+		}
+	}
+
 	private _mapSubscriptions(subscriptions: TIuguSubscription[], user: TUser): TSubscription[] {
 		return subscriptions.map(subscription => ({
 			userId: user.id,
-			courseId: 'pesquisar pelo id do curso pelo identificador do plano da iugu',
+			courseId: convertSubscriptionIdentifierToCourseId(subscription.plan_identifier as TPlanIdentifier),
 			expiresAt: new Date(subscription.expires_at),
 			provider: 'iugu',
 			providerSubscriptionId: subscription.id,
