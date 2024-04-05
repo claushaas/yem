@@ -10,6 +10,7 @@ import {type TUuid} from '../types/uuid.type.js';
 import {type TServiceReturn} from '../types/service-return.type.js';
 import {type TSearchableEntity} from '../types/searchable.type.js';
 import {db} from '../database/db.js';
+import {logger} from '~/utils/logger.util.js';
 
 export class LessonService {
 	private readonly _model: PrismaClient;
@@ -41,6 +42,7 @@ export class LessonService {
 			},
 			data: {
 				name: newLesson.name,
+				slug: newLesson.slug,
 				type: newLesson.type,
 				description: newLesson.description,
 				content: newLesson.content,
@@ -119,6 +121,7 @@ export class LessonService {
 			},
 			data: {
 				name: lessoToUpdate.name,
+				slug: lessoToUpdate.slug,
 				type: lessoToUpdate.type,
 				description: lessoToUpdate.description,
 				content: lessoToUpdate.content,
@@ -175,26 +178,6 @@ export class LessonService {
 		};
 	}
 
-	public async delete(id: TUuid): Promise<TServiceReturn<string>> {
-		const deletedLesson = await this._model.lesson.update({
-			where: {
-				id,
-			},
-			data: {
-				published: false,
-			},
-		});
-
-		if (!deletedLesson) {
-			throw new CustomError('NOT_FOUND', `Lesson with id ${id} not found`);
-		}
-
-		return {
-			status: 'NO_CONTENT',
-			data: 'Lesson unpublished',
-		};
-	}
-
 	public async getList(moduleId: TUuid, user: TUser | undefined): Promise<TServiceReturn<TPrismaPayloadGetLessonList>> {
 		const lessonWhere = {
 			modules: {
@@ -207,6 +190,7 @@ export class LessonService {
 		const lessonSelect = {
 			id: true,
 			name: true,
+			slug: true,
 			type: true,
 			description: true,
 			thumbnailUrl: true,
@@ -290,118 +274,107 @@ export class LessonService {
 		};
 	}
 
-	public async getById(courseId: TUuid, moduleId: TUuid, lessonId: TUuid, user: TUser | undefined): Promise<TServiceReturn<TPrismaPayloadGetLessonById>> {
-		const lessonSelect = {
-			id: true,
-			name: true,
-			type: true,
-			description: true,
-			content: true,
-			videoSourceUrl: true,
-			duration: true,
-			thumbnailUrl: true,
-			publicationDate: true,
-			published: true,
-			tags: {
+	public async getBySlug(courseSlug: TUuid, moduleSlug: TUuid, lessonSlug: string, user: TUser | undefined): Promise<TServiceReturn<TPrismaPayloadGetLessonById | undefined>> {
+		try {
+			const lesson = await this._model.lesson.findUnique({
+				where: {
+					published: user?.roles?.includes('admin') ? undefined : true,
+					slug: lessonSlug,
+					modules: {
+						some: {
+							slug: moduleSlug,
+						},
+					},
+				},
 				include: {
-					tagOption: {
-						select: {
-							name: true,
+					tags: {
+						include: {
+							tagOption: {
+								select: {
+									name: true,
+								},
+							},
+							tagValue: {
+								select: {
+									name: true,
+								},
+							},
 						},
 					},
-					tagValue: {
-						select: {
-							name: true,
-						},
-					},
-				},
-			},
-			comments: {
-				where: {
-					published: true,
-				},
-				select: {
-					id: true,
-					content: true,
-					createdAt: true,
-					userId: true,
-					published: true,
-					responses: {
-						select: {
-							id: true,
-							content: true,
-							createdAt: true,
-							userId: true,
-							published: true,
-						},
-					},
-				},
-			},
-			lessonProgress: {
-				where: {
-					userId: user?.id,
-				},
-			},
-			modules: {
-				where: {
-					id: moduleId,
-				},
-				select: {
-					id: true,
-					name: true,
-					course: {
+					comments: {
 						where: {
-							id: courseId,
+							published: user?.roles?.includes('admin') ? undefined : true,
+						},
+						include: {
+							responses: {
+								where: {
+									published: user?.roles?.includes('admin') ? undefined : true,
+								},
+							},
+						},
+					},
+					lessonProgress: {
+						where: {
+							userId: user?.id ?? undefined,
+						},
+					},
+					modules: {
+						where: {
+							published: user?.roles?.includes('admin') ? undefined : true,
+							slug: moduleSlug,
 						},
 						select: {
 							id: true,
 							name: true,
-							subscriptions: {
+							slug: true,
+							course: {
 								where: {
-									userId: user?.id,
-									courseId,
-									expiresAt: {
-										gte: new Date(),
+									published: user?.roles?.includes('admin') ? undefined : true,
+									slug: courseSlug,
+								},
+								select: {
+									id: true,
+									name: true,
+									slug: true,
+									subscriptions: {
+										where: {
+											userId: user?.id,
+											expiresAt: {
+												gte: new Date(),
+											},
+										},
 									},
 								},
 							},
 						},
 					},
 				},
-			},
-		};
+			});
 
-		const lesson = await this._model.lesson.findUnique({
-			where: {
-				id: lessonId,
-			},
-			select: lessonSelect,
-		});
+			if (!lesson) {
+				throw new CustomError('NOT_FOUND', 'Lesson not found');
+			}
 
-		if (!lesson) {
-			throw new CustomError('NOT_FOUND', 'Lesson not found');
-		}
+			const hasActiveSubscription = user?.roles?.includes('admin') ?? lesson?.modules?.some(
+				module => module.course?.some(
+					course => course.subscriptions.length > 0,
+				),
+			);
 
-		const hasActiveSubscription = lesson?.modules?.some(
-			module => module.course?.some(
-				course => course.subscriptions.length > 0,
-			),
-		);
-
-		if (user?.roles?.includes('admin')) {
 			return {
 				status: 'SUCCESSFUL',
-				data: lesson,
+				data: {
+					...lesson,
+					content: hasActiveSubscription ? lesson.content : '',
+					videoSourceUrl: hasActiveSubscription ? lesson.videoSourceUrl : '',
+				},
+			};
+		} catch (error) {
+			logger.logError(`Error getting lesson by slug: ${(error as Error).message}`);
+			return {
+				status: 'UNKNOWN',
+				data: undefined,
 			};
 		}
-
-		return {
-			status: 'SUCCESSFUL',
-			data: {
-				...lesson,
-				content: hasActiveSubscription ? lesson.content : '',
-				videoSourceUrl: hasActiveSubscription ? lesson.videoSourceUrl : '',
-			},
-		};
 	}
 }

@@ -18,6 +18,7 @@ const moduleSchema = Joi.object({
 
 export class Module implements TModule {
 	private readonly _name: string;
+	private readonly _slug: string;
 	private readonly _description?: string;
 	private readonly _content?: string;
 	private readonly _videoSourceUrl?: string;
@@ -36,6 +37,7 @@ export class Module implements TModule {
 		}
 
 		this._name = module.name;
+		this._slug = this._name.toLowerCase().normalize('NFD').replaceAll(/[\u0300-\u036F]/g, '').replaceAll(' ', '-');
 		this._description = module.description;
 		this._content = module.content;
 		this._videoSourceUrl = module.videoSourceUrl;
@@ -49,6 +51,10 @@ export class Module implements TModule {
 
 	get name() {
 		return this._name;
+	}
+
+	get slug() {
+		return this._slug;
 	}
 
 	get description() {
