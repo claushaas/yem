@@ -9,8 +9,8 @@ const lessonSchema = Joi.object({
 	type: Joi.string().required().valid('video', 'text', 'courseWare'),
 	description: Joi.string().min(10).max(150),
 	content: Joi.string().allow(''),
-	videoSourceUrl: Joi.string(),
-	duration: Joi.number().min(1).max(200),
+	videoSourceUrl: Joi.string().allow(''),
+	duration: Joi.number().min(0).max(200),
 	thumbnailUrl: Joi.string().required(),
 	modules: Joi.array().items(Joi.string().uuid()).required(),
 	publicationDate: Joi.date().required().default(new Date()),
@@ -20,6 +20,7 @@ const lessonSchema = Joi.object({
 
 export class Lesson implements TLesson {
 	private readonly _name: string;
+	private readonly _slug: string;
 	private readonly _type: TLessonType;
 	private readonly _description?: string;
 	private readonly _content?: string;
@@ -39,6 +40,7 @@ export class Lesson implements TLesson {
 		}
 
 		this._name = lesson.name;
+		this._slug = this._name.toLowerCase().normalize('NFD').replaceAll(/[\u0300-\u036F]/g, '').replaceAll(' ', '-');
 		this._type = lesson.type;
 		this._description = lesson.description;
 		this._content = lesson.content;
@@ -53,6 +55,10 @@ export class Lesson implements TLesson {
 
 	get name() {
 		return this._name;
+	}
+
+	get slug() {
+		return this._slug;
 	}
 
 	get type() {

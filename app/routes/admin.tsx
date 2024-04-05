@@ -1,5 +1,5 @@
 import {
-	Link, type MetaFunction, Outlet, useNavigate, useOutletContext,
+	Link, type MetaFunction, Outlet, useNavigate, useOutletContext, useLocation,
 } from '@remix-run/react';
 import {useEffect} from 'react';
 import {type TypeUserSession} from '~/types/user-session.type';
@@ -12,6 +12,7 @@ export const meta: MetaFunction = () => [
 export default function Admin() {
 	const {userData} = useOutletContext<{userData: TypeUserSession}>();
 	const navigate = useNavigate();
+	const {pathname} = useLocation();
 
 	useEffect(() => {
 		if (!userData?.roles.includes('admin')) {
@@ -36,6 +37,9 @@ export default function Admin() {
 				</Link>
 			</aside>
 			<main className='flex-grow flex-shrink p-3'>
+				{pathname === '/admin' && (
+					<p>Selecione a opção no menu ao lado</p>
+				)}
 				<Outlet/>
 			</main>
 		</div>

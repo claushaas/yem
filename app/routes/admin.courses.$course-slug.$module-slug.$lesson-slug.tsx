@@ -34,13 +34,13 @@ type LessonLoaderData = {
 export const loader = async ({request, params}: LoaderFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 	const {
-		'course-id': courseId,
-		'module-id': moduleId,
-		'lesson-id': lessonId,
+		'course-slug': courseSlug,
+		'module-slug': moduleSlug,
+		'lesson-slug': lessonSlug,
 	} = params;
 
 	try {
-		const {data: lesson} = await new LessonService().getById(courseId!, moduleId!, lessonId!, userSession.data as TUser);
+		const {data: lesson} = await new LessonService().getBySlug(courseSlug!, moduleSlug!, lessonSlug!, userSession.data as TUser);
 
 		return json<LessonLoaderData>({
 			lesson,
@@ -68,14 +68,16 @@ export const loader = async ({request, params}: LoaderFunctionArgs) => {
 export const action = async ({request, params}: ActionFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 	const {
-		'course-id': courseId,
-		'module-id': moduleId,
-		'lesson-id': lessonId,
+		'course-slug': courseSlug,
+		'module-slug': moduleSlug,
+		'lesson-slug': lessonSlug,
 	} = params;
 
 	if ((userSession.get('roles') as string[])?.includes('admin')) {
 		try {
 			const formData = await request.formData();
+
+			const id = formData.get('id') as string;
 
 			const lessonToUpdate = {
 				name: formData.get('name') as string,
@@ -90,19 +92,19 @@ export const action = async ({request, params}: ActionFunctionArgs) => {
 				published: formData.get('published') === 'on',
 			};
 
-			await new LessonService().update(lessonId!, lessonToUpdate);
+			await new LessonService().update(id, lessonToUpdate);
 
-			userSession.flash('success', 'Aula criada com sucesso');
+			userSession.flash('success', `Aula ${lessonToUpdate.name} atualizada com sucesso!`);
 		} catch (error) {
 			logger.logError(`Error updating lesson: ${(error as Error).message}`);
 			userSession.flash('error', (error as Error).message);
-			return redirect(`/admin/courses/${courseId}/${moduleId}/${lessonId}`, {
+			return redirect(`/admin/courses/${courseSlug}/${moduleSlug}/${lessonSlug}`, {
 				headers: {
 					'Set-Cookie': await commitUserSession(userSession), // eslint-disable-line @typescript-eslint/naming-convention
 				},
 			});
 		} finally {
-			return redirect(`/admin/courses/${courseId}/${moduleId}/${lessonId}`, { // eslint-disable-line no-unsafe-finally
+			return redirect(`/admin/courses/${courseSlug}/${moduleSlug}/${lessonSlug}`, { // eslint-disable-line no-unsafe-finally
 				headers: {
 					'Set-Cookie': await commitUserSession(userSession), // eslint-disable-line @typescript-eslint/naming-convention
 				},
@@ -119,16 +121,16 @@ export default function Lesson() {
 	} = useLoaderData<LessonLoaderData>();
 
 	const {
-		'course-id': courseId,
-		'module-id': moduleId,
-		'lesson-id': lessonId,
+		'course-slug': courseSlug,
+		'module-slug': moduleSlug,
+		'lesson-slug': lessonSlug,
 	} = useParams();
 
 	const [lessonEditQuill, setLessonEditQuill] = useState<Quill | null>(null); // eslint-disable-line @typescript-eslint/ban-types
 	const [lessonEditQuillContent, setLessonEditQuillContent] = useState(lesson?.content ?? '');
 	const [lessonEditDialogIsOpen, setLessonEditDialogIsOpen] = useState(false);
 	const navigation = useNavigation();
-	const isSubmittingAnyForm = navigation.formAction === `/admin/courses/${courseId}/${moduleId}/${lessonId}`;
+	const isSubmittingAnyForm = navigation.formAction === `/admin/courses/${courseSlug}/${moduleSlug}/${lessonSlug}`;
 
 	const {ops} = lesson?.content ? JSON.parse(lesson.content) as OpIterator : {ops: []};
 	const contentConverter = new QuillDeltaToHtmlConverter(ops, {
@@ -191,7 +193,7 @@ export default function Lesson() {
 						</Dialog.Title>
 
 						<RadixForm.Root asChild>
-							<Form method='post' action={`/admin/courses/${courseId}/${moduleId}/${lessonId}`} className='flex flex-col gap-3'>
+							<Form method='post' action={`/admin/courses/${courseSlug}/${moduleSlug}/${lessonSlug}`} className='flex flex-col gap-3'>
 
 								<RadixForm.Field name='name'>
 									<div className='flex items-baseline justify-between'>
@@ -370,7 +372,17 @@ export default function Lesson() {
 										<input
 											disabled={isSubmittingAnyForm}
 											type='text'
-											value={[moduleId!]}
+											value={lesson.modules.map(module => module.id)}
+										/>
+									</RadixForm.Control>
+								</RadixForm.Field>
+
+								<RadixForm.Field name='id' className='hidden'>
+									<RadixForm.Control asChild>
+										<input
+											disabled={isSubmittingAnyForm}
+											type='text'
+											value={lesson.id}
 										/>
 									</RadixForm.Control>
 								</RadixForm.Field>

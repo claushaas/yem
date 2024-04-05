@@ -63,7 +63,7 @@ export const action = async ({request}: ActionFunctionArgs) => {
 
 		await new TagService().create(tagData);
 
-		userSession.flash('success', 'Tag criada com sucesso!');
+		userSession.flash('success', `Tag ${tagData[0]} - ${tagData[1]} criada com sucesso!`);
 
 		return redirect('/admin/tags', {
 			headers: {

@@ -7,7 +7,7 @@ const courseSchema = Joi.object({
 	name: Joi.string().required().min(3).max(35),
 	description: Joi.string().min(10).max(150),
 	content: Joi.string().allow(''),
-	videoSourceUrl: Joi.string(),
+	videoSourceUrl: Joi.string().allow(''),
 	thumbnailUrl: Joi.string().required(),
 	publicationDate: Joi.date().required().default(new Date()),
 	published: Joi.boolean().required().default(true),
@@ -17,6 +17,7 @@ const courseSchema = Joi.object({
 
 export class Course implements TCourse {
 	private readonly _name: string;
+	private readonly _slug: string;
 	private readonly _description?: string;
 	private readonly _content?: string;
 	private readonly _videoSourceUrl?: string;
@@ -34,6 +35,7 @@ export class Course implements TCourse {
 		}
 
 		this._name = course.name;
+		this._slug = this._name.toLowerCase().normalize('NFD').replaceAll(/[\u0300-\u036F]/g, '').replaceAll(' ', '-');
 		this._description = course.description;
 		this._content = course.content;
 		this._videoSourceUrl = course.videoSourceUrl;
@@ -46,6 +48,10 @@ export class Course implements TCourse {
 
 	get name() {
 		return this._name;
+	}
+
+	get slug() {
+		return this._slug;
 	}
 
 	get description() {

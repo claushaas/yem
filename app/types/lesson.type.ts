@@ -43,6 +43,7 @@ export type TPrismaPayloadUpdateLesson = TPrismaPayloadCreateLesson;
 export type TPrismaPayloadGetLessonList = Array<Prisma.LessonGetPayload<{
 	select: {
 		id: true;
+		slug: true;
 		name: true;
 		type: true;
 		description: true;
@@ -71,6 +72,7 @@ export type TPrismaPayloadGetLessonList = Array<Prisma.LessonGetPayload<{
 export type TPrismaPayloadGetLessonById = Prisma.LessonGetPayload<{
 	select: {
 		id: true;
+		slug: true;
 		name: true;
 		type: true;
 		description: true;
@@ -117,9 +119,11 @@ export type TPrismaPayloadGetLessonById = Prisma.LessonGetPayload<{
 			select: {
 				id: true;
 				name: true;
+				slug: true;
 				course: {
 					select: {
 						id: true;
+						slug: true;
 						name: true;
 						subscriptions: true;
 					};
