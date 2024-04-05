@@ -4,7 +4,7 @@ import {logger} from '~/utils/logger.util';
 
 export const loader = async ({request}: LoaderFunctionArgs) => {
 	try {
-		await new SlackService().sendMessage(await request.json() as Record<string, any>);
+		await new SlackService().sendMessage(request.body as Record<string, any>);
 
 		return json({
 			message: 'OK',
@@ -19,7 +19,7 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
 
 export const action = async ({request}: LoaderFunctionArgs) => {
 	try {
-		await new SlackService().sendMessage(await request.json() as Record<string, any>);
+		await new SlackService().sendMessage(request.body);
 
 		return json({
 			message: 'OK',
