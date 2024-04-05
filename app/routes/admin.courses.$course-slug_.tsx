@@ -34,11 +34,11 @@ type CourseLoaderData = {
 
 export const loader = async ({request, params}: LoaderFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
-	const {'course-id': courseId} = params;
+	const {'course-slug': courseSlug} = params;
 
 	try {
 		const courseService = new CourseService();
-		const {data: course} = await courseService.getById(courseId!, userSession.data as TUser);
+		const {data: course} = await courseService.getBySlug(courseSlug!, userSession.data as TUser);
 		const {data: courses} = await courseService.getAll(userSession.get('roles') as string[]);
 
 		return json<CourseLoaderData>({
@@ -68,7 +68,7 @@ export const loader = async ({request, params}: LoaderFunctionArgs) => {
 
 export const action = async ({request, params}: ActionFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
-	const {'course-id': courseId} = params;
+	const {'course-slug': courseSlug} = params;
 
 	try {
 		if ((userSession.get('roles') as string[])?.includes('admin')) {
@@ -76,6 +76,8 @@ export const action = async ({request, params}: ActionFunctionArgs) => {
 
 			switch (formData.get('type')) {
 				case 'editCourse': {
+					const id = formData.get('id') as string;
+
 					const courseToUpdate = {
 						name: formData.get('name') as string,
 						description: formData.get('description') as string,
@@ -87,9 +89,9 @@ export const action = async ({request, params}: ActionFunctionArgs) => {
 						isSelling: Boolean(formData.get('isSelling')),
 					};
 
-					await new CourseService().update(courseId!, courseToUpdate);
+					await new CourseService().update(id, courseToUpdate);
 
-					userSession.flash('success', 'Curso atualizado com sucesso');
+					userSession.flash('success', `Curso ${courseToUpdate.name} atualizado com sucesso`);
 					break;
 				}
 
@@ -107,7 +109,7 @@ export const action = async ({request, params}: ActionFunctionArgs) => {
 
 					await new ModuleService().create(moduleToCreate);
 
-					userSession.flash('success', 'Módulo criado com sucesso');
+					userSession.flash('success', `Módulo ${moduleToCreate.name} criado com sucesso`);
 					break;
 				}
 
@@ -122,13 +124,13 @@ export const action = async ({request, params}: ActionFunctionArgs) => {
 	} catch (error) {
 		logger.logError(`Error creating course: ${(error as Error).message}`);
 		userSession.flash('error', 'Erro ao criar curso');
-		return redirect(`/admin/courses/${courseId}`, {
+		return redirect(`/admin/courses/${courseSlug}`, {
 			headers: {
 				'Set-Cookie': await commitUserSession(userSession), // eslint-disable-line @typescript-eslint/naming-convention
 			},
 		});
 	} finally {
-		return redirect(`/admin/courses/${courseId}`, { // eslint-disable-line no-unsafe-finally
+		return redirect(`/admin/courses/${courseSlug}`, { // eslint-disable-line no-unsafe-finally
 			headers: {
 				'Set-Cookie': await commitUserSession(userSession), // eslint-disable-line @typescript-eslint/naming-convention
 			},
@@ -143,7 +145,7 @@ export default function Course() {
 		error,
 		success,
 	} = useLoaderData<CourseLoaderData>();
-	const {'course-id': courseId} = useParams();
+	const {'course-slug': courseSlug} = useParams();
 
 	const [courseEditQuill, setCourseEditQuill] = useState<Quill | null>(null); // eslint-disable-line @typescript-eslint/ban-types
 	const [newModuleQuill, setNewModuleQuill] = useState<Quill | null>(null); // eslint-disable-line @typescript-eslint/ban-types
@@ -153,7 +155,7 @@ export default function Course() {
 	const [newModuleDialogIsOpen, setNewModuleDialogIsOpen] = useState<boolean>(false);
 	const [coursesValue, setCoursesValue] = useState<Array<{value: string; label: string}>>(course ? [{value: course.id, label: course.name}] : []);
 	const navigation = useNavigation();
-	const isSubmittingAnyForm = navigation.formAction === `/admin/courses/${courseId}`;
+	const isSubmittingAnyForm = navigation.formAction === `/admin/courses/${courseSlug}`;
 
 	const {ops} = course?.content ? JSON.parse(course?.content) as OpIterator : {ops: []};
 	const contentConverter = new QuillDeltaToHtmlConverter(ops, {
@@ -225,7 +227,7 @@ export default function Course() {
 							</Dialog.Title>
 
 							<RadixForm.Root asChild>
-								<Form method='post' action={`/admin/courses/${course.id}`} className='flex flex-col gap-3'>
+								<Form method='post' action={`/admin/courses/${courseSlug}`} className='flex flex-col gap-3'>
 
 									<RadixForm.Field name='name'>
 										<div className='flex items-baseline justify-between'>
@@ -374,13 +376,22 @@ export default function Course() {
 										</RadixForm.Control>
 									</RadixForm.Field>
 
-									<RadixForm.Field name='type'>
+									<RadixForm.Field name='type' className='hidden'>
 										<RadixForm.Control asChild>
 											<input
 												disabled={isSubmittingAnyForm}
 												type='text'
-												className='hidden'
 												value='editCourse'
+											/>
+										</RadixForm.Control>
+									</RadixForm.Field>
+
+									<RadixForm.Field name='id' className='hidden'>
+										<RadixForm.Control asChild>
+											<input
+												disabled={isSubmittingAnyForm}
+												type='text'
+												value={course.id}
 											/>
 										</RadixForm.Control>
 									</RadixForm.Field>
@@ -450,7 +461,7 @@ export default function Course() {
 							</Dialog.Title>
 
 							<RadixForm.Root asChild>
-								<Form method='post' action={`/admin/courses/${course.id}`} className='flex flex-col gap-3'>
+								<Form method='post' action={`/admin/courses/${courseSlug}`} className='flex flex-col gap-3'>
 
 									<RadixForm.Field name='name'>
 										<div className='flex items-baseline justify-between'>
@@ -634,7 +645,7 @@ export default function Course() {
 
 				<div className='flex gap-4 my-4 flex-wrap'>
 					{course.modules.map(module => (
-						<CourseCard key={module.id} course={module} to={`./${module.id}`}/>
+						<CourseCard key={module.id} course={module} to={`./${module.slug}`}/>
 					))}
 				</div>
 

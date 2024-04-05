@@ -8,6 +8,7 @@ import {type TUuid} from '../types/uuid.type.js';
 import {CustomError} from '../utils/custom-error.js';
 import {type TServiceReturn} from '../types/service-return.type.js';
 import {db} from '../database/db.js';
+import {logger} from '~/utils/logger.util.js';
 
 export class ModuleService {
 	private readonly _model: PrismaClient;
@@ -39,6 +40,7 @@ export class ModuleService {
 			},
 			data: {
 				name: newModule.name,
+				slug: newModule.slug,
 				description: newModule.description,
 				content: newModule.content,
 				videoSourceUrl: newModule.videoSourceUrl,
@@ -115,6 +117,7 @@ export class ModuleService {
 			},
 			data: {
 				name: newModule.name,
+				slug: newModule.slug,
 				description: newModule.description,
 				content: newModule.content,
 				videoSourceUrl: newModule.videoSourceUrl,
@@ -167,6 +170,8 @@ export class ModuleService {
 
 	public async getList(parentId: TUuid, userRoles: TUserRoles = []): Promise<TServiceReturn<TPrismaPayloadGetModulesList>> {
 		const moduleSelect = {
+			id: true,
+			slug: true,
 			name: true,
 			description: true,
 			thumbnailUrl: true,
@@ -194,7 +199,10 @@ export class ModuleService {
 				where: {
 					course: {
 						some: {
-							id: parentId,
+							OR: [
+								{id: parentId},
+								{slug: parentId},
+							],
 						},
 					},
 				},
@@ -216,7 +224,10 @@ export class ModuleService {
 				published: true,
 				course: {
 					some: {
-						id: parentId,
+						OR: [
+							{id: parentId},
+							{slug: parentId},
+						],
 					},
 				},
 			},
@@ -232,78 +243,94 @@ export class ModuleService {
 		};
 	}
 
-	public async getById(courseId: TUuid, id: TUuid, user: TUser): Promise<TServiceReturn<TPrismaPayloadGetModuleById>> {
-		const includeTags = {
-			include: {
-				tagOption: {
-					select: {
-						name: true,
-					},
-				},
-				tagValue: {
-					select: {
-						name: true,
-					},
-				},
-			},
-		};
-
-		const includeLessons = {
-			select: {
-				id: true,
-				name: true,
-				description: true,
-				thumbnailUrl: true,
-				published: true,
-				publicationDate: true,
-				tags: includeTags,
-			},
-		};
-
-		const includeComments = {
-			select: {
-				id: true,
-				content: true,
-				createdAt: true,
-				userId: true,
-				responses: {
-					select: {
-						id: true,
-						content: true,
-						createdAt: true,
-						userId: true,
-					},
-				},
-			},
-		};
-
-		const includeCourse = {
-			where: {
-				id: courseId,
-			},
-			select: {
-				id: true,
-				name: true,
-				subscriptions: {
-					where: {
-						userId: user.id,
-						expiresAt: {
-							gte: new Date(),
-						},
-					},
-				},
-			},
-		};
-
-		if (user.roles?.includes('admin')) {
+	public async getBySlug(courseSlug: TUuid, slug: string, user: TUser): Promise<TServiceReturn<TPrismaPayloadGetModuleById | undefined>> {
+		try {
 			const module = await this._model.module.findUnique({
 				where: {
-					id,
+					published: user.roles?.includes('admin') ? undefined : true,
+					slug,
 				},
 				include: {
-					lessons: includeLessons,
-					comments: includeComments,
-					course: includeCourse,
+					course: {
+						where: {
+							published: user.roles?.includes('admin') ? undefined : true,
+							slug: courseSlug,
+						},
+						select: {
+							id: true,
+							name: true,
+							slug: true,
+							subscriptions: {
+								where: {
+									userId: user.id,
+									expiresAt: {
+										gte: new Date(),
+									},
+								},
+							},
+						},
+					},
+					tags: {
+						include: {
+							tagOption: {
+								select: {
+									name: true,
+								},
+							},
+							tagValue: {
+								select: {
+									name: true,
+								},
+							},
+						},
+					},
+					lessons: {
+						select: {
+							id: true,
+							name: true,
+							slug: true,
+							description: true,
+							thumbnailUrl: true,
+							published: true,
+							publicationDate: true,
+							tags: {
+								include: {
+									tagOption: {
+										select: {
+											name: true,
+										},
+									},
+									tagValue: {
+										select: {
+											name: true,
+										},
+									},
+								},
+							},
+						},
+					},
+					comments: {
+						where: {
+							published: user.roles?.includes('admin') ? undefined : true,
+						},
+						select: {
+							id: true,
+							content: true,
+							createdAt: true,
+							userId: true,
+							responses: {
+								where: {
+									published: user.roles?.includes('admin') ? undefined : true,
+								},
+								select: {
+									id: true,
+									content: true,
+									createdAt: true,
+									userId: true,
+								},
+							},
+						},
+					},
 				},
 			});
 
@@ -311,78 +338,24 @@ export class ModuleService {
 				throw new CustomError('NOT_FOUND', 'Module not found');
 			}
 
+			const hasActiveSubscription = user.roles?.includes('admin') ?? module.course?.some(course => course.subscriptions.length > 0);
+
+			const returnableModule = {
+				...module,
+				content: hasActiveSubscription ? module?.content : '',
+				videoSourceUrl: hasActiveSubscription ? module?.videoSourceUrl : '',
+			};
+
 			return {
 				status: 'SUCCESSFUL',
-				data: module,
+				data: returnableModule,
+			};
+		} catch (error) {
+			logger.logError(`Error getting module by slug: ${(error as Error).message}`);
+			return {
+				status: 'UNKNOWN',
+				data: undefined,
 			};
 		}
-
-		const rawModule = await this._model.module.findUnique({
-			where: {
-				id,
-				published: true,
-			},
-			include: {
-				lessons: {
-					...includeLessons,
-					where: {
-						published: true,
-					},
-				},
-				comments: {
-					...includeComments,
-					select: {
-						...includeComments.select,
-						responses: {
-							...includeComments.select.responses,
-							where: {
-								published: true,
-							},
-						},
-					},
-					where: {
-						published: true,
-					},
-				},
-				course: includeCourse,
-			},
-		});
-
-		if (!rawModule) {
-			throw new CustomError('NOT_FOUND', 'Module not found');
-		}
-
-		const hasActiveSubscription = rawModule.course?.some(course => course.subscriptions.length > 0);
-
-		const returnableModule = {
-			...rawModule,
-			content: hasActiveSubscription ? rawModule?.content : '',
-			videoSourceUrl: hasActiveSubscription ? rawModule?.videoSourceUrl : '',
-		};
-
-		return {
-			status: 'SUCCESSFUL',
-			data: returnableModule,
-		};
-	}
-
-	public async delete(id: TUuid): Promise<TServiceReturn<string>> {
-		const module = await this._model.module.update({
-			where: {
-				id,
-			},
-			data: {
-				published: false,
-			},
-		});
-
-		if (!module) {
-			throw new CustomError('NOT_FOUND', `Module with id ${id} not found`);
-		}
-
-		return {
-			status: 'NO_CONTENT',
-			data: 'Module unpublished',
-		};
 	}
 }

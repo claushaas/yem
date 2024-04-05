@@ -17,6 +17,7 @@ export type TPrismaPayloadGetAllCourses = Array<Prisma.CourseGetPayload<{
 	select: {
 		id: true;
 		name: true;
+		slug: true;
 		description: true;
 		thumbnailUrl: true;
 		published: true;
@@ -30,6 +31,7 @@ export type TPrismaPayloadGetCourseById = Prisma.CourseGetPayload<{
 			select: {
 				id: true;
 				name: true;
+				slug: true;
 				description: true;
 				thumbnailUrl: true;
 				published: true;

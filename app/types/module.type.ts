@@ -13,7 +13,6 @@ export type TModule = {
 	courses?: TUuid[];
 	lessons?: TUuid[];
 	tags?: TTags;
-	// Comments?: string[];
 };
 
 export type TModules = TModule[];
@@ -42,7 +41,9 @@ export type TPrismaPayloadUpdateModule = TPrismaPayloadCreateModule;
 
 export type TPrismaPayloadGetModulesList = Array<Prisma.ModuleGetPayload<{
 	select: {
+		id: true;
 		name: true;
+		slug: true;
 		description: true;
 		thumbnailUrl: true;
 		publicationDate: true;
@@ -70,6 +71,7 @@ export type TPrismaPayloadGetModuleById = Prisma.ModuleGetPayload<{
 			select: {
 				id: true;
 				name: true;
+				slug: true;
 				description: true;
 				thumbnailUrl: true;
 				published: true;
@@ -110,6 +112,7 @@ export type TPrismaPayloadGetModuleById = Prisma.ModuleGetPayload<{
 			select: {
 				id: true;
 				name: true;
+				slug: true;
 				subscriptions: true;
 			};
 		};

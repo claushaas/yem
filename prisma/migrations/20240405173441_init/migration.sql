@@ -2,12 +2,13 @@
 CREATE TYPE "LessonType" AS ENUM ('video', 'text', 'courseWare');
 
 -- CreateEnum
-CREATE TYPE "ProviderType" AS ENUM ('hotmart', 'iugu');
+CREATE TYPE "SubscriptionProvidersType" AS ENUM ('hotmart', 'iugu', 'manual');
 
 -- CreateTable
 CREATE TABLE "courses" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
+    "slug" TEXT NOT NULL,
     "description" TEXT,
     "content" TEXT,
     "videoSourceUrl" TEXT,
@@ -16,23 +17,16 @@ CREATE TABLE "courses" (
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "publicationDate" TIMESTAMP(3) NOT NULL,
     "published" BOOLEAN NOT NULL DEFAULT true,
+    "isSelling" BOOLEAN NOT NULL DEFAULT false,
 
     CONSTRAINT "courses_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "roles" (
-    "id" TEXT NOT NULL,
-    "name" TEXT NOT NULL,
-    "description" TEXT,
-
-    CONSTRAINT "roles_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "modules" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
+    "slug" TEXT NOT NULL,
     "description" TEXT,
     "content" TEXT,
     "videoSourceUrl" TEXT,
@@ -49,6 +43,7 @@ CREATE TABLE "modules" (
 CREATE TABLE "lessons" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
+    "slug" TEXT NOT NULL,
     "type" "LessonType" NOT NULL DEFAULT 'video',
     "description" TEXT,
     "content" TEXT,
@@ -135,16 +130,10 @@ CREATE TABLE "user_subscriptions" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "expiresAt" TIMESTAMP(3) NOT NULL,
-    "provider" "ProviderType" NOT NULL,
+    "provider" "SubscriptionProvidersType" NOT NULL,
     "providerSubscriptionId" TEXT NOT NULL,
 
     CONSTRAINT "user_subscriptions_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "_CourseToRole" (
-    "A" TEXT NOT NULL,
-    "B" TEXT NOT NULL
 );
 
 -- CreateTable
@@ -155,12 +144,6 @@ CREATE TABLE "_CourseToModule" (
 
 -- CreateTable
 CREATE TABLE "_CourseToTagOptionTagValue" (
-    "A" TEXT NOT NULL,
-    "B" TEXT NOT NULL
-);
-
--- CreateTable
-CREATE TABLE "_SubModules" (
     "A" TEXT NOT NULL,
     "B" TEXT NOT NULL
 );
@@ -187,7 +170,13 @@ CREATE TABLE "_LessonToTagOptionTagValue" (
 CREATE UNIQUE INDEX "courses_name_key" ON "courses"("name");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "roles_name_key" ON "roles"("name");
+CREATE UNIQUE INDEX "courses_slug_key" ON "courses"("slug");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "modules_slug_key" ON "modules"("slug");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "lessons_slug_key" ON "lessons"("slug");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "tag_options_name_key" ON "tag_options"("name");
@@ -202,13 +191,10 @@ CREATE UNIQUE INDEX "tag_option_tag_value_tagOptionName_tagValueName_key" ON "ta
 CREATE UNIQUE INDEX "lesson_progress_lessonId_userId_key" ON "lesson_progress"("lessonId", "userId");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "user_subscriptions_providerSubscriptionId_key" ON "user_subscriptions"("providerSubscriptionId");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "user_subscriptions_userId_courseId_providerSubscriptionId_key" ON "user_subscriptions"("userId", "courseId", "providerSubscriptionId");
-
--- CreateIndex
-CREATE UNIQUE INDEX "_CourseToRole_AB_unique" ON "_CourseToRole"("A", "B");
-
--- CreateIndex
-CREATE INDEX "_CourseToRole_B_index" ON "_CourseToRole"("B");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "_CourseToModule_AB_unique" ON "_CourseToModule"("A", "B");
@@ -221,12 +207,6 @@ CREATE UNIQUE INDEX "_CourseToTagOptionTagValue_AB_unique" ON "_CourseToTagOptio
 
 -- CreateIndex
 CREATE INDEX "_CourseToTagOptionTagValue_B_index" ON "_CourseToTagOptionTagValue"("B");
-
--- CreateIndex
-CREATE UNIQUE INDEX "_SubModules_AB_unique" ON "_SubModules"("A", "B");
-
--- CreateIndex
-CREATE INDEX "_SubModules_B_index" ON "_SubModules"("B");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "_ModuleToTagOptionTagValue_AB_unique" ON "_ModuleToTagOptionTagValue"("A", "B");
@@ -271,12 +251,6 @@ ALTER TABLE "lesson_progress" ADD CONSTRAINT "lesson_progress_lessonId_fkey" FOR
 ALTER TABLE "user_subscriptions" ADD CONSTRAINT "user_subscriptions_courseId_fkey" FOREIGN KEY ("courseId") REFERENCES "courses"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "_CourseToRole" ADD CONSTRAINT "_CourseToRole_A_fkey" FOREIGN KEY ("A") REFERENCES "courses"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "_CourseToRole" ADD CONSTRAINT "_CourseToRole_B_fkey" FOREIGN KEY ("B") REFERENCES "roles"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
 ALTER TABLE "_CourseToModule" ADD CONSTRAINT "_CourseToModule_A_fkey" FOREIGN KEY ("A") REFERENCES "courses"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -287,12 +261,6 @@ ALTER TABLE "_CourseToTagOptionTagValue" ADD CONSTRAINT "_CourseToTagOptionTagVa
 
 -- AddForeignKey
 ALTER TABLE "_CourseToTagOptionTagValue" ADD CONSTRAINT "_CourseToTagOptionTagValue_B_fkey" FOREIGN KEY ("B") REFERENCES "tag_option_tag_value"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "_SubModules" ADD CONSTRAINT "_SubModules_A_fkey" FOREIGN KEY ("A") REFERENCES "modules"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "_SubModules" ADD CONSTRAINT "_SubModules_B_fkey" FOREIGN KEY ("B") REFERENCES "modules"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_ModuleToTagOptionTagValue" ADD CONSTRAINT "_ModuleToTagOptionTagValue_A_fkey" FOREIGN KEY ("A") REFERENCES "modules"("id") ON DELETE CASCADE ON UPDATE CASCADE;

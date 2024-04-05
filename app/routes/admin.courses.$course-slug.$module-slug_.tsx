@@ -41,12 +41,12 @@ type ModuleLoaderData = {
 export const loader = async ({request, params}: LoaderFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 	const {
-		'course-id': courseId,
-		'module-id': moduleId,
+		'course-slug': courseSlug,
+		'module-slug': moduleSlug,
 	} = params;
 
 	try {
-		const {data: module} = await new ModuleService().getById(courseId!, moduleId!, userSession.data as TUser);
+		const {data: module} = await new ModuleService().getBySlug(courseSlug!, moduleSlug!, userSession.data as TUser);
 		const {data: courses} = await new CourseService().getAll(userSession.get('roles') as string[]);
 
 		return json<ModuleLoaderData>({
@@ -76,7 +76,7 @@ export const loader = async ({request, params}: LoaderFunctionArgs) => {
 
 export const action = async ({request, params}: ActionFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
-	const {'course-id': courseId, 'module-id': moduleId} = params;
+	const {'course-slug': courseSlug, 'module-slug': moduleSlug} = params;
 
 	try {
 		if ((userSession.get('roles') as string[])?.includes('admin')) {
@@ -84,6 +84,8 @@ export const action = async ({request, params}: ActionFunctionArgs) => {
 
 			switch (formData.get('formType')) {
 				case 'editModule': {
+					const id = formData.get('id') as string;
+
 					const moduleToUpdate = {
 						name: formData.get('name') as string,
 						description: formData.get('description') as string,
@@ -95,9 +97,9 @@ export const action = async ({request, params}: ActionFunctionArgs) => {
 						published: Boolean(formData.get('published')),
 					};
 
-					await new ModuleService().update(moduleId!, moduleToUpdate);
+					await new ModuleService().update(id, moduleToUpdate);
 
-					userSession.flash('success', 'Módulo atualizado com sucesso');
+					userSession.flash('success', `Módulo ${moduleToUpdate.name} atualizado com sucesso`);
 					break;
 				}
 
@@ -117,7 +119,7 @@ export const action = async ({request, params}: ActionFunctionArgs) => {
 
 					await new LessonService().create(newLesson);
 
-					userSession.flash('success', 'Aula criada com sucesso');
+					userSession.flash('success', `Nova aula ${newLesson.name} criada com sucesso`);
 					break;
 				}
 
@@ -132,13 +134,13 @@ export const action = async ({request, params}: ActionFunctionArgs) => {
 	} catch (error) {
 		logger.logError(`Error: ${(error as Error).message}`);
 		userSession.flash('error', (error as Error).message);
-		return redirect(`/admin/courses/${courseId}/${moduleId}`, {
+		return redirect(`/admin/courses/${courseSlug}/${moduleSlug}`, {
 			headers: {
 				'Set-Cookie': await commitUserSession(userSession), // eslint-disable-line @typescript-eslint/naming-convention
 			},
 		});
 	} finally {
-		return redirect(`/admin/courses/${courseId}/${moduleId}`, { // eslint-disable-line no-unsafe-finally
+		return redirect(`/admin/courses/${courseSlug}/${moduleSlug}`, { // eslint-disable-line no-unsafe-finally
 			headers: {
 				'Set-Cookie': await commitUserSession(userSession), // eslint-disable-line @typescript-eslint/naming-convention
 			},
@@ -155,8 +157,8 @@ export default function Module() {
 	} = useLoaderData<ModuleLoaderData>();
 
 	const {
-		'course-id': courseId,
-		'module-id': moduleId,
+		'course-slug': courseSlug,
+		'module-slug': moduleSlug,
 	} = useParams();
 
 	const [moduleEditQuill, setModuleEditQuill] = useState<Quill | null>(null); // eslint-disable-line @typescript-eslint/ban-types
@@ -167,7 +169,7 @@ export default function Module() {
 	const [newLessonDialogIsOpen, setNewLessonDialogIsOpen] = useState(false);
 	const [coursesValue, setCoursesValue] = useState<Array<{value: string; label: string}>>(module ? module.course.map(course => ({value: course.id, label: course.name})) : []);
 	const navigation = useNavigation();
-	const isSubmittingAnyForm = navigation.formAction === `/admin/courses/${courseId}/${moduleId}`;
+	const isSubmittingAnyForm = navigation.formAction === `/admin/courses/${courseSlug}/${moduleSlug}`;
 
 	const {ops} = module?.content ? JSON.parse(module.content) as OpIterator : {ops: []};
 	const contentConverter = new QuillDeltaToHtmlConverter(ops, {
@@ -239,7 +241,7 @@ export default function Module() {
 						</Dialog.Title>
 
 						<RadixForm.Root asChild>
-							<Form method='post' action={`/admin/courses/${courseId}/${moduleId}`} className='flex flex-col gap-3'>
+							<Form method='post' action={`/admin/courses/${courseSlug}/${moduleSlug}`} className='flex flex-col gap-3'>
 
 								<RadixForm.Field name='name'>
 									<div className='flex items-baseline justify-between'>
@@ -393,13 +395,22 @@ export default function Module() {
 									</RadixForm.Control>
 								</RadixForm.Field>
 
-								<RadixForm.Field name='formType'>
+								<RadixForm.Field name='formType' className='hidden'>
 									<RadixForm.Control asChild>
 										<input
 											disabled={isSubmittingAnyForm}
 											type='text'
-											className='hidden'
 											value='editModule'
+										/>
+									</RadixForm.Control>
+								</RadixForm.Field>
+
+								<RadixForm.Field name='id' className='hidden'>
+									<RadixForm.Control asChild>
+										<input
+											disabled={isSubmittingAnyForm}
+											type='text'
+											value={module.id}
 										/>
 									</RadixForm.Control>
 								</RadixForm.Field>
@@ -465,7 +476,7 @@ export default function Module() {
 							</Dialog.Title>
 
 							<RadixForm.Root asChild>
-								<Form method='post' action={`/admin/courses/${courseId}/${moduleId}`} className='flex flex-col gap-3'>
+								<Form method='post' action={`/admin/courses/${courseSlug}/${moduleSlug}`} className='flex flex-col gap-3'>
 
 									<RadixForm.Field name='name'>
 										<div className='flex items-baseline justify-between'>
@@ -639,7 +650,7 @@ export default function Module() {
 											<input
 												disabled={isSubmittingAnyForm}
 												type='text'
-												value={[moduleId!]}
+												value={[module.id]}
 											/>
 										</RadixForm.Control>
 									</RadixForm.Field>
@@ -712,7 +723,7 @@ export default function Module() {
 
 				<div className='flex gap-4 my-4 flex-wrap'>
 					{module.lessons.map(lesson => (
-						<CourseCard key={lesson.id} course={lesson} to={`./${lesson.id}`}/>
+						<CourseCard key={lesson.id} course={lesson} to={`./${lesson.slug}`}/>
 					))}
 				</div>
 			</div>

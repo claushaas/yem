@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -12,7 +9,8 @@ datasource db {
 
 model Course {
   id              String              @id @default(uuid())
-  name            String
+  name            String              @unique
+  slug            String              @unique @default(cuid())
   description     String?
   content         String?             @db.Text
   videoSourceUrl  String?
@@ -27,13 +25,13 @@ model Course {
   subscriptions   UserSubscriptions[]
   isSelling       Boolean             @default(false)
 
-  @@unique([name])
   @@map("courses")
 }
 
 model Module {
   id              String              @id @default(uuid())
   name            String
+  slug            String              @unique @default(cuid())
   description     String?
   content         String?             @db.Text
   videoSourceUrl  String?
@@ -53,6 +51,7 @@ model Module {
 model Lesson {
   id              String              @id @default(uuid())
   name            String
+  slug            String              @unique @default(cuid())
   type            LessonType          @default(video)
   description     String?
   content         String?             @db.Text
@@ -79,25 +78,23 @@ enum LessonType {
 
 model TagOption {
   id                String              @id @default(uuid())
-  name              String
+  name              String              @unique
   description       String?
   createdAt         DateTime            @default(now())
   updatedAt         DateTime            @updatedAt
   TagOptionTagValue TagOptionTagValue[]
 
-  @@unique([name])
   @@map("tag_options")
 }
 
 model TagValue {
   id                String              @id @default(uuid())
-  name              String
+  name              String              @unique
   description       String?
   createdAt         DateTime            @default(now())
   updatedAt         DateTime            @updatedAt
   TagOptionTagValue TagOptionTagValue[]
 
-  @@unique([name])
   @@map("tag_values")
 }
 
@@ -162,7 +159,7 @@ model UserSubscriptions {
   expiresAt              DateTime
   course                 Course                    @relation(fields: [courseId], references: [id])
   provider               SubscriptionProvidersType
-  providerSubscriptionId String
+  providerSubscriptionId String                    @unique
 
   @@unique([userId, courseId, providerSubscriptionId])
   @@map("user_subscriptions")

@@ -15,7 +15,7 @@
   "sideEffects": false,
   "type": "module",
   "engines": {
-    "node": ">=20.0.0"
+    "node": ">=20.12.1"
   },
   "bugs:": "https://github.com/claushaas/yem/issues",
   "scripts": {

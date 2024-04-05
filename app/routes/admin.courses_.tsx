@@ -320,7 +320,7 @@ export default function Courses() {
 				<Suspense fallback={<YemSpinner/>}>
 					<Await resolve={courses as TServiceReturn<TPrismaPayloadGetAllCourses>}>
 						{courses => courses?.data?.map(course => (
-							<CourseCard key={course?.id} course={course ?? {}} to={`./${course?.id}`}/>
+							<CourseCard key={course?.id} course={course ?? {}} to={`./${course?.slug}`}/>
 						))}
 					</Await>
 				</Suspense>

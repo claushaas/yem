@@ -7,6 +7,7 @@ import {
 import {CustomError} from '../utils/custom-error.js';
 import {type TServiceReturn} from '../types/service-return.type.js';
 import {db} from '../database/db.js';
+import {logger} from '~/utils/logger.util.js';
 
 export class CourseService {
 	private readonly _model: PrismaClient;
@@ -37,6 +38,7 @@ export class CourseService {
 			},
 			data: {
 				name: newCourse.name,
+				slug: newCourse.slug,
 				description: newCourse.description,
 				content: newCourse.content,
 				videoSourceUrl: newCourse.videoSourceUrl,
@@ -89,6 +91,7 @@ export class CourseService {
 		const select = {
 			id: true,
 			name: true,
+			slug: true,
 			description: true,
 			thumbnailUrl: true,
 			publicationDate: true,
@@ -119,43 +122,55 @@ export class CourseService {
 		};
 	}
 
-	public async getById(id: string, user: TUser): Promise<TServiceReturn<TPrismaPayloadGetCourseById>> {
-		const includeModules = {
-			select: {
-				id: true,
-				name: true,
-				description: true,
-				thumbnailUrl: true,
-				published: true,
-				publicationDate: true,
-			},
-		};
-
-		const includeComments = {
-			select: {
-				id: true,
-				content: true,
-				createdAt: true,
-				userId: true,
-				responses: {
-					select: {
-						id: true,
-						content: true,
-						createdAt: true,
-						userId: true,
-					},
-				},
-			},
-		};
-
-		if (user.roles?.includes('admin')) {
+	public async getBySlug(slug: string, user: TUser): Promise<TServiceReturn<TPrismaPayloadGetCourseById | undefined>> {
+		try {
 			const course = await this._model.course.findUnique({
-				include: {
-					modules: includeModules,
-					comments: includeComments,
-				},
 				where: {
-					id,
+					slug,
+					published: user.roles?.includes('admin') ? undefined : true,
+				},
+				include: {
+					modules: {
+						where: {
+							published: user.roles?.includes('admin') ? undefined : true,
+						},
+						select: {
+							id: true,
+							name: true,
+							slug: true,
+							description: true,
+							thumbnailUrl: true,
+							published: true,
+							publicationDate: true,
+						},
+					},
+					comments: {
+						where: {
+							published: user.roles?.includes('admin') ? undefined : true,
+						},
+						select: {
+							id: true,
+							content: true,
+							createdAt: true,
+							userId: true,
+							responses: {
+								select: {
+									id: true,
+									content: true,
+									createdAt: true,
+									userId: true,
+								},
+							},
+						},
+					},
+					subscriptions: {
+						where: {
+							userId: user.id,
+							expiresAt: {
+								lte: new Date(),
+							},
+						},
+					},
 				},
 			});
 
@@ -163,64 +178,25 @@ export class CourseService {
 				throw new CustomError('NOT_FOUND', 'Course not found');
 			}
 
+			const hasActiveSubscription = user.roles?.includes('admin') ?? course.subscriptions.some(subscription => subscription.expiresAt > new Date());
+
+			const returnableCourse = {
+				...course,
+				content: hasActiveSubscription ? course?.content : '',
+				videoSourceUrl: hasActiveSubscription ? course?.videoSourceUrl : '',
+			};
+
 			return {
 				status: 'SUCCESSFUL',
-				data: course,
+				data: returnableCourse,
+			};
+		} catch (error) {
+			logger.logError(`Error getting course by slug: ${(error as Error).message}`);
+			return {
+				status: 'UNKNOWN',
+				data: undefined,
 			};
 		}
-
-		const rawCourse = await this._model.course.findUnique({
-			where: {
-				id,
-				published: true,
-			},
-			include: {
-				subscriptions: {
-					where: {
-						userId: user.id,
-						courseId: id,
-					},
-				},
-				modules: {
-					...includeModules,
-					where: {
-						published: true,
-					},
-				},
-				comments: {
-					...includeComments,
-					select: {
-						...includeComments.select,
-						responses: {
-							...includeComments.select.responses,
-							where: {
-								published: true,
-							},
-						},
-					},
-					where: {
-						published: true,
-					},
-				},
-			},
-		});
-
-		if (!rawCourse) {
-			throw new CustomError('NOT_FOUND', 'Course not found');
-		}
-
-		const hasActiveSubscription = rawCourse.subscriptions.some(subscription => subscription.expiresAt > new Date());
-
-		const returnableCourse = {
-			...rawCourse,
-			content: hasActiveSubscription ? rawCourse?.content : '',
-			videoSourceUrl: hasActiveSubscription ? rawCourse?.videoSourceUrl : '',
-		};
-
-		return {
-			status: 'SUCCESSFUL',
-			data: returnableCourse,
-		};
 	}
 
 	public async update(id: string, courseData: TCourse): Promise<TServiceReturn<TPrismaPayloadUpdateCourse>> {
@@ -248,6 +224,7 @@ export class CourseService {
 			},
 			data: {
 				name: courseToUpdate.name,
+				slug: courseToUpdate.slug,
 				description: courseToUpdate.description,
 				content: courseToUpdate.content,
 				videoSourceUrl: courseToUpdate.videoSourceUrl,
@@ -297,26 +274,6 @@ export class CourseService {
 		return {
 			status: 'SUCCESSFUL',
 			data: updatedCourse,
-		};
-	}
-
-	public async delete(id: string): Promise<TServiceReturn<string>> {
-		const deletedCourse = await this._model.course.update({
-			where: {
-				id,
-			},
-			data: {
-				published: false,
-			},
-		});
-
-		if (!deletedCourse) {
-			throw new CustomError('NOT_FOUND', 'No course to delete');
-		}
-
-		return {
-			status: 'NO_CONTENT',
-			data: 'Course unpublished',
 		};
 	}
 }
