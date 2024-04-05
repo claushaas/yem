@@ -1,3 +1,5 @@
+import {type subscriptionIdentifierToCourseId} from '~/utils/subscription-identifier-to-course-id.js';
+
 export type TSubscription = {
 	userId: string;
 	courseId: string;
@@ -18,4 +20,17 @@ export type TIuguSubscription = {
 	id: string;
 	plan_identifier: string;
 	expires_at: string;
+};
+
+export type TPlanIdentifier = keyof typeof subscriptionIdentifierToCourseId;
+
+export type TIuguSubscriptionResponse = {
+	id: string;
+	suspended: boolean;
+	plan_identifier: TPlanIdentifier;
+	customer_email: string;
+	expires_at: string;
+	created_at: string;
+	updated_at: string;
+	active: boolean;
 };
