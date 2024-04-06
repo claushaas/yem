@@ -16,10 +16,10 @@ import {
 	type TUser,
 	type TUserCreationAttributes,
 } from '../types/user.type.js';
-import {welcomeEmailTemplate} from '../private-assets/emails/welcome.email.template.server.js';
+import {welcomeEmailTemplate} from '../assets/email/welcome.email.template.server.js';
 import {UserForCreation} from '../entities/user.entity.server.js';
 import {generateSecurePassword} from '../utils/generate-secure-password.js';
-import {newPassWordEmailTemplate} from '../private-assets/emails/new-password.email.template.server.js';
+import {newPassWordEmailTemplate} from '../assets/email/new-password.email.template.server.js';
 import {MauticService} from './mautic.service.server.js';
 import {BotmakerService} from './botmaker.service.server.js';
 import {MailService} from './mail.service.server.js';

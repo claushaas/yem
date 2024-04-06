@@ -17,7 +17,11 @@ export default defineConfig({
 	},
 	plugins: [
 		remixDevTools(),
-		remix(),
+		remix({
+			future: {
+				v3_relativeSplatPath: true, // eslint-disable-line @typescript-eslint/naming-convention
+			},
+		}),
 		tsconfigPaths(),
 		svgr({
 			include: '**/*.svg?react',
