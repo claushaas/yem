@@ -12,7 +12,7 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
 			status: 200,
 		});
 	} catch (error) {
-		logger.logError(`Error sending message: ${(error as Error).message}`);
+		logger.logError(`Error sending message on hotmart loader: ${(error as Error).message}`);
 		return json({error: 'An error occurred'});
 	}
 };
@@ -27,7 +27,7 @@ export const action = async ({request}: LoaderFunctionArgs) => {
 			status: 200,
 		});
 	} catch (error) {
-		logger.logError(`Error sending message: ${(error as Error).message}`);
+		logger.logError(`Error sending message on hotmart action: ${(error as Error).message}`);
 		return json({error: 'An error occurred'});
 	}
 };

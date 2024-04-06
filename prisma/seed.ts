@@ -6,7 +6,7 @@ const main = async () => {
 	await prisma.course.createMany({
 		data: [
 			{
-				id: '026c0073-1da1-4eb7-8c6a-bf92734c3651',
+				id: 'db66f261-f832-4f0b-9565-53d8f8422d51',
 				name: 'Formação em Yoga',
 				description: 'Curso de formação em Yoga',
 				thumbnailUrl: 'd9fd2efe-ee41-45d6-25a5-4ec50aad7000',
@@ -14,7 +14,7 @@ const main = async () => {
 				content: '{"ops":[{"insert":"agora esse curso tem um conteúdo com "},{"attributes":{"link":"https://claushaas.dev"},"insert":"link"},{"insert":"\\n"}]}',
 			},
 			{
-				id: '0d36f1ba-7e39-406c-95cc-ab11a98a0de0',
+				id: '750c5893-e395-411c-8438-1754e1fd0663',
 				name: 'Escola Online',
 				description: 'Aulas e Treinamentos de Yoga',
 				thumbnailUrl: '78c0c3ab-7da6-46e8-742e-fd0e4b08b900',

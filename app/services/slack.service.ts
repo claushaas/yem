@@ -15,15 +15,15 @@ export class SlackService {
 	public async sendMessage(message: any): Promise<TServiceReturn<string>> {
 		console.log('mensagem', message);
 		try {
-			await this._request.post('', {text: `${message}`});
+			await this._request.post('', {text: JSON.stringify(message)});
 
 			return {
 				status: 'NO_CONTENT',
 				data: 'Message sent successfully',
 			};
 		} catch (error) {
-			logger.logError(`Error sending message: ${(error as Error).message}`);
-			throw new CustomError('INVALID_DATA', 'Error sending message');
+			logger.logError(`Error sending message on slack: ${(error as Error).message}`);
+			throw new CustomError('INVALID_DATA', 'Error sending message on slack');
 		}
 	}
 }

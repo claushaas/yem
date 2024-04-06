@@ -3,9 +3,10 @@ import {Request} from '../utils/request.js';
 import {CustomError} from '../utils/custom-error.js';
 import {type TServiceReturn} from '../types/service-return.type.js';
 import {type TUser} from '../types/user.type.js';
-import {type THotmartSubscription, type TSubscription} from '../types/subscription.type.js';
+import {type TPlanIdentifier, type THotmartSubscription, type TSubscription} from '../types/subscription.type.js';
 import {logger} from '../utils/logger.util.js';
 import {SecretService} from './secret.service.js';
+import {convertSubscriptionIdentifierToCourseId} from '~/utils/subscription-identifier-to-course-id.js';
 
 const baseUrl = process.env.HOTMART_API_URL ?? 'https://sandbox.hotmart.com/';
 
@@ -74,7 +75,7 @@ export class HotmartService {
 	private _mapSubscriptions(subscriptions: THotmartSubscription[], user: TUser): TSubscription[] {
 		return subscriptions.map(subscription => ({
 			userId: user.id,
-			courseId: 'TODO: pesquisar id do curso pelo id do produto no hotmart',
+			courseId: convertSubscriptionIdentifierToCourseId(subscription.product.id.toString() as TPlanIdentifier),
 			expiresAt: new Date(subscription.date_next_charge),
 			provider: 'hotmart',
 			providerSubscriptionId: subscription.subscription_id,
