@@ -2,7 +2,7 @@ import {type PrismaClient} from '@prisma/client';
 import {
 	type TPrismaPayloadCreateModule, type TModule, type TPrismaPayloadUpdateModule, type TPrismaPayloadGetModulesList, type TPrismaPayloadGetModuleById,
 } from '../types/module.type.js';
-import {Module} from '../entities/module.entity.js';
+import {Module} from '../entities/module.entity.server.js';
 import {type TUser, type TUserRoles} from '../types/user.type.js';
 import {type TUuid} from '../types/uuid.type.js';
 import {CustomError} from '../utils/custom-error.js';

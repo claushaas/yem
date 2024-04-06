@@ -5,7 +5,7 @@ import {
 } from '@remix-run/react';
 import {Button, ButtonPreset, ButtonType} from '~/components/button/index.js';
 import {YemSpinner} from '~/components/yem-spinner/index.js';
-import {UserService} from '~/services/user.service';
+import {UserService} from '~/services/user.service.server';
 import {commitUserSession, getUserSession} from '~/utils/session.server';
 
 type StudentsLoaderData = {

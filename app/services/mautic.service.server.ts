@@ -3,7 +3,7 @@ import {CustomError} from '../utils/custom-error.js';
 import {type TServiceReturn} from '../types/service-return.type.js';
 import {type TMauticUserCreationAttributes} from '../types/user.type.js';
 import {logger} from '../utils/logger.util.js';
-import {MauticUserForCreation} from '../entities/user.entity.js';
+import {MauticUserForCreation} from '../entities/user.entity.server.js';
 
 export class MauticService {
 	private readonly _request: Request;

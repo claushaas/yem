@@ -9,14 +9,17 @@ import * as RadixForm from '@radix-ui/react-form';
 import {useEffect, useState} from 'react';
 import {XMarkIcon} from '@heroicons/react/24/outline';
 import {Button, ButtonPreset, ButtonType} from '~/components/button/index.js';
-import {UserService} from '~/services/user.service';
+import {UserService} from '~/services/user.service.server';
 import {type TUser} from '~/types/user.type';
 import {commitUserSession, getUserSession} from '~/utils/session.server';
 import {YemSpinner} from '~/components/yem-spinner/index.js';
 import {logger} from '~/utils/logger.util';
+import SubscriptionService from '~/services/subscription.service.server';
+import {type TPrismaPayloadGetUserSubscriptions} from '~/types/subscription.type';
 
 type StudentLoaderData = {
 	studentData: TUser | undefined;
+	subscriptions: TPrismaPayloadGetUserSubscriptions[] | undefined;
 	error: string | undefined;
 	success: string | undefined;
 };
@@ -27,9 +30,11 @@ export const loader = async ({request, params}: LoaderFunctionArgs) => {
 
 	try {
 		const {data: studentData} = await new UserService().getUserData(username!);
+		const {data: subscriptions} = await new SubscriptionService().getUserSubscriptions(studentData);
 
 		return json<StudentLoaderData>({
 			studentData,
+			subscriptions,
 			error: userSession.get('error') as string | undefined,
 			success: userSession.get('success') as string | undefined,
 		}, {
@@ -144,6 +149,7 @@ export default function Student() {
 		error,
 		success,
 		studentData,
+		subscriptions,
 	} = useLoaderData<StudentLoaderData>();
 
 	const [nameDialogIsOpen, setNameDialogIsOpen] = useState(false);
@@ -534,6 +540,20 @@ export default function Student() {
 						</Dialog.Content>
 					</Dialog.Portal>
 				</Dialog.Root>
+			</div>
+
+			<div>
+				<h2>Matrículas</h2>
+				{subscriptions && (
+					<ul>
+						{subscriptions.map(subscription => (
+							<li key={subscription.id}>
+								<h3>{subscription.course.name}</h3>
+								<p>{subscription.expiresAt}</p>
+							</li>
+						))}
+					</ul>
+				)}
 			</div>
 		</>
 	);

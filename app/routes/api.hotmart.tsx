@@ -1,5 +1,5 @@
 import {json, type LoaderFunctionArgs} from '@remix-run/node';
-import {SlackService} from '~/services/slack.service';
+import {SlackService} from '~/services/slack.service.server';
 import {logger} from '~/utils/logger.util';
 
 export const loader = async ({request}: LoaderFunctionArgs) => {
