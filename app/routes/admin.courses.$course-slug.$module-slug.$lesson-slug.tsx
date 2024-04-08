@@ -16,7 +16,7 @@ import {
 	XMarkIcon, ChevronDownIcon, ChevronUpIcon, CheckIcon,
 } from '@heroicons/react/24/outline';
 import {ClientOnly} from 'remix-utils/client-only';
-import {LessonService} from '~/services/lesson.service';
+import {LessonService} from '~/services/lesson.service.server';
 import {type TUser} from '~/types/user.type';
 import {logger} from '~/utils/logger.util';
 import {commitUserSession, getUserSession} from '~/utils/session.server';

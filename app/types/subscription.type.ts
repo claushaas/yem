@@ -1,3 +1,4 @@
+import {type Prisma} from '@prisma/client';
 import {type subscriptionIdentifierToCourseId} from '~/utils/subscription-identifier-to-course-id.js';
 
 export type TSubscription = {
@@ -34,3 +35,15 @@ export type TIuguSubscriptionResponse = {
 	updated_at: string;
 	active: boolean;
 };
+
+export type TPrismaPayloadGetUserSubscriptions = Prisma.UserSubscriptionsGetPayload<{
+	include: {
+		course: {
+			select: {
+				id: true;
+				name: true;
+				slug: true;
+			};
+		};
+	};
+}>;

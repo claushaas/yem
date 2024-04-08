@@ -1,6 +1,6 @@
 import {type PrismaClient} from '@prisma/client';
 import {type TUser, type TUserRoles} from '../types/user.type.js';
-import {Course} from '../entities/course.entity.js';
+import {Course} from '../entities/course.entity.server.js';
 import {
 	type TPrismaPayloadGetCourseById, type TCourse, type TPrismaPayloadGetAllCourses, type TPrismaPayloadCreateCourse, type TPrismaPayloadUpdateCourse,
 } from '../types/course.type.js';
@@ -154,6 +154,9 @@ export class CourseService {
 							createdAt: true,
 							userId: true,
 							responses: {
+								where: {
+									published: user.roles?.includes('admin') ? undefined : true,
+								},
 								select: {
 									id: true,
 									content: true,

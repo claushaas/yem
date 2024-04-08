@@ -12,7 +12,7 @@ import type Quill from 'quill';
 import {Suspense, useEffect, useState} from 'react';
 import {ClientOnly} from 'remix-utils/client-only';
 import * as Switch from '@radix-ui/react-switch';
-import {CourseService} from '~/services/course.service';
+import {CourseService} from '~/services/course.service.server';
 import {Button, ButtonPreset, ButtonType} from '~/components/button/index.js';
 import {commitUserSession, getUserSession} from '~/utils/session.server.js';
 import {logger} from '~/utils/logger.util.js';
