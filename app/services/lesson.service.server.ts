@@ -5,7 +5,7 @@ import {CustomError} from '../utils/custom-error.js';
 import {
 	type TPrismaPayloadCreateLesson, type TLesson, type TPrismaPayloadUpdateLesson, type TPrismaPayloadGetLessonList, type TPrismaPayloadGetLessonById,
 } from '../types/lesson.type.js';
-import {Lesson} from '../entities/lesson.entity.js';
+import {Lesson} from '../entities/lesson.entity.server.js';
 import {type TUuid} from '../types/uuid.type.js';
 import {type TServiceReturn} from '../types/service-return.type.js';
 import {type TSearchableEntity} from '../types/searchable.type.js';

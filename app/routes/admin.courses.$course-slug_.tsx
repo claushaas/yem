@@ -14,7 +14,7 @@ import {ClientOnly} from 'remix-utils/client-only';
 import * as Switch from '@radix-ui/react-switch';
 import {XMarkIcon} from '@heroicons/react/24/outline';
 import Select from 'react-select';
-import {CourseService} from '~/services/course.service';
+import {CourseService} from '~/services/course.service.server';
 import {commitUserSession, getUserSession} from '~/utils/session.server';
 import {type TUser} from '~/types/user.type';
 import {logger} from '~/utils/logger.util';
@@ -23,7 +23,7 @@ import {CourseCard} from '~/components/course-card/index.js';
 import {Button, ButtonPreset, ButtonType} from '~/components/button/index.js';
 import {Editor} from '~/components/text-editor/index.client.js';
 import {YemSpinner} from '~/components/yem-spinner/index.js';
-import {ModuleService} from '~/services/module.service';
+import {ModuleService} from '~/services/module.service.server';
 
 type CourseLoaderData = {
 	error: string | undefined;

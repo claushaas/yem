@@ -2,7 +2,7 @@ import {type PrismaClient} from '@prisma/client';
 import {
 	type TPrismaPayloadCreateModule, type TModule, type TPrismaPayloadUpdateModule, type TPrismaPayloadGetModulesList, type TPrismaPayloadGetModuleById,
 } from '../types/module.type.js';
-import {Module} from '../entities/module.entity.js';
+import {Module} from '../entities/module.entity.server.js';
 import {type TUser, type TUserRoles} from '../types/user.type.js';
 import {type TUuid} from '../types/uuid.type.js';
 import {CustomError} from '../utils/custom-error.js';
@@ -243,7 +243,7 @@ export class ModuleService {
 		};
 	}
 
-	public async getBySlug(courseSlug: TUuid, slug: string, user: TUser): Promise<TServiceReturn<TPrismaPayloadGetModuleById | undefined>> {
+	public async getBySlug(courseSlug: string, slug: string, user: TUser): Promise<TServiceReturn<TPrismaPayloadGetModuleById | undefined>> {
 		try {
 			const module = await this._model.module.findUnique({
 				where: {
@@ -285,6 +285,9 @@ export class ModuleService {
 						},
 					},
 					lessons: {
+						where: {
+							published: user.roles?.includes('admin') ? undefined : true,
+						},
 						select: {
 							id: true,
 							name: true,
