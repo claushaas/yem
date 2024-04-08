@@ -68,7 +68,8 @@ COPY --link package.json ./
 COPY --link prisma ./prisma
 COPY --link --from=prod-deps /app/node_modules ./node_modules
 COPY --link --from=builder /app/build ./build
-COPY --link /server.js ./server.js
+COPY --link /remix-handler.js ./remix-handler.js
+COPY --link /server.ts ./server.ts
 
 RUN npx prisma generate
 
