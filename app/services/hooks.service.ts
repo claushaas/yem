@@ -24,7 +24,7 @@ export class HooksService {
 		event: string;
 		data: Record<string, any>;
 	}): Promise<TServiceReturn<string>> {
-		const {event, data} = body;
+		const {event} = body;
 		try {
 			switch (event) {
 				case 'invoice.status_changed': {
@@ -33,7 +33,7 @@ export class HooksService {
 				}
 
 				default: {
-					await this._slackService.sendMessage(data);
+					await this._slackService.sendMessage(body);
 					console.log('default');
 					break;
 				}
