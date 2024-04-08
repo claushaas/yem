@@ -19,7 +19,14 @@ const remixHandler = createRequestHandler({
 const app = express();
 
 app.use(compression());
-app.use(helmet());
+app.use(
+	helmet({
+		xPoweredBy: false,
+		referrerPolicy: { policy: 'same-origin' },
+		crossOriginEmbedderPolicy: false,
+		contentSecurityPolicy: false,
+	}),
+)
 
 // Handle asset requests
 if (viteDevelopmentServer) {
@@ -34,7 +41,7 @@ if (viteDevelopmentServer) {
 
 // Everything else (like favicon.ico) is cached for an hour. You may want to be
 // more aggressive with this caching.
-app.use(express.static('build/client', {maxAge: '1h'}));
+app.use(express.static('build/client', {maxAge: '1y'}));
 
 app.use(morgan('tiny'));
 
