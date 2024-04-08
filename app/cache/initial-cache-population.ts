@@ -23,6 +23,7 @@ export const populateModules = async () => {
 		include: {
 			course: {
 				select: {
+					id: true,
 					slug: true,
 				},
 			},
