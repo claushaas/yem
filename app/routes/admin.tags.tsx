@@ -9,7 +9,7 @@ import * as Dialog from '@radix-ui/react-dialog';
 import * as RadixForm from '@radix-ui/react-form';
 import {XMarkIcon} from '@heroicons/react/24/outline';
 import {Suspense, useEffect, useState} from 'react';
-import {TagService} from '~/services/tag.service';
+import {TagService} from '~/services/tag.service.server';
 import {type TServiceReturn} from '~/types/service-return.type';
 import {type TTag, type TPrismaPayloadGetAllTags} from '~/types/tag.type';
 import {logger} from '~/utils/logger.util';

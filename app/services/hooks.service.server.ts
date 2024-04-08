@@ -1,7 +1,7 @@
-import {UserService} from './user.service.js';
-import SubscriptionService from './subscription.service.js';
-import {IuguService} from './iugu.service.js';
-import {SlackService} from './slack.service.js';
+import {UserService} from './user.service.server.js';
+import SubscriptionService from './subscription.service.server.js';
+import {IuguService} from './iugu.service.server.js';
+import {SlackService} from './slack.service.server.js';
 import {type TServiceReturn} from '~/types/service-return.type';
 import {convertSubscriptionIdentifierToCourseId} from '~/utils/subscription-identifier-to-course-id.js';
 import {logger} from '~/utils/logger.util';

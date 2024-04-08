@@ -1,6 +1,6 @@
 import {type ActionFunctionArgs, json, type LoaderFunctionArgs} from '@remix-run/node';
 import {parse} from 'qs';
-import {HooksService} from '~/services/hooks.service';
+import {HooksService} from '~/services/hooks.service.server';
 import {logger} from '~/utils/logger.util';
 
 export const loader = async () => {

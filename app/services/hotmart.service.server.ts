@@ -5,7 +5,7 @@ import {type TServiceReturn} from '../types/service-return.type.js';
 import {type TUser} from '../types/user.type.js';
 import {type TPlanIdentifier, type THotmartSubscription, type TSubscription} from '../types/subscription.type.js';
 import {logger} from '../utils/logger.util.js';
-import {SecretService} from './secret.service.js';
+import {SecretService} from './secret.service.server.js';
 import {convertSubscriptionIdentifierToCourseId} from '~/utils/subscription-identifier-to-course-id.js';
 
 const baseUrl = process.env.HOTMART_API_URL ?? 'https://sandbox.hotmart.com/';

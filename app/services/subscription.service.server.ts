@@ -1,12 +1,13 @@
-import {type PrismaClient} from '@prisma/client';
+import {type Prisma, type PrismaClient} from '@prisma/client';
 import {type TUser} from '../types/user.type.js';
 import {type TServiceReturn} from '../types/service-return.type.js';
-import {Subscription} from '../entities/subscription.entity.js';
-import {type TSubscription} from '../types/subscription.type.js';
+import {Subscription} from '../entities/subscription.entity.server.js';
+import {type TPrismaPayloadGetUserSubscriptions, type TSubscription} from '../types/subscription.type.js';
 import {logger} from '../utils/logger.util.js';
 import {db} from '../database/db.js';
-import {HotmartService} from './hotmart.service.js';
-import {IuguService} from './iugu.service.js';
+import {HotmartService} from './hotmart.service.server.js';
+import {IuguService} from './iugu.service.server.js';
+import {CustomError} from '~/utils/custom-error.js';
 
 export default class SubscriptionService {
 	private readonly _model: PrismaClient;
@@ -86,5 +87,39 @@ export default class SubscriptionService {
 			status: 'NO_CONTENT',
 			data: 'Subscriptions created or updated successfully',
 		};
+	}
+
+	public async getUserSubscriptions(user: TUser): Promise<TServiceReturn<TPrismaPayloadGetUserSubscriptions[] | undefined>> {
+		try {
+			const subscriptions = await this._model.userSubscriptions.findMany({
+				where: {
+					userId: user.id,
+				},
+				include: {
+					course: {
+						select: {
+							id: true,
+							name: true,
+							slug: true,
+						},
+					},
+				},
+			});
+
+			if (!subscriptions) {
+				return {
+					status: 'NO_CONTENT',
+					data: undefined,
+				};
+			}
+
+			return {
+				status: 'SUCCESSFUL',
+				data: subscriptions,
+			};
+		} catch (error) {
+			logger.logError(`Error getting user subscriptions: ${(error as Error).message}`);
+			throw new CustomError('UNKNOWN', `Error getting user subscriptions: ${(error as Error).message}`);
+		}
 	}
 }
