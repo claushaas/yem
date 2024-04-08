@@ -21,10 +21,10 @@
   "scripts": {
     "build": "remix vite:build",
     "predev": "npx prisma migrate dev",
-    "dev": "node ./server.js",
+    "dev": "tsx ./server.ts",
     "lint": "eslint --ignore-path .gitignore --cache --cache-location ./node_modules/.cache/eslint .",
     "prestart": "npx prisma migrate deploy",
-    "start": "node ./server.js",
+    "start": "tsx ./server.ts",
     "typecheck": "tsc",
     "update": "npx npm-check-updates -i",
     "up": "docker compose up -d --build",
@@ -133,7 +133,7 @@
     },
     "ignores": [
       "postcss.config.js",
-      "server.js"
+      "remix-handler.js"
     ]
   }
 }

@@ -30,5 +30,5 @@ export class MemoryCache {
 		return Object.keys(MemoryCache.cache);
 	}
 
-	private static cache: Record<string, string>;
+	private static cache: Record<string, string> = {};
 }
