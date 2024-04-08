@@ -6,9 +6,9 @@
     "**/.server/**/*.tsx",
     "**/.client/**/*.ts",
     "**/.client/**/*.tsx",
-    "app/utils/remix-server-utils.js",
     "**/api/**/*.ts",
     "**/api/**/*.tsx",
+    "/server.js",
   ],
   "compilerOptions": {
     "lib": [

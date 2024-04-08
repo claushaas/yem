@@ -67,8 +67,8 @@ WORKDIR /app
 COPY --link package.json ./
 COPY --link prisma ./prisma
 COPY --link --from=prod-deps /app/node_modules ./node_modules
-COPY --link --from=builder /app/build/client ./build/client
-COPY --link --from=builder /app/build/server ./build/server
+COPY --link --from=builder /app/build ./build
+COPY --link /server.js ./server.js
 
 RUN npx prisma generate
 
