@@ -243,7 +243,7 @@ export class ModuleService {
 		};
 	}
 
-	public async getBySlug(courseSlug: TUuid, slug: string, user: TUser): Promise<TServiceReturn<TPrismaPayloadGetModuleById | undefined>> {
+	public async getBySlug(courseSlug: string, slug: string, user: TUser): Promise<TServiceReturn<TPrismaPayloadGetModuleById | undefined>> {
 		try {
 			const module = await this._model.module.findUnique({
 				where: {
@@ -285,6 +285,9 @@ export class ModuleService {
 						},
 					},
 					lessons: {
+						where: {
+							published: user.roles?.includes('admin') ? undefined : true,
+						},
 						select: {
 							id: true,
 							name: true,

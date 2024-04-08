@@ -1,10 +1,9 @@
 import {type ActionFunctionArgs, json, type LoaderFunctionArgs} from '@remix-run/node';
 import {parse} from 'qs';
-import {HooksService} from '~/services/hooks.service.server';
-import {IuguService} from '~/services/iugu.service.server';
+import {HooksService} from '~/services/hooks.service';
 import {logger} from '~/utils/logger.util';
 
-export const loader = async ({request}: LoaderFunctionArgs) => {
+export const loader = async () => {
 	try {
 		return json({
 			message: 'OK',
@@ -24,8 +23,6 @@ export const action = async ({request}: ActionFunctionArgs) => {
 			event: string;
 			data: Record<string, any>;
 		};
-
-		console.log('body', body);
 
 		await new HooksService().handleIuguWebhook(body);
 

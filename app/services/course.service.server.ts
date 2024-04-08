@@ -154,6 +154,9 @@ export class CourseService {
 							createdAt: true,
 							userId: true,
 							responses: {
+								where: {
+									published: user.roles?.includes('admin') ? undefined : true,
+								},
 								select: {
 									id: true,
 									content: true,
