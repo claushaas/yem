@@ -21,10 +21,10 @@
   "scripts": {
     "build": "remix vite:build",
     "predev": "npx prisma migrate dev",
-    "dev": "node ./server.js",
+    "dev": "tsx ./server.ts",
     "lint": "eslint --ignore-path .gitignore --cache --cache-location ./node_modules/.cache/eslint .",
     "prestart": "npx prisma migrate deploy",
-    "start": "node ./server.js",
+    "start": "tsx ./server.ts",
     "typecheck": "tsc",
     "update": "npx npm-check-updates -i",
     "up": "docker compose up -d --build",
@@ -70,6 +70,7 @@
     "react-phone-number-input": "^3.3.12",
     "react-select": "^5.8.0",
     "remix-utils": "^7.6.0",
+    "tsx": "^4.7.2",
     "winston": "^3.13.0"
   },
   "devDependencies": {
@@ -90,7 +91,6 @@
     "tailwindcss": "^3.4.3",
     "tailwindcss-radix": "^3.0.3",
     "tailwindcss-radix-colors": "^1.2.0",
-    "tsx": "^4.7.2",
     "typescript": "^5.4.4",
     "vite": "^5.2.8",
     "vite-plugin-svgr": "^4.2.0",
@@ -133,7 +133,7 @@
     },
     "ignores": [
       "postcss.config.js",
-      "server.js"
+      "remix-handler.js"
     ]
   }
 }

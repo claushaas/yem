@@ -1,20 +1,11 @@
-import {createRequestHandler} from '@remix-run/express';
 import {installGlobals} from '@remix-run/node';
 import compression from 'compression';
 import express from 'express';
 import morgan from 'morgan';
-import helmet from "helmet";
+import helmet from 'helmet';
+import {viteDevelopmentServer, remixHandler} from './remix-handler.js';
 
 installGlobals();
-
-const viteDevelopmentServer
-  = process.env.NODE_ENV === 'production' ? undefined : await import('vite').then(vite => vite.createServer({server: {middlewareMode: true}}));
-
-const remixHandler = createRequestHandler({
-	build: viteDevelopmentServer
-		? () => viteDevelopmentServer.ssrLoadModule('virtual:remix/server-build')
-		: await import('./build/server/index.js'),
-});
 
 const app = express();
 
@@ -22,11 +13,11 @@ app.use(compression());
 app.use(
 	helmet({
 		xPoweredBy: false,
-		referrerPolicy: { policy: 'same-origin' },
+		referrerPolicy: {policy: 'same-origin'},
 		crossOriginEmbedderPolicy: false,
 		contentSecurityPolicy: false,
 	}),
-)
+);
 
 // Handle asset requests
 if (viteDevelopmentServer) {
@@ -48,9 +39,7 @@ app.use(morgan('tiny'));
 // Handle SSR requests
 app.all('*', remixHandler);
 
-const port = process.env.APP_PORT || 3001;
-app.listen(port, () =>
-	console.log(`Express server listening at http://localhost:${port}`),
-);
-
-
+const port = process.env.APP_PORT ?? 3001;
+app.listen(port, () => {
+	console.log(`Express server listening at http://localhost:${port}`);
+});
