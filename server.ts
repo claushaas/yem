@@ -4,14 +4,13 @@ import express from 'express';
 import morgan from 'morgan';
 import helmet from 'helmet';
 import {viteDevelopmentServer, remixHandler} from './remix-handler.js';
-import { executeAndRepeat } from '~/utils/background-timer.js';
+import { executeAndRepeat } from '~/utils/background-task';
 import {
     populateCourses,
     populateLessons,
     populateModules,
     populateSubscriptions
 } from "~/cache/initial-cache-population";
-import {populateDependenciesFromMessages} from "@remix-run/dev/dist/compiler/utils/postcss";
 
 installGlobals();
 
