@@ -3,6 +3,7 @@ import {type MetaFunction, json, type LoaderFunctionArgs} from '@remix-run/node'
 import {useLoaderData} from '@remix-run/react';
 import {QuillDeltaToHtmlConverter} from 'quill-delta-to-html';
 import {type OpIterator} from 'quill/core';
+import {CourseCard} from '~/components/course-card/index.js';
 import {CourseService} from '~/services/course.service.server';
 import {type TPrismaPayloadGetCourseById} from '~/types/course.type';
 import {type TUser} from '~/types/user.type';
@@ -54,14 +55,20 @@ export default function Course() {
 					{/* eslint-disable-next-line react/no-danger, @typescript-eslint/naming-convention */}
 					<section dangerouslySetInnerHTML={{__html: contentConverter.convert()}} id='content'/>
 					{course.videoSourceUrl && (
-						<section id='vide' className='h-fit'>
+						<section id='video' className='h-fit'>
 							<Stream
 								controls
-								autoplay
 								className='pt-[56.25%] relative *:absolute *:w-full *:h-full *:top-0 *:left-0 *:inset-0'
 								src={course.videoSourceUrl}
 								responsive={false}
 							/>
+						</section>
+					)}
+					{course.modules && (
+						<section id='modules' className='flex flex-wrap gap-4 my-4'>
+							{course.modules.map(module => (
+								<CourseCard key={module.id} course={module} to={`./${module.slug}`}/>
+							))}
 						</section>
 					)}
 				</div>
