@@ -4,6 +4,14 @@ import express from 'express';
 import morgan from 'morgan';
 import helmet from 'helmet';
 import {viteDevelopmentServer, remixHandler} from './remix-handler.js';
+import { executeAndRepeat } from '~/utils/background-timer.js';
+import {
+    populateCourses,
+    populateLessons,
+    populateModules,
+    populateSubscriptions
+} from "~/cache/initial-cache-population";
+import {populateDependenciesFromMessages} from "@remix-run/dev/dist/compiler/utils/postcss";
 
 installGlobals();
 
@@ -37,7 +45,21 @@ app.use(express.static('build/client', {maxAge: '1y'}));
 app.use(morgan('tiny'));
 
 // Handle SSR requests
-app.all('*', remixHandler);
+app.all('*', remixHandler)
+
+const FIVE_MINUTES = 1000 * 60 * 5
+executeAndRepeat(async () => {
+	console.log('Populate cache task started')
+	console.log('courses populate started')
+	await populateCourses()
+	console.log('lessons populate started')
+	await populateLessons()
+	console.log('modules populate started')
+	await populateModules()
+	console.log('subscriptions populate started')
+	await populateSubscriptions()
+	console.log('Populate cache task started')
+}, FIVE_MINUTES)
 
 const port = process.env.APP_PORT ?? 3001;
 app.listen(port, () => {
