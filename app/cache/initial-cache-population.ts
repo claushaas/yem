@@ -48,6 +48,12 @@ export const populateLessons = async () => {
 				select: {
 					id: true,
 					slug: true,
+					course: {
+						select: {
+							id: true,
+							slug: true,
+						},
+					},
 				},
 			},
 		},
