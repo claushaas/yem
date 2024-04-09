@@ -650,7 +650,7 @@ export default function Module() {
 											<input
 												disabled={isSubmittingAnyForm}
 												type='text'
-												value={[module.id]}
+												defaultValue={[module.id]}
 											/>
 										</RadixForm.Control>
 									</RadixForm.Field>

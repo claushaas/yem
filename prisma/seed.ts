@@ -57,11 +57,25 @@ const main = async () => {
 			thumbnailUrl: '78c0c3ab-7da6-46e8-742e-fd0e4b08b900',
 			publicationDate: new Date('2024-03-25 18:30:00'),
 			course: {
-				connect: {
-					name: 'Escola Online',
-				},
+				connect: {name: 'Escola Online'},
 			},
 		},
+	});
+
+	await prisma.lesson.create({
+		data: {
+			id: 'd9fd2efe-ee41-45d6-25a5-4ec50aad7000',
+			name: 'Aula 1',
+			slug: 'aula-1',
+			description: 'Aula de Yoga',
+			videoSourceUrl: 'd4d143774ac00547befe64063fc8f7e2',
+			thumbnailUrl: '78c0c3ab-7da6-46e8-742e-fd0e4b08b900',
+			publicationDate: new Date('2024-03-25 17:30:00'),
+			modules: {
+				connect: [{id: '0a609d33-97e1-4400-bd64-4834c8387950'}, {id: '16c63aa1-8122-4327-a990-56ec2e636808'}],
+			},
+		},
+
 	});
 };
 
