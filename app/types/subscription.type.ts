@@ -47,3 +47,98 @@ export type TPrismaPayloadGetUserSubscriptions = Prisma.UserSubscriptionsGetPayl
 		};
 	};
 }>;
+
+export type TIncommingHotmartWebhook = {
+	data: {
+		product: {
+			has_co_production: boolean;
+			name: string;
+			id: number;
+			ucode: string;
+		};
+		commissions: Array<{
+			currency_value: string;
+			source: string;
+			value: number;
+		}>;
+		purchase: {
+			original_offer_price: {
+				currency_value: string;
+				value: number;
+			};
+			recurrence_number?: number;
+			subscription_anticipation_purchase: boolean;
+			checkout_country: {
+				iso: string;
+				name: string;
+			};
+			order_bump: {
+				is_order_bump: boolean;
+			};
+			approved_date?: Date;
+			offer: {
+				code: string;
+			};
+			order_date: Date;
+			date_next_charge: Date;
+			price: {
+				currency_value: string;
+				value: number;
+			};
+			payment: {
+				billet_url?: string;
+				billet_barcode?: string;
+				pix_qrcode?: string;
+				pix_expiration_date?: Date;
+				pix_code?: string;
+				refusal_reason?: string;
+				installments_number: 12;
+				type: string;
+			};
+			full_price: {
+				currency_value: string;
+				value: number;
+			};
+			invoice_by: string;
+			transaction: string;
+			status: string;
+		};
+		affiliates: Array<{
+			affiliate_code: string;
+			name: string;
+		}>;
+		producer: {
+			name: string;
+		};
+		subscription?: {
+			subscriber: {
+				code: string;
+			};
+			plan?: {
+				name: string;
+				id: number;
+			};
+			status: string;
+		};
+		buyer: {
+			address: {
+				zipcode: string;
+				country: string;
+				number: string;
+				address: string;
+				city: string;
+				state: string;
+				neighborhood: string;
+				country_iso: string;
+			};
+			document: string;
+			name: string;
+			checkout_phone: string;
+			email: string;
+		};
+	};
+	id: string;
+	creation_date: Date;
+	event: string;
+	version: string;
+};

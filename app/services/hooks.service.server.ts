@@ -6,6 +6,7 @@ import {type TServiceReturn} from '~/types/service-return.type';
 import {convertSubscriptionIdentifierToCourseId} from '~/utils/subscription-identifier-to-course-id.js';
 import {logger} from '~/utils/logger.util';
 import {CustomError} from '~/utils/custom-error.js';
+import {type TIncommingHotmartWebhook} from '~/types/subscription.type.js';
 
 export class HooksService {
 	private readonly _userService: UserService;
@@ -18,6 +19,55 @@ export class HooksService {
 		this._subscriptionService = new SubscriptionService();
 		this._slackService = new SlackService();
 		this._iuguService = new IuguService();
+	}
+
+	public async handleHotmartWebhook(body: TIncommingHotmartWebhook): Promise<TServiceReturn<string>> {
+		const {event} = body;
+
+		try {
+			switch (event) {
+				case 'PURCHASE_BILLET_PRINTED': {
+					// Emissão de boleto e código pix
+					// 1 - Verificar se usuário existe
+					// 1.1 - Criar usuário novo caso usuário não exista
+					// 2 - enviar mensagem e email com dados do boleto ou pix
+					await this._slackService.sendMessage(body);
+					break;
+				}
+
+				case 'PURCHASE_APPROVED': {
+					// Compra aprovada
+					// 1 - Verificar se usuário existe
+					// 1.1 - Criar usuário novo caso usuário não exista
+					// 2 - Criar ou atualizar assinatura
+					// 3 - Verificar se é uma compra nova ou renovação
+					// 3.1 - Caso seja compra nova, enviar mensagem e email de boas vindas
+					await this._slackService.sendMessage(body);
+					break;
+				}
+
+				case 'PURCHASE_DELAYED': {
+					// Compra com atraso
+					// Enviar mensagem e email com aviso sobre atraso de pagamento
+					await this._slackService.sendMessage(body);
+					break;
+				}
+
+				default: {
+					await this._slackService.sendMessage(body);
+					break;
+				}
+			}
+
+			await this._slackService.sendMessage(body);
+			return {
+				status: 'SUCCESSFUL',
+				data: 'Webhook received',
+			};
+		} catch (error) {
+			logger.logError(`Error handling hotmart webhook: ${(error as Error).message}`);
+			throw new CustomError('INVALID_DATA', `Error handling hotmart webhook: ${(error as Error).message}`);
+		}
 	}
 
 	public async handleIuguWebhook(body: {
@@ -60,15 +110,13 @@ export class HooksService {
 					const {data: subscription} = await this._iuguService.getSubscriptionById(data.subscription_id as string);
 					const {data: user} = await this._userService.getUserData(subscription.customer_email);
 
-					const createdSubscription = await this._subscriptionService.createOrUpdate({
+					await this._subscriptionService.createOrUpdate({
 						userId: user.id,
 						courseId: convertSubscriptionIdentifierToCourseId(subscription.plan_identifier),
 						expiresAt: new Date(subscription.expires_at),
 						provider: 'iugu',
 						providerSubscriptionId: subscription.id,
 					});
-
-					console.log('Subscription created', createdSubscription);
 					break;
 				}
 
