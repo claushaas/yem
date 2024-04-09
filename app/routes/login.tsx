@@ -11,6 +11,7 @@ import {getUserSession, commitUserSession} from '~/utils/session.server';
 import {type TypeUserSession} from '~/types/user-session.type';
 import {YemSpinner} from '~/components/yem-spinner/index.js';
 import {UserService} from '~/services/user.service.server';
+import {logger} from '~/utils/logger.util';
 
 export const meta: MetaFunction = () => [
 	{title: 'Yoga em Movimento - Entrar'},
@@ -38,12 +39,14 @@ export const action = async ({request}: ActionFunctionArgs) => {
 		userSession.set('lastName', lastName);
 		userSession.set('phoneNumber', phoneNumber);
 
-		return redirect('/', {
+		return redirect('/courses', {
 			headers: {
 				'Set-Cookie': await commitUserSession(userSession), // eslint-disable-line @typescript-eslint/naming-convention
 			},
 		});
-	} catch {
+	} catch (error) {
+		logger.logError(`Error logging in: ${(error as Error).message}`);
+
 		userSession.unset('id');
 		userSession.unset('email');
 		userSession.unset('roles');
@@ -64,7 +67,7 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 
 	if (userSession.has('id')) {
-		return redirect('/');
+		return redirect('/courses');
 	}
 
 	const data = {
