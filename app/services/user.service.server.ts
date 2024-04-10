@@ -335,64 +335,30 @@ export class UserService {
       = newUser;
 
 		const paramsforUserCreation = {
-
 			UserPoolId: process.env.COGNITO_USER_POOL_ID,
-
-			Username: email.toLowerCase(),
-
+			Username: email,
 			MessageAction: 'SUPPRESS' as MessageActionType,
-
 			UserAttributes: [
-				{
-					Name: 'email',
-					Value: email,
-				},
-				{
-					Name: 'email_verified',
-					Value: 'true',
-				},
-				{
-					Name: 'phone_number_verified',
-					Value: 'true',
-				},
-				{
-					Name: 'phone_number',
-					Value: phoneNumber,
-				},
-				{
-					Name: 'given_name',
-					Value: firstName,
-				},
-				{
-					Name: 'family_name',
-					Value: lastName,
-				},
-				{
-					Name: 'custom:roles',
-					Value: roles?.join('-') ?? 'iniciantes',
-				},
-				{
-					Name: 'custom:CPF',
-					Value: document ?? '',
-				},
+				{Name: 'email', Value: email},
+				{Name: 'email_verified', Value: 'true'},
+				{Name: 'phone_number_verified', Value: 'true'},
+				{Name: 'phone_number', Value: phoneNumber},
+				{Name: 'given_name', Value: firstName},
+				{Name: 'family_name', Value: lastName},
+				{Name: 'custom:roles', Value: roles ? (roles.length > 1 ? roles.join('-') : roles[0]) : 'iniciantes'},
+				{Name: 'custom:CPF', Value: document ?? ''},
+				{Name: 'custom:iuguId', Value: 'INVALID-IUGU-ID'}, // Added for support for old site, should be deleted when old site is no more supported
+				{Name: 'custom:mauticId', Value: 'INVALID-MAUTIC-ID'}, // Added for support for old site, should be deleted when old site is no more supported
 			],
 		};
 
 		logger.logDebug(
 			`Creating Cognito command for ${email} with data: ${JSON.stringify(paramsforUserCreation)}`,
 		);
-		const commandforUserCreation = new AdminCreateUserCommand(
-			paramsforUserCreation,
-		);
-		const userCreationResponse = await this._awsClient.send(
-			commandforUserCreation,
-		);
-		logger.logDebug(
-			`User creation response: ${JSON.stringify(userCreationResponse.$metadata)}`,
-		);
-		logger.logDebug(
-			`User creation response: ${JSON.stringify(userCreationResponse.User)}`,
-		);
+		const commandforUserCreation = new AdminCreateUserCommand(paramsforUserCreation);
+		const userCreationResponse = await this._awsClient.send(commandforUserCreation);
+		logger.logDebug(`User creation response: ${JSON.stringify(userCreationResponse.$metadata)}`);
+		logger.logDebug(`User creation response: ${JSON.stringify(userCreationResponse.User)}`);
 
 		if (userCreationResponse.$metadata.httpStatusCode !== 200) {
 			logger.logError(`Error creating user ${email}`);
@@ -404,9 +370,19 @@ export class UserService {
 		);
 
 		logger.logDebug(`Getting user id for user ${email}`);
-		const username: string
-      = userCreationResponse.User?.Attributes?.find(attribute => attribute.Name === 'sub')?.Value ?? '';
+		const username: string = userCreationResponse.User?.Attributes?.find(attribute => attribute.Name === 'sub')?.Value ?? '';
 		logger.logDebug(`User id for user ${email} is ${username}`);
+
+		// Set custom-id for user, should be deleted when old site is no more supported
+		const parameters = {
+			UserAttributes: [
+				{Name: 'custom:id', Value: username},
+			],
+			UserPoolId: process.env.COGNITO_USER_POOL_ID,
+			Username: username,
+		};
+		const command = new AdminUpdateUserAttributesCommand(parameters);
+		await this._awsClient.send(command);
 
 		const password = generateSecurePassword();
 
