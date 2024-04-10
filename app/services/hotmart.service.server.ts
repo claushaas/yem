@@ -31,10 +31,7 @@ export class HotmartService {
 
 		const url = '/payments/api/v1/subscriptions';
 		const parameters = {
-
 			subscriber_email: user.email,
-
-			product_id: '135340',
 		};
 
 		try {
@@ -60,6 +57,7 @@ export class HotmartService {
 				});
 
 				const response = await request.get(url, parameters);
+				logger.logDebug(`Got response: ${JSON.stringify(response.data)}`);
 
 				return {
 					status: 'SUCCESSFUL',
@@ -76,9 +74,9 @@ export class HotmartService {
 		return subscriptions.map(subscription => ({
 			userId: user.id,
 			courseId: convertSubscriptionIdentifierToCourseId(subscription.product.id.toString() as TPlanIdentifier),
-			expiresAt: new Date(subscription.date_next_charge),
+			expiresAt: subscription.date_next_charge ? new Date(subscription.date_next_charge) : new Date(subscription.accession_date),
 			provider: 'hotmart',
-			providerSubscriptionId: subscription.subscription_id,
+			providerSubscriptionId: subscription.subscriber_code,
 		}));
 	}
 

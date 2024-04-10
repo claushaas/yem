@@ -10,7 +10,8 @@ export type TSubscription = {
 };
 
 export type THotmartSubscription = {
-	subscription_id: string;
+	accession_date: string;
+	subscriber_code: string;
 	date_next_charge: string;
 	product: {
 		id: number;
