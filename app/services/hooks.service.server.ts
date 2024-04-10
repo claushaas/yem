@@ -59,7 +59,6 @@ export class HooksService {
 				}
 			}
 
-			await this._slackService.sendMessage(body);
 			return {
 				status: 'SUCCESSFUL',
 				data: 'Webhook received',
