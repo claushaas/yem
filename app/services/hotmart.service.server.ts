@@ -3,7 +3,9 @@ import {Request} from '../utils/request.js';
 import {CustomError} from '../utils/custom-error.js';
 import {type TServiceReturn} from '../types/service-return.type.js';
 import {type TUser} from '../types/user.type.js';
-import {type TPlanIdentifier, type THotmartSubscription, type TSubscription} from '../types/subscription.type.js';
+import {
+	type TPlanIdentifier, type THotmartSubscription, type TSubscription, type THotmartFormationPurchase,
+} from '../types/subscription.type.js';
 import {logger} from '../utils/logger.util.js';
 import {SecretService} from './secret.service.server.js';
 import {convertSubscriptionIdentifierToCourseId} from '~/utils/subscription-identifier-to-course-id.js';
@@ -32,6 +34,7 @@ export class HotmartService {
 		const url = '/payments/api/v1/subscriptions';
 		const parameters = {
 			subscriber_email: user.email,
+			product_id: '135340',
 		};
 
 		try {
@@ -41,7 +44,7 @@ export class HotmartService {
 
 			return {
 				status: 'SUCCESSFUL',
-				data: response.data.items ? this._mapSubscriptions(response.data.items as THotmartSubscription[], user) : [],
+				data: response.data.items ? this._mapSchoolSubscriptions(response.data.items as THotmartSubscription[], user) : [],
 			};
 		} catch (error) {
 			logger.logError(`Error getting user subscriptions on first try: ${JSON.stringify((error as Record<string, string>).data)}`);
@@ -61,7 +64,7 @@ export class HotmartService {
 
 				return {
 					status: 'SUCCESSFUL',
-					data: response.data.items ? this._mapSubscriptions(response.data.items as THotmartSubscription[], user) : [],
+					data: response.data.items ? this._mapSchoolSubscriptions(response.data.items as THotmartSubscription[], user) : [],
 				};
 			} catch (error) {
 				logger.logError(`Error getting user subscriptions on second try: ${JSON.stringify((error as Record<string, string>).data)}`);
@@ -70,7 +73,72 @@ export class HotmartService {
 		}
 	}
 
-	private _mapSubscriptions(subscriptions: THotmartSubscription[], user: TUser): TSubscription[] {
+	public async getUserFormationSubscriptions(user: TUser): Promise<TServiceReturn<TSubscription[]>> {
+		const secrets = await this._secretService.getSecret();
+		const request = new Request(baseUrl, {
+			'Content-Type': 'application/json', // eslint-disable-line @typescript-eslint/naming-convention
+			Authorization: `Bearer ${secrets.data.hotmartApiAccessToken}`,
+		});
+
+		const url = '/payments/api/v1/sales/history';
+		const parameters = {
+			buyer_email: user.email,
+			product_id: '1392822',
+		};
+
+		try {
+			const response = await request.get(url, parameters);
+			logger.logDebug(`Got response: ${JSON.stringify(response.data)}`);
+
+			return {
+				status: 'SUCCESSFUL',
+				data: response.data.items ? this._mapFormationSubscriptions(response.data.items as THotmartFormationPurchase[], user) : [],
+			};
+		} catch (error) {
+			logger.logError(`Error getting user formation subscriptions on first try: ${JSON.stringify((error as Record<string, string>).data)}`);
+
+			try {
+				const newAccessToken = await this._getAccessToken();
+
+				const request = new Request(baseUrl, {
+					'Content-Type': 'application/json', // eslint-disable-line @typescript-eslint/naming-convention
+					Authorization: `Bearer ${newAccessToken}`,
+				});
+
+				const response = await request.get(url, parameters);
+
+				return {
+					status: 'SUCCESSFUL',
+					data: response.data.items ? this._mapFormationSubscriptions(response.data.items as THotmartFormationPurchase[], user) : [],
+				};
+			} catch (error) {
+				logger.logError(`Error getting user formation subscriptions on second try: ${JSON.stringify((error as Record<string, string>).data)}`);
+				throw new CustomError('INVALID_DATA', (error as Error).message);
+			}
+		}
+	}
+
+	private _mapFormationSubscriptions(subscriptions: THotmartFormationPurchase[], user: TUser): TSubscription[] {
+		return subscriptions.map(subscription => ({
+			userId: user.id,
+			courseId: convertSubscriptionIdentifierToCourseId(subscription.product.id.toString() as TPlanIdentifier),
+			expiresAt: this._getFormationSubscriptionExpiresAt(subscription),
+			provider: 'hotmart',
+			providerSubscriptionId: subscription.purchase.transaction,
+		}));
+	}
+
+	private _getFormationSubscriptionExpiresAt(subscription: THotmartFormationPurchase): Date {
+		const futureDate = new Date(subscription.purchase.approved_date);
+		futureDate.setDate(futureDate.getDate() + 32);
+
+		return subscription.purchase.offer.payment_mode === 'MULTIPLE_PAYMENTS'
+			? (subscription.purchase.recurrency_number < subscription.purchase.payment.installments_number ? futureDate
+				: new Date(8_640_000_000_000_000))
+			: new Date(8_640_000_000_000_000);
+	}
+
+	private _mapSchoolSubscriptions(subscriptions: THotmartSubscription[], user: TUser): TSubscription[] {
 		return subscriptions.map(subscription => ({
 			userId: user.id,
 			courseId: convertSubscriptionIdentifierToCourseId(subscription.product.id.toString() as TPlanIdentifier),
