@@ -18,6 +18,36 @@ export type THotmartSubscription = {
 	};
 };
 
+export type THotmartFormationPurchase = {
+	purchase: {
+		payment: {
+			type: string;
+			method: string;
+			installments_number: number;
+		};
+		transaction: string;
+		approved_date: Date;
+		recurrency_number: number;
+		warranty_expire_date: Date;
+		order_date: Date;
+		offer: {
+			code: string;
+			payment_mode: string; // 'MULTIPLE_PAYMENTS'
+		};
+		is_subscription: false;
+		status: 'COMPLETE';
+	};
+	product: {
+		id: number;
+		name: string;
+	};
+	buyer: {
+		ucode: string;
+		email: string;
+		name: string;
+	};
+};
+
 export type TIuguSubscription = {
 	id: string;
 	plan_identifier: string;
