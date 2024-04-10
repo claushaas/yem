@@ -72,15 +72,10 @@ export class UserService {
 		const cleanUsername = username.trim().toLowerCase();
 
 		const parameters: InitiateAuthCommandInput = {
-
 			AuthFlow: 'USER_PASSWORD_AUTH',
-
 			ClientId: process.env.COGNITO_CLIENT_ID,
-
 			AuthParameters: {
-
 				USERNAME: cleanUsername,
-
 				PASSWORD: password,
 			},
 		};
