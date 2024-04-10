@@ -85,7 +85,7 @@ export class UserForCreation {
 			throw new CustomError('UNPROCESSABLE_ENTITY', `Invalid user data: ${error.message}`);
 		}
 
-		this._roles = user.roles ?? [];
+		this._roles = user.roles ?? ['iniciantes'];
 		this._phoneNumber = user.phoneNumber.replaceAll(/\s+/g, '');
 		this._document = user.document ?? '';
 		this._email = user.email.toLowerCase();
