@@ -166,11 +166,21 @@ export class CourseService {
 							},
 						},
 					},
-					subscriptions: {
+					delegateAuthTo: {
 						where: {
-							userId: user.id,
-							expiresAt: {
-								lte: new Date(),
+							delegateAuthToSlug: slug,
+						},
+						select: {
+							id: true,
+							slug: true,
+							name: true,
+							subscriptions: {
+								where: {
+									userId: user.id,
+									expiresAt: {
+										lte: new Date(),
+									},
+								},
 							},
 						},
 					},
@@ -181,7 +191,7 @@ export class CourseService {
 				throw new CustomError('NOT_FOUND', 'Course not found');
 			}
 
-			const hasActiveSubscription = user.roles?.includes('admin') ?? course.subscriptions.some(subscription => subscription.expiresAt > new Date());
+			const hasActiveSubscription = user.roles?.includes('admin') ?? course.delegateAuthTo?.subscriptions.some(subscription => subscription.expiresAt > new Date());
 
 			const returnableCourse = {
 				...course,
