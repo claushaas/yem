@@ -2,6 +2,7 @@ import {json, type LoaderFunctionArgs} from '@remix-run/node';
 import {HooksService} from '~/services/hooks.service.server';
 import {SlackService} from '~/services/slack.service.server';
 import {type TIncommingHotmartWebhook} from '~/types/subscription.type';
+import {type TCountriesIsos, getCountryCode} from '~/utils/countries-area-codes.js';
 import {logger} from '~/utils/logger.util';
 
 export const loader = async ({request}: LoaderFunctionArgs) => {
@@ -21,7 +22,20 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
 
 export const action = async ({request}: LoaderFunctionArgs) => {
 	try {
-		await new HooksService().handleHotmartWebhook(await request.json() as TIncommingHotmartWebhook);
+		const body = await request.json() as TIncommingHotmartWebhook;
+		const phoneNumberWithoutCountryCode = body.data.buyer.checkout_phone;
+		const countryIso = body.data.purchase.checkout_country.iso;
+		const completePhoneNumber = `+${getCountryCode(countryIso as TCountriesIsos)}${phoneNumberWithoutCountryCode}`;
+		await new HooksService().handleHotmartWebhook({
+			...body,
+			data: {
+				...body.data,
+				buyer: {
+					...body.data.buyer,
+					checkout_phone: completePhoneNumber,
+				},
+			},
+		});
 
 		return json({
 			message: 'OK',
