@@ -150,7 +150,8 @@ export class HooksService {
 			userData = user;
 		} catch (error) {
 			logger.logError(`Error getting user data on handleHotmartPurchaseAprovedWebhook: ${(error as Error).message}`);
-			if ((error as CustomError).statusCode === 404) {
+			console.log('error', error);
+			if ((error as Error).message.includes('User does not exist')) {
 				const {data: {userId}} = await this._userService.createOrFail({
 					email: data.buyer.email,
 					firstName: convertStringToStartCase(data.buyer.name.split(' ')[0]),
@@ -190,8 +191,8 @@ export class HooksService {
 
 					const expiresAt = data.purchase.recurrence_number
 						? (data.purchase.recurrence_number < data.purchase.payment.installments_number ? new Date(data.purchase.date_next_charge!)
-							: new Date(8_640_000_000_000_000))
-						: new Date(8_640_000_000_000_000);
+							: new Date(2_556_113_460_000))
+						: new Date(2_556_113_460_000);
 
 					await Promise.all([
 						this._userService.addRolesToUser(userData!, rolesToAdd), // Should be deleted when old site stops being suported

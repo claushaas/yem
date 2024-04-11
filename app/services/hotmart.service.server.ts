@@ -134,8 +134,8 @@ export class HotmartService {
 
 		return subscription.purchase.offer.payment_mode === 'MULTIPLE_PAYMENTS'
 			? (subscription.purchase.recurrency_number < subscription.purchase.payment.installments_number ? futureDate
-				: new Date(8_640_000_000_000_000))
-			: new Date(8_640_000_000_000_000);
+				: new Date(2_556_113_460_000))
+			: new Date(2_556_113_460_000);
 	}
 
 	private _mapSchoolSubscriptions(subscriptions: THotmartSubscription[], user: TUser): TSubscription[] {
