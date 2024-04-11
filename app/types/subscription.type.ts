@@ -111,7 +111,7 @@ export type TIncommingHotmartWebhook = {
 				code: string;
 			};
 			order_date: Date;
-			date_next_charge: Date;
+			date_next_charge?: Date;
 			price: {
 				currency_value: string;
 				value: number;
