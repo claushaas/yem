@@ -63,5 +63,5 @@ executeAndRepeat(async () => { // eslint-disable-line @typescript-eslint/no-floa
 
 const port = process.env.APP_PORT ?? 3001;
 app.listen(port, () => {
-	console.log(`Express server listening at http://localhost:${port}`);
+	logger.logInfo(`Express server listening at http://localhost:${port}`);
 });

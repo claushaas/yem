@@ -13,7 +13,6 @@ export class SlackService {
 	}
 
 	public async sendMessage(message: any): Promise<TServiceReturn<string>> {
-		console.log('mensagem', message);
 		try {
 			await this._request.post('', {text: JSON.stringify(message)});
 

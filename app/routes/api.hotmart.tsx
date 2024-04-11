@@ -37,6 +37,9 @@ export const action = async ({request}: LoaderFunctionArgs) => {
 			},
 		});
 
+		const {headers} = request;
+		await new SlackService().sendMessage(headers);
+
 		return json({
 			message: 'OK',
 		}, {
