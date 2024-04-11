@@ -123,9 +123,16 @@ export type TPrismaPayloadGetLessonById = Prisma.LessonGetPayload<{
 				course: {
 					select: {
 						id: true;
-						slug: true;
 						name: true;
-						subscriptions: true;
+						slug: true;
+						delegateAuthTo: {
+							select: {
+								id: true;
+								name: true;
+								slug: true;
+								subscriptions: true;
+							};
+						};
 					};
 				};
 			};

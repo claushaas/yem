@@ -4,7 +4,10 @@ import {CustomError} from '../utils/custom-error.js';
 import {type TServiceReturn} from '../types/service-return.type.js';
 import {type TUser} from '../types/user.type.js';
 import {
-	type TPlanIdentifier, type THotmartSubscription, type TSubscription, type THotmartFormationPurchase,
+	type TPlanIdentifier,
+	type THotmartSubscription,
+	type TSubscription,
+	type THotmartFormationPurchase,
 } from '../types/subscription.type.js';
 import {logger} from '../utils/logger.util.js';
 import {SecretService} from './secret.service.server.js';

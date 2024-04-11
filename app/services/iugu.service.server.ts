@@ -2,7 +2,10 @@ import {CustomError} from '../utils/custom-error.js';
 import {type TServiceReturn} from '../types/service-return.type.js';
 import {type TUser} from '../types/user.type.js';
 import {
-	type TIuguSubscriptionResponse, type TIuguSubscription, type TSubscription, type TPlanIdentifier,
+	type TIuguSubscriptionResponse,
+	type TIuguSubscription,
+	type TSubscription,
+	type TPlanIdentifier,
 } from '../types/subscription.type.js';
 import {Request} from '../utils/request.js';
 import {logger} from '../utils/logger.util.js';

@@ -68,8 +68,19 @@ export const populateSubscriptions = async () => {
 	const [usersThatHaveSubscriptions, subscriptions] = await Promise.all([
 		db.userSubscriptions.groupBy({
 			by: 'userId',
+			where: {
+				expiresAt: {
+					lte: new Date(),
+				},
+			},
 		}),
-		db.userSubscriptions.findMany(),
+		db.userSubscriptions.findMany({
+			where: {
+				expiresAt: {
+					lte: new Date(),
+				},
+			},
+		}),
 	]);
 
 	const subscriptionsByUser = usersThatHaveSubscriptions.map(user => ({
