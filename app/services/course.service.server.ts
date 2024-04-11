@@ -2,7 +2,10 @@ import {type PrismaClient} from '@prisma/client';
 import {type TUser, type TUserRoles} from '../types/user.type.js';
 import {Course} from '../entities/course.entity.server.js';
 import {
-	type TPrismaPayloadGetCourseById, type TCourse, type TPrismaPayloadGetAllCourses, type TPrismaPayloadCreateCourse, type TPrismaPayloadUpdateCourse,
+	type TPrismaPayloadGetCourseById,
+	type TCourse, type TPrismaPayloadGetAllCourses,
+	type TPrismaPayloadCreateCourse,
+	type TPrismaPayloadUpdateCourse,
 } from '../types/course.type.js';
 import {CustomError} from '../utils/custom-error.js';
 import {type TServiceReturn} from '../types/service-return.type.js';
@@ -46,6 +49,9 @@ export class CourseService {
 				publicationDate: newCourse.publicationDate,
 				published: newCourse.published,
 				isSelling: newCourse.isSelling,
+				delegateAuthTo: {
+					connect: newCourse.delegateAuthTo?.map(slug => ({slug})),
+				},
 				tags: {
 					connectOrCreate: newCourse.tags?.map(tag => ({
 						where: {
@@ -167,9 +173,6 @@ export class CourseService {
 						},
 					},
 					delegateAuthTo: {
-						where: {
-							delegateAuthToSlug: slug,
-						},
 						select: {
 							id: true,
 							slug: true,
@@ -191,7 +194,9 @@ export class CourseService {
 				throw new CustomError('NOT_FOUND', 'Course not found');
 			}
 
-			const hasActiveSubscription = user.roles?.includes('admin') ?? course.delegateAuthTo?.subscriptions.some(subscription => subscription.expiresAt > new Date());
+			const hasActiveSubscription = user.roles?.includes('admin') ?? course.delegateAuthTo?.some(course => (
+				course.subscriptions.some(subscription => subscription.expiresAt > new Date(),
+				)));
 
 			const returnableCourse = {
 				...course,
@@ -245,6 +250,9 @@ export class CourseService {
 				publicationDate: courseToUpdate.publicationDate,
 				published: courseToUpdate.published,
 				isSelling: courseToUpdate.isSelling,
+				delegateAuthTo: {
+					connect: courseToUpdate.delegateAuthTo?.map(slug => ({slug})),
+				},
 				tags: {
 					connectOrCreate: courseToUpdate.tags?.map(tag => ({
 						where: {

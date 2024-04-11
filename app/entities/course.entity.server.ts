@@ -13,6 +13,7 @@ const courseSchema = Joi.object({
 	published: Joi.boolean().required().default(true),
 	isSelling: Joi.boolean().required().default(false),
 	tags: Joi.array().items(Joi.array().items(Joi.string()).min(2).max(2)).unique(),
+	delegateAuthTo: Joi.array().items(Joi.string()),
 });
 
 export class Course implements TCourse {
@@ -26,6 +27,7 @@ export class Course implements TCourse {
 	private readonly _published: boolean;
 	private readonly _isSelling: boolean;
 	private readonly _tags?: TTags;
+	private readonly _delegateAuthTo?: string[];
 
 	constructor(course: TCourse) {
 		const {error} = courseSchema.validate(course);
@@ -44,6 +46,7 @@ export class Course implements TCourse {
 		this._published = course.published;
 		this._isSelling = course.isSelling;
 		this._tags = course.tags;
+		this._delegateAuthTo = course.delegateAuthTo;
 	}
 
 	get name() {
@@ -84,5 +87,9 @@ export class Course implements TCourse {
 
 	get tags() {
 		return this._tags;
+	}
+
+	get delegateAuthTo() {
+		return this._delegateAuthTo;
 	}
 }

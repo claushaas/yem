@@ -1,6 +1,10 @@
 import {type PrismaClient} from '@prisma/client';
 import {
-	type TPrismaPayloadCreateModule, type TModule, type TPrismaPayloadUpdateModule, type TPrismaPayloadGetModulesList, type TPrismaPayloadGetModuleById,
+	type TPrismaPayloadCreateModule,
+	type TModule,
+	type TPrismaPayloadUpdateModule,
+	type TPrismaPayloadGetModulesList,
+	type TPrismaPayloadGetModuleById,
 } from '../types/module.type.js';
 import {Module} from '../entities/module.entity.server.js';
 import {type TUser, type TUserRoles} from '../types/user.type.js';
@@ -260,11 +264,15 @@ export class ModuleService {
 							id: true,
 							name: true,
 							slug: true,
-							subscriptions: {
-								where: {
-									userId: user.id,
-									expiresAt: {
-										gte: new Date(),
+							delegateAuthTo: {
+								select: {
+									id: true,
+									name: true,
+									slug: true,
+									subscriptions: {
+										where: {
+											userId: user.id,
+										},
 									},
 								},
 							},
@@ -341,7 +349,11 @@ export class ModuleService {
 				throw new CustomError('NOT_FOUND', 'Module not found');
 			}
 
-			const hasActiveSubscription = user.roles?.includes('admin') ?? module.course?.some(course => course.subscriptions.length > 0);
+			const hasActiveSubscription = user.roles?.includes('admin') ?? module.course?.some(course => (
+				course.delegateAuthTo?.some(course => (
+					course.subscriptions?.length > 0
+				))
+			));
 
 			const returnableModule = {
 				...module,

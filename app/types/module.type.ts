@@ -113,7 +113,14 @@ export type TPrismaPayloadGetModuleById = Prisma.ModuleGetPayload<{
 				id: true;
 				name: true;
 				slug: true;
-				subscriptions: true;
+				delegateAuthTo: {
+					select: {
+						id: true;
+						name: true;
+						slug: true;
+						subscriptions: true;
+					};
+				};
 			};
 		};
 	};
