@@ -10,10 +10,41 @@ export type TSubscription = {
 };
 
 export type THotmartSubscription = {
-	subscription_id: string;
+	accession_date: string;
+	subscriber_code: string;
 	date_next_charge: string;
 	product: {
 		id: number;
+	};
+};
+
+export type THotmartFormationPurchase = {
+	purchase: {
+		payment: {
+			type: string;
+			method: string;
+			installments_number: number;
+		};
+		transaction: string;
+		approved_date: Date;
+		recurrency_number: number;
+		warranty_expire_date: Date;
+		order_date: Date;
+		offer: {
+			code: string;
+			payment_mode: string; // 'MULTIPLE_PAYMENTS'
+		};
+		is_subscription: false;
+		status: 'COMPLETE';
+	};
+	product: {
+		id: number;
+		name: string;
+	};
+	buyer: {
+		ucode: string;
+		email: string;
+		name: string;
 	};
 };
 
@@ -80,7 +111,7 @@ export type TIncommingHotmartWebhook = {
 				code: string;
 			};
 			order_date: Date;
-			date_next_charge: Date;
+			date_next_charge?: Date;
 			price: {
 				currency_value: string;
 				value: number;
