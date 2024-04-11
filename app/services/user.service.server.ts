@@ -72,15 +72,10 @@ export class UserService {
 		const cleanUsername = username.trim().toLowerCase();
 
 		const parameters: InitiateAuthCommandInput = {
-
 			AuthFlow: 'USER_PASSWORD_AUTH',
-
 			ClientId: process.env.COGNITO_CLIENT_ID,
-
 			AuthParameters: {
-
 				USERNAME: cleanUsername,
-
 				PASSWORD: password,
 			},
 		};
@@ -177,27 +172,19 @@ export class UserService {
 
 		const user = await this._awsClient.send(
 			new AdminGetUserCommand({
-
 				UserPoolId: process.env.COGNITO_USER_POOL_ID,
-
 				Username: cleanUsername,
 			}),
 		);
 
 		const cleanUser: TUser = {
 			id: user.UserAttributes?.find(attribute => attribute.Name === 'sub')?.Value ?? '',
-			email:
-        user.UserAttributes?.find(attribute => attribute.Name === 'email')?.Value ?? '',
-			roles:
-        user.UserAttributes?.find(attribute => attribute.Name === 'custom:roles')?.Value?.split('-') ?? [],
-			firstName:
-        user.UserAttributes?.find(attribute => attribute.Name === 'given_name')?.Value ?? '',
-			lastName:
-        user.UserAttributes?.find(attribute => attribute.Name === 'family_name')?.Value ?? '',
-			phoneNumber:
-        user.UserAttributes?.find(attribute => attribute.Name === 'phone_number')?.Value ?? '',
-			document:
-				user.UserAttributes?.find(attribute => attribute.Name === 'custom:CPF')?.Value ?? '',
+			email: user.UserAttributes?.find(attribute => attribute.Name === 'email')?.Value ?? '',
+			roles: user.UserAttributes?.find(attribute => attribute.Name === 'custom:roles')?.Value?.split('-') ?? [],
+			firstName: user.UserAttributes?.find(attribute => attribute.Name === 'given_name')?.Value ?? '',
+			lastName: user.UserAttributes?.find(attribute => attribute.Name === 'family_name')?.Value ?? '',
+			phoneNumber: user.UserAttributes?.find(attribute => attribute.Name === 'phone_number')?.Value ?? '',
+			document:	user.UserAttributes?.find(attribute => attribute.Name === 'custom:CPF')?.Value ?? '',
 		};
 
 		logger.logInfo(`User ${cleanUser.id} data retrieved successfully`);
@@ -326,6 +313,31 @@ export class UserService {
 		}
 	}
 
+	public async addRolesToUser(user: TUser, roles: string[]) {
+		const actualUserRoles = user.roles ?? ['iniciantes'];
+		const newRoles = [...new Set([...actualUserRoles, ...roles])];
+
+		const parameters = {
+			UserAttributes: [
+				{
+					Name: 'custom:roles',
+					Value: newRoles.length > 1 ? newRoles.join('-') : newRoles[0],
+				},
+			],
+			UserPoolId: process.env.COGNITO_USER_POOL_ID,
+			Username: user.id,
+		};
+
+		const command = new AdminUpdateUserAttributesCommand(parameters);
+
+		try {
+			await	this._awsClient.send(command);
+		} catch (error) {
+			logger.logError(`Error adding roles to user ${(error as Error).message}`);
+			throw new CustomError('UNKNOWN', `Error adding roles to user ${(error as Error).message}`);
+		}
+	}
+
 	private async _create(userData: TUserCreationAttributes): Promise<TServiceReturn<{userId: string}>> {
 		logger.logDebug(`Creating user ${userData.email}`);
 		const newUser = new UserForCreation(userData);
@@ -335,64 +347,30 @@ export class UserService {
       = newUser;
 
 		const paramsforUserCreation = {
-
 			UserPoolId: process.env.COGNITO_USER_POOL_ID,
-
-			Username: email.toLowerCase(),
-
+			Username: email,
 			MessageAction: 'SUPPRESS' as MessageActionType,
-
 			UserAttributes: [
-				{
-					Name: 'email',
-					Value: email,
-				},
-				{
-					Name: 'email_verified',
-					Value: 'true',
-				},
-				{
-					Name: 'phone_number_verified',
-					Value: 'true',
-				},
-				{
-					Name: 'phone_number',
-					Value: phoneNumber,
-				},
-				{
-					Name: 'given_name',
-					Value: firstName,
-				},
-				{
-					Name: 'family_name',
-					Value: lastName,
-				},
-				{
-					Name: 'custom:roles',
-					Value: roles?.join('-') ?? 'iniciantes',
-				},
-				{
-					Name: 'custom:CPF',
-					Value: document ?? '',
-				},
+				{Name: 'email', Value: email},
+				{Name: 'email_verified', Value: 'true'},
+				{Name: 'phone_number_verified', Value: 'true'},
+				{Name: 'phone_number', Value: phoneNumber},
+				{Name: 'given_name', Value: firstName},
+				{Name: 'family_name', Value: lastName},
+				{Name: 'custom:roles', Value: roles ? (roles.length > 1 ? roles.join('-') : roles[0]) : 'iniciantes'},
+				{Name: 'custom:CPF', Value: document ?? ''},
+				{Name: 'custom:iuguId', Value: 'INVALID-IUGU-ID'}, // Added for support for old site, should be deleted when old site is no more supported
+				{Name: 'custom:mauticId', Value: 'INVALID-MAUTIC-ID'}, // Added for support for old site, should be deleted when old site is no more supported
 			],
 		};
 
 		logger.logDebug(
 			`Creating Cognito command for ${email} with data: ${JSON.stringify(paramsforUserCreation)}`,
 		);
-		const commandforUserCreation = new AdminCreateUserCommand(
-			paramsforUserCreation,
-		);
-		const userCreationResponse = await this._awsClient.send(
-			commandforUserCreation,
-		);
-		logger.logDebug(
-			`User creation response: ${JSON.stringify(userCreationResponse.$metadata)}`,
-		);
-		logger.logDebug(
-			`User creation response: ${JSON.stringify(userCreationResponse.User)}`,
-		);
+		const commandforUserCreation = new AdminCreateUserCommand(paramsforUserCreation);
+		const userCreationResponse = await this._awsClient.send(commandforUserCreation);
+		logger.logDebug(`User creation response: ${JSON.stringify(userCreationResponse.$metadata)}`);
+		logger.logDebug(`User creation response: ${JSON.stringify(userCreationResponse.User)}`);
 
 		if (userCreationResponse.$metadata.httpStatusCode !== 200) {
 			logger.logError(`Error creating user ${email}`);
@@ -404,9 +382,19 @@ export class UserService {
 		);
 
 		logger.logDebug(`Getting user id for user ${email}`);
-		const username: string
-      = userCreationResponse.User?.Attributes?.find(attribute => attribute.Name === 'sub')?.Value ?? '';
+		const username: string = userCreationResponse.User?.Attributes?.find(attribute => attribute.Name === 'sub')?.Value ?? '';
 		logger.logDebug(`User id for user ${email} is ${username}`);
+
+		// Set custom-id for user, should be deleted when old site is no more supported
+		const parameters = {
+			UserAttributes: [
+				{Name: 'custom:id', Value: username},
+			],
+			UserPoolId: process.env.COGNITO_USER_POOL_ID,
+			Username: username,
+		};
+		const command = new AdminUpdateUserAttributesCommand(parameters);
+		await this._awsClient.send(command);
 
 		const password = generateSecurePassword();
 

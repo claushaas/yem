@@ -1,5 +1,5 @@
+import {db} from '../database/db.js';
 import {MemoryCache} from './memory-cache.js';
-import {db} from '~/database/db.js';
 
 export const populateCourses = async () => {
 	const courses = await db.course.findMany({

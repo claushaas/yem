@@ -1,4 +1,4 @@
-import {type Prisma, type PrismaClient} from '@prisma/client';
+import {type PrismaClient} from '@prisma/client';
 import {type TUser} from '../types/user.type.js';
 import {type TServiceReturn} from '../types/service-return.type.js';
 import {Subscription} from '../entities/subscription.entity.server.js';
@@ -55,33 +55,11 @@ export default class SubscriptionService {
 	}
 
 	public async createOrUpdateAllUserSubscriptions(user: TUser): Promise<TServiceReturn<string>> {
-		try {
-			const {data: hotmartSubscriptions} = await this._hotmartService.getUserSchoolSubscriptions(user);
-
-			if (hotmartSubscriptions.length > 0) {
-				await Promise.all(
-					hotmartSubscriptions.map(async subscription => {
-						await this.createOrUpdate(subscription);
-					}),
-				);
-			}
-		} catch (error) {
-			logger.logError(`Error getting hotmart subscriptions: ${(error as Error).message}`);
-		}
-
-		try {
-			const {data: iuguSubscriptions} = await this._iuguService.getUserSubscriptions(user);
-
-			if (iuguSubscriptions.length > 0) {
-				await Promise.all(
-					iuguSubscriptions.map(async subscription => {
-						await this.createOrUpdate(subscription);
-					}),
-				);
-			}
-		} catch (error) {
-			logger.logError(`Error getting iugu subscriptions: ${(error as Error).message}`);
-		}
+		await Promise.all([
+			this._updateUserIuguSubscriptions(user),
+			this._updateUserHotmartSchoolSubscriptions(user),
+			this._updateUserHotmartFormationSubscriptions(user),
+		]);
 
 		return {
 			status: 'NO_CONTENT',
@@ -120,6 +98,54 @@ export default class SubscriptionService {
 		} catch (error) {
 			logger.logError(`Error getting user subscriptions: ${(error as Error).message}`);
 			throw new CustomError('UNKNOWN', `Error getting user subscriptions: ${(error as Error).message}`);
+		}
+	}
+
+	private async _updateUserIuguSubscriptions(user: TUser): Promise<void> {
+		try {
+			const {data: iuguSubscriptions} = await this._iuguService.getUserSubscriptions(user);
+
+			if (iuguSubscriptions.length > 0) {
+				await Promise.all(
+					iuguSubscriptions.map(async subscription => {
+						await this.createOrUpdate(subscription);
+					}),
+				);
+			}
+		} catch (error) {
+			logger.logError(`Error getting iugu subscriptions: ${(error as Error).message}`);
+		}
+	}
+
+	private async _updateUserHotmartSchoolSubscriptions(user: TUser): Promise<void> {
+		try {
+			const {data: hotmartSubscriptions} = await this._hotmartService.getUserSchoolSubscriptions(user);
+
+			if (hotmartSubscriptions.length > 0) {
+				await Promise.all(
+					hotmartSubscriptions.map(async subscription => {
+						await this.createOrUpdate(subscription);
+					}),
+				);
+			}
+		} catch (error) {
+			logger.logError(`Error getting hotmart subscriptions: ${(error as Error).message}`);
+		}
+	}
+
+	private async _updateUserHotmartFormationSubscriptions(user: TUser): Promise<void> {
+		try {
+			const {data: hotmartSubscriptions} = await this._hotmartService.getUserFormationSubscriptions(user);
+
+			if (hotmartSubscriptions.length > 0) {
+				await Promise.all(
+					hotmartSubscriptions.map(async subscription => {
+						await this.createOrUpdate(subscription);
+					}),
+				);
+			}
+		} catch (error) {
+			logger.logError(`Error getting hotmart subscriptions: ${(error as Error).message}`);
 		}
 	}
 }

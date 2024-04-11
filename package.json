@@ -19,13 +19,13 @@
   },
   "bugs:": "https://github.com/claushaas/yem/issues",
   "scripts": {
-    "build": "remix vite:build",
+    "build": "remix vite:build && tsc",
     "predev": "npx prisma migrate dev",
     "dev": "tsx ./server.ts",
     "lint": "eslint --ignore-path .gitignore --cache --cache-location ./node_modules/.cache/eslint .",
     "prestart": "npx prisma migrate deploy",
-    "start": "tsx ./server.ts",
-    "typecheck": "tsc",
+    "start": "node ./build/server.js",
+    "typecheck": "tsc --noEmit",
     "update": "npx npm-check-updates -i",
     "up": "docker compose up -d --build",
     "down": "docker compose down",
@@ -33,10 +33,10 @@
     "db:reset": "npx prisma migrate reset"
   },
   "dependencies": {
-    "@aws-sdk/client-cognito-identity-provider": "^3.549.0",
-    "@aws-sdk/client-secrets-manager": "^3.549.0",
-    "@aws-sdk/client-sesv2": "^3.549.0",
-    "@aws-sdk/credential-providers": "^3.549.0",
+    "@aws-sdk/client-cognito-identity-provider": "^3.552.0",
+    "@aws-sdk/client-secrets-manager": "^3.552.0",
+    "@aws-sdk/client-sesv2": "^3.552.0",
+    "@aws-sdk/credential-providers": "^3.552.0",
     "@cloudflare/stream-react": "^1.9.1",
     "@heroicons/react": "^2.1.3",
     "@newrelic/winston-enricher": "^4.0.1",
@@ -54,7 +54,7 @@
     "axios": "^1.6.8",
     "compression": "^1.7.4",
     "express": "^4.19.2",
-    "framer-motion": "^11.0.25",
+    "framer-motion": "^11.0.27",
     "fuse.js": "^7.0.0",
     "helmet": "^7.1.0",
     "isbot": "^5.1.4",
@@ -70,7 +70,6 @@
     "react-phone-number-input": "^3.3.12",
     "react-select": "^5.8.0",
     "remix-utils": "^7.6.0",
-    "tsx": "^4.7.2",
     "winston": "^3.13.0"
   },
   "devDependencies": {
@@ -81,7 +80,7 @@
     "@types/express": "^4.17.21",
     "@types/morgan": "^1.9.9",
     "@types/newrelic": "^9.14.3",
-    "@types/react": "^18.2.74",
+    "@types/react": "^18.2.75",
     "@types/react-dom": "^18.2.24",
     "eslint-config-xo-react": "^0.27.0",
     "eslint-plugin-react": "^7.34.1",
@@ -91,7 +90,8 @@
     "tailwindcss": "^3.4.3",
     "tailwindcss-radix": "^3.0.3",
     "tailwindcss-radix-colors": "^1.2.0",
-    "typescript": "^5.4.4",
+    "tsx": "^4.7.2",
+    "typescript": "^5.4.5",
     "vite": "^5.2.8",
     "vite-plugin-svgr": "^4.2.0",
     "vite-tsconfig-paths": "^4.3.2",
@@ -133,7 +133,8 @@
     },
     "ignores": [
       "postcss.config.js",
-      "remix-handler.js"
+      "remix-handler.js",
+      "server.js"
     ]
   }
 }

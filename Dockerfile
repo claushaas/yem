@@ -67,9 +67,14 @@ WORKDIR /app
 COPY --link package.json ./
 COPY --link prisma ./prisma
 COPY --link --from=prod-deps /app/node_modules ./node_modules
-COPY --link --from=builder /app/build ./build
-COPY --link /remix-handler.js ./remix-handler.js
-COPY --link /server.ts ./server.ts
+COPY --link --from=builder /app/build/client ./build/client
+COPY --link --from=builder /app/build/server ./build/server
+COPY --link --from=builder /app/build/app/cache ./build/app/cache
+COPY --link --from=builder /app/build/app/database ./build/app/database
+COPY --link --from=builder /app/build/app/utils/logger.util.js ./build/app/utils/logger.util.js
+COPY --link --from=builder /app/build/app/utils/background-task.js ./build/app/utils/background-task.js
+COPY --link --from=builder /app/build/server.js ./build/server.js
+COPY --link --from=builder /app/build/remix-handler.js ./build/remix-handler.js
 
 RUN npx prisma generate
 

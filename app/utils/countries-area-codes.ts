@@ -230,6 +230,6 @@ const countryCodes = {
 	ZW: 263, // Zimbabwe
 };
 
-type TCountriesIsos = keyof typeof countryCodes;
+export type TCountriesIsos = keyof typeof countryCodes;
 
 export const getCountryCode = (country: TCountriesIsos): number => countryCodes[country] ?? 0;
