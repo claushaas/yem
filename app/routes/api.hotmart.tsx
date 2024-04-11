@@ -22,28 +22,36 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
 
 export const action = async ({request}: LoaderFunctionArgs) => {
 	try {
-		const body = await request.json() as TIncommingHotmartWebhook;
-		const phoneNumberWithoutCountryCode = body.data.buyer.checkout_phone;
-		const countryIso = body.data.purchase.checkout_country.iso;
-		const completePhoneNumber = `+${getCountryCode(countryIso as TCountriesIsos)}${phoneNumberWithoutCountryCode}`;
-		await new HooksService().handleHotmartWebhook({
-			...body,
-			data: {
-				...body.data,
-				buyer: {
-					...body.data.buyer,
-					checkout_phone: completePhoneNumber,
-				},
-			},
-		});
-
 		const {headers} = request;
-		await new SlackService().sendMessage(headers);
+		const HOTMART_HOTTOK = headers.get('X-HOTMART-HOTTOK');
+
+		if (HOTMART_HOTTOK === process.env.HOTMART_HOTTOK) {
+			const body = await request.json() as TIncommingHotmartWebhook;
+			const phoneNumberWithoutCountryCode = body.data.buyer.checkout_phone;
+			const countryIso = body.data.purchase.checkout_country.iso;
+			const completePhoneNumber = `+${getCountryCode(countryIso as TCountriesIsos)}${phoneNumberWithoutCountryCode}`;
+			await new HooksService().handleHotmartWebhook({
+				...body,
+				data: {
+					...body.data,
+					buyer: {
+						...body.data.buyer,
+						checkout_phone: completePhoneNumber,
+					},
+				},
+			});
+
+			return json({
+				message: 'OK',
+			}, {
+				status: 200,
+			});
+		}
 
 		return json({
-			message: 'OK',
+			message: 'Unauthorized',
 		}, {
-			status: 200,
+			status: 401,
 		});
 	} catch (error) {
 		logger.logError(`Error sending message on hotmart action: ${(error as Error).message}`);
