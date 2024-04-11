@@ -172,27 +172,19 @@ export class UserService {
 
 		const user = await this._awsClient.send(
 			new AdminGetUserCommand({
-
 				UserPoolId: process.env.COGNITO_USER_POOL_ID,
-
 				Username: cleanUsername,
 			}),
 		);
 
 		const cleanUser: TUser = {
 			id: user.UserAttributes?.find(attribute => attribute.Name === 'sub')?.Value ?? '',
-			email:
-        user.UserAttributes?.find(attribute => attribute.Name === 'email')?.Value ?? '',
-			roles:
-        user.UserAttributes?.find(attribute => attribute.Name === 'custom:roles')?.Value?.split('-') ?? [],
-			firstName:
-        user.UserAttributes?.find(attribute => attribute.Name === 'given_name')?.Value ?? '',
-			lastName:
-        user.UserAttributes?.find(attribute => attribute.Name === 'family_name')?.Value ?? '',
-			phoneNumber:
-        user.UserAttributes?.find(attribute => attribute.Name === 'phone_number')?.Value ?? '',
-			document:
-				user.UserAttributes?.find(attribute => attribute.Name === 'custom:CPF')?.Value ?? '',
+			email: user.UserAttributes?.find(attribute => attribute.Name === 'email')?.Value ?? '',
+			roles: user.UserAttributes?.find(attribute => attribute.Name === 'custom:roles')?.Value?.split('-') ?? [],
+			firstName: user.UserAttributes?.find(attribute => attribute.Name === 'given_name')?.Value ?? '',
+			lastName: user.UserAttributes?.find(attribute => attribute.Name === 'family_name')?.Value ?? '',
+			phoneNumber: user.UserAttributes?.find(attribute => attribute.Name === 'phone_number')?.Value ?? '',
+			document:	user.UserAttributes?.find(attribute => attribute.Name === 'custom:CPF')?.Value ?? '',
 		};
 
 		logger.logInfo(`User ${cleanUser.id} data retrieved successfully`);
@@ -318,6 +310,31 @@ export class UserService {
 		} catch (error) {
 			logger.logError(`Error updating document ${(error as Error).message}`);
 			throw new CustomError('UNKNOWN', `Error updating document ${(error as Error).message}`);
+		}
+	}
+
+	public async addRolesToUser(user: TUser, roles: string[]) {
+		const actualUserRoles = user.roles ?? ['iniciantes'];
+		const newRoles = [...new Set([...actualUserRoles, ...roles])];
+
+		const parameters = {
+			UserAttributes: [
+				{
+					Name: 'custom:roles',
+					Value: newRoles.length > 1 ? newRoles.join('-') : newRoles[0],
+				},
+			],
+			UserPoolId: process.env.COGNITO_USER_POOL_ID,
+			Username: user.id,
+		};
+
+		const command = new AdminUpdateUserAttributesCommand(parameters);
+
+		try {
+			await	this._awsClient.send(command);
+		} catch (error) {
+			logger.logError(`Error adding roles to user ${(error as Error).message}`);
+			throw new CustomError('UNKNOWN', `Error adding roles to user ${(error as Error).message}`);
 		}
 	}
 
