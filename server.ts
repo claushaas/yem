@@ -4,14 +4,14 @@ import express from 'express';
 import morgan from 'morgan';
 import helmet from 'helmet';
 import {viteDevelopmentServer, remixHandler} from './remix-handler.js';
-import {executeAndRepeat} from '~/utils/background-task.js';
+import {executeAndRepeat} from './app/utils/background-task.js';
 import {
 	populateCourses,
 	populateLessons,
 	populateModules,
 	populateSubscriptions,
-} from '~/cache/initial-cache-population.js';
-import {logger} from '~/utils/logger.util.js';
+} from './app/cache/initial-cache-population.js';
+import {logger} from './app/utils/logger.util.js';
 
 installGlobals();
 

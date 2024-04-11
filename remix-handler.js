@@ -6,5 +6,5 @@ export const viteDevelopmentServer
 export const remixHandler = createRequestHandler({
 	build: async () => viteDevelopmentServer
 		? viteDevelopmentServer.ssrLoadModule('virtual:remix/server-build')
-		: import('./build/server/index.js'),
+		: import('./server/index.js'),
 });
