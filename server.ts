@@ -11,6 +11,7 @@ import {
 	populateModules,
 	populateSubscriptions,
 } from '~/cache/initial-cache-population.js';
+import {logger} from '~/utils/logger.util.js';
 
 installGlobals();
 
@@ -46,19 +47,19 @@ app.use(morgan('tiny'));
 // Handle SSR requests
 app.all('*', remixHandler);
 
-const FIVE_MINUTES = 1000 * 60 * 5;
+const FIVE_HOURS = 1000 * 60 * 60 * 5;
 executeAndRepeat(async () => { // eslint-disable-line @typescript-eslint/no-floating-promises
-	console.log('Populate cache task started');
-	console.log('courses populate started');
+	logger.logInfo('Populate cache task started');
+	logger.logInfo('courses populate started');
 	await populateCourses();
-	console.log('lessons populate started');
+	logger.logInfo('lessons populate started');
 	await populateLessons();
-	console.log('modules populate started');
+	logger.logInfo('modules populate started');
 	await populateModules();
-	console.log('subscriptions populate started');
+	logger.logInfo('subscriptions populate started');
 	await populateSubscriptions();
-	console.log('Populate cache task finished');
-}, FIVE_MINUTES);
+	logger.logInfo('Populate cache task finished');
+}, FIVE_HOURS);
 
 const port = process.env.APP_PORT ?? 3001;
 app.listen(port, () => {
