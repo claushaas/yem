@@ -85,9 +85,20 @@ export class HooksService {
 					break;
 				}
 
+				case 'subscription.expired': {
+					break;
+				}
+
+				case 'subscription.renewed': {
+					break;
+				}
+
+				case 'invoice.released': {
+					break;
+				}
+
 				default: {
 					await this._slackService.sendMessage(body);
-					console.log('default');
 					break;
 				}
 			}
@@ -150,7 +161,7 @@ export class HooksService {
 			userData = user;
 		} catch (error) {
 			logger.logError(`Error getting user data on handleHotmartPurchaseAprovedWebhook: ${(error as Error).message}`);
-			console.log('error', error);
+
 			if ((error as Error).message.includes('User does not exist')) {
 				const {data: {userId}} = await this._userService.createOrFail({
 					email: data.buyer.email,
