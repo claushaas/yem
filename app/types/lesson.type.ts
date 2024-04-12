@@ -73,18 +73,7 @@ export type TPrismaPayloadGetLessonList = Array<Prisma.LessonGetPayload<{
 }>>;
 
 export type TPrismaPayloadGetLessonById = Prisma.LessonGetPayload<{
-	select: {
-		id: true;
-		slug: true;
-		name: true;
-		type: true;
-		description: true;
-		content: true;
-		videoSourceUrl: true;
-		duration: true;
-		thumbnailUrl: true;
-		publicationDate: true;
-		published: true;
+	include: {
 		tags: {
 			include: {
 				tagOption: {
