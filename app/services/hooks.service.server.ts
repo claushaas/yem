@@ -57,6 +57,10 @@ export class HooksService {
 					break;
 				}
 
+				case 'PURCHASE_COMPLETE': {
+					break;
+				}
+
 				default: {
 					await this._slackService.sendMessage(body);
 					break;
@@ -94,6 +98,10 @@ export class HooksService {
 				}
 
 				case 'invoice.released': {
+					break;
+				}
+
+				case 'customer_payment_method.new': {
 					break;
 				}
 
