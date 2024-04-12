@@ -2,10 +2,13 @@ import {type Prisma} from '@prisma/client';
 import {type TTags} from './tag.type.js';
 
 export type TCourse = {
+	oldId?: string;
 	name: string;
 	description?: string;
 	content?: string;
+	marketingContent?: string;
 	videoSourceUrl?: string;
+	marketingVideoUrl?: string;
 	thumbnailUrl: string;
 	publicationDate: Date;
 	published: boolean;

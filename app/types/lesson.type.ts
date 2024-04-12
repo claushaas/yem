@@ -5,11 +5,14 @@ import {type TUuid} from './uuid.type.js';
 export type TLessonType = 'video' | 'text' | 'courseWare';
 
 export type TLesson = {
+	oldId?: string;
 	name: string;
 	type: TLessonType;
 	description?: string;
 	content?: string;
+	marketingContent?: string;
 	videoSourceUrl?: string;
+	marketingVideoUrl?: string;
 	duration?: number;
 	thumbnailUrl: string;
 	modules: TUuid[];
