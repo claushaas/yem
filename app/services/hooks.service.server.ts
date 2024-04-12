@@ -105,6 +105,10 @@ export class HooksService {
 					break;
 				}
 
+				case 'withdraw_request.status_changed': {
+					break;
+				}
+
 				default: {
 					await this._slackService.sendMessage(body);
 					break;

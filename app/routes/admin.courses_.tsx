@@ -18,7 +18,7 @@ import {CourseCard} from '~/components/course-card/index.js';
 import {Editor} from '~/components/text-editor/index.client.js';
 import {YemSpinner} from '~/components/yem-spinner/index.js';
 import {type TUserRoles} from '~/types/user.type';
-import {type TPrismaPayloadGetAllCourses} from '~/types/course.type';
+import {type TCourse, type TPrismaPayloadGetAllCourses} from '~/types/course.type';
 import {type TServiceReturn} from '~/types/service-return.type';
 
 type CoursesLoaderData = {
@@ -57,11 +57,14 @@ export const action = async ({request}: ActionFunctionArgs) => {
 		if ((userSession.get('roles') as string[])?.includes('admin')) {
 			const formData = await request.formData();
 
-			const newCourse = {
+			const newCourse: TCourse = {
+				oldId: formData.get('oldId') as string,
 				name: formData.get('name') as string,
 				description: formData.get('description') as string,
 				content: formData.get('content') as string,
+				marketingContent: formData.get('marketingContent') as string,
 				videoSourceUrl: formData.get('videoSourceUrl') as string,
+				marketingVideoUrl: formData.get('marketingVideoUrl') as string,
 				thumbnailUrl: formData.get('thumbnailUrl') as string,
 				publicationDate: new Date(formData.get('publicationDate') as string),
 				published: Boolean(formData.get('published')),
@@ -105,6 +108,8 @@ export default function Courses() {
 	} = useLoaderData<CoursesLoaderData>();
 	const [quill, setQuill] = useState<Quill | null>(null); // eslint-disable-line @typescript-eslint/ban-types
 	const [content, setContent] = useState<string>('');
+	const [mktQuill, setMktQuill] = useState<Quill | null>(null); // eslint-disable-line @typescript-eslint/ban-types
+	const [mktContent, setMktContent] = useState<string>('');
 	const [open, setOpen] = useState<boolean>(false);
 	const [coursesSlug, setCoursesSlug] = useState<Array<{value: string; label: string}>>([]);
 	const navigation = useNavigation();
@@ -115,6 +120,14 @@ export default function Courses() {
 			setOpen(false);
 		}
 	}, [success]);
+
+	useEffect(() => {
+		if (mktQuill) {
+			mktQuill.on('text-change', () => {
+				setMktContent(JSON.stringify(mktQuill.getContents()));
+			});
+		}
+	}, [mktQuill]);
 
 	useEffect(() => {
 		if (quill) {
@@ -153,6 +166,22 @@ export default function Courses() {
 
 						<RadixForm.Root asChild>
 							<Form method='post' action='/admin/courses' className='flex flex-col gap-3'>
+
+								<RadixForm.Field name='oldId'>
+									<div className='flex items-baseline justify-between'>
+										<RadixForm.Label>
+											<p>ID da Plataforma Antiga</p>
+										</RadixForm.Label>
+									</div>
+									<RadixForm.Control asChild>
+										<input
+											disabled={isSubmitting}
+											type='text'
+											min={8}
+											className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
+										/>
+									</RadixForm.Control>
+								</RadixForm.Field>
 
 								<RadixForm.Field name='name'>
 									<div className='flex items-baseline justify-between'>
@@ -209,10 +238,47 @@ export default function Courses() {
 									{() => <Editor setQuill={setQuill} placeholder='Adicione aqui o conteúdo do curso, que só aparece para os alunos...'/>}
 								</ClientOnly>
 
+								<RadixForm.Field name='marketingContent'>
+									<div className='flex items-baseline justify-between'>
+										<RadixForm.Label>
+											<p>Conteúdo para Divulgação</p>
+										</RadixForm.Label>
+									</div>
+									<RadixForm.Control asChild>
+										<input
+											disabled={isSubmitting}
+											type='text'
+											min={8}
+											className='hidden'
+											value={mktContent}
+										/>
+									</RadixForm.Control>
+								</RadixForm.Field>
+
+								<ClientOnly fallback={<YemSpinner/>}>
+									{() => <Editor setQuill={setMktQuill} placeholder='Adicione aqui o conteúdo de divulgação do curso, que aparece para quem não é aluno...'/>}
+								</ClientOnly>
+
 								<RadixForm.Field name='videoSourceUrl'>
 									<div className='flex items-baseline justify-between'>
 										<RadixForm.Label>
 											<p>Vídeo</p>
+										</RadixForm.Label>
+									</div>
+									<RadixForm.Control asChild>
+										<input
+											disabled={isSubmitting}
+											type='text'
+											min={3}
+											className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
+										/>
+									</RadixForm.Control>
+								</RadixForm.Field>
+
+								<RadixForm.Field name='marketingVideoUrl'>
+									<div className='flex items-baseline justify-between'>
+										<RadixForm.Label>
+											<p>Vídeo para Divulgação</p>
 										</RadixForm.Label>
 									</div>
 									<RadixForm.Control asChild>
@@ -297,7 +363,7 @@ export default function Courses() {
 								<RadixForm.Field name='delegateAuthTo'>
 									<div className='flex items-baseline justify-between'>
 										<RadixForm.Label>
-											<p>Cursos</p>
+											<p>Delegar Autorização Para</p>
 										</RadixForm.Label>
 									</div>
 									<RadixForm.Control asChild>
