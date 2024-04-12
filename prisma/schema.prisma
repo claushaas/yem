@@ -8,22 +8,24 @@ datasource db {
 }
 
 model Course {
-  id              String              @id @default(uuid())
-  name            String              @unique
-  slug            String              @unique @default(cuid())
-  description     String?
-  content         String?             @db.Text
-  videoSourceUrl  String?
-  thumbnailUrl    String
-  createdAt       DateTime            @default(now())
-  updatedAt       DateTime            @updatedAt
-  publicationDate DateTime
-  published       Boolean             @default(true)
-  modules         Module[]
-  tags            TagOptionTagValue[]
-  comments        Comment[]
-  subscriptions   UserSubscriptions[]
-  isSelling       Boolean             @default(false)
+  id                String              @id @default(uuid())
+  name              String              @unique
+  slug              String              @unique @default(cuid())
+  description       String?
+  content           String?             @db.Text
+  videoSourceUrl    String?
+  thumbnailUrl      String
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  publicationDate   DateTime
+  published         Boolean             @default(true)
+  modules           Module[]
+  tags              TagOptionTagValue[]
+  comments          Comment[]
+  subscriptions     UserSubscriptions[]
+  isSelling         Boolean             @default(false)
+  delegateAuthTo    Course[]            @relation("AuthDelegation")
+  authDelegatedFrom Course[]            @relation("AuthDelegation")
 
   @@map("courses")
 }

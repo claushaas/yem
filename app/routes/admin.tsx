@@ -37,7 +37,7 @@ export default function Admin() {
 				</Link>
 			</aside>
 			<main className='flex-grow flex-shrink p-3'>
-				{pathname === '/admin' && (
+				{(pathname === '/admin' || pathname === '/admin/') && (
 					<p>Selecione a opção no menu ao lado</p>
 				)}
 				<Outlet/>

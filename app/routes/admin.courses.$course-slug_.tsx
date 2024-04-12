@@ -87,6 +87,7 @@ export const action = async ({request, params}: ActionFunctionArgs) => {
 						publicationDate: new Date(formData.get('publicationDate') as string),
 						published: Boolean(formData.get('published')),
 						isSelling: Boolean(formData.get('isSelling')),
+						delegateAuthTo: (formData.get('delegateAuthTo') as string).split(','),
 					};
 
 					await new CourseService().update(id, courseToUpdate);
@@ -154,6 +155,7 @@ export default function Course() {
 	const [courseEditDialogIsOpen, setCourseEditDialogIsOpen] = useState<boolean>(false);
 	const [newModuleDialogIsOpen, setNewModuleDialogIsOpen] = useState<boolean>(false);
 	const [coursesValue, setCoursesValue] = useState<Array<{value: string; label: string}>>(course ? [{value: course.id, label: course.name}] : []);
+	const [coursesSlug, setCoursesSlug] = useState<Array<{value: string; label: string}>>(course?.delegateAuthTo?.map(course => ({value: course.slug, label: course.name})) ?? []);
 	const navigation = useNavigation();
 	const isSubmittingAnyForm = navigation.formAction === `/admin/courses/${courseSlug}`;
 
@@ -374,6 +376,30 @@ export default function Course() {
 												/>
 											</Switch.Root>
 										</RadixForm.Control>
+									</RadixForm.Field>
+
+									<RadixForm.Field name='delegateAuthTo'>
+										<div className='flex items-baseline justify-between'>
+											<RadixForm.Label>
+												<p>Delegar autorização para</p>
+											</RadixForm.Label>
+										</div>
+										<RadixForm.Control asChild>
+											<input
+												disabled={isSubmittingAnyForm}
+												type='text'
+												className='hidden'
+												value={coursesSlug.map(course => course.value).join(',')}
+											/>
+										</RadixForm.Control>
+										<Select
+											isMulti
+											defaultValue={coursesSlug}
+											options={courses?.map(course => ({value: course.slug, label: course.name}))}
+											onChange={selectedOption => {
+												setCoursesSlug(selectedOption as Array<{value: string; label: string}>);
+											}}
+										/>
 									</RadixForm.Field>
 
 									<RadixForm.Field name='type' className='hidden'>

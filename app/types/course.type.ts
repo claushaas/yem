@@ -11,6 +11,7 @@ export type TCourse = {
 	published: boolean;
 	isSelling: boolean;
 	tags?: TTags;
+	delegateAuthTo?: string[];
 };
 
 export type TPrismaPayloadGetAllCourses = Array<Prisma.CourseGetPayload<{
@@ -52,6 +53,14 @@ export type TPrismaPayloadGetCourseById = Prisma.CourseGetPayload<{
 						userId: true;
 					};
 				};
+			};
+		};
+		delegateAuthTo: {
+			select: {
+				id: true;
+				slug: true;
+				name: true;
+				subscriptions: true;
 			};
 		};
 	};
