@@ -3,7 +3,11 @@ import Fuse, {type IFuseOptions} from 'fuse.js';
 import {type TUser} from '../types/user.type.js';
 import {CustomError} from '../utils/custom-error.js';
 import {
-	type TPrismaPayloadCreateLesson, type TLesson, type TPrismaPayloadUpdateLesson, type TPrismaPayloadGetLessonList, type TPrismaPayloadGetLessonById,
+	type TPrismaPayloadCreateLesson,
+	type TLesson,
+	type TPrismaPayloadUpdateLesson,
+	type TPrismaPayloadGetLessonList,
+	type TPrismaPayloadGetLessonById,
 } from '../types/lesson.type.js';
 import {Lesson} from '../entities/lesson.entity.server.js';
 import {type TUuid} from '../types/uuid.type.js';
@@ -336,11 +340,15 @@ export class LessonService {
 									id: true,
 									name: true,
 									slug: true,
-									subscriptions: {
-										where: {
-											userId: user?.id,
-											expiresAt: {
-												gte: new Date(),
+									delegateAuthTo: {
+										select: {
+											id: true,
+											name: true,
+											slug: true,
+											subscriptions: {
+												where: {
+													userId: user?.id,
+												},
 											},
 										},
 									},
@@ -357,7 +365,9 @@ export class LessonService {
 
 			const hasActiveSubscription = user?.roles?.includes('admin') ?? lesson?.modules?.some(
 				module => module.course?.some(
-					course => course.subscriptions.length > 0,
+					course => course.delegateAuthTo?.some(
+						course => course.subscriptions.length > 0,
+					),
 				),
 			);
 

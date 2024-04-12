@@ -3,15 +3,13 @@ import * as Dialog from '@radix-ui/react-dialog';
 import {
 	type ActionFunctionArgs, json, type LoaderFunctionArgs, redirect,
 } from '@remix-run/node';
-import {
-	Await,
-	Form, defer, useLoaderData, useNavigation,
-} from '@remix-run/react';
+import {Form, useLoaderData, useNavigation} from '@remix-run/react';
 import * as RadixForm from '@radix-ui/react-form';
 import type Quill from 'quill';
-import {Suspense, useEffect, useState} from 'react';
+import {useEffect, useState} from 'react';
 import {ClientOnly} from 'remix-utils/client-only';
 import * as Switch from '@radix-ui/react-switch';
+import Select from 'react-select';
 import {CourseService} from '~/services/course.service.server';
 import {Button, ButtonPreset, ButtonType} from '~/components/button/index.js';
 import {commitUserSession, getUserSession} from '~/utils/session.server.js';
@@ -26,15 +24,15 @@ import {type TServiceReturn} from '~/types/service-return.type';
 type CoursesLoaderData = {
 	error: string | undefined;
 	success: string | undefined;
-	courses: Promise<TServiceReturn<TPrismaPayloadGetAllCourses>>;
+	courses: TServiceReturn<TPrismaPayloadGetAllCourses>;
 };
 
 export const loader = async ({request}: LoaderFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 
 	try {
-		const courses = new CourseService().getAll(userSession.get('roles') as TUserRoles);
-		return defer<CoursesLoaderData>({
+		const courses = await new CourseService().getAll(userSession.get('roles') as TUserRoles);
+		return json<CoursesLoaderData>({
 			error: userSession.get('error') as string | undefined,
 			success: userSession.get('success') as string | undefined,
 			courses,
@@ -68,6 +66,7 @@ export const action = async ({request}: ActionFunctionArgs) => {
 				publicationDate: new Date(formData.get('publicationDate') as string),
 				published: Boolean(formData.get('published')),
 				isSelling: Boolean(formData.get('isSelling')),
+				delegateAuthTo: (formData.get('delegateAuthTo') as string).split(','),
 			};
 
 			await new CourseService().create(newCourse);
@@ -107,6 +106,7 @@ export default function Courses() {
 	const [quill, setQuill] = useState<Quill | null>(null); // eslint-disable-line @typescript-eslint/ban-types
 	const [content, setContent] = useState<string>('');
 	const [open, setOpen] = useState<boolean>(false);
+	const [coursesSlug, setCoursesSlug] = useState<Array<{value: string; label: string}>>([]);
 	const navigation = useNavigation();
 	const isSubmitting = navigation.formAction === '/admin/courses';
 
@@ -294,6 +294,30 @@ export default function Courses() {
 									</RadixForm.Control>
 								</RadixForm.Field>
 
+								<RadixForm.Field name='delegateAuthTo'>
+									<div className='flex items-baseline justify-between'>
+										<RadixForm.Label>
+											<p>Cursos</p>
+										</RadixForm.Label>
+									</div>
+									<RadixForm.Control asChild>
+										<input
+											disabled={isSubmitting}
+											type='text'
+											className='hidden'
+											value={coursesSlug.map(course => course.value).join(',')}
+										/>
+									</RadixForm.Control>
+									<Select
+										isMulti
+										defaultValue={coursesSlug}
+										options={courses.data.map(course => ({value: course.slug, label: course.name}))}
+										onChange={selectedOption => {
+											setCoursesSlug(selectedOption as Array<{value: string; label: string}>);
+										}}
+									/>
+								</RadixForm.Field>
+
 								<RadixForm.Submit asChild>
 									<Button key='Criar Curso' isDisabled={isSubmitting} className='m-auto mt-2' text='Criar Curso' preset={ButtonPreset.Primary} type={ButtonType.Submit}/>
 								</RadixForm.Submit>
@@ -317,13 +341,9 @@ export default function Courses() {
 			</Dialog.Root>
 
 			<div className='flex gap-4 my-4 flex-wrap'>
-				<Suspense fallback={<YemSpinner/>}>
-					<Await resolve={courses as TServiceReturn<TPrismaPayloadGetAllCourses>}>
-						{courses => courses?.data?.map(course => (
-							<CourseCard key={course?.id} course={course ?? {}} to={`./${course?.slug}`}/>
-						))}
-					</Await>
-				</Suspense>
+				{courses?.data?.map(course => (
+					<CourseCard key={course?.id} course={course ?? {}} to={`./${course?.slug}`}/>
+				))}
 			</div>
 		</>
 	);
