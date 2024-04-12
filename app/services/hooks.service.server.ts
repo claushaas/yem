@@ -203,7 +203,7 @@ export class HooksService {
 								},
 							),
 							this._mailService.sendEmail(formationWelcomeEmailTemplate(userData!.firstName, userData!.email)),
-							fetch('https://hooks.slack.com/services/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', {
+							fetch(process.env.SLACK_WEBHOOK_URL_FORMATION!, {
 								method: 'POST',
 								headers: {
 									'Content-Type': 'application/json', // eslint-disable-line @typescript-eslint/naming-convention
