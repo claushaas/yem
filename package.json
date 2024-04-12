@@ -22,14 +22,13 @@
     "build": "remix vite:build && tsc",
     "predev": "npx prisma migrate dev",
     "dev": "tsx ./server.ts",
-    "lint": "eslint --ignore-path .gitignore --cache --cache-location ./node_modules/.cache/eslint .",
     "prestart": "npx prisma migrate deploy",
     "start": "node ./build/server.js",
     "typecheck": "tsc --noEmit",
     "update": "npx npm-check-updates -i",
     "up": "docker compose up -d --build",
     "down": "docker compose down",
-    "test": "xo",
+    "lint": "xo",
     "db:reset": "npx prisma migrate reset"
   },
   "dependencies": {
