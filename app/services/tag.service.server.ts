@@ -5,8 +5,6 @@ import {db} from '../database/db.js';
 import {type TPrismaPayloadGetAllTags, type TPrismaPayloadCreateTag, type TTag} from '~/types/tag.type.js';
 import {CustomError} from '~/utils/custom-error.js';
 
-type test = Prisma.TagOptionTagValueCreateArgs;
-
 export class TagService {
 	private readonly _model: PrismaClient;
 
