@@ -363,7 +363,7 @@ export default function Courses() {
 								<RadixForm.Field name='delegateAuthTo'>
 									<div className='flex items-baseline justify-between'>
 										<RadixForm.Label>
-											<p>Cursos</p>
+											<p>Delegar Autorização Para</p>
 										</RadixForm.Label>
 									</div>
 									<RadixForm.Control asChild>
