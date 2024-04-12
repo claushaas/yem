@@ -18,12 +18,13 @@ import {CourseService} from '~/services/course.service.server';
 import {commitUserSession, getUserSession} from '~/utils/session.server';
 import {type TUser} from '~/types/user.type';
 import {logger} from '~/utils/logger.util';
-import {type TPrismaPayloadGetAllCourses, type TPrismaPayloadGetCourseById} from '~/types/course.type';
+import {type TCourse, type TPrismaPayloadGetAllCourses, type TPrismaPayloadGetCourseById} from '~/types/course.type';
 import {CourseCard} from '~/components/course-card/index.js';
 import {Button, ButtonPreset, ButtonType} from '~/components/button/index.js';
 import {Editor} from '~/components/text-editor/index.client.js';
 import {YemSpinner} from '~/components/yem-spinner/index.js';
 import {ModuleService} from '~/services/module.service.server';
+import {type TModule} from '~/types/module.type';
 
 type CourseLoaderData = {
 	error: string | undefined;
@@ -78,11 +79,14 @@ export const action = async ({request, params}: ActionFunctionArgs) => {
 				case 'editCourse': {
 					const id = formData.get('id') as string;
 
-					const courseToUpdate = {
+					const courseToUpdate: TCourse = {
+						oldId: formData.get('oldId') as string,
 						name: formData.get('name') as string,
 						description: formData.get('description') as string,
 						content: formData.get('content') as string,
+						marketingContent: formData.get('marketingContent') as string,
 						videoSourceUrl: formData.get('videoSourceUrl') as string,
+						marketingVideoUrl: formData.get('marketingVideoUrl') as string,
 						thumbnailUrl: formData.get('thumbnailUrl') as string,
 						publicationDate: new Date(formData.get('publicationDate') as string),
 						published: Boolean(formData.get('published')),
@@ -97,11 +101,14 @@ export const action = async ({request, params}: ActionFunctionArgs) => {
 				}
 
 				case 'newModule': {
-					const moduleToCreate = {
+					const moduleToCreate: TModule = {
+						oldId: formData.get('oldId') as string,
 						name: formData.get('name') as string,
 						description: formData.get('description') as string,
 						content: formData.get('content') as string,
+						marketingContent: formData.get('marketingContent') as string,
 						videoSourceUrl: formData.get('videoSourceUrl') as string,
+						marketingVideoUrl: formData.get('marketingVideoUrl') as string,
 						thumbnailUrl: formData.get('thumbnailUrl') as string,
 						courses: (formData.get('course') as string).split(','),
 						publicationDate: new Date(formData.get('publicationDate') as string),
@@ -149,9 +156,13 @@ export default function Course() {
 	const {'course-slug': courseSlug} = useParams();
 
 	const [courseEditQuill, setCourseEditQuill] = useState<Quill | null>(null); // eslint-disable-line @typescript-eslint/ban-types
+	const [courseMktEditQuill, setCourseMktEditQuill] = useState<Quill | null>(null); // eslint-disable-line @typescript-eslint/ban-types
 	const [newModuleQuill, setNewModuleQuill] = useState<Quill | null>(null); // eslint-disable-line @typescript-eslint/ban-types
+	const [newModuleMktQuill, setNewModuleMktQuill] = useState<Quill | null>(null); // eslint-disable-line @typescript-eslint/ban-types
 	const [courseEditQuillContent, setCourseEditQuillContent] = useState(course?.content ?? '');
+	const [courseEditMktQuillContent, setCourseEditMktQuillContent] = useState(course?.marketingContent ?? '');
 	const [newModuleQuillContent, setNewModuleQuillContent] = useState('');
+	const [newModuleQuillMktContent, setNewModuleQuillMktContent] = useState('');
 	const [courseEditDialogIsOpen, setCourseEditDialogIsOpen] = useState<boolean>(false);
 	const [newModuleDialogIsOpen, setNewModuleDialogIsOpen] = useState<boolean>(false);
 	const [coursesValue, setCoursesValue] = useState<Array<{value: string; label: string}>>(course ? [{value: course.id, label: course.name}] : []);
@@ -183,6 +194,14 @@ export default function Course() {
 	}, [courseEditQuill]);
 
 	useEffect(() => {
+		if (courseMktEditQuill) {
+			courseMktEditQuill.on('text-change', () => {
+				setCourseEditMktQuillContent(JSON.stringify(courseMktEditQuill.getContents()));
+			});
+		}
+	}, [courseMktEditQuill]);
+
+	useEffect(() => {
 		if (newModuleQuill) {
 			newModuleQuill.on('text-change', () => {
 				setNewModuleQuillContent(JSON.stringify(newModuleQuill.getContents()));
@@ -191,10 +210,24 @@ export default function Course() {
 	}, [newModuleQuill]);
 
 	useEffect(() => {
+		if (newModuleMktQuill) {
+			newModuleMktQuill.on('text-change', () => {
+				setNewModuleQuillMktContent(JSON.stringify(newModuleMktQuill.getContents()));
+			});
+		}
+	}, [newModuleMktQuill]);
+
+	useEffect(() => {
 		if (course?.content && courseEditQuill) {
 			courseEditQuill.setContents(JSON.parse(course.content) as Delta);
 		}
 	}, [courseEditQuill]); // eslint-disable-line react-hooks/exhaustive-deps
+
+	useEffect(() => {
+		if (course?.marketingContent && courseMktEditQuill) {
+			courseMktEditQuill.setContents(JSON.parse(course.marketingContent) as Delta);
+		}
+	}, [courseMktEditQuill]); // eslint-disable-line react-hooks/exhaustive-deps
 
 	return course && (
 		<>
@@ -230,6 +263,23 @@ export default function Course() {
 
 							<RadixForm.Root asChild>
 								<Form method='post' action={`/admin/courses/${courseSlug}`} className='flex flex-col gap-3'>
+
+									<RadixForm.Field name='oldId'>
+										<div className='flex items-baseline justify-between'>
+											<RadixForm.Label>
+												<p>ID da Antiga Plataforma</p>
+											</RadixForm.Label>
+										</div>
+										<RadixForm.Control asChild>
+											<input
+												defaultValue={course.oldId ?? ''}
+												disabled={isSubmittingAnyForm}
+												type='text'
+												min={8}
+												className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
+											/>
+										</RadixForm.Control>
+									</RadixForm.Field>
 
 									<RadixForm.Field name='name'>
 										<div className='flex items-baseline justify-between'>
@@ -288,6 +338,27 @@ export default function Course() {
 										{() => <Editor setQuill={setCourseEditQuill} placeholder='Adicione aqui o conteúdo do curso, que só aparece para os alunos...'/>}
 									</ClientOnly>
 
+									<RadixForm.Field name='marketingContent'>
+										<div className='flex items-baseline justify-between'>
+											<RadixForm.Label>
+												<p>Conteúdo para Divulgação</p>
+											</RadixForm.Label>
+										</div>
+										<RadixForm.Control asChild>
+											<input
+												disabled={isSubmittingAnyForm}
+												type='text'
+												min={8}
+												className='hidden'
+												value={courseEditMktQuillContent}
+											/>
+										</RadixForm.Control>
+									</RadixForm.Field>
+
+									<ClientOnly fallback={<YemSpinner/>}>
+										{() => <Editor setQuill={setCourseMktEditQuill} placeholder='Adicione aqui o conteúdo de divulgação do curso, que aparece para quem não é aluno...'/>}
+									</ClientOnly>
+
 									<RadixForm.Field name='videoSourceUrl'>
 										<div className='flex items-baseline justify-between'>
 											<RadixForm.Label>
@@ -297,6 +368,23 @@ export default function Course() {
 										<RadixForm.Control asChild>
 											<input
 												defaultValue={course.videoSourceUrl ?? ''}
+												disabled={isSubmittingAnyForm}
+												type='text'
+												min={3}
+												className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
+											/>
+										</RadixForm.Control>
+									</RadixForm.Field>
+
+									<RadixForm.Field name='marketingVideoUrl'>
+										<div className='flex items-baseline justify-between'>
+											<RadixForm.Label>
+												<p>Vídeo de Divulgação</p>
+											</RadixForm.Label>
+										</div>
+										<RadixForm.Control asChild>
+											<input
+												defaultValue={course.marketingVideoUrl ?? ''}
 												disabled={isSubmittingAnyForm}
 												type='text'
 												min={3}
@@ -489,6 +577,22 @@ export default function Course() {
 							<RadixForm.Root asChild>
 								<Form method='post' action={`/admin/courses/${courseSlug}`} className='flex flex-col gap-3'>
 
+									<RadixForm.Field name='oldId'>
+										<div className='flex items-baseline justify-between'>
+											<RadixForm.Label>
+												<p>ID da Antiga Plataforma</p>
+											</RadixForm.Label>
+										</div>
+										<RadixForm.Control asChild>
+											<input
+												disabled={isSubmittingAnyForm}
+												type='text'
+												min={8}
+												className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
+											/>
+										</RadixForm.Control>
+									</RadixForm.Field>
+
 									<RadixForm.Field name='name'>
 										<div className='flex items-baseline justify-between'>
 											<RadixForm.Label>
@@ -544,10 +648,47 @@ export default function Course() {
 										{() => <Editor setQuill={setNewModuleQuill} placeholder='Adicione aqui o conteúdo do módulo, que só aparece para os alunos...'/>}
 									</ClientOnly>
 
+									<RadixForm.Field name='marketingContent'>
+										<div className='flex items-baseline justify-between'>
+											<RadixForm.Label>
+												<p>Conteúdo de Divulgação</p>
+											</RadixForm.Label>
+										</div>
+										<RadixForm.Control asChild>
+											<input
+												disabled={isSubmittingAnyForm}
+												type='text'
+												min={8}
+												className='hidden'
+												value={newModuleQuillMktContent}
+											/>
+										</RadixForm.Control>
+									</RadixForm.Field>
+
+									<ClientOnly fallback={<YemSpinner/>}>
+										{() => <Editor setQuill={setNewModuleMktQuill} placeholder='Adicione aqui o conteúdo de divulgação do módulo, que aparece para quem não é aluno...'/>}
+									</ClientOnly>
+
 									<RadixForm.Field name='videoSourceUrl'>
 										<div className='flex items-baseline justify-between'>
 											<RadixForm.Label>
 												<p>Vídeo</p>
+											</RadixForm.Label>
+										</div>
+										<RadixForm.Control asChild>
+											<input
+												disabled={isSubmittingAnyForm}
+												type='text'
+												min={3}
+												className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
+											/>
+										</RadixForm.Control>
+									</RadixForm.Field>
+
+									<RadixForm.Field name='marketingVideoUrl'>
+										<div className='flex items-baseline justify-between'>
+											<RadixForm.Label>
+												<p>Vídeo de Divulgação</p>
 											</RadixForm.Label>
 										</div>
 										<RadixForm.Control asChild>
