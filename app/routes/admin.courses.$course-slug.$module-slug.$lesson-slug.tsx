@@ -20,7 +20,7 @@ import {LessonService} from '~/services/lesson.service.server';
 import {type TUser} from '~/types/user.type';
 import {logger} from '~/utils/logger.util';
 import {commitUserSession, getUserSession} from '~/utils/session.server';
-import {type TLessonType, type TPrismaPayloadGetLessonById} from '~/types/lesson.type';
+import {type TLesson, type TLessonType, type TPrismaPayloadGetLessonById} from '~/types/lesson.type';
 import {Button, ButtonPreset, ButtonType} from '~/components/button/index.js';
 import {Editor} from '~/components/text-editor/index.client.js';
 import {YemSpinner} from '~/components/yem-spinner/index.js';
@@ -79,12 +79,15 @@ export const action = async ({request, params}: ActionFunctionArgs) => {
 
 			const id = formData.get('id') as string;
 
-			const lessonToUpdate = {
+			const lessonToUpdate: TLesson = {
+				oldId: formData.get('oldId') as string,
 				name: formData.get('name') as string,
 				description: formData.get('description') as string,
 				type: formData.get('type') as TLessonType,
 				content: formData.get('content') as string,
+				marketingContent: formData.get('marketingContent') as string,
 				videoSourceUrl: formData.get('videoSourceUrl') as string,
+				marketingVideoUrl: formData.get('marketingVideoUrl') as string,
 				duration: Number(formData.get('duration')),
 				thumbnailUrl: formData.get('thumbnailUrl') as string,
 				modules: (formData.get('modules') as string).split(','),
@@ -127,7 +130,9 @@ export default function Lesson() {
 	} = useParams();
 
 	const [lessonEditQuill, setLessonEditQuill] = useState<Quill | null>(null); // eslint-disable-line @typescript-eslint/ban-types
+	const [lessonEditMktQuill, setLessonEditMktQuill] = useState<Quill | null>(null); // eslint-disable-line @typescript-eslint/ban-types
 	const [lessonEditQuillContent, setLessonEditQuillContent] = useState(lesson?.content ?? '');
+	const [lessonEditQuillMktContent, setLessonEditQuillMktContent] = useState(lesson?.content ?? '');
 	const [lessonEditDialogIsOpen, setLessonEditDialogIsOpen] = useState(false);
 	const navigation = useNavigation();
 	const isSubmittingAnyForm = navigation.formAction === `/admin/courses/${courseSlug}/${moduleSlug}/${lessonSlug}`;
@@ -155,10 +160,24 @@ export default function Lesson() {
 	}, [lessonEditQuill]);
 
 	useEffect(() => {
+		if (lessonEditMktQuill) {
+			lessonEditMktQuill.on('text-change', () => {
+				setLessonEditQuillMktContent(JSON.stringify(lessonEditMktQuill.getContents()));
+			});
+		}
+	}, [lessonEditMktQuill]);
+
+	useEffect(() => {
 		if (lesson?.content && lessonEditQuill) {
 			lessonEditQuill.setContents(JSON.parse(lesson.content) as Delta);
 		}
 	}, [lessonEditQuill]); // eslint-disable-line react-hooks/exhaustive-deps
+
+	useEffect(() => {
+		if (lesson?.marketingContent && lessonEditMktQuill) {
+			lessonEditMktQuill.setContents(JSON.parse(lesson.marketingContent) as Delta);
+		}
+	}, [lessonEditMktQuill]); // eslint-disable-line react-hooks/exhaustive-deps
 
 	return lesson && (
 		<>
@@ -194,6 +213,23 @@ export default function Lesson() {
 
 						<RadixForm.Root asChild>
 							<Form method='post' action={`/admin/courses/${courseSlug}/${moduleSlug}/${lessonSlug}`} className='flex flex-col gap-3'>
+
+								<RadixForm.Field name='oldId'>
+									<div className='flex items-baseline justify-between'>
+										<RadixForm.Label>
+											<p>ID da Antiga Plataforma</p>
+										</RadixForm.Label>
+									</div>
+									<RadixForm.Control asChild>
+										<input
+											defaultValue={lesson.oldId ?? ''}
+											disabled={isSubmittingAnyForm}
+											type='text'
+											min={8}
+											className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
+										/>
+									</RadixForm.Control>
+								</RadixForm.Field>
 
 								<RadixForm.Field name='name'>
 									<div className='flex items-baseline justify-between'>
@@ -316,6 +352,27 @@ export default function Lesson() {
 									{() => <Editor setQuill={setLessonEditQuill} placeholder='Adicione aqui o conteúdo da aula, que só aparece para os alunos...'/>}
 								</ClientOnly>
 
+								<RadixForm.Field name='marketingContent'>
+									<div className='flex items-baseline justify-between'>
+										<RadixForm.Label>
+											<p>Conteúdo de Divulgação</p>
+										</RadixForm.Label>
+									</div>
+									<RadixForm.Control asChild>
+										<input
+											disabled={isSubmittingAnyForm}
+											type='text'
+											min={8}
+											className='hidden'
+											value={lessonEditQuillMktContent}
+										/>
+									</RadixForm.Control>
+								</RadixForm.Field>
+
+								<ClientOnly fallback={<YemSpinner/>}>
+									{() => <Editor setQuill={setLessonEditMktQuill} placeholder='Adicione aqui o conteúdo de divulgação da aula, que só aparece para quem não é aluno...'/>}
+								</ClientOnly>
+
 								<RadixForm.Field name='videoSourceUrl'>
 									<div className='flex items-baseline justify-between'>
 										<RadixForm.Label>
@@ -325,6 +382,23 @@ export default function Lesson() {
 									<RadixForm.Control asChild>
 										<input
 											defaultValue={lesson.videoSourceUrl ?? ''}
+											disabled={isSubmittingAnyForm}
+											type='text'
+											min={3}
+											className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
+										/>
+									</RadixForm.Control>
+								</RadixForm.Field>
+
+								<RadixForm.Field name='marketingVideoUrl'>
+									<div className='flex items-baseline justify-between'>
+										<RadixForm.Label>
+											<p>Vídeo de Divulgação</p>
+										</RadixForm.Label>
+									</div>
+									<RadixForm.Control asChild>
+										<input
+											defaultValue={lesson.marketingVideoUrl ?? ''}
 											disabled={isSubmittingAnyForm}
 											type='text'
 											min={3}

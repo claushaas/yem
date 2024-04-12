@@ -5,11 +5,14 @@ import {type TTags} from '../types/tag.type.js';
 import {type TUuid} from '../types/uuid.type.js';
 
 const lessonSchema = Joi.object({
+	oldId: Joi.string(),
 	name: Joi.string().required().min(3).max(35),
 	type: Joi.string().required().valid('video', 'text', 'courseWare'),
 	description: Joi.string().min(10).max(150),
 	content: Joi.string().allow(''),
+	marketingContent: Joi.string().allow(''),
 	videoSourceUrl: Joi.string().allow(''),
+	marketingVideoUrl: Joi.string().allow(''),
 	duration: Joi.number().min(0).max(200),
 	thumbnailUrl: Joi.string().required(),
 	modules: Joi.array().items(Joi.string().uuid()).required(),
@@ -19,12 +22,15 @@ const lessonSchema = Joi.object({
 });
 
 export class Lesson implements TLesson {
+	private readonly _oldId?: string;
 	private readonly _name: string;
 	private readonly _slug: string;
 	private readonly _type: TLessonType;
 	private readonly _description?: string;
 	private readonly _content?: string;
+	private readonly _marketingContent?: string;
 	private readonly _videoSourceUrl?: string;
+	private readonly _marketingVideoUrl?: string;
 	private readonly _duration?: number;
 	private readonly _thumbnailUrl: string;
 	private readonly _modules: TUuid[];
@@ -39,18 +45,25 @@ export class Lesson implements TLesson {
 			throw new CustomError('UNPROCESSABLE_ENTITY', `Invalid lesson data: ${error.message}`);
 		}
 
+		this._oldId = lesson.oldId;
 		this._name = lesson.name;
 		this._slug = this._name.toLowerCase().normalize('NFD').replaceAll(/[\u0300-\u036F]/g, '').replaceAll(' ', '-');
 		this._type = lesson.type;
 		this._description = lesson.description;
 		this._content = lesson.content;
+		this._marketingContent = lesson.marketingContent;
 		this._videoSourceUrl = lesson.videoSourceUrl;
+		this._marketingVideoUrl = lesson.marketingVideoUrl;
 		this._duration = lesson.duration;
 		this._thumbnailUrl = lesson.thumbnailUrl;
 		this._modules = lesson.modules;
 		this._publicationDate = lesson.publicationDate;
 		this._published = lesson.published;
 		this._tags = lesson.tags;
+	}
+
+	get oldId() {
+		return this._oldId;
 	}
 
 	get name() {
@@ -73,8 +86,16 @@ export class Lesson implements TLesson {
 		return this._content;
 	}
 
+	get marketingContent() {
+		return this._marketingContent;
+	}
+
 	get videoSourceUrl() {
 		return this._videoSourceUrl;
+	}
+
+	get marketingVideoUrl() {
+		return this._marketingVideoUrl;
 	}
 
 	get duration() {

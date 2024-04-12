@@ -3,10 +3,13 @@ import {type TTags} from './tag.type.js';
 import {type TUuid} from './uuid.type.js';
 
 export type TModule = {
+	oldId?: string;
 	name: string;
 	description?: string;
 	content?: string;
+	marketingContent?: string;
 	videoSourceUrl?: string;
+	marketingVideoUrl?: string;
 	thumbnailUrl: string;
 	publicationDate: Date;
 	published: boolean;

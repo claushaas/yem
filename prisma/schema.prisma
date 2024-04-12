@@ -9,11 +9,14 @@ datasource db {
 
 model Course {
   id                String              @id @default(uuid())
+  oldId             String?
   name              String              @unique
   slug              String              @unique @default(cuid())
   description       String?
   content           String?             @db.Text
+  marketingContent  String?             @db.Text
   videoSourceUrl    String?
+  marketingVideoUrl String?
   thumbnailUrl      String
   createdAt         DateTime            @default(now())
   updatedAt         DateTime            @updatedAt
@@ -31,43 +34,50 @@ model Course {
 }
 
 model Module {
-  id              String              @id @default(uuid())
-  name            String
-  slug            String              @unique @default(cuid())
-  description     String?
-  content         String?             @db.Text
-  videoSourceUrl  String?
-  thumbnailUrl    String
-  course          Course[]
-  createdAt       DateTime            @default(now())
-  updatedAt       DateTime            @updatedAt
-  publicationDate DateTime
-  published       Boolean             @default(false)
-  lessons         Lesson[]
-  tags            TagOptionTagValue[]
-  comments        Comment[]
+  id                String              @id @default(uuid())
+  oldId             String?
+  name              String
+  slug              String              @unique @default(cuid())
+  description       String?
+  content           String?             @db.Text
+  marketingContent  String?             @db.Text
+  videoSourceUrl    String?
+  marketingVideoUrl String?
+  thumbnailUrl      String
+  course            Course[]
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  publicationDate   DateTime
+  published         Boolean             @default(false)
+  lessons           Lesson[]
+  tags              TagOptionTagValue[]
+  comments          Comment[]
 
   @@map("modules")
 }
 
 model Lesson {
-  id              String              @id @default(uuid())
-  name            String
-  slug            String              @unique @default(cuid())
-  type            LessonType          @default(video)
-  description     String?
-  content         String?             @db.Text
-  videoSourceUrl  String?
-  thumbnailUrl    String
-  modules         Module[]
-  createdAt       DateTime            @default(now())
-  updatedAt       DateTime            @updatedAt
-  publicationDate DateTime
-  published       Boolean             @default(false)
-  tags            TagOptionTagValue[]
-  comments        Comment[]
-  lessonProgress  LessonProgress[]
-  duration        Int?
+  id                String              @id @default(uuid())
+  oldId             String?
+  name              String
+  slug              String              @unique @default(cuid())
+  type              LessonType          @default(video)
+  description       String?
+  content           String?             @db.Text
+  marketingContent  String?             @db.Text
+  videoSourceUrl    String?
+  marketingVideoUrl String?
+  thumbnailUrl      String
+  modules           Module[]
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  publicationDate   DateTime
+  published         Boolean             @default(false)
+  tags              TagOptionTagValue[]
+  comments          Comment[]
+  lessonProgress    LessonProgress[]
+  duration          Int?
+  FavoritedBy       FavoritedLessons[]
 
   @@map("lessons")
 }
@@ -118,22 +128,24 @@ model TagOptionTagValue {
 }
 
 model Comment {
-  id           String    @id @default(uuid())
-  content      String    @db.Text
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
-  userId       String
-  lesson       Lesson?   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
-  course       Course?   @relation(fields: [courseId], references: [id], onDelete: Cascade)
-  module       Module?   @relation(fields: [moduleId], references: [id], onDelete: Cascade)
-  lessonId     String?
-  courseId     String?
-  moduleId     String?
-  responseToId String?
-  responseTo   Comment?  @relation("CommentToComment", fields: [responseToId], references: [id], onDelete: Cascade)
-  responses    Comment[] @relation("CommentToComment")
-  notify       String[]
-  published    Boolean   @default(true)
+  id              String    @id @default(uuid())
+  content         String    @db.Text
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  userId          String
+  authorFirstName String
+  authorLastName  String
+  lesson          Lesson?   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  course          Course?   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  module          Module?   @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  lessonId        String?
+  courseId        String?
+  moduleId        String?
+  responseToId    String?
+  responseTo      Comment?  @relation("CommentToComment", fields: [responseToId], references: [id], onDelete: Cascade)
+  responses       Comment[] @relation("CommentToComment")
+  notify          String[]
+  published       Boolean   @default(true)
 
   @@map("comments")
 }
@@ -150,6 +162,16 @@ model LessonProgress {
 
   @@unique([lessonId, userId])
   @@map("lesson_progress")
+}
+
+model FavoritedLessons {
+  id       String @id @default(uuid())
+  userId   String
+  lesson   Lesson @relation(fields: [lessonId], references: [id])
+  lessonId String
+
+  @@unique([userId, lessonId])
+  @@map("favorited_lessons")
 }
 
 model UserSubscriptions {
