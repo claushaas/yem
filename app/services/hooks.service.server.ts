@@ -57,6 +57,10 @@ export class HooksService {
 					break;
 				}
 
+				case 'PURCHASE_COMPLETE': {
+					break;
+				}
+
 				default: {
 					await this._slackService.sendMessage(body);
 					break;
@@ -94,6 +98,10 @@ export class HooksService {
 				}
 
 				case 'invoice.released': {
+					break;
+				}
+
+				case 'customer_payment_method.new': {
 					break;
 				}
 
@@ -195,6 +203,13 @@ export class HooksService {
 								},
 							),
 							this._mailService.sendEmail(formationWelcomeEmailTemplate(userData!.firstName, userData!.email)),
+							fetch(process.env.SLACK_WEBHOOK_URL_FORMATION!, {
+								method: 'POST',
+								headers: {
+									'Content-Type': 'application/json', // eslint-disable-line @typescript-eslint/naming-convention
+								},
+								body: JSON.stringify({text: `Novo Aluno na Formação\nNome: ${userData!.firstName} ${userData!.lastName}\nEmail: ${userData!.email}\nTelefone: ${userData!.phoneNumber}`}),
+							}),
 						]);
 					}
 
