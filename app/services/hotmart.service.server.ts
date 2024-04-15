@@ -144,7 +144,7 @@ export class HotmartService {
 	private _mapSchoolSubscriptions(subscriptions: THotmartSubscription[], user: TUser): TSubscription[] {
 		return subscriptions.map(subscription => ({
 			userId: user.id,
-			courseId: convertSubscriptionIdentifierToCourseId(subscription.product.id.toString() as TPlanIdentifier),
+			courseId: convertSubscriptionIdentifierToCourseId(subscription.plan.name as TPlanIdentifier),
 			expiresAt: subscription.date_next_charge ? new Date(subscription.date_next_charge) : new Date(subscription.accession_date),
 			provider: 'hotmart',
 			providerSubscriptionId: subscription.subscriber_code,
