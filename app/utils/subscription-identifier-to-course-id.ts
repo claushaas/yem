@@ -19,6 +19,7 @@ export const subscriptionIdentifierToCourseId = {
 	'Mensal boleto': '750c5893-e395-411c-8438-1754e1fd0663',
 	'Anual 497': 'c15efa5f-17f3-4db2-8e5a-b3cb287065d3',
 	'Anual - boleto': 'c15efa5f-17f3-4db2-8e5a-b3cb287065d3',
+	beginner: '8c49ad51-dcb3-4a69-bbeb-2f95970194ae',
 };
 
 export const convertSubscriptionIdentifierToCourseId = (subscriptionIdentifier: TPlanIdentifier): string => subscriptionIdentifierToCourseId[subscriptionIdentifier];
