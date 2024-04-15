@@ -9,6 +9,7 @@ import {
 import {type LoaderFunctionArgs, type LinksFunction, json} from '@remix-run/node';
 import {getUserSession} from './utils/session.server.js';
 import {type TypeUserSession} from './types/user-session.type.js';
+import {useIsBot} from './context/is-bot.context.js';
 import styles from '~/tailwind.css?url';
 import {NavigateBar} from '~/components/navigation-bar/index.js';
 import {Footer} from '~/components/footer/index.js';
@@ -40,6 +41,8 @@ function App() {
 	const data = useLoaderData() as {userData?: TypeUserSession | undefined} ?? {};
 	const userData = data?.userData;
 
+	const isBot = useIsBot();
+
 	return (
 		<html lang='pt-BR' className='notranslate font-gothamBook' translate='no'>
 			<head>
@@ -58,7 +61,7 @@ function App() {
 				<Outlet context={{userData}}/>
 				<Footer/>
 				<ScrollRestoration/>
-				<Scripts/>
+				{isBot ? null : <Scripts/>}
 			</body>
 		</html>
 	);
