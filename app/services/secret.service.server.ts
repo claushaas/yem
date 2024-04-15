@@ -10,12 +10,10 @@ export class SecretService {
 	private readonly _awsSecretId: string;
 
 	constructor() {
-		this._awsClient = new SecretsManagerClient(
-			{
-				region: process.env.AWS_REGION ?? 'us-east-1',
-				credentials: fromEnv(),
-			},
-		);
+		this._awsClient = new SecretsManagerClient({
+			region: process.env.AWS_REGION ?? 'us-east-1',
+			credentials: fromEnv(),
+		});
 		this._awsSecretId = process.env.AWS_SECRET_ID ?? '';
 	}
 

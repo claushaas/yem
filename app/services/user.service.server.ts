@@ -33,12 +33,10 @@ export class UserService {
 	private readonly _mauticService: MauticService;
 
 	constructor(
-		awsClient: CognitoIdentityProviderClient = new CognitoIdentityProviderClient(
-			{
-				region: process.env.AWS_REGION ?? 'us-east-1',
-				credentials: fromEnv(),
-			},
-		),
+		awsClient: CognitoIdentityProviderClient = new CognitoIdentityProviderClient({
+			region: process.env.AWS_REGION ?? 'us-east-1',
+			credentials: fromEnv(),
+		}),
 	) {
 		this._awsClient = awsClient;
 		this._subscriptionService = new SubscriptionService();

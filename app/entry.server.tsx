@@ -3,6 +3,7 @@ import {createReadableStreamFromReadable, type EntryContext} from '@remix-run/no
 import {RemixServer} from '@remix-run/react';
 import {isbot} from 'isbot';
 import {renderToPipeableStream} from 'react-dom/server';
+import {IsBotProvider} from './context/is-bot.context.js';
 
 const ABORT_DELAY = 5000;
 
@@ -40,11 +41,13 @@ async function handleBotRequest(
 	return new Promise((resolve, reject) => {
 		let shellRendered = false;
 		const {pipe, abort} = renderToPipeableStream(
-			<RemixServer
-				context={remixContext}
-				url={request.url}
-				abortDelay={ABORT_DELAY}
-			/>,
+			<IsBotProvider isBot={isbot(request.headers.get('User-Agent') ?? '')}>
+				<RemixServer
+					context={remixContext}
+					url={request.url}
+					abortDelay={ABORT_DELAY}
+				/>
+			</IsBotProvider>,
 			{
 				onAllReady() {
 					shellRendered = true;
@@ -91,11 +94,13 @@ async function handleBrowserRequest(
 	return new Promise((resolve, reject) => {
 		let shellRendered = false;
 		const {pipe, abort} = renderToPipeableStream(
-			<RemixServer
-				context={remixContext}
-				url={request.url}
-				abortDelay={ABORT_DELAY}
-			/>,
+			<IsBotProvider isBot={isbot(request.headers.get('User-Agent') ?? '')}>
+				<RemixServer
+					context={remixContext}
+					url={request.url}
+					abortDelay={ABORT_DELAY}
+				/>
+			</IsBotProvider>,
 			{
 				onShellReady() {
 					shellRendered = true;
