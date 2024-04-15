@@ -4,7 +4,7 @@ import {CustomError} from '../utils/custom-error.js';
 import {type TTags} from '../types/tag.type.js';
 
 const courseSchema = Joi.object({
-	oldId: Joi.string(),
+	oldId: Joi.string().allow(''),
 	name: Joi.string().required().min(3).max(35),
 	description: Joi.string().min(10).max(150),
 	content: Joi.string().allow(''),

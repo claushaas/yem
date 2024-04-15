@@ -105,6 +105,10 @@ export class HooksService {
 					break;
 				}
 
+				case 'invoice.installment_released': {
+					break;
+				}
+
 				case 'customer_payment_method.new': {
 					break;
 				}
@@ -140,13 +144,16 @@ export class HooksService {
 					const {data: subscription} = await this._iuguService.getSubscriptionById(data.subscription_id as string);
 					const {data: user} = await this._userService.getUserData(subscription.customer_email);
 
-					await this._subscriptionService.createOrUpdate({
-						userId: user.id,
-						courseId: convertSubscriptionIdentifierToCourseId(subscription.plan_identifier),
-						expiresAt: new Date(subscription.expires_at),
-						provider: 'iugu',
-						providerSubscriptionId: subscription.id,
-					});
+					await Promise.all([
+						this._subscriptionService.createOrUpdate({
+							userId: user.id,
+							courseId: convertSubscriptionIdentifierToCourseId(subscription.plan_identifier),
+							expiresAt: new Date(subscription.expires_at),
+							provider: 'iugu',
+							providerSubscriptionId: subscription.id,
+						}),
+						this._slackService.sendMessage({message: `Assinatura iugu atualizada\nNome: ${user.firstName} ${user.lastName}\nEmail: ${user.email}\nTelefone: ${user.phoneNumber}`}),
+					]);
 					break;
 				}
 
@@ -237,6 +244,7 @@ export class HooksService {
 							provider: 'hotmart',
 							providerSubscriptionId: data.subscription?.subscriber.code ?? data.purchase.transaction,
 						}),
+						this._slackService.sendMessage({message: `Assinatura hotmart da formação atualizada\nNome: ${userData!.firstName} ${userData!.lastName}\nEmail: ${userData!.email}\nTelefone: ${userData!.phoneNumber}`}),
 					]);
 
 					break;
@@ -267,11 +275,13 @@ export class HooksService {
 						this._userService.addRolesToUser(userData!, rolesToAdd), // Should be deleted when old site stops being suported
 						this._subscriptionService.createOrUpdate({
 							userId: userData!.id,
-							courseId: convertSubscriptionIdentifierToCourseId(data.product.id.toString() as TPlanIdentifier),
+							courseId: convertSubscriptionIdentifierToCourseId(data.subscription?.plan?.name as TPlanIdentifier) ?? convertSubscriptionIdentifierToCourseId(data.product.id.toString() as TPlanIdentifier),
 							expiresAt: new Date(data.purchase.date_next_charge!),
 							provider: 'hotmart',
 							providerSubscriptionId: data.subscription?.subscriber.code ?? data.purchase.transaction,
 						}),
+
+						this._slackService.sendMessage({message: `Assinatura hotmart da escola atualizada\nNome: ${userData!.firstName} ${userData!.lastName}\nEmail: ${userData!.email}\nTelefone: ${userData!.phoneNumber}`}),
 					]);
 
 					break;
