@@ -131,7 +131,7 @@ export const action = async ({request, params}: ActionFunctionArgs) => {
 		}
 	} catch (error) {
 		logger.logError(`Error creating course: ${(error as Error).message}`);
-		userSession.flash('error', 'Erro ao criar curso');
+		userSession.flash('error', `Error creating course: ${(error as Error).message}`);
 		return redirect(`/admin/courses/${courseSlug}`, {
 			headers: {
 				'Set-Cookie': await commitUserSession(userSession), // eslint-disable-line @typescript-eslint/naming-convention

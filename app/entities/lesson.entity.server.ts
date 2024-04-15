@@ -5,7 +5,7 @@ import {type TTags} from '../types/tag.type.js';
 import {type TUuid} from '../types/uuid.type.js';
 
 const lessonSchema = Joi.object({
-	oldId: Joi.string(),
+	oldId: Joi.string().allow(''),
 	name: Joi.string().required().min(3).max(35),
 	type: Joi.string().required().valid('video', 'text', 'courseWare'),
 	description: Joi.string().min(10).max(150),
