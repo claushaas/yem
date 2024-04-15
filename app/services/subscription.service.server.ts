@@ -8,6 +8,7 @@ import {db} from '../database/db.js';
 import {HotmartService} from './hotmart.service.server.js';
 import {IuguService} from './iugu.service.server.js';
 import {CustomError} from '~/utils/custom-error.js';
+import {convertSubscriptionIdentifierToCourseId} from '~/utils/subscription-identifier-to-course-id.js';
 
 export default class SubscriptionService {
 	private readonly _model: PrismaClient;
@@ -59,6 +60,7 @@ export default class SubscriptionService {
 			this._updateUserIuguSubscriptions(user),
 			this._updateUserHotmartSchoolSubscriptions(user),
 			this._updateUserHotmartFormationSubscriptions(user),
+			this._createBeginnerSubscription(user),
 		]);
 
 		return {
@@ -147,5 +149,15 @@ export default class SubscriptionService {
 		} catch (error) {
 			logger.logError(`Error getting hotmart subscriptions: ${(error as Error).message}`);
 		}
+	}
+
+	private async _createBeginnerSubscription(user: TUser): Promise<void> {
+		await this.createOrUpdate({
+			userId: user.id,
+			courseId: convertSubscriptionIdentifierToCourseId('beginner'),
+			provider: 'manual',
+			providerSubscriptionId: 'beginner',
+			expiresAt: new Date(2_556_113_460_000),
+		});
 	}
 }
