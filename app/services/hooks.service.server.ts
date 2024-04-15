@@ -97,6 +97,10 @@ export class HooksService {
 					break;
 				}
 
+				case 'invoice.created': {
+					break;
+				}
+
 				case 'invoice.released': {
 					break;
 				}
