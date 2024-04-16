@@ -24,6 +24,15 @@ const main = async () => {
 				publicationDate: new Date('2024-03-25 18:00:00-03:00'),
 				content: '{"ops":[{"insert":"agora esse curso tem um conteúdo com "},{"attributes":{"link":"https://claushaas.dev"},"insert":"link"},{"insert":"\\n"}]}',
 			},
+			{
+				id: '8c49ad51-dcb3-4a69-bbeb-2f95970194ae',
+				name: 'Yoga para Iniciantes',
+				slug: 'yoga-para-iniciantes',
+				description: 'Yoga para Iniciantes lkjh lkjh lkjh lkjh lkjh lkj hlkjh lkjh ',
+				thumbnailUrl: '78c0c3ab-7da6-46e8-742e-fd0e4b08b900',
+				publicationDate: new Date('2024-04-10 18:00:00-03:00'),
+				content: '{"ops":[{"insert":"agora esse curso tem um conteúdo com "},{"attributes":{"link":"https://claushaas.dev"},"insert":"link"},{"insert":"\\n"}]}',
+			},
 		],
 	});
 
