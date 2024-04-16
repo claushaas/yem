@@ -156,7 +156,7 @@ export default class SubscriptionService {
 			userId: user.id,
 			courseId: convertSubscriptionIdentifierToCourseId('beginner'),
 			provider: 'manual',
-			providerSubscriptionId: 'beginner',
+			providerSubscriptionId: `begginner-${user.id}`,
 			expiresAt: new Date(2_556_113_460_000),
 		});
 	}
