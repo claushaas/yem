@@ -60,7 +60,7 @@ export default class SubscriptionService {
 			this._updateUserIuguSubscriptions(user),
 			this._updateUserHotmartSchoolSubscriptions(user),
 			this._updateUserHotmartFormationSubscriptions(user),
-			this._createBeginnerSubscription(user),
+			this._createOrUpdateBeginnerSubscription(user),
 		]);
 
 		return {
@@ -151,7 +151,7 @@ export default class SubscriptionService {
 		}
 	}
 
-	private async _createBeginnerSubscription(user: TUser): Promise<void> {
+	private async _createOrUpdateBeginnerSubscription(user: TUser): Promise<void> {
 		await this.createOrUpdate({
 			userId: user.id,
 			courseId: convertSubscriptionIdentifierToCourseId('beginner'),

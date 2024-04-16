@@ -113,6 +113,10 @@ export class HooksService {
 					break;
 				}
 
+				case 'withdraw_request.created': {
+					break;
+				}
+
 				case 'withdraw_request.status_changed': {
 					break;
 				}

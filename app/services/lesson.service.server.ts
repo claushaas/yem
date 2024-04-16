@@ -188,68 +188,52 @@ export class LessonService {
 		};
 	}
 
-	public async getList(moduleId: TUuid, user: TUser | undefined): Promise<TServiceReturn<TPrismaPayloadGetLessonList>> {
-		const lessonWhere = {
-			modules: {
-				some: {
-					id: moduleId,
-				},
-			},
-		};
-
-		const lessonSelect = {
-			id: true,
-			name: true,
-			slug: true,
-			type: true,
-			description: true,
-			thumbnailUrl: true,
-			duration: true,
-			publicationDate: true,
-			published: true,
-			tags: {
-				include: {
-					tagOption: {
-						select: {
-							name: true,
-						},
-					},
-					tagValue: {
-						select: {
-							name: true,
-						},
-					},
-				},
-			},
-			lessonProgress: {
-				where: {
-					userId: user?.id,
-				},
-			},
-		};
-
-		if (user?.roles?.includes('admin')) {
-			const lessons = await this._model.lesson.findMany({
-				where: lessonWhere,
-				select: lessonSelect,
-			});
-
-			if (!lessons) {
-				throw new CustomError('NOT_FOUND', 'No lessons found');
-			}
-
-			return {
-				status: 'SUCCESSFUL',
-				data: lessons,
-			};
-		}
-
+	public async getList(moduleId: string, user: TUser | undefined): Promise<TServiceReturn<TPrismaPayloadGetLessonList>> {
 		const lessons = await this._model.lesson.findMany({
 			where: {
-				...lessonWhere,
-				published: true,
+				modules: {
+					some: {
+						OR: [
+							{id: moduleId},
+							{slug: moduleId},
+						],
+					},
+				},
+				published: user?.roles?.includes('admin') ? undefined : true,
+				publicationDate: {
+					lte: user?.roles?.includes('admin') ? undefined : new Date(),
+				},
 			},
-			select: lessonSelect,
+			select: {
+				id: true,
+				name: true,
+				slug: true,
+				type: true,
+				description: true,
+				thumbnailUrl: true,
+				duration: true,
+				publicationDate: true,
+				published: true,
+				tags: {
+					include: {
+						tagOption: {
+							select: {
+								name: true,
+							},
+						},
+						tagValue: {
+							select: {
+								name: true,
+							},
+						},
+					},
+				},
+				lessonProgress: {
+					where: {
+						userId: user?.id,
+					},
+				},
+			},
 		});
 
 		if (!lessons) {
@@ -262,7 +246,7 @@ export class LessonService {
 		};
 	}
 
-	public async search(moduleId: TUuid, user: TUser | undefined, term: string): Promise<TServiceReturn<TPrismaPayloadGetLessonList>> {
+	public async search(moduleId: string, user: TUser | undefined, term: string): Promise<TServiceReturn<TPrismaPayloadGetLessonList>> {
 		const {data} = await this.getList(moduleId, user);
 
 		const searchOptions: IFuseOptions<TSearchableEntity> = {
@@ -284,11 +268,14 @@ export class LessonService {
 		};
 	}
 
-	public async getBySlug(courseSlug: TUuid, moduleSlug: TUuid, lessonSlug: string, user: TUser | undefined): Promise<TServiceReturn<TPrismaPayloadGetLessonById | undefined>> {
+	public async getBySlug(courseSlug: string, moduleSlug: string, lessonSlug: string, user: TUser | undefined): Promise<TServiceReturn<TPrismaPayloadGetLessonById | undefined>> {
 		try {
 			const lesson = await this._model.lesson.findUnique({
 				where: {
 					published: user?.roles?.includes('admin') ? undefined : true,
+					publicationDate: {
+						lte: user?.roles?.includes('admin') ? undefined : new Date(),
+					},
 					slug: lessonSlug,
 					modules: {
 						some: {
@@ -325,7 +312,7 @@ export class LessonService {
 					},
 					lessonProgress: {
 						where: {
-							userId: user?.id ?? undefined,
+							userId: user?.id ?? '',
 						},
 					},
 					modules: {
@@ -353,7 +340,7 @@ export class LessonService {
 											slug: true,
 											subscriptions: {
 												where: {
-													userId: user?.id,
+													userId: user?.id ?? '',
 													expiresAt: {
 														gte: new Date(),
 													},
