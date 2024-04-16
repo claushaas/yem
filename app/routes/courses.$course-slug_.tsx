@@ -10,32 +10,40 @@ import {type TUser} from '~/types/user.type';
 import {logger} from '~/utils/logger.util';
 import {getUserSession} from '~/utils/session.server';
 
+export const meta: MetaFunction<typeof loader> = ({data}) => [
+	{title: data!.course?.name ?? 'Curso da Yoga em Movimento'},
+	{name: 'description', content: data!.course?.description ?? 'Conheça o curso oferecido pela Yoga em Movimento'},
+	...data!.meta,
+];
+
 type CourseLoaderData = {
 	course: TPrismaPayloadGetCourseById | undefined;
+	meta: Array<{tagName: string; rel: string; href: string}>;
 };
 
 export const loader = async ({request, params}: LoaderFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 	const {'course-slug': courseSlug} = params;
 
+	const meta = [
+		{tagName: 'link', rel: 'canonical', href: new URL(`/courses/${courseSlug}`, request.url).toString()},
+	];
+
 	try {
 		const {data: course} = await new CourseService().getBySlug(courseSlug!, userSession.data as TUser);
 
 		return json<CourseLoaderData>({
 			course,
+			meta,
 		});
 	} catch (error) {
 		logger.logError(`Error loading course: ${(error as Error).message}`);
 		return json<CourseLoaderData>({
 			course: undefined,
+			meta,
 		});
 	}
 };
-
-export const meta: MetaFunction = ({data}) => [
-	{title: (data as CourseLoaderData).course?.name ?? 'Curso da Yoga em Movimento'},
-	{name: 'description', content: (data as CourseLoaderData).course?.description ?? 'Conheça o curso oferecido pela Yoga em Movimento'},
-];
 
 export default function Course() {
 	const {course} = useLoaderData<CourseLoaderData>();

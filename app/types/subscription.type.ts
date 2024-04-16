@@ -16,6 +16,12 @@ export type THotmartSubscription = {
 	product: {
 		id: number;
 	};
+	plan: {
+		name: string;
+		id: number;
+		recurrency_period: number;
+		max_charge_cycles: number;
+	};
 };
 
 export type THotmartFormationPurchase = {

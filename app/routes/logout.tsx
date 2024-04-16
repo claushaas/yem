@@ -1,16 +1,23 @@
 import * as RadixForm from '@radix-ui/react-form';
 import {
 	type ActionFunctionArgs, redirect,
+	type LoaderFunctionArgs,
+	json,
 } from '@remix-run/node';
 import {Form, type MetaFunction, useNavigation} from '@remix-run/react';
 import {Button, ButtonPreset, ButtonType} from '~/components/button/index.js';
 import {getUserSession, destroyUserSession} from '~/utils/session.server';
 import {YemSpinner} from '~/components/yem-spinner/index.js';
 
-export const meta: MetaFunction = () => [
+export const meta: MetaFunction<typeof loader> = ({data}) => [
 	{title: 'Yoga em Movimento - Sair'},
 	{name: 'description', content: 'Faça o logout da plataforma do Yoga em Movimento.'},
+	...data!.meta,
 ];
+
+export const loader = ({request}: LoaderFunctionArgs) => json<{meta: Array<{tagName: string; rel: string; href: string}>}>({
+	meta: [{tagName: 'link', rel: 'canonical', href: new URL('/logout', request.url).toString()}],
+});
 
 export const action = async ({request}: ActionFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));

@@ -1,6 +1,7 @@
 import * as Form from '@radix-ui/react-form';
 import {type LoaderFunctionArgs, type ActionFunctionArgs} from '@remix-run/node';
 import {
+	type MetaFunction,
 	Form as RemixForm, json, redirect, useLoaderData, useNavigation,
 } from '@remix-run/react';
 import {Button, ButtonPreset, ButtonType} from '~/components/button/index.js';
@@ -8,17 +9,30 @@ import {YemSpinner} from '~/components/yem-spinner/index.js';
 import {UserService} from '~/services/user.service.server';
 import {commitUserSession, getUserSession} from '~/utils/session.server';
 
+export const meta: MetaFunction<typeof loader> = ({data}) => ([
+	{title: 'Alunos - Yoga em Movimento'},
+	{name: 'description', content: 'Página de alunos do Yoga em Movimento'},
+	{name: 'robots', content: 'noindex, nofollow'},
+	...data!.meta,
+]);
+
 type StudentsLoaderData = {
 	error: string | undefined;
 	success: string | undefined;
+	meta: Array<{tagName: string; rel: string; href: string}>;
 };
 
 export const loader = async ({request}: LoaderFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 
+	const meta = [
+		{tagName: 'link', rel: 'canonical', href: new URL('/admin/students', request.url).toString()},
+	];
+
 	return json<StudentsLoaderData>({
 		error: userSession.get('error') as string | undefined,
 		success: userSession.get('success') as string | undefined,
+		meta,
 	});
 };
 

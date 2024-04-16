@@ -1,9 +1,15 @@
+import {type LoaderFunctionArgs, json} from '@remix-run/node';
 import {type MetaFunction} from '@remix-run/react';
 
-export const meta: MetaFunction = () => [
+export const meta: MetaFunction<typeof loader> = ({data}) => [
 	{title: 'Yoga em Movimento - Termos de Uso'},
 	{name: 'description', content: 'Termos de uso do site Yoga em Movimento.'},
+	...data!.meta,
 ];
+
+export const loader = ({request}: LoaderFunctionArgs) => json<{meta: Array<{tagName: string; rel: string; href: string}>}>({
+	meta: [{tagName: 'link', rel: 'canonical', href: new URL('/termos-de-uso', request.url).toString()}],
+});
 
 export default function TermosDeUso() {
 	return (

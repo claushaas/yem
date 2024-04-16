@@ -10,8 +10,15 @@ import {type TUser} from '~/types/user.type';
 import {logger} from '~/utils/logger.util';
 import {getUserSession} from '~/utils/session.server';
 
+export const meta: MetaFunction<typeof loader> = ({data}) => [
+	{title: data!.module?.name ?? 'Módulo do Curso do Yoga em Movimento'},
+	{name: 'description', content: data!.module?.description ?? 'Conheça o módulo do curso oferecido pela Yoga em Movimento'},
+	...data!.meta,
+];
+
 type ModuleLoaderData = {
 	module: TPrismaPayloadGetModuleById | undefined;
+	meta: Array<{tagName: string; rel: string; href: string}>;
 };
 
 export const loader = async ({request, params}: LoaderFunctionArgs) => {
@@ -21,24 +28,25 @@ export const loader = async ({request, params}: LoaderFunctionArgs) => {
 		'module-slug': moduleSlug,
 	} = params;
 
+	const meta = [
+		{tagName: 'link', rel: 'canonical', href: new URL(`/courses/${courseSlug}/${moduleSlug}`, request.url).toString()},
+	];
+
 	try {
 		const {data: module} = await new ModuleService().getBySlug(courseSlug!, moduleSlug!, userSession.data as TUser);
 
 		return json<ModuleLoaderData>({
 			module,
+			meta,
 		});
 	} catch (error) {
 		logger.logError(`Error loading module: ${(error as Error).message}`);
 		return json<ModuleLoaderData>({
 			module: undefined,
+			meta,
 		});
 	}
 };
-
-export const meta: MetaFunction = ({data}) => [
-	{title: (data as ModuleLoaderData).module?.name ?? 'Módulo do Curso do Yoga em Movimento'},
-	{name: 'description', content: (data as ModuleLoaderData).module?.description ?? 'Conheça o módulo do curso oferecido pela Yoga em Movimento'},
-];
 
 export default function Module() {
 	const {module} = useLoaderData<ModuleLoaderData>();

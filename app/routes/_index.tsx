@@ -1,12 +1,21 @@
-import type {MetaFunction} from '@remix-run/node';
+import {json, type LoaderFunctionArgs, type MetaFunction} from '@remix-run/node';
 import {Image} from '@unpic/react';
 import {buildImgSource} from '~/utils/build-cloudflare-image-source.js';
 import {Testimony} from '~/components/testimony/index.js';
 
-export const meta: MetaFunction = () => [
+type TLoaderData = {
+	meta: Array<{tagName: string; rel: string; href: string}>;
+};
+
+export const meta: MetaFunction<typeof loader> = ({data}) => [
 	{title: 'Yoga em Movimento'},
-	{name: 'description', content: 'Seja muito bem-vindo à Yoga em Movimento!'},
+	{name: 'description', content: 'Pratique Yoga com mais de 1500 aulas sem sair de casa e torne-se um professor de Yoga certificado.'},
+	...data!.meta,
 ];
+
+export const loader = async ({request}: LoaderFunctionArgs) => json<TLoaderData>({
+	meta: [{tagName: 'link', rel: 'canonical', href: new URL('/', request.url).toString()}],
+});
 
 export default function Index() {
 	return (
