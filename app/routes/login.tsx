@@ -13,10 +13,30 @@ import {YemSpinner} from '~/components/yem-spinner/index.js';
 import {UserService} from '~/services/user.service.server';
 import {logger} from '~/utils/logger.util';
 
-export const meta: MetaFunction = () => [
+export const meta: MetaFunction<typeof loader> = ({data}) => [
 	{title: 'Yoga em Movimento - Entrar'},
 	{name: 'description', content: 'Faça o login para acessar a plataforma do Yoga em Movimento.'},
+	...data!.meta,
 ];
+
+export const loader = async ({request}: LoaderFunctionArgs) => {
+	const userSession = await getUserSession(request.headers.get('Cookie'));
+
+	if (userSession.has('id')) {
+		return redirect('/courses');
+	}
+
+	const data = {
+		error: userSession.get('error') as string | undefined,
+		meta: [{tagName: 'link', rel: 'canonical', href: new URL('/login', request.url).toString()}],
+	};
+
+	return json<typeof data>(data, {
+		headers: {
+			'Set-Cookie': await commitUserSession(userSession), // eslint-disable-line @typescript-eslint/naming-convention
+		},
+	});
+};
 
 export const action = async ({request}: ActionFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
@@ -63,33 +83,9 @@ export const action = async ({request}: ActionFunctionArgs) => {
 	}
 };
 
-export const loader = async ({request}: LoaderFunctionArgs) => {
-	const userSession = await getUserSession(request.headers.get('Cookie'));
-
-	if (userSession.has('id')) {
-		return redirect('/courses');
-	}
-
-	const data = {
-		error: userSession.get('error') as string | undefined,
-		ENV: {
-			YEM_API_BASE_URL: process.env.YEM_API_BASE_URL,
-		},
-	};
-
-	return json(data, {
-		headers: {
-			'Set-Cookie': await commitUserSession(userSession), // eslint-disable-line @typescript-eslint/naming-convention
-		},
-	});
-};
-
 export default function Login() {
 	const data: {
 		error?: string;
-		ENV: {
-			YEM_API_BASE_URL: string;
-		};
 	} = useLoaderData();
 
 	const navigation = useNavigation();
@@ -138,11 +134,6 @@ export default function Login() {
 									type='password'
 								/>
 							</RadixForm.Control>
-						</RadixForm.Field>
-						<RadixForm.Field className='hidden' name='YEM_API_BASE_URL'>
-							<RadixForm.FormControl asChild>
-								<input type='text' value={data?.ENV?.YEM_API_BASE_URL ?? ''}/>
-							</RadixForm.FormControl>
 						</RadixForm.Field>
 						{data?.error
 						&& <p className='text-center text-mauve-12 dark:text-mauvedark-11 font-gothamMedium'>{data.error}</p>}

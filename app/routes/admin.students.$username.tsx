@@ -2,7 +2,7 @@ import {
 	type ActionFunctionArgs, json, redirect, type LoaderFunctionArgs,
 } from '@remix-run/node';
 import {
-	Form, useLoaderData, useNavigation, useParams,
+	Form, type MetaFunction, useLoaderData, useNavigation, useParams,
 } from '@remix-run/react';
 import * as Dialog from '@radix-ui/react-dialog';
 import * as RadixForm from '@radix-ui/react-form';
@@ -17,16 +17,28 @@ import {logger} from '~/utils/logger.util';
 import SubscriptionService from '~/services/subscription.service.server';
 import {type TPrismaPayloadGetUserSubscriptions} from '~/types/subscription.type';
 
+export const meta: MetaFunction<typeof loader> = ({data}) => ([
+	{title: `${data!.studentData!.firstName} ${data!.studentData!.lastName} - Yoga em Movimento`},
+	{name: 'description', content: 'Página de aluno do Yoga em Movimento'},
+	{name: 'robots', content: 'noindex, nofollow'},
+	...data!.meta,
+]);
+
 type StudentLoaderData = {
 	studentData: TUser | undefined;
 	subscriptions: TPrismaPayloadGetUserSubscriptions[] | undefined;
 	error: string | undefined;
 	success: string | undefined;
+	meta: Array<{tagName: string; rel: string; href: string}>;
 };
 
 export const loader = async ({request, params}: LoaderFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 	const {username} = params;
+
+	const meta = [
+		{tagName: 'link', rel: 'canonical', href: new URL(`/admin/students/${username}`, request.url).toString()},
+	];
 
 	try {
 		const {data: studentData} = await new UserService().getUserData(username!);
@@ -37,6 +49,7 @@ export const loader = async ({request, params}: LoaderFunctionArgs) => {
 			subscriptions,
 			error: userSession.get('error') as string | undefined,
 			success: userSession.get('success') as string | undefined,
+			meta,
 		}, {
 			headers: {
 				'Set-Cookie': await commitUserSession(userSession), // eslint-disable-line @typescript-eslint/naming-convention

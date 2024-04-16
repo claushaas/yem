@@ -1,9 +1,8 @@
 import {
-	type ActionFunctionArgs, defer, json, type LoaderFunctionArgs,
+	type ActionFunctionArgs, json, type LoaderFunctionArgs,
 } from '@remix-run/node';
 import {
-	Await,
-	Form, redirect, useLoaderData, useNavigation,
+	Form, type MetaFunction, redirect, useLoaderData, useNavigation,
 } from '@remix-run/react';
 import * as Dialog from '@radix-ui/react-dialog';
 import * as RadixForm from '@radix-ui/react-form';
@@ -17,22 +16,35 @@ import {commitUserSession, getUserSession} from '~/utils/session.server';
 import {Button, ButtonPreset, ButtonType} from '~/components/button/index.js';
 import {YemSpinner} from '~/components/yem-spinner/index.js';
 
+export const meta: MetaFunction<typeof loader> = ({data}) => ([
+	{title: 'Tags - Yoga em Movimento'},
+	{name: 'description', content: 'Página de tags do Yoga em Movimento'},
+	{name: 'robots', content: 'noindex, nofollow'},
+	...data!.meta,
+]);
+
 type TagsLoaderData = {
 	error: string | undefined;
 	success: string | undefined;
-	tags: Promise<TServiceReturn<TPrismaPayloadGetAllTags>>;
+	tags: TServiceReturn<TPrismaPayloadGetAllTags> | undefined;
+	meta: Array<{tagName: string; rel: string; href: string}>;
 };
 
 export const loader = async ({request}: LoaderFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 
-	try {
-		const tags = new TagService().getAll();
+	const meta = [
+		{tagName: 'link', rel: 'canonical', href: new URL('/admin/tags', request.url).toString()},
+	];
 
-		return defer<TagsLoaderData>({
+	try {
+		const tags = await new TagService().getAll();
+
+		return json<TagsLoaderData>({
 			error: userSession.get('error') as string | undefined,
 			success: userSession.get('success') as string | undefined,
 			tags,
+			meta,
 		}, {
 			headers: {
 				'Set-Cookie': await commitUserSession(userSession), // eslint-disable-line @typescript-eslint/naming-convention
@@ -40,9 +52,11 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
 		});
 	} catch (error) {
 		logger.logError(`Error getting all tags: ${(error as Error).message}`);
-		return json({
-			tags: [],
-			error: 'Erro ao carregar as tags. ',
+		return json<TagsLoaderData>({
+			tags: undefined,
+			error: `Error getting all tags: ${(error as Error).message}`,
+			success: undefined,
+			meta,
 		}, {
 			headers: {
 				'Set-Cookie': await commitUserSession(userSession), // eslint-disable-line @typescript-eslint/naming-convention
@@ -186,13 +200,9 @@ export default function Tags() {
 			</Dialog.Root>
 
 			<div className='flex gap-4 my-4 flex-col'>
-				<Suspense fallback={<YemSpinner/>}>
-					<Await resolve={tags as TServiceReturn<TPrismaPayloadGetAllTags>}>
-						{tags => tags.data.map(tag => (
-							<p key={tag.id}>{`${tag.tagOptionName} - ${tag.tagValueName}`}</p>
-						))}
-					</Await>
-				</Suspense>
+				{tags?.data.map(tag => (
+					<p key={tag.id}>{`${tag.tagOptionName} - ${tag.tagValueName}`}</p>
+				))}
 			</div>
 		</>
 	);

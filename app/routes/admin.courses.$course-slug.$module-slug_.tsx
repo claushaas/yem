@@ -2,7 +2,7 @@ import {
 	type ActionFunctionArgs, json, type LoaderFunctionArgs, redirect,
 } from '@remix-run/node';
 import {
-	Form, useLoaderData, useNavigation, useParams,
+	Form, type MetaFunction, useLoaderData, useNavigation, useParams,
 } from '@remix-run/react';
 import {useEffect, useState} from 'react';
 import type Quill from 'quill';
@@ -31,11 +31,19 @@ import {CourseService} from '~/services/course.service.server';
 import {type TPrismaPayloadGetAllCourses} from '~/types/course.type';
 import {type TLesson, type TLessonType} from '~/types/lesson.type';
 
+export const meta: MetaFunction<typeof loader> = ({data}) => [
+	{title: `${data?.module?.name} - Yoga em Movimento`},
+	{name: 'description', content: data?.module?.description},
+	{name: 'robots', content: 'noindex, nofollow'},
+	...data!.meta,
+];
+
 type ModuleLoaderData = {
 	error: string | undefined;
 	success: string | undefined;
 	module: TPrismaPayloadGetModuleById | undefined;
 	courses: TPrismaPayloadGetAllCourses | undefined;
+	meta: Array<{tagName: string; rel: string; href: string}>;
 };
 
 export const loader = async ({request, params}: LoaderFunctionArgs) => {
@@ -44,6 +52,10 @@ export const loader = async ({request, params}: LoaderFunctionArgs) => {
 		'course-slug': courseSlug,
 		'module-slug': moduleSlug,
 	} = params;
+
+	const meta = [
+		{tagName: 'link', rel: 'canonical', href: new URL(`/admin/courses/${courseSlug}/${moduleSlug}`, request.url).toString()},
+	];
 
 	try {
 		const {data: module} = await new ModuleService().getBySlug(courseSlug!, moduleSlug!, userSession.data as TUser);
@@ -54,6 +66,7 @@ export const loader = async ({request, params}: LoaderFunctionArgs) => {
 			courses,
 			error: userSession.get('error') as string | undefined,
 			success: userSession.get('success') as string | undefined,
+			meta,
 		}, {
 			headers: {
 				'Set-Cookie': await commitUserSession(userSession), // eslint-disable-line @typescript-eslint/naming-convention
@@ -66,6 +79,7 @@ export const loader = async ({request, params}: LoaderFunctionArgs) => {
 			courses: undefined,
 			error: (error as Error).message,
 			success: undefined,
+			meta,
 		}, {
 			headers: {
 				'Set-Cookie': await commitUserSession(userSession), // eslint-disable-line @typescript-eslint/naming-convention

@@ -16,10 +16,27 @@ import {Button, ButtonPreset, ButtonType} from '~/components/button/index.js';
 import type {CustomError} from '~/utils/custom-error';
 import {logger} from '~/utils/logger.util.js';
 
-export const meta: MetaFunction = () => [
+export const meta: MetaFunction<typeof loader> = ({data}) => [
 	{title: 'Yoga em Movimento - Cadastro'},
 	{name: 'description', content: 'Crie sua conta no Yoga em Movimento e tenha acesso a conteúdos exclusivos.'},
+	...data!.meta,
 ];
+
+export const loader = async ({request}: LoaderFunctionArgs) => {
+	const userSession = await getUserSession(request.headers.get('Cookie'));
+
+	if (userSession.get('id')) {
+		return redirect('/');
+	}
+
+	const data = {
+		error: userSession.get('error') as string | undefined,
+		success: userSession.get('success') as string | undefined,
+		meta: [{tagName: 'link', rel: 'canonical', href: new URL('/register', request.url).toString()}],
+	};
+
+	return json(data);
+};
 
 export const action = async ({request}: ActionFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
@@ -65,21 +82,6 @@ export const action = async ({request}: ActionFunctionArgs) => {
 			},
 		});
 	}
-};
-
-export const loader = async ({request}: LoaderFunctionArgs) => {
-	const userSession = await getUserSession(request.headers.get('Cookie'));
-
-	if (userSession.get('id')) {
-		return redirect('/');
-	}
-
-	const data = {
-		error: userSession.get('error') as string | undefined,
-		success: userSession.get('success') as string | undefined,
-	};
-
-	return json(data);
 };
 
 export default function Register() {

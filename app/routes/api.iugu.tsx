@@ -1,7 +1,12 @@
 import {type ActionFunctionArgs, json} from '@remix-run/node';
+import {type MetaFunction} from '@remix-run/react';
 import {parse} from 'qs';
 import {HooksService} from '~/services/hooks.service.server';
 import {logger} from '~/utils/logger.util';
+
+export const meta: MetaFunction = () => [
+	{name: 'robots', content: 'noindex, nofollow'},
+];
 
 export const loader = async () => {
 	try {

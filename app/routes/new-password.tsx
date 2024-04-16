@@ -1,6 +1,8 @@
 import * as RadixForm from '@radix-ui/react-form';
 import {
 	type ActionFunctionArgs, redirect,
+	type LoaderFunctionArgs,
+	json,
 } from '@remix-run/node';
 import {
 	Form, Link, type MetaFunction, useNavigation,
@@ -11,10 +13,15 @@ import {YemSpinner} from '~/components/yem-spinner/index.js';
 import {logger} from '~/utils/logger.util';
 import {UserService} from '~/services/user.service.server';
 
-export const meta: MetaFunction = () => [
+export const meta: MetaFunction<typeof loader> = ({data}) => [
 	{title: 'Yoga em Movimento - Nova Senha'},
 	{name: 'description', content: 'Gere uma nova senha para acessar a plataforma do Yoga em Movimento.'},
+	...data!.meta,
 ];
+
+export const loader = ({request}: LoaderFunctionArgs) => json<{meta: Array<{tagName: string; rel: string; href: string}>}>({
+	meta: [{tagName: 'link', rel: 'canonical', href: new URL('/new-password', request.url).toString()}],
+});
 
 export const action = async ({request}: ActionFunctionArgs) => {
 	try {

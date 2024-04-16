@@ -9,8 +9,15 @@ import {type TUser} from '~/types/user.type';
 import {logger} from '~/utils/logger.util';
 import {getUserSession} from '~/utils/session.server';
 
+export const meta: MetaFunction<typeof loader> = ({data}) => [
+	{title: data!.lesson?.name ?? 'Aula do Curso do Yoga em Movimento'},
+	{name: 'description', content: data!.lesson?.description ?? 'Conheça a aula do curso oferecido pela Yoga em Movimento'},
+	...data!.meta,
+];
+
 type LessonLoaderData = {
 	lesson: TPrismaPayloadGetLessonById | undefined;
+	meta: Array<{tagName: string; rel: string; href: string}>;
 };
 
 export const loader = async ({request, params}: LoaderFunctionArgs) => {
@@ -21,24 +28,25 @@ export const loader = async ({request, params}: LoaderFunctionArgs) => {
 		'lesson-slug': lessonSlug,
 	} = params;
 
+	const meta = [
+		{tagName: 'link', rel: 'canonical', href: new URL(`/courses/${courseSlug}/${moduleSlug}/${lessonSlug}`, request.url).toString()},
+	];
+
 	try {
 		const {data: lesson} = await new LessonService().getBySlug(courseSlug!, moduleSlug!, lessonSlug!, userSession.data as TUser);
 
 		return json<LessonLoaderData>({
 			lesson,
+			meta,
 		});
 	} catch (error) {
 		logger.logError(`Error loading module: ${(error as Error).message}`);
 		return json<LessonLoaderData>({
 			lesson: undefined,
+			meta,
 		});
 	}
 };
-
-export const meta: MetaFunction = ({data}) => [
-	{title: (data as LessonLoaderData).lesson?.name ?? 'Aula do Curso do Yoga em Movimento'},
-	{name: 'description', content: (data as LessonLoaderData).lesson?.description ?? 'Conheça a aula do curso oferecido pela Yoga em Movimento'},
-];
 
 export default function Lesson() {
 	const {lesson} = useLoaderData<LessonLoaderData>();
