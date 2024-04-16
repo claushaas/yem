@@ -278,6 +278,9 @@ export class ModuleService {
 									subscriptions: {
 										where: {
 											userId: user.id,
+											expiresAt: {
+												gte: new Date(),
+											},
 										},
 									},
 								},
@@ -355,7 +358,7 @@ export class ModuleService {
 				throw new CustomError('NOT_FOUND', 'Module not found');
 			}
 
-			const hasActiveSubscription = user.roles?.includes('admin') ?? module.course?.some(course => (
+			const hasActiveSubscription = user.roles?.includes('admin') || module.course?.some(course => ( // eslint-disable-line @typescript-eslint/prefer-nullish-coalescing
 				course.delegateAuthTo?.some(course => (
 					course.subscriptions?.length > 0
 				))

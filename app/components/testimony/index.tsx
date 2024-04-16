@@ -39,6 +39,7 @@ export function Testimony({
 						<Stream
 							controls
 							autoplay
+							preload='auto'
 							className='pt-[56.25%] relative *:absolute *:w-full *:h-full *:top-0 *:left-0 *:inset-0'
 							src={videoId}
 							responsive={false}
