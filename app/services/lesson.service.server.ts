@@ -354,6 +354,9 @@ export class LessonService {
 											subscriptions: {
 												where: {
 													userId: user?.id,
+													expiresAt: {
+														gte: new Date(),
+													},
 												},
 											},
 										},
@@ -369,7 +372,7 @@ export class LessonService {
 				throw new CustomError('NOT_FOUND', 'Lesson not found');
 			}
 
-			const hasActiveSubscription = user?.roles?.includes('admin') ?? lesson?.modules?.some(
+			const hasActiveSubscription = user?.roles?.includes('admin') || lesson?.modules?.some( // eslint-disable-line @typescript-eslint/prefer-nullish-coalescing
 				module => module.course?.some(
 					course => course.delegateAuthTo?.some(
 						course => course.subscriptions.length > 0,

@@ -182,9 +182,8 @@ export class CourseService {
 							name: true,
 							subscriptions: {
 								where: {
-									userId: user.id,
 									expiresAt: {
-										lte: new Date(),
+										gte: new Date(),
 									},
 								},
 							},
@@ -197,9 +196,9 @@ export class CourseService {
 				throw new CustomError('NOT_FOUND', 'Course not found');
 			}
 
-			const hasActiveSubscription = user.roles?.includes('admin') ?? course.delegateAuthTo?.some(course => (
-				course.subscriptions.some(subscription => subscription.expiresAt > new Date(),
-				)));
+			const hasActiveSubscription = user.roles?.includes('admin') || course.delegateAuthTo?.some(course => ( // eslint-disable-line @typescript-eslint/prefer-nullish-coalescing
+				course.subscriptions.length > 0
+			));
 
 			const returnableCourse = {
 				...course,
