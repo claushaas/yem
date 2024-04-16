@@ -3,7 +3,9 @@ import * as Dialog from '@radix-ui/react-dialog';
 import {
 	type ActionFunctionArgs, json, type LoaderFunctionArgs, redirect,
 } from '@remix-run/node';
-import {Form, useLoaderData, useNavigation} from '@remix-run/react';
+import {
+	Form, useLoaderData, useNavigation, type MetaFunction,
+} from '@remix-run/react';
 import * as RadixForm from '@radix-ui/react-form';
 import type Quill from 'quill';
 import {useEffect, useState} from 'react';
@@ -21,10 +23,18 @@ import {type TUserRoles} from '~/types/user.type';
 import {type TCourse, type TPrismaPayloadGetAllCourses} from '~/types/course.type';
 import {type TServiceReturn} from '~/types/service-return.type';
 
+export const meta: MetaFunction<typeof loader> = ({data}) => ([
+	{title: 'Cursos - Yoga em Movimento'},
+	{name: 'description', content: 'Cursos oferecidos pela Yoga em Movimento'},
+	{name: 'robots', content: 'noindex, nofollow'},
+	...data!.meta,
+]);
+
 type CoursesLoaderData = {
 	error: string | undefined;
 	success: string | undefined;
-	courses: TServiceReturn<TPrismaPayloadGetAllCourses>;
+	courses: TServiceReturn<TPrismaPayloadGetAllCourses> | undefined;
+	meta: Array<{tagName: string; rel: string; href: string}>;
 };
 
 export const loader = async ({request}: LoaderFunctionArgs) => {
@@ -36,6 +46,7 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
 			error: userSession.get('error') as string | undefined,
 			success: userSession.get('success') as string | undefined,
 			courses,
+			meta: [{tagName: 'link', rel: 'canonical', href: new URL('/admin/courses', request.url).toString()}],
 		}, {
 			headers: {
 				'Set-Cookie': await commitUserSession(userSession), // eslint-disable-line @typescript-eslint/naming-convention
@@ -43,9 +54,11 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
 		});
 	} catch (error) {
 		logger.logDebug(`Error getting courses: ${(error as Error).message}`);
-		return json({
-			courses: [],
-			error: 'Erro ao carregar cursos',
+		return json<CoursesLoaderData>({
+			courses: undefined,
+			success: undefined,
+			error: `Error getting courses: ${(error as Error).message}`,
+			meta: [{tagName: 'link', rel: 'canonical', href: new URL('/admin/courses', request.url).toString()}],
 		});
 	}
 };
@@ -377,7 +390,7 @@ export default function Courses() {
 									<Select
 										isMulti
 										defaultValue={coursesSlug}
-										options={courses.data.map(course => ({value: course.slug, label: course.name}))}
+										options={courses?.data.map(course => ({value: course.slug, label: course.name}))}
 										onChange={selectedOption => {
 											setCoursesSlug(selectedOption as Array<{value: string; label: string}>);
 										}}

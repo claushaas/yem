@@ -3,6 +3,7 @@ import {
 } from '@remix-run/node';
 import {
 	Form, useLoaderData, useNavigation, useParams,
+	type MetaFunction,
 } from '@remix-run/react';
 import {QuillDeltaToHtmlConverter} from 'quill-delta-to-html';
 import {type Delta, type OpIterator} from 'quill/core';
@@ -26,16 +27,28 @@ import {YemSpinner} from '~/components/yem-spinner/index.js';
 import {ModuleService} from '~/services/module.service.server';
 import {type TModule} from '~/types/module.type';
 
+export const meta: MetaFunction<typeof loader> = ({data}) => ([
+	{title: 'Comentários'},
+	{name: 'description', content: 'Comentários sobre os cursos oferecidos pela Yoga em Movimento'},
+	{name: 'robots', content: 'noindex, nofollow'},
+	...data!.meta,
+]);
+
 type CourseLoaderData = {
 	error: string | undefined;
 	success: string | undefined;
 	course: TPrismaPayloadGetCourseById | undefined;
 	courses: TPrismaPayloadGetAllCourses | undefined;
+	meta: Array<{tagName: string; rel: string; href: string}>;
 };
 
 export const loader = async ({request, params}: LoaderFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 	const {'course-slug': courseSlug} = params;
+
+	const meta = [
+		{tagName: 'link', rel: 'canonical', href: new URL(`/admin/courses/${courseSlug}`, request.url).toString()},
+	];
 
 	try {
 		const courseService = new CourseService();
@@ -47,6 +60,7 @@ export const loader = async ({request, params}: LoaderFunctionArgs) => {
 			courses,
 			error: userSession.get('error') as string | undefined,
 			success: userSession.get('success') as string | undefined,
+			meta,
 		}, {
 			headers: {
 				'Set-Cookie': await commitUserSession(userSession), // eslint-disable-line @typescript-eslint/naming-convention
@@ -59,6 +73,7 @@ export const loader = async ({request, params}: LoaderFunctionArgs) => {
 			courses: undefined,
 			error: 'Erro ao buscar curso',
 			success: undefined,
+			meta,
 		}, {
 			headers: {
 				'Set-Cookie': await commitUserSession(userSession), // eslint-disable-line @typescript-eslint/naming-convention

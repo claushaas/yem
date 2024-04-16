@@ -1,13 +1,20 @@
+import {json, type LoaderFunctionArgs} from '@remix-run/node';
 import {
 	Link, type MetaFunction, Outlet, useNavigate, useOutletContext, useLocation,
 } from '@remix-run/react';
 import {useEffect} from 'react';
 import {type TypeUserSession} from '~/types/user-session.type';
 
-export const meta: MetaFunction = () => [
+export const meta: MetaFunction<typeof loader> = ({data}) => [
 	{title: 'Yoga em Movimento - Área Administrativa'},
 	{name: 'description', content: 'Área para executar as funções administrativas e pedagógicas do Yoga em Movimento.'},
+	{name: 'robots', content: 'noindex, nofollow'},
+	...data!.meta,
 ];
+
+export const loader = ({request}: LoaderFunctionArgs) => json<{meta: Array<{tagName: string; rel: string; href: string}>}>({
+	meta: [{tagName: 'link', rel: 'canonical', href: new URL('/admin', request.url).toString()}],
+});
 
 export default function Admin() {
 	const {userData} = useOutletContext<{userData: TypeUserSession}>();

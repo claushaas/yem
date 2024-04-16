@@ -2,7 +2,7 @@ import {
 	type ActionFunctionArgs, json, type LoaderFunctionArgs, redirect,
 } from '@remix-run/node';
 import {
-	Form, useLoaderData, useNavigation, useParams,
+	Form, type MetaFunction, useLoaderData, useNavigation, useParams,
 } from '@remix-run/react';
 import {useEffect, useState} from 'react';
 import type Quill from 'quill';
@@ -25,10 +25,18 @@ import {Button, ButtonPreset, ButtonType} from '~/components/button/index.js';
 import {Editor} from '~/components/text-editor/index.client.js';
 import {YemSpinner} from '~/components/yem-spinner/index.js';
 
+export const meta: MetaFunction<typeof loader> = ({data}) => ([
+	{title: `Aula ${data!.lesson?.name} - Yoga em Movimento`},
+	{name: 'description', content: data!.lesson?.description},
+	{name: 'robots', content: 'noindex, nofollow'},
+	...data!.meta,
+]);
+
 type LessonLoaderData = {
 	error: string | undefined;
 	success: string | undefined;
 	lesson: TPrismaPayloadGetLessonById | undefined;
+	meta: Array<{tagName: string; rel: string; href: string}>;
 };
 
 export const loader = async ({request, params}: LoaderFunctionArgs) => {
@@ -39,6 +47,10 @@ export const loader = async ({request, params}: LoaderFunctionArgs) => {
 		'lesson-slug': lessonSlug,
 	} = params;
 
+	const meta = [
+		{tagName: 'link', rel: 'canonical', href: new URL(`/admin/courses/${courseSlug}/${moduleSlug}/${lessonSlug}`, request.url).toString()},
+	];
+
 	try {
 		const {data: lesson} = await new LessonService().getBySlug(courseSlug!, moduleSlug!, lessonSlug!, userSession.data as TUser);
 
@@ -46,6 +58,7 @@ export const loader = async ({request, params}: LoaderFunctionArgs) => {
 			lesson,
 			error: userSession.get('error') as string | undefined,
 			success: userSession.get('success') as string | undefined,
+			meta,
 		}, {
 			headers: {
 				'Set-Cookie': await commitUserSession(userSession), // eslint-disable-line @typescript-eslint/naming-convention
@@ -55,8 +68,9 @@ export const loader = async ({request, params}: LoaderFunctionArgs) => {
 		logger.logError(`Error fetching lesson: ${(error as Error).message}`);
 		return json<LessonLoaderData>({
 			lesson: undefined,
-			error: (error as Error).message,
+			error: `Error fetching lesson: ${(error as Error).message}`,
 			success: undefined,
+			meta,
 		}, {
 			headers: {
 				'Set-Cookie': await commitUserSession(userSession), // eslint-disable-line @typescript-eslint/naming-convention

@@ -1,9 +1,14 @@
 import {json, type LoaderFunctionArgs} from '@remix-run/node';
+import {type MetaFunction} from '@remix-run/react';
 import {HooksService} from '~/services/hooks.service.server';
 import {SlackService} from '~/services/slack.service.server';
 import {type TIncommingHotmartWebhook} from '~/types/subscription.type';
 import {type TCountriesIsos, getCountryCode} from '~/utils/countries-area-codes.js';
 import {logger} from '~/utils/logger.util';
+
+export const meta: MetaFunction = () => [
+	{name: 'robots', content: 'noindex, nofollow'},
+];
 
 export const loader = async ({request}: LoaderFunctionArgs) => {
 	try {
