@@ -97,37 +97,27 @@ export class CourseService {
 	}
 
 	public async getAll(userRoles: TUserRoles = []): Promise<TServiceReturn<TPrismaPayloadGetAllCourses>> {
-		const select = {
-			id: true,
-			name: true,
-			slug: true,
-			description: true,
-			thumbnailUrl: true,
-			publicationDate: true,
-			published: true,
-		};
-
-		if (userRoles.includes('admin')) {
-			const courses = await this._model.course.findMany({
-				select,
-			});
-
-			return {
-				status: 'SUCCESSFUL',
-				data: courses,
-			};
-		}
-
-		const coursesForStudents = await this._model.course.findMany({
-			select,
+		const courses = await this._model.course.findMany({
 			where: {
+				published: userRoles.includes('admin') ? undefined : true,
+				publicationDate: {
+					lte: userRoles.includes('admin') ? undefined : new Date(),
+				},
+			},
+			select: {
+				id: true,
+				name: true,
+				slug: true,
+				description: true,
+				thumbnailUrl: true,
+				publicationDate: true,
 				published: true,
 			},
 		});
 
 		return {
 			status: 'SUCCESSFUL',
-			data: coursesForStudents,
+			data: courses,
 		};
 	}
 
@@ -137,11 +127,17 @@ export class CourseService {
 				where: {
 					slug,
 					published: user.roles?.includes('admin') ? undefined : true,
+					publicationDate: {
+						lte: user.roles?.includes('admin') ? undefined : new Date(),
+					},
 				},
 				include: {
 					modules: {
 						where: {
 							published: user.roles?.includes('admin') ? undefined : true,
+							publicationDate: {
+								lte: user.roles?.includes('admin') ? undefined : new Date(),
+							},
 						},
 						select: {
 							id: true,
@@ -182,6 +178,7 @@ export class CourseService {
 							name: true,
 							subscriptions: {
 								where: {
+									userId: user.id ?? '',
 									expiresAt: {
 										gte: new Date(),
 									},
