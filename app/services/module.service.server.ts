@@ -178,60 +178,13 @@ export class ModuleService {
 		};
 	}
 
-	public async getList(parentId: TUuid, userRoles: TUserRoles = []): Promise<TServiceReturn<TPrismaPayloadGetModulesList>> {
-		const moduleSelect = {
-			id: true,
-			slug: true,
-			name: true,
-			description: true,
-			thumbnailUrl: true,
-			publicationDate: true,
-			published: true,
-			tags: {
-				include: {
-					tagOption: {
-						select: {
-							name: true,
-						},
-					},
-					tagValue: {
-						select: {
-							name: true,
-						},
-					},
-				},
-			},
-		};
-
-		if (userRoles.includes('admin')) {
-			const modules = await this._model.module.findMany({
-				select: moduleSelect,
-				where: {
-					course: {
-						some: {
-							OR: [
-								{id: parentId},
-								{slug: parentId},
-							],
-						},
-					},
-				},
-			});
-
-			if (modules.length === 0) {
-				throw new CustomError('NOT_FOUND', 'No modules found');
-			}
-
-			return {
-				status: 'SUCCESSFUL',
-				data: modules,
-			};
-		}
-
-		const modulesForStudents = await this._model.module.findMany({
-			select: moduleSelect,
+	public async getList(parentId: string, userRoles: TUserRoles = []): Promise<TServiceReturn<TPrismaPayloadGetModulesList>> {
+		const modules = await this._model.module.findMany({
 			where: {
-				published: true,
+				published: userRoles.includes('admin') ? undefined : true,
+				publicationDate: {
+					lte: userRoles.includes('admin') ? undefined : new Date(),
+				},
 				course: {
 					some: {
 						OR: [
@@ -241,15 +194,38 @@ export class ModuleService {
 					},
 				},
 			},
+			select: {
+				id: true,
+				slug: true,
+				name: true,
+				description: true,
+				thumbnailUrl: true,
+				publicationDate: true,
+				published: true,
+				tags: {
+					include: {
+						tagOption: {
+							select: {
+								name: true,
+							},
+						},
+						tagValue: {
+							select: {
+								name: true,
+							},
+						},
+					},
+				},
+			},
 		});
 
-		if (modulesForStudents.length === 0) {
+		if (modules.length === 0) {
 			throw new CustomError('NOT_FOUND', 'No modules found');
 		}
 
 		return {
 			status: 'SUCCESSFUL',
-			data: modulesForStudents,
+			data: modules,
 		};
 	}
 
@@ -258,6 +234,9 @@ export class ModuleService {
 			const module = await this._model.module.findUnique({
 				where: {
 					published: user.roles?.includes('admin') ? undefined : true,
+					publicationDate: {
+						lte: user.roles?.includes('admin') ? undefined : new Date(),
+					},
 					slug,
 				},
 				include: {
@@ -287,23 +266,12 @@ export class ModuleService {
 							},
 						},
 					},
-					tags: {
-						include: {
-							tagOption: {
-								select: {
-									name: true,
-								},
-							},
-							tagValue: {
-								select: {
-									name: true,
-								},
-							},
-						},
-					},
 					lessons: {
 						where: {
 							published: user.roles?.includes('admin') ? undefined : true,
+							publicationDate: {
+								lte: user.roles?.includes('admin') ? undefined : new Date(),
+							},
 						},
 						select: {
 							id: true,
