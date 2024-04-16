@@ -28,8 +28,8 @@ import {ModuleService} from '~/services/module.service.server';
 import {type TModule} from '~/types/module.type';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => ([
-	{title: 'Comentários'},
-	{name: 'description', content: 'Comentários sobre os cursos oferecidos pela Yoga em Movimento'},
+	{title: data?.course?.name ?? 'Cursos - Yoga em Movimento'},
+	{name: 'description', content: data?.course?.description ?? 'Conheça os cursos oferecidos pela Yoga em Movimento'},
 	{name: 'robots', content: 'noindex, nofollow'},
 	...data!.meta,
 ]);
