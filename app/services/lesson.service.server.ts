@@ -312,7 +312,7 @@ export class LessonService {
 					},
 					lessonProgress: {
 						where: {
-							userId: user?.id ?? undefined,
+							userId: user?.id ?? '',
 						},
 					},
 					modules: {
@@ -340,7 +340,7 @@ export class LessonService {
 											slug: true,
 											subscriptions: {
 												where: {
-													userId: user?.id,
+													userId: user?.id ?? '',
 													expiresAt: {
 														gte: new Date(),
 													},

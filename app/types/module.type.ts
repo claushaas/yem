@@ -79,6 +79,7 @@ export type TPrismaPayloadGetModuleById = Prisma.ModuleGetPayload<{
 				thumbnailUrl: true;
 				published: true;
 				publicationDate: true;
+				lessonProgress: true;
 				tags: {
 					include: {
 						tagOption: {

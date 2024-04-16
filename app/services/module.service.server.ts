@@ -256,7 +256,7 @@ export class ModuleService {
 									slug: true,
 									subscriptions: {
 										where: {
-											userId: user.id,
+											userId: user.id ?? '',
 											expiresAt: {
 												gte: new Date(),
 											},
@@ -281,6 +281,11 @@ export class ModuleService {
 							thumbnailUrl: true,
 							published: true,
 							publicationDate: true,
+							lessonProgress: {
+								where: {
+									userId: user.id ?? '',
+								},
+							},
 							tags: {
 								include: {
 									tagOption: {

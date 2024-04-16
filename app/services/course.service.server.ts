@@ -178,7 +178,7 @@ export class CourseService {
 							name: true,
 							subscriptions: {
 								where: {
-									userId: user.id,
+									userId: user.id ?? '',
 									expiresAt: {
 										gte: new Date(),
 									},
