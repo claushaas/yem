@@ -302,10 +302,16 @@ export class LessonService {
 						where: {
 							published: user?.roles?.includes('admin') ? undefined : true,
 						},
+						orderBy: {
+							createdAt: 'desc',
+						},
 						include: {
 							responses: {
 								where: {
 									published: user?.roles?.includes('admin') ? undefined : true,
+								},
+								orderBy: {
+									createdAt: 'desc',
 								},
 							},
 						},
