@@ -273,6 +273,9 @@ export class ModuleService {
 								lte: user.roles?.includes('admin') ? undefined : new Date(),
 							},
 						},
+						orderBy: {
+							publicationDate: 'asc',
+						},
 						select: {
 							id: true,
 							name: true,
@@ -306,6 +309,9 @@ export class ModuleService {
 						where: {
 							published: user.roles?.includes('admin') ? undefined : true,
 						},
+						orderBy: {
+							createdAt: 'desc',
+						},
 						select: {
 							id: true,
 							content: true,
@@ -314,6 +320,9 @@ export class ModuleService {
 							responses: {
 								where: {
 									published: user.roles?.includes('admin') ? undefined : true,
+								},
+								orderBy: {
+									createdAt: 'desc',
 								},
 								select: {
 									id: true,

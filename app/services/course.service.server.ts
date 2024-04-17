@@ -104,6 +104,9 @@ export class CourseService {
 					lte: userRoles.includes('admin') ? undefined : new Date(),
 				},
 			},
+			orderBy: {
+				name: 'asc',
+			},
 			select: {
 				id: true,
 				name: true,
@@ -139,6 +142,9 @@ export class CourseService {
 								lte: user.roles?.includes('admin') ? undefined : new Date(),
 							},
 						},
+						orderBy: {
+							publicationDate: 'asc',
+						},
 						select: {
 							id: true,
 							name: true,
@@ -153,6 +159,9 @@ export class CourseService {
 						where: {
 							published: user.roles?.includes('admin') ? undefined : true,
 						},
+						orderBy: {
+							createdAt: 'desc',
+						},
 						select: {
 							id: true,
 							content: true,
@@ -161,6 +170,9 @@ export class CourseService {
 							responses: {
 								where: {
 									published: user.roles?.includes('admin') ? undefined : true,
+								},
+								orderBy: {
+									createdAt: 'desc',
 								},
 								select: {
 									id: true,
