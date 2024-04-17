@@ -47,24 +47,6 @@ export type TPrismaPayloadGetModulesList = Array<Prisma.ModuleGetPayload<{
 		id: true;
 		name: true;
 		slug: true;
-		description: true;
-		thumbnailUrl: true;
-		publicationDate: true;
-		published: true;
-		tags: {
-			include: {
-				tagOption: {
-					select: {
-						name: true;
-					};
-				};
-				tagValue: {
-					select: {
-						name: true;
-					};
-				};
-			};
-		};
 	};
 }>>;
 

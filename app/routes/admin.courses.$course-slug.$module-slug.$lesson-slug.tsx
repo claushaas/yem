@@ -16,6 +16,7 @@ import {
 	XMarkIcon, ChevronDownIcon, ChevronUpIcon, CheckIcon,
 } from '@heroicons/react/24/outline';
 import {ClientOnly} from 'remix-utils/client-only';
+import Select from 'react-select';
 import {LessonService} from '~/services/lesson.service.server';
 import {type TUser} from '~/types/user.type';
 import {logger} from '~/utils/logger.util';
@@ -24,6 +25,10 @@ import {type TLesson, type TLessonType, type TPrismaPayloadGetLessonById} from '
 import {Button, ButtonPreset, ButtonType} from '~/components/button/index.js';
 import {Editor} from '~/components/text-editor/index.client.js';
 import {YemSpinner} from '~/components/yem-spinner/index.js';
+import {type TPrismaPayloadGetModulesList} from '~/types/module.type';
+import {ModuleService} from '~/services/module.service.server';
+import {type TTags, type TPrismaPayloadGetAllTags, type TTag} from '~/types/tag.type';
+import {TagService} from '~/services/tag.service.server';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => ([
 	{title: `Aula ${data!.lesson?.name} - Yoga em Movimento`},
@@ -36,6 +41,8 @@ type LessonLoaderData = {
 	error: string | undefined;
 	success: string | undefined;
 	lesson: TPrismaPayloadGetLessonById | undefined;
+	modules: TPrismaPayloadGetModulesList | undefined;
+	tags: TPrismaPayloadGetAllTags | undefined;
 	meta: Array<{tagName: string; rel: string; href: string}>;
 };
 
@@ -53,9 +60,13 @@ export const loader = async ({request, params}: LoaderFunctionArgs) => {
 
 	try {
 		const {data: lesson} = await new LessonService().getBySlug(courseSlug!, moduleSlug!, lessonSlug!, userSession.data as TUser);
+		const {data: modules} = await new ModuleService().getAll(userSession.data as TUser);
+		const {data: tags} = await new TagService().getAll();
 
 		return json<LessonLoaderData>({
 			lesson,
+			modules,
+			tags,
 			error: userSession.get('error') as string | undefined,
 			success: userSession.get('success') as string | undefined,
 			meta,
@@ -68,6 +79,8 @@ export const loader = async ({request, params}: LoaderFunctionArgs) => {
 		logger.logError(`Error fetching lesson: ${(error as Error).message}`);
 		return json<LessonLoaderData>({
 			lesson: undefined,
+			modules: undefined,
+			tags: undefined,
 			error: `Error fetching lesson: ${(error as Error).message}`,
 			success: undefined,
 			meta,
@@ -107,6 +120,7 @@ export const action = async ({request, params}: ActionFunctionArgs) => {
 				modules: (formData.get('modules') as string).split(','),
 				publicationDate: new Date(formData.get('publicationDate') as string),
 				published: formData.get('published') === 'on',
+				tags: JSON.parse(formData.get('tags') as string) as TTags,
 			};
 
 			await new LessonService().update(id, lessonToUpdate);
@@ -135,7 +149,11 @@ export default function Lesson() {
 		error,
 		success,
 		lesson,
+		modules,
+		tags: rawTags,
 	} = useLoaderData<LessonLoaderData>();
+
+	const tags: Array<{value: TTag; label: string}> = rawTags ? rawTags.map(tag => ({value: [tag.tagOptionName, tag.tagValueName], label: `${tag.tagOptionName}: ${tag.tagValueName}`})) : [];
 
 	const {
 		'course-slug': courseSlug,
@@ -148,6 +166,8 @@ export default function Lesson() {
 	const [lessonEditQuillContent, setLessonEditQuillContent] = useState(lesson?.content ?? '');
 	const [lessonEditQuillMktContent, setLessonEditQuillMktContent] = useState(lesson?.content ?? '');
 	const [lessonEditDialogIsOpen, setLessonEditDialogIsOpen] = useState(false);
+	const [modulesValue, setModulesValue] = useState<Array<{value: string; label: string}>>(lesson?.modules ? lesson?.modules.map(module => ({value: module.id, label: module.name})) : []);
+	const [tagsValue, setTagsValue] = useState<Array<{value: TTag; label: string}>>(lesson?.tags ? lesson.tags.map(tag => ({value: [tag.tagOptionName, tag.tagValueName], label: `${tag.tagOptionName}: ${tag.tagValueName}`})) : []);
 	const navigation = useNavigation();
 	const isSubmittingAnyForm = navigation.formAction === `/admin/courses/${courseSlug}/${moduleSlug}/${lessonSlug}`;
 
@@ -455,14 +475,52 @@ export default function Lesson() {
 									</RadixForm.Control>
 								</RadixForm.Field>
 
-								<RadixForm.Field name='modules' className='hidden'>
+								<RadixForm.Field name='modules'>
+									<div className='flex items-baseline justify-between'>
+										<RadixForm.Label>
+											<p>Módulos</p>
+										</RadixForm.Label>
+									</div>
 									<RadixForm.Control asChild>
 										<input
 											disabled={isSubmittingAnyForm}
 											type='text'
-											value={lesson.modules.map(module => module.id)}
+											className='hidden'
+											value={modulesValue.map(course => course.value).join(',')}
 										/>
 									</RadixForm.Control>
+									<Select
+										isMulti
+										value={modulesValue}
+										options={modules?.map(module => ({value: module.id, label: module.name}))}
+										onChange={selectedOption => {
+											setModulesValue(selectedOption as Array<{value: string; label: string}>);
+										}}
+									/>
+								</RadixForm.Field>
+
+								<RadixForm.Field name='tags'>
+									<div className='flex items-baseline justify-between'>
+										<RadixForm.Label>
+											<p>Tags</p>
+										</RadixForm.Label>
+									</div>
+									<RadixForm.Control asChild>
+										<input
+											disabled={isSubmittingAnyForm}
+											type='text'
+											className='hidden'
+											value={JSON.stringify(tagsValue.map(tag => tag.value))}
+										/>
+									</RadixForm.Control>
+									<Select
+										isMulti
+										value={tagsValue}
+										options={tags}
+										onChange={selectedOption => {
+											setTagsValue(selectedOption as Array<{value: TTag; label: string}>);
+										}}
+									/>
 								</RadixForm.Field>
 
 								<RadixForm.Field name='id' className='hidden'>

@@ -324,7 +324,7 @@ export class LessonService {
 					modules: {
 						where: {
 							published: user?.roles?.includes('admin') ? undefined : true,
-							slug: moduleSlug,
+							slug: user?.roles?.includes('admin') ? undefined : moduleSlug,
 						},
 						select: {
 							id: true,
@@ -333,7 +333,7 @@ export class LessonService {
 							course: {
 								where: {
 									published: user?.roles?.includes('admin') ? undefined : true,
-									slug: courseSlug,
+									slug: user?.roles?.includes('admin') ? undefined : courseSlug,
 								},
 								select: {
 									id: true,
