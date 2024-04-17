@@ -377,8 +377,8 @@ export class LessonService {
 				status: 'SUCCESSFUL',
 				data: {
 					...lesson,
-					content: hasActiveSubscription ? lesson.content : '',
-					videoSourceUrl: hasActiveSubscription ? lesson.videoSourceUrl : '',
+					content: hasActiveSubscription ? lesson.content : lesson.marketingContent,
+					videoSourceUrl: hasActiveSubscription ? lesson.videoSourceUrl : lesson.marketingVideoUrl,
 				},
 			};
 		} catch (error) {

@@ -348,8 +348,8 @@ export class ModuleService {
 
 			const returnableModule = {
 				...module,
-				content: hasActiveSubscription ? module?.content : '',
-				videoSourceUrl: hasActiveSubscription ? module?.videoSourceUrl : '',
+				content: hasActiveSubscription ? module?.content : module.marketingContent,
+				videoSourceUrl: hasActiveSubscription ? module?.videoSourceUrl : module.marketingVideoUrl,
 			};
 
 			return {
