@@ -22,7 +22,7 @@ import {commitUserSession, getUserSession} from '~/utils/session.server';
 import {ModuleService} from '~/services/module.service.server';
 import {LessonService} from '~/services/lesson.service.server';
 import {type TUser} from '~/types/user.type';
-import {type TModule, type TPrismaPayloadGetModuleById} from '~/types/module.type';
+import {type TPrismaPayloadGetModulesList, type TModule, type TPrismaPayloadGetModuleById} from '~/types/module.type';
 import {CourseCard} from '~/components/course-card/index.js';
 import {Button, ButtonPreset, ButtonType} from '~/components/button/index.js';
 import {Editor} from '~/components/text-editor/index.client.js';
@@ -30,6 +30,8 @@ import {YemSpinner} from '~/components/yem-spinner/index.js';
 import {CourseService} from '~/services/course.service.server';
 import {type TPrismaPayloadGetAllCourses} from '~/types/course.type';
 import {type TLesson, type TLessonType} from '~/types/lesson.type';
+import {type TTags, type TPrismaPayloadGetAllTags, type TTag} from '~/types/tag.type';
+import {TagService} from '~/services/tag.service.server';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => [
 	{title: `${data?.module?.name} - Yoga em Movimento`},
@@ -42,7 +44,9 @@ type ModuleLoaderData = {
 	error: string | undefined;
 	success: string | undefined;
 	module: TPrismaPayloadGetModuleById | undefined;
+	modules: TPrismaPayloadGetModulesList | undefined;
 	courses: TPrismaPayloadGetAllCourses | undefined;
+	tags: TPrismaPayloadGetAllTags | undefined;
 	meta: Array<{tagName: string; rel: string; href: string}>;
 };
 
@@ -57,13 +61,19 @@ export const loader = async ({request, params}: LoaderFunctionArgs) => {
 		{tagName: 'link', rel: 'canonical', href: new URL(`/admin/courses/${courseSlug}/${moduleSlug}`, request.url).toString()},
 	];
 
+	const moduleService = new ModuleService();
+
 	try {
-		const {data: module} = await new ModuleService().getBySlug(courseSlug!, moduleSlug!, userSession.data as TUser);
+		const {data: module} = await moduleService.getBySlug(courseSlug!, moduleSlug!, userSession.data as TUser);
+		const {data: modules} = await moduleService.getAll(userSession.data as TUser);
 		const {data: courses} = await new CourseService().getAll(userSession.get('roles') as string[]);
+		const {data: tags} = await new TagService().getAll();
 
 		return json<ModuleLoaderData>({
 			module,
+			modules,
 			courses,
+			tags,
 			error: userSession.get('error') as string | undefined,
 			success: userSession.get('success') as string | undefined,
 			meta,
@@ -76,7 +86,9 @@ export const loader = async ({request, params}: LoaderFunctionArgs) => {
 		logger.logError(`Error getting module: ${(error as Error).message}`);
 		return json<ModuleLoaderData>({
 			module: undefined,
+			modules: undefined,
 			courses: undefined,
+			tags: undefined,
 			error: (error as Error).message,
 			success: undefined,
 			meta,
@@ -135,6 +147,7 @@ export const action = async ({request, params}: ActionFunctionArgs) => {
 						modules: (formData.get('modules') as string).split(','),
 						publicationDate: new Date(formData.get('publicationDate') as string),
 						published: Boolean(formData.get('published')),
+						tags: JSON.parse(formData.get('tags') as string) as TTags,
 					};
 
 					await new LessonService().create(newLesson);
@@ -171,7 +184,9 @@ export const action = async ({request, params}: ActionFunctionArgs) => {
 export default function Module() {
 	const {
 		module,
+		modules,
 		courses,
+		tags: rawTags,
 		error,
 		success,
 	} = useLoaderData<ModuleLoaderData>();
@@ -180,6 +195,8 @@ export default function Module() {
 		'course-slug': courseSlug,
 		'module-slug': moduleSlug,
 	} = useParams();
+
+	const tags: Array<{value: TTag; label: string}> = rawTags ? rawTags.map(tag => ({value: [tag.tagOptionName, tag.tagValueName], label: `${tag.tagOptionName}: ${tag.tagValueName}`})) : [];
 
 	const [moduleEditQuill, setModuleEditQuill] = useState<Quill | null>(null); // eslint-disable-line @typescript-eslint/ban-types
 	const [moduleMktEditQuill, setModuleMktEditQuill] = useState<Quill | null>(null); // eslint-disable-line @typescript-eslint/ban-types
@@ -192,6 +209,8 @@ export default function Module() {
 	const [moduleEditDialogIsOpen, setModuleEditDialogIsOpen] = useState(false);
 	const [newLessonDialogIsOpen, setNewLessonDialogIsOpen] = useState(false);
 	const [coursesValue, setCoursesValue] = useState<Array<{value: string; label: string}>>(module ? module.course.map(course => ({value: course.id, label: course.name})) : []);
+	const [modulesValue, setModulesValue] = useState<Array<{value: string; label: string}>>(module ? [{value: module.id, label: module.name}] : []);
+	const [tagsValue, setTagsValue] = useState<Array<{value: TTag; label: string}>>([]);
 	const navigation = useNavigation();
 	const isSubmittingAnyForm = navigation.formAction === `/admin/courses/${courseSlug}/${moduleSlug}`;
 
@@ -799,14 +818,52 @@ export default function Module() {
 										</RadixForm.Control>
 									</RadixForm.Field>
 
-									<RadixForm.Field name='modules' className='hidden'>
+									<RadixForm.Field name='modules'>
+										<div className='flex items-baseline justify-between'>
+											<RadixForm.Label>
+												<p>Módulos</p>
+											</RadixForm.Label>
+										</div>
 										<RadixForm.Control asChild>
 											<input
 												disabled={isSubmittingAnyForm}
 												type='text'
-												defaultValue={[module.id]}
+												className='hidden'
+												value={modulesValue.map(course => course.value).join(',')}
 											/>
 										</RadixForm.Control>
+										<Select
+											isMulti
+											value={modulesValue}
+											options={modules?.map(module => ({value: module.id, label: module.name}))}
+											onChange={selectedOption => {
+												setModulesValue(selectedOption as Array<{value: string; label: string}>);
+											}}
+										/>
+									</RadixForm.Field>
+
+									<RadixForm.Field name='tags'>
+										<div className='flex items-baseline justify-between'>
+											<RadixForm.Label>
+												<p>Tags</p>
+											</RadixForm.Label>
+										</div>
+										<RadixForm.Control asChild>
+											<input
+												disabled={isSubmittingAnyForm}
+												type='text'
+												className='hidden'
+												value={JSON.stringify(tagsValue.map(tag => tag.value))}
+											/>
+										</RadixForm.Control>
+										<Select
+											isMulti
+											value={tagsValue}
+											options={tags}
+											onChange={selectedOption => {
+												setTagsValue(selectedOption as Array<{value: TTag; label: string}>);
+											}}
+										/>
 									</RadixForm.Field>
 
 									<RadixForm.Field name='formType' className='hidden'>

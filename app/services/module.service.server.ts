@@ -178,44 +178,18 @@ export class ModuleService {
 		};
 	}
 
-	public async getList(parentId: string, userRoles: TUserRoles = []): Promise<TServiceReturn<TPrismaPayloadGetModulesList>> {
+	public async getAll(user: TUser): Promise<TServiceReturn<TPrismaPayloadGetModulesList>> {
 		const modules = await this._model.module.findMany({
 			where: {
-				published: userRoles.includes('admin') ? undefined : true,
+				published: user.roles?.includes('admin') ? undefined : true,
 				publicationDate: {
-					lte: userRoles.includes('admin') ? undefined : new Date(),
-				},
-				course: {
-					some: {
-						OR: [
-							{id: parentId},
-							{slug: parentId},
-						],
-					},
+					lte: user.roles?.includes('admin') ? undefined : new Date(),
 				},
 			},
 			select: {
 				id: true,
 				slug: true,
 				name: true,
-				description: true,
-				thumbnailUrl: true,
-				publicationDate: true,
-				published: true,
-				tags: {
-					include: {
-						tagOption: {
-							select: {
-								name: true,
-							},
-						},
-						tagValue: {
-							select: {
-								name: true,
-							},
-						},
-					},
-				},
 			},
 		});
 
@@ -243,7 +217,7 @@ export class ModuleService {
 					course: {
 						where: {
 							published: user.roles?.includes('admin') ? undefined : true,
-							slug: courseSlug,
+							slug: user.roles?.includes('admin') ? undefined : courseSlug,
 						},
 						select: {
 							id: true,
