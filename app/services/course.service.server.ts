@@ -211,8 +211,8 @@ export class CourseService {
 
 			const returnableCourse = {
 				...course,
-				content: hasActiveSubscription ? course?.content : '',
-				videoSourceUrl: hasActiveSubscription ? course?.videoSourceUrl : '',
+				content: hasActiveSubscription ? course?.content : course.marketingContent,
+				videoSourceUrl: hasActiveSubscription ? course?.videoSourceUrl : course.marketingVideoUrl,
 			};
 
 			return {
