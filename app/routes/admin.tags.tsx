@@ -7,7 +7,7 @@ import {
 import * as Dialog from '@radix-ui/react-dialog';
 import * as RadixForm from '@radix-ui/react-form';
 import {XMarkIcon} from '@heroicons/react/24/outline';
-import {Suspense, useEffect, useState} from 'react';
+import {useEffect, useState} from 'react';
 import {TagService} from '~/services/tag.service.server';
 import {type TServiceReturn} from '~/types/service-return.type';
 import {type TTag, type TPrismaPayloadGetAllTags} from '~/types/tag.type';
@@ -179,7 +179,7 @@ export default function Tags() {
 								</RadixForm.Field>
 
 								<RadixForm.Submit asChild>
-									<Button key='Criar Curso' isDisabled={isSubmitting} className='m-auto mt-2' text='Criar Curso' preset={ButtonPreset.Primary} type={ButtonType.Submit}/>
+									<Button isDisabled={isSubmitting} className='m-auto mt-2' text='Criar Tag' preset={ButtonPreset.Primary} type={ButtonType.Submit}/>
 								</RadixForm.Submit>
 
 								{isSubmitting && <YemSpinner/>}
