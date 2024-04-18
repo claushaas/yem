@@ -172,7 +172,7 @@ export class CourseService {
 									published: user.roles?.includes('admin') ? undefined : true,
 								},
 								orderBy: {
-									createdAt: 'desc',
+									createdAt: 'asc',
 								},
 								select: {
 									id: true,

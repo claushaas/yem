@@ -88,9 +88,9 @@ export class UserService {
 		const {data: user} = await this.getUserData(cleanUsername);
 
 		try {
-			await this._subscriptionService.createOrUpdateAllUserSubscriptions(user);
+			await this._subscriptionService.createUserInitialSubscriptions(user);
 		} catch (error) {
-			console.error('Error creating or updating subscriptions', error);
+			logger.logError(`Error creating or updating subscriptions: ${(error as Error).message}`);
 		}
 
 		logger.logInfo(`User ${user.id} logged in successfully`);
