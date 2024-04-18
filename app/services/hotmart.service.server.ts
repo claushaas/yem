@@ -90,12 +90,15 @@ export class HotmartService {
 		};
 
 		try {
-			const response = await request.get(url, parameters);
+			const response = await request.get(url, parameters) as {data: {items: THotmartFormationPurchase[]}};
 			logger.logDebug(`Got response: ${JSON.stringify(response.data)}`);
+
+			const {data: {items}} = response;
+			items.sort((a, b) => new Date(b.purchase.approved_date).getTime() - new Date(a.purchase.approved_date).getTime());
 
 			return {
 				status: 'SUCCESSFUL',
-				data: response.data.items ? this._mapFormationSubscriptions(response.data.items as THotmartFormationPurchase[], user) : [],
+				data: items ? this._mapFormationSubscriptions([items[0]], user) : [],
 			};
 		} catch (error) {
 			logger.logError(`Error getting user formation subscriptions on first try: ${JSON.stringify((error as Record<string, string>).data)}`);
@@ -108,11 +111,13 @@ export class HotmartService {
 					Authorization: `Bearer ${newAccessToken}`,
 				});
 
-				const response = await request.get(url, parameters);
+				const response = await request.get(url, parameters) as {data: {items: THotmartFormationPurchase[]}};
+				const {data: {items}} = response;
+				items.sort((a, b) => new Date(b.purchase.approved_date).getTime() - new Date(a.purchase.approved_date).getTime());
 
 				return {
 					status: 'SUCCESSFUL',
-					data: response.data.items ? this._mapFormationSubscriptions(response.data.items as THotmartFormationPurchase[], user) : [],
+					data: items ? this._mapFormationSubscriptions([items[0]], user) : [],
 				};
 			} catch (error) {
 				logger.logError(`Error getting user formation subscriptions on second try: ${JSON.stringify((error as Record<string, string>).data)}`);
