@@ -55,13 +55,24 @@ export default class SubscriptionService {
 		};
 	}
 
-	public async createOrUpdateAllUserSubscriptions(user: TUser): Promise<TServiceReturn<string>> {
-		await Promise.all([
-			this._updateUserIuguSubscriptions(user),
-			this._updateUserHotmartSchoolSubscriptions(user),
-			this._updateUserHotmartFormationSubscriptions(user),
-			this._createOrUpdateBeginnerSubscription(user),
-		]);
+	public async createUserInitialSubscriptions(user: TUser): Promise<TServiceReturn<string>> {
+		const {data: actualSubscriptions} = await this.getUserSubscriptions(user);
+
+		const hasIuguSubscriptions = actualSubscriptions?.some(subscription => subscription.provider === 'iugu');
+		const hasHotmartSchoolSubscriptions = actualSubscriptions?.some(subscription => (subscription.provider === 'hotmart'
+				&& (subscription.courseId === '750c5893-e395-411c-8438-1754e1fd0663' || subscription.courseId === 'c15efa5f-17f3-4db2-8e5a-b3cb287065d3')));
+		const hasHotmartFormationSubscriptions = actualSubscriptions?.some(subscription =>
+			(subscription.provider === 'hotmart' && subscription.courseId === 'db66f261-f832-4f0b-9565-53d8f8422d51'));
+		const hasBeginnerSubscription = actualSubscriptions?.some(subscription => subscription.courseId === '8c49ad51-dcb3-4a69-bbeb-2f95970194ae');
+
+		if (!hasIuguSubscriptions || !hasHotmartSchoolSubscriptions || !hasHotmartFormationSubscriptions || !hasBeginnerSubscription) {
+			await Promise.all([
+				hasIuguSubscriptions && this._createUserIuguSubscriptions(user),
+				hasHotmartSchoolSubscriptions && this._createUserHotmartSchoolSubscriptions(user),
+				hasHotmartFormationSubscriptions && this._createUserHotmartFormationSubscriptions(user),
+				hasBeginnerSubscription && this._createOrUpdateBeginnerSubscription(user),
+			]);
+		}
 
 		return {
 			status: 'NO_CONTENT',
@@ -103,7 +114,7 @@ export default class SubscriptionService {
 		}
 	}
 
-	private async _updateUserIuguSubscriptions(user: TUser): Promise<void> {
+	private async _createUserIuguSubscriptions(user: TUser): Promise<void> {
 		try {
 			const {data: iuguSubscriptions} = await this._iuguService.getUserSubscriptions(user);
 
@@ -113,13 +124,21 @@ export default class SubscriptionService {
 						await this.createOrUpdate(subscription);
 					}),
 				);
+			} else if (iuguSubscriptions.length === 0) {
+				await this.createOrUpdate({
+					userId: user.id,
+					courseId: convertSubscriptionIdentifierToCourseId('escola_mensal'),
+					provider: 'iugu',
+					providerSubscriptionId: `no-iugu-${user.id}`,
+					expiresAt: new Date(946_684_800),
+				});
 			}
 		} catch (error) {
 			logger.logError(`Error getting iugu subscriptions: ${(error as Error).message}`);
 		}
 	}
 
-	private async _updateUserHotmartSchoolSubscriptions(user: TUser): Promise<void> {
+	private async _createUserHotmartSchoolSubscriptions(user: TUser): Promise<void> {
 		try {
 			const {data: hotmartSubscriptions} = await this._hotmartService.getUserSchoolSubscriptions(user);
 
@@ -129,22 +148,38 @@ export default class SubscriptionService {
 						await this.createOrUpdate(subscription);
 					}),
 				);
+			} else if (hotmartSubscriptions.length === 0) {
+				await this.createOrUpdate({
+					userId: user.id,
+					courseId: convertSubscriptionIdentifierToCourseId('escola_mensal'),
+					provider: 'hotmart',
+					providerSubscriptionId: `no-hotmart-school-${user.id}`,
+					expiresAt: new Date(946_684_800),
+				});
 			}
 		} catch (error) {
 			logger.logError(`Error getting hotmart subscriptions: ${(error as Error).message}`);
 		}
 	}
 
-	private async _updateUserHotmartFormationSubscriptions(user: TUser): Promise<void> {
+	private async _createUserHotmartFormationSubscriptions(user: TUser): Promise<void> {
 		try {
 			const {data: hotmartSubscriptions} = await this._hotmartService.getUserFormationSubscriptions(user);
 
 			if (hotmartSubscriptions.length > 0) {
-				await Promise.all(
+				await Promise.all([
 					hotmartSubscriptions.map(async subscription => {
 						await this.createOrUpdate(subscription);
 					}),
-				);
+				]);
+			} else if (hotmartSubscriptions.length === 0) {
+				await this.createOrUpdate({
+					userId: user.id,
+					courseId: convertSubscriptionIdentifierToCourseId('1392822'),
+					provider: 'hotmart',
+					providerSubscriptionId: `no-hotmart-formation-${user.id}`,
+					expiresAt: new Date(946_684_800),
+				});
 			}
 		} catch (error) {
 			logger.logError(`Error getting hotmart subscriptions: ${(error as Error).message}`);

@@ -37,11 +37,7 @@ export class HooksService {
 		try {
 			switch (event) {
 				case 'PURCHASE_BILLET_PRINTED': {
-					// Emissão de boleto e código pix
-					// 1 - Verificar se usuário existe
-					// 1.1 - Criar usuário novo caso usuário não exista
-					// 2 - enviar mensagem e email com dados do boleto ou pix
-					await this._slackService.sendMessage(body);
+					await this._handleHotmartBilletPrintedWebhook(body);
 					break;
 				}
 
@@ -300,5 +296,102 @@ export class HooksService {
 			await this._slackService.sendMessage({...body, message: `Error handling hotmart purchase aproved webhook: ${(error as Error).message}`});
 			logger.logError(`Error handling hotmart purchase aproved webhook: ${(error as Error).message}`);
 		}
+	}
+
+	private async _handleHotmartBilletPrintedWebhook(body: TIncommingHotmartWebhook) {
+		const {data} = body;
+
+		const isSchool = data.product.id === 135_340;
+		const isFormation = data.product.id === 1_392_822;
+
+		const isBillet = data.purchase.payment.type === 'BILLET';
+		const isPix = data.purchase.payment.type === 'PIX';
+
+		let user: TUser;
+
+		try {
+			const {data: userData} = await this._userService.getUserData(data.buyer.email);
+
+			user = userData;
+		} catch (error) {
+			if ((error as Error).message.includes('User does not exist')) {
+				const {data: {userId}} = await this._userService.createOrFail({
+					email: data.buyer.email,
+					firstName: convertStringToStartCase(data.buyer.name.split(' ')[0]),
+					lastName: convertStringToStartCase(data.buyer.name.split(' ').slice(1).join(' ')),
+					document: data.buyer.document,
+					phoneNumber: data.buyer.checkout_phone,
+					roles: ['iniciantes'],
+				});
+
+				const {data: userData} = await this._userService.getUserData(userId);
+
+				user = userData;
+			}
+		}
+
+		if (isSchool && isBillet) {
+			await Promise.all([
+				// This._mailService.sendEmail(schoolWelcomeEmailTemplate(data.buyer.name, data.buyer.email)),
+				this._botMakerService.sendWhatsappTemplateMessate(
+					user!.phoneNumber,
+					'boleto_emitido_escola',
+					{
+						nome: user!.firstName,
+						linkBoleto: data.purchase.payment.billet_url!,
+						codigoDoBoleto: data.purchase.payment.billet_barcode!,
+					},
+				),
+			]);
+			return;
+		}
+
+		if (isSchool && isPix) {
+			await Promise.all([
+				// This._mailService.sendEmail(schoolWelcomeEmailTemplate(data.buyer.name, data.buyer.email)),
+				this._botMakerService.sendWhatsappTemplateMessate(
+					user!.phoneNumber,
+					'pix_emitido_escola',
+					{
+						nome: user!.firstName,
+						linkDoPix: data.purchase.payment.pix_qrcode!,
+					},
+				),
+			]);
+			return;
+		}
+
+		if (isFormation && isBillet) {
+			await Promise.all([
+				// This._mailService.sendEmail(formationWelcomeEmailTemplate(data.buyer.name, data.buyer.email)),
+				this._botMakerService.sendWhatsappTemplateMessate(
+					user!.phoneNumber,
+					'boleto_emitido_formacao',
+					{
+						nome: user!.firstName,
+						linkBoleto: data.purchase.payment.billet_url!,
+						codigoDoBoleto: data.purchase.payment.billet_barcode!,
+					},
+				),
+			]);
+			return;
+		}
+
+		if (isFormation && isPix) {
+			await Promise.all([
+				// This._mailService.sendEmail(formationWelcomeEmailTemplate(data.buyer.name, data.buyer.email)),
+				this._botMakerService.sendWhatsappTemplateMessate(
+					user!.phoneNumber,
+					'pix_emitido_formacao',
+					{
+						nome: user!.firstName,
+						linkDoPix: data.purchase.payment.pix_qrcode!,
+					},
+				),
+			]);
+			return;
+		}
+
+		await this._slackService.sendMessage({message: 'Não conseguiu lidar com webhook billet printed da hotmart', ...body});
 	}
 }
