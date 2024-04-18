@@ -47,8 +47,11 @@ export class HooksService {
 				}
 
 				case 'PURCHASE_DELAYED': {
-					// Compra com atraso
-					// Enviar mensagem e email com aviso sobre atraso de pagamento
+					await this._handleHotmartPurchaseDelayedWebhook(body);
+					break;
+				}
+
+				case 'PURCHASE_OUT_OF_SHOPPING_CART': {
 					await this._slackService.sendMessage(body);
 					break;
 				}
@@ -158,7 +161,7 @@ export class HooksService {
 				}
 
 				default: {
-					await this._slackService.sendMessage(body);
+					await this._slackService.sendMessage({message: 'Iugu invoice status changed not handled', ...body});
 					break;
 				}
 			}
@@ -393,5 +396,107 @@ export class HooksService {
 		}
 
 		await this._slackService.sendMessage({message: 'Não conseguiu lidar com webhook billet printed da hotmart', ...body});
+	}
+
+	private async _handleHotmartPurchaseDelayedWebhook(body: TIncommingHotmartWebhook) {
+		const {data} = body;
+
+		const isSchool = data.product.id === 135_340;
+		const isFormation = data.product.id === 1_392_822;
+
+		const isBillet = data.purchase.payment.type === 'BILLET';
+		const isPix = data.purchase.payment.type === 'PIX';
+		const isCreditCard = data.purchase.payment.type === 'CREDIT_CARD';
+
+		const {data: user} = await this._userService.getUserData(data.buyer.email);
+
+		if (isSchool && isBillet) {
+			await Promise.all([
+				this._botMakerService.sendWhatsappTemplateMessate(
+					user.phoneNumber,
+					'boleto_atrasado_escola',
+					{
+						nome: user.firstName,
+						emailAluno: user.email,
+					},
+				),
+			]);
+			return;
+		}
+
+		if (isSchool && isPix) {
+			await Promise.all([
+				this._botMakerService.sendWhatsappTemplateMessate(
+					user.phoneNumber,
+					'purchase_delayed_hotmart_school_pix',
+					{
+						nome: user.firstName,
+						emailAluno: user.email,
+						linkCompraHotmart: 'https://consumer.hotmart.com/purchase/135340',
+					},
+				),
+			]);
+			return;
+		}
+
+		if (isSchool && isCreditCard) {
+			await Promise.all([
+				this._botMakerService.sendWhatsappTemplateMessate(
+					user.phoneNumber,
+					'falha_escola_hotmart',
+					{
+						nome: user.firstName,
+						descricaoDoErro: data.purchase.payment.refusal_reason ?? 'Transação recusada',
+						emailAluno: user.email,
+					},
+				),
+			]);
+			return;
+		}
+
+		if (isFormation && isBillet) {
+			await Promise.all([
+				this._botMakerService.sendWhatsappTemplateMessate(
+					user.phoneNumber,
+					'boleto_atrasado_formacao',
+					{
+						nome: user.firstName,
+						emailAluno: user.email,
+					},
+				),
+			]);
+			return;
+		}
+
+		if (isFormation && isPix) {
+			await Promise.all([
+				this._botMakerService.sendWhatsappTemplateMessate(
+					user.phoneNumber,
+					'purchase_delayed_hotmart_formation_pix',
+					{
+						nome: user.firstName,
+						emailAluno: user.email,
+					},
+				),
+			]);
+			return;
+		}
+
+		if (isFormation && isCreditCard) {
+			await Promise.all([
+				this._botMakerService.sendWhatsappTemplateMessate(
+					user.phoneNumber,
+					'falha_de_pagamento_formacao',
+					{
+						nome: user.firstName,
+						descricaoDoErro: data.purchase.payment.refusal_reason ?? 'Transação recusada',
+						emailAluno: user.email,
+					},
+				),
+			]);
+			return;
+		}
+
+		await this._slackService.sendMessage({message: 'Não conseguiu lidar com a compra atrasada da hotmart', ...body});
 	}
 }
