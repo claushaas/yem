@@ -38,7 +38,7 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
 };
 
 function App() {
-	const data = useLoaderData() as {userData?: TypeUserSession | undefined} ?? {};
+	const data = useLoaderData() as {userData: TypeUserSession | undefined} ?? {};
 	const userData = data?.userData;
 
 	const isBot = useIsBot();

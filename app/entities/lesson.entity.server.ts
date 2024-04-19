@@ -2,7 +2,6 @@ import Joi from 'joi';
 import {type TLessonType, type TLesson} from '../types/lesson.type.js';
 import {CustomError} from '../utils/custom-error.js';
 import {type TTags} from '../types/tag.type.js';
-import {type TUuid} from '../types/uuid.type.js';
 
 const lessonSchema = Joi.object({
 	oldId: Joi.string().allow(''),
@@ -33,7 +32,7 @@ export class Lesson implements TLesson {
 	private readonly _marketingVideoUrl?: string;
 	private readonly _duration?: number;
 	private readonly _thumbnailUrl: string;
-	private readonly _modules: TUuid[];
+	private readonly _modules: string[];
 	private readonly _publicationDate: Date;
 	private readonly _published: boolean;
 	private readonly _tags?: TTags;

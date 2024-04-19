@@ -1,18 +1,13 @@
-import {type TUuid} from './uuid.type.js';
-
 export type TUserRoles = string[];
-type TEmail = string;
-type TFirstName = string;
-type TLastName = string;
 
 export type TBasicUser = {
-	email: TEmail;
-	firstName: TFirstName;
-	lastName: TLastName;
+	email: string;
+	firstName: string;
+	lastName: string;
 };
 
 export type TUser = TBasicUser & {
-	id: TUuid;
+	id: string;
 	roles?: TUserRoles;
 	phoneNumber: string;
 	document?: string;
@@ -25,7 +20,7 @@ export type TUserCreationAttributes = TBasicUser & {
 };
 
 export type TMauticUserCreationAttributes = {
-	email: TEmail;
-	firstname: TFirstName;
-	lastname: TLastName;
+	email: string;
+	firstname: string;
+	lastname: string;
 };

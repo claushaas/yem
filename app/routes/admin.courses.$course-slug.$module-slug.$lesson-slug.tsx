@@ -134,14 +134,15 @@ export const action = async ({request, params}: ActionFunctionArgs) => {
 					'Set-Cookie': await commitUserSession(userSession), // eslint-disable-line @typescript-eslint/naming-convention
 				},
 			});
-		} finally {
-			return redirect(`/admin/courses/${courseSlug}/${moduleSlug}/${lessonSlug}`, { // eslint-disable-line no-unsafe-finally
-				headers: {
-					'Set-Cookie': await commitUserSession(userSession), // eslint-disable-line @typescript-eslint/naming-convention
-				},
-			});
 		}
 	}
+
+	userSession.flash('error', 'Você não tem permissão para realizar esta ação');
+	return redirect(`/admin/courses/${courseSlug}/${moduleSlug}/${lessonSlug}`, {
+		headers: {
+			'Set-Cookie': await commitUserSession(userSession), // eslint-disable-line @typescript-eslint/naming-convention
+		},
+	});
 };
 
 export default function Lesson() {

@@ -152,13 +152,13 @@ export const action = async ({request, params}: ActionFunctionArgs) => {
 				'Set-Cookie': await commitUserSession(userSession), // eslint-disable-line @typescript-eslint/naming-convention
 			},
 		});
-	} finally {
-		return redirect(`/admin/courses/${courseSlug}`, { // eslint-disable-line no-unsafe-finally
-			headers: {
-				'Set-Cookie': await commitUserSession(userSession), // eslint-disable-line @typescript-eslint/naming-convention
-			},
-		});
 	}
+
+	return redirect(`/admin/courses/${courseSlug}`, {
+		headers: {
+			'Set-Cookie': await commitUserSession(userSession), // eslint-disable-line @typescript-eslint/naming-convention
+		},
+	});
 };
 
 export default function Course() {

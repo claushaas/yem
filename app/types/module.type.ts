@@ -1,6 +1,5 @@
 import {type Prisma} from '@prisma/client';
 import {type TTags} from './tag.type.js';
-import {type TUuid} from './uuid.type.js';
 
 export type TModule = {
 	oldId?: string;
@@ -13,8 +12,8 @@ export type TModule = {
 	thumbnailUrl: string;
 	publicationDate: Date;
 	published: boolean;
-	courses?: TUuid[];
-	lessons?: TUuid[];
+	courses?: string[];
+	lessons?: string[];
 	tags?: TTags;
 };
 

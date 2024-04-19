@@ -160,6 +160,11 @@ export class HooksService {
 					break;
 				}
 
+				case 'pending': {
+					await this._slackService.sendMessage({message: 'Iugu invoice status changed not handled', ...body});
+					break;
+				}
+
 				default: {
 					await this._slackService.sendMessage({message: 'Iugu invoice status changed not handled', ...body});
 					break;
@@ -233,10 +238,12 @@ export class HooksService {
 
 					const rolesToAdd = ['iniciantes', 'escolaOnline', 'escolaAnual', 'novaFormacao'];
 
-					const expiresAt = data.purchase.recurrence_number
-						? (data.purchase.recurrence_number < data.purchase.payment.installments_number ? new Date(data.purchase.date_next_charge!)
-							: new Date(2_556_113_460_000))
-						: new Date(2_556_113_460_000);
+					let expiresAt: Date;
+					if (data.purchase.recurrence_number) {
+						expiresAt = data.purchase.recurrence_number < data.purchase.payment.installments_number ? new Date(data.purchase.date_next_charge!) : new Date(2_556_113_460_000);
+					} else {
+						expiresAt = new Date(2_556_113_460_000);
+					}
 
 					await Promise.all([
 						this._userService.addRolesToUser(userData!, rolesToAdd), // Should be deleted when old site stops being suported
@@ -269,10 +276,15 @@ export class HooksService {
 						]);
 					}
 
-					const rolesToAdd
-						= (data.subscription?.plan?.name === 'Mensal 77') || (data.subscription?.plan?.name === 'Mensal boleto') ? ['iniciantes', 'escolaOnline']
-							: ((data.subscription?.plan?.name === 'Anual 497') || (data.subscription?.plan?.name === 'Anual - boleto') ? ['iniciantes', 'escolaOnline', 'escolaAnual']
-								: ['iniciantes']);
+					let rolesToAdd: string[] = [];
+
+					if (data.subscription?.plan?.name === 'Mensal 77' || data.subscription?.plan?.name === 'Mensal boleto') {
+						rolesToAdd = ['iniciantes', 'escolaOnline'];
+					} else if (data.subscription?.plan?.name === 'Anual 497' || data.subscription?.plan?.name === 'Anual - boleto') {
+						rolesToAdd = ['iniciantes', 'escolaOnline', 'escolaAnual'];
+					} else {
+						rolesToAdd = ['iniciantes'];
+					}
 
 					await Promise.all([
 						this._userService.addRolesToUser(userData!, rolesToAdd), // Should be deleted when old site stops being suported

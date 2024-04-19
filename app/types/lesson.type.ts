@@ -1,6 +1,5 @@
 import {type Prisma} from '@prisma/client';
 import {type TTags} from './tag.type.js';
-import {type TUuid} from './uuid.type.js';
 
 export type TLessonType = 'video' | 'text' | 'courseWare';
 
@@ -15,7 +14,7 @@ export type TLesson = {
 	marketingVideoUrl?: string;
 	duration?: number;
 	thumbnailUrl: string;
-	modules: TUuid[];
+	modules: string[];
 	publicationDate: Date;
 	published: boolean;
 	tags?: TTags;

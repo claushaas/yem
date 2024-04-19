@@ -7,8 +7,7 @@ import {
 	type TPrismaPayloadGetModuleById,
 } from '../types/module.type.js';
 import {Module} from '../entities/module.entity.server.js';
-import {type TUser, type TUserRoles} from '../types/user.type.js';
-import {type TUuid} from '../types/uuid.type.js';
+import {type TUser} from '../types/user.type.js';
 import {CustomError} from '../utils/custom-error.js';
 import {type TServiceReturn} from '../types/service-return.type.js';
 import {db} from '../database/db.js';
@@ -98,7 +97,7 @@ export class ModuleService {
 		};
 	}
 
-	public async update(id: TUuid, moduleData: TModule): Promise<TServiceReturn<TPrismaPayloadUpdateModule>> {
+	public async update(id: string, moduleData: TModule): Promise<TServiceReturn<TPrismaPayloadUpdateModule>> {
 		const newModule = new Module(moduleData);
 
 		const updatedModule = await this._model.module.update({

@@ -10,7 +10,6 @@ import {
 	type TPrismaPayloadGetLessonById,
 } from '../types/lesson.type.js';
 import {Lesson} from '../entities/lesson.entity.server.js';
-import {type TUuid} from '../types/uuid.type.js';
 import {type TServiceReturn} from '../types/service-return.type.js';
 import {type TSearchableEntity} from '../types/searchable.type.js';
 import {db} from '../database/db.js';
@@ -102,7 +101,7 @@ export class LessonService {
 		};
 	}
 
-	public async update(id: TUuid, lessonData: TLesson): Promise<TServiceReturn<TPrismaPayloadUpdateLesson>> {
+	public async update(id: string, lessonData: TLesson): Promise<TServiceReturn<TPrismaPayloadUpdateLesson>> {
 		const lessoToUpdate = new Lesson(lessonData);
 
 		const updatedLesson = await this._model.lesson.update({

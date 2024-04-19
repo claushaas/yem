@@ -474,8 +474,8 @@ export default function Student() {
 			</div>
 
 			<div>
-				{/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing */}
-				<h3>{studentData.document || 'Pedir para cadastrar CPF'}</h3>
+				{ }
+				<h3>{studentData.document && studentData.document.length > 3 ? studentData.document : 'Pedir para cadastrar CPF'}</h3>
 				<Dialog.Root open={documentDialogIsOpen} onOpenChange={setDocumentDialogIsOpen}>
 					<Dialog.Trigger asChild>
 						<div>
