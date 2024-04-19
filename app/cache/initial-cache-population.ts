@@ -56,6 +56,12 @@ export const populateLessons = async () => {
 					},
 				},
 			},
+			tags: {
+				orderBy: {
+					tagOptionName: 'asc',
+					tagValueName: 'asc',
+				},
+			},
 		},
 	});
 
