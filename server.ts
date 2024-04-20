@@ -5,12 +5,7 @@ import morgan from 'morgan';
 import helmet from 'helmet';
 import {viteDevelopmentServer, remixHandler} from './remix-handler.js';
 import {executeAndRepeat} from './app/utils/background-task.js';
-import {
-	populateCourses,
-	populateLessons,
-	populateModules,
-	populateSubscriptions,
-} from './app/cache/initial-cache-population.js';
+import {populateCache} from './app/cache/initial-cache-population.js';
 import {logger} from './app/utils/logger.util.js';
 
 installGlobals();
@@ -47,19 +42,12 @@ app.use(morgan('tiny'));
 // Handle SSR requests
 app.all('*', remixHandler);
 
-const FIVE_HOURS = 1000 * 60 * 60 * 5;
+const ONE_DAY = 1000 * 60 * 60 * 24;
 executeAndRepeat(async () => { // eslint-disable-line @typescript-eslint/no-floating-promises
 	logger.logInfo('Populate cache task started');
-	logger.logInfo('courses populate started');
-	await populateCourses();
-	logger.logInfo('lessons populate started');
-	await populateLessons();
-	logger.logInfo('modules populate started');
-	await populateModules();
-	logger.logInfo('subscriptions populate started');
-	await populateSubscriptions();
+	populateCache();
 	logger.logInfo('Populate cache task finished');
-}, FIVE_HOURS);
+}, ONE_DAY);
 
 const port = process.env.APP_PORT ?? 3001;
 app.listen(port, () => {
