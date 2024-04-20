@@ -17,6 +17,7 @@ export type TAllDataToBeCached = Prisma.CourseGetPayload<{
 							include: {
 								course: {
 									select: {
+										slug: true;
 										delegateAuthTo: {
 											select: {
 												id: true;
@@ -39,6 +40,7 @@ export type TAllDataToBeCached = Prisma.CourseGetPayload<{
 															include: {
 																course: {
 																	select: {
+																		slug: true;
 																		delegateAuthTo: {
 																			select: {
 																				id: true;
@@ -79,6 +81,7 @@ export const allDataToBeCached: TAllDataToBeCached[] = await db.course.findMany(
 							include: {
 								course: {
 									select: {
+										slug: true,
 										delegateAuthTo: {
 											select: {
 												id: true,
@@ -101,6 +104,7 @@ export const allDataToBeCached: TAllDataToBeCached[] = await db.course.findMany(
 															include: {
 																course: {
 																	select: {
+																		slug: true,
 																		delegateAuthTo: {
 																			select: {
 																				id: true,
