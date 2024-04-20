@@ -1,6 +1,6 @@
 import {type PrismaClient} from '@prisma/client';
 import {
-	type TPrismaPayloadCreateModule,
+	type TPrismaPayloadCreateOrUpdateModule,
 	type TModule,
 	type TPrismaPayloadUpdateModule,
 	type TPrismaPayloadGetModulesList,
@@ -20,7 +20,7 @@ export class ModuleService {
 		this._model = model;
 	}
 
-	public async create(moduleData: TModule): Promise<TServiceReturn<TPrismaPayloadCreateModule>> {
+	public async create(moduleData: TModule): Promise<TServiceReturn<TPrismaPayloadCreateOrUpdateModule>> {
 		const newModule = new Module(moduleData);
 
 		const createdModule = await this._model.module.create({

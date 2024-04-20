@@ -15,11 +15,12 @@ export type TModule = {
 	courses?: string[];
 	lessons?: string[];
 	tags?: TTags;
+	isLessonsOrderRandom: boolean;
 };
 
 export type TModules = TModule[];
 
-export type TPrismaPayloadCreateModule = Prisma.ModuleGetPayload<{
+export type TPrismaPayloadCreateOrUpdateModule = Prisma.ModuleGetPayload<{
 	include: {
 		course: true;
 		tags: {
@@ -38,8 +39,6 @@ export type TPrismaPayloadCreateModule = Prisma.ModuleGetPayload<{
 		};
 	};
 }>;
-
-export type TPrismaPayloadUpdateModule = TPrismaPayloadCreateModule;
 
 export type TPrismaPayloadGetModulesList = Array<Prisma.ModuleGetPayload<{
 	select: {

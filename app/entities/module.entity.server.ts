@@ -17,6 +17,7 @@ const moduleSchema = Joi.object({
 	courses: Joi.array().items(Joi.string().uuid()),
 	lessons: Joi.array().items(Joi.string().uuid()),
 	tags: Joi.array().items(Joi.array().items(Joi.string()).min(2).max(2)).unique(),
+	isLessonsOrderRandom: Joi.boolean().required().default(false),
 });
 
 export class Module implements TModule {
@@ -34,6 +35,7 @@ export class Module implements TModule {
 	private readonly _courses?: string[];
 	private readonly _lessons?: string[];
 	private readonly _tags?: TTags;
+	private readonly _isLessonsOrderRandom: boolean;
 
 	constructor(module: TModule) {
 		const {error} = moduleSchema.validate(module);
@@ -56,6 +58,7 @@ export class Module implements TModule {
 		this._courses = module.courses;
 		this._lessons = module.lessons;
 		this._tags = module.tags;
+		this._isLessonsOrderRandom = module.isLessonsOrderRandom;
 	}
 
 	get oldId() {
@@ -112,5 +115,9 @@ export class Module implements TModule {
 
 	get tags() {
 		return this._tags;
+	}
+
+	get isLessonsOrderRandom() {
+		return this._isLessonsOrderRandom;
 	}
 }
