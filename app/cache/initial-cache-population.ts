@@ -1,89 +1,105 @@
+import {type Prisma} from '@prisma/client';
 import {db} from '../database/db.js';
 import {MemoryCache} from './memory-cache.js';
 
-export const populateCourses = async () => {
-	const courses = await db.course.findMany({
-		include: {
-			modules: {
-				select: {
-					id: true,
-					slug: true,
-				},
-			},
-		},
-	});
-
-	for (const course of courses) {
-		MemoryCache.set(`course:${course.slug}`, JSON.stringify(course));
-	}
-};
-
-export const populateModules = async () => {
-	const modules = await db.module.findMany({
-		include: {
-			course: {
-				select: {
-					id: true,
-					slug: true,
-				},
-			},
-			lessons: {
-				select: {
-					id: true,
-					slug: true,
-				},
-			},
-		},
-	});
-
-	for (const module of modules) {
-		MemoryCache.set(`module:${module.slug}`, JSON.stringify(module));
-	}
-};
-
-export const populateLessons = async () => {
-	const lessons = await db.lesson.findMany({
-		include: {
-			modules: {
-				select: {
-					id: true,
-					slug: true,
-					course: {
-						select: {
-							id: true,
-							slug: true,
+const allDataToBeCached = await db.course.findMany({
+	include: {
+		subscriptions: true,
+		modules: {
+			include: {
+				lessons: {
+					include: {
+						lesson: {
+							include: {
+								tags: true,
+							},
 						},
 					},
 				},
 			},
-			tags: {
-				orderBy: {
-					tagOptionName: 'asc',
-					tagValueName: 'asc',
-				},
-			},
 		},
-	});
+	},
+});
 
-	for (const lesson of lessons) {
-		MemoryCache.set(`lesson:${lesson.slug}`, JSON.stringify(lesson));
+type Course = Prisma.CourseGetPayload<undefined>;
+type Module = Prisma.ModuleGetPayload<undefined>;
+type Subscription = Prisma.UserSubscriptionsGetPayload<undefined>;
+type LessonToModule = Prisma.LessonToModuleGetPayload<{include: {lesson: true}}>;
+
+type CourseBruteData = Course & {
+	modules: string[] | Module[];
+	subscriptions?: Subscription[];
+};
+
+type courseDataForCache = {
+	modules: string[];
+} & Course;
+
+const getCourseDataForCache = (course: CourseBruteData) => {
+	const courseData = {...course};
+	delete courseData.subscriptions;
+	courseData.modules = course.modules.map(module => (module as Module).id) ?? [];
+	return course as courseDataForCache;
+};
+
+type ModuleBruteData = {
+	lessons: LessonToModule[] | string[];
+} & Module;
+
+type moduleDataForCache = {
+	lessons: string[];
+} & Module;
+
+const getModuleDataForCache = (module: ModuleBruteData) => {
+	const moduleData = {...module};
+	moduleData.lessons = module.lessons.map(lessonToModule => (lessonToModule as LessonToModule).lesson.id) ?? [];
+	return module as moduleDataForCache;
+};
+
+const populateCourseToCache = (course: Prisma.CourseGetPayload<{
+	include: {
+		modules: true;
+		subscriptions: true;
+	};
+}>) => {
+	const courseDataForCache = getCourseDataForCache(course);
+
+	MemoryCache.set(course.slug, JSON.stringify(courseDataForCache));
+};
+
+const populateLessonsToCache = (module: typeof allDataToBeCached[0]['modules'][0]) => {
+	for (const lessonToModule of module.lessons) {
+		const lessonDataForCache = {...lessonToModule.lesson, order: lessonToModule.order};
+		MemoryCache.set(`${module.slug}:${lessonToModule.lesson.slug}`, JSON.stringify(lessonDataForCache));
 	}
 };
 
-export const populateSubscriptions = async () => {
-	const [usersThatHaveSubscriptions, subscriptions] = await Promise.all([
-		db.userSubscriptions.groupBy({
-			by: 'userId',
-		}),
-		db.userSubscriptions.findMany(),
-	]);
+const populateModulesToCache = (course: typeof allDataToBeCached[0]) => {
+	for (const module of course.modules) {
+		const moduleDataForCache = getModuleDataForCache(module);
 
-	const subscriptionsByUser = usersThatHaveSubscriptions.map(user => ({
-		userId: user.userId,
-		subscriptions: subscriptions.filter(subscription => subscription.userId === user.userId),
-	}));
+		MemoryCache.set(`${course.slug}:${module.slug}`, JSON.stringify(moduleDataForCache));
 
-	for (const user of subscriptionsByUser) {
-		MemoryCache.set(`subscriptions:${user.userId}`, JSON.stringify(user.subscriptions));
+		populateLessonsToCache(module);
+	}
+};
+
+const populateUserSubscriptionsToCache = (course: typeof allDataToBeCached[0]) => {
+	for (const _subscription of course.subscriptions) {
+		const userIdsOfUsersOfSubscriptions = course.subscriptions.map(subscription => subscription.userId);
+		const uniqueUserIdsOfSubscriptions = [...new Set(userIdsOfUsersOfSubscriptions)];
+
+		for (const userId of uniqueUserIdsOfSubscriptions) {
+			const userSubscriptions = course.subscriptions.filter(subscription => subscription.userId === userId);
+			MemoryCache.set(`${course.slug}:${userId}`, JSON.stringify(userSubscriptions));
+		}
+	}
+};
+
+export const populateCache = () => {
+	for (const course of allDataToBeCached) {
+		populateCourseToCache(course);
+		populateModulesToCache(course);
+		populateUserSubscriptionsToCache(course);
 	}
 };
