@@ -1,7 +1,7 @@
 import {type Prisma} from '@prisma/client';
 import {MemoryCache} from './memory-cache.js';
 import {type TAllDataToBeCached} from './get-all-data-to-be-cached.js';
-import {populateModulesToCache} from './populate-modules-to-cache.js';
+import {populateModulesAndLessonsToCache} from './populate-modules-to-cache.js';
 
 type TCourse = Prisma.CourseGetPayload<undefined>;
 
@@ -28,7 +28,7 @@ const getCourseDataForCache = (course: TAllDataToBeCached): TCourseDataForCache 
 		isPublished: course.isPublished,
 		isSelling: course.isSelling,
 		delegateAuthTo: course.delegateAuthTo.map(delegateAuthTo => delegateAuthTo.id),
-		modules: course.modules.map(moduleToCourse => moduleToCourse.module.id),
+		modules: course.modules.map(moduleToCourse => moduleToCourse.module.slug),
 	};
 
 	return courseDataForCache;
@@ -40,9 +40,9 @@ const populateCourseToCache = (course: TAllDataToBeCached) => {
 	MemoryCache.set(course.slug, JSON.stringify(courseDataForCache));
 };
 
-export const populateCoursesToCache = (allDataToBeCached: TAllDataToBeCached[]) => {
+export const populateCoursesAndModulesAndLessonsToCache = (allDataToBeCached: TAllDataToBeCached[]) => {
 	for (const course of allDataToBeCached) {
 		populateCourseToCache(course);
-		populateModulesToCache(course);
+		populateModulesAndLessonsToCache(course);
 	}
 };
