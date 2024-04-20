@@ -7,6 +7,7 @@ export type TSubscription = {
 	expiresAt: Date;
 	provider: 'hotmart' | 'iugu' | 'manual';
 	providerSubscriptionId: string;
+	providerSubscriptionStatus?: string;
 };
 
 export type THotmartSubscription = {

@@ -8,6 +8,7 @@ const subscriptionSchema = Joi.object({
 	expiresAt: Joi.date().required(),
 	provider: Joi.string().valid('hotmart', 'iugu', 'manual').required(),
 	providerSubscriptionId: Joi.string().required(),
+	providerSubscriptionStatus: Joi.string().allow(''),
 });
 
 export class Subscription implements TSubscription {
@@ -16,6 +17,7 @@ export class Subscription implements TSubscription {
 	private readonly _expiresAt: Date;
 	private readonly _provider: 'hotmart' | 'iugu' | 'manual';
 	private readonly _providerSubscriptionId: string;
+	private readonly _providerSubscriptionStatus?: string;
 
 	constructor(subscription: TSubscription) {
 		const {error} = subscriptionSchema.validate(subscription);
@@ -29,6 +31,7 @@ export class Subscription implements TSubscription {
 		this._expiresAt = subscription.expiresAt;
 		this._provider = subscription.provider;
 		this._providerSubscriptionId = subscription.providerSubscriptionId;
+		this._providerSubscriptionStatus = subscription.providerSubscriptionStatus;
 	}
 
 	get userId() {
@@ -49,5 +52,9 @@ export class Subscription implements TSubscription {
 
 	get providerSubscriptionId() {
 		return this._providerSubscriptionId;
+	}
+
+	get providerSubscriptionStatus() {
+		return this._providerSubscriptionStatus;
 	}
 }
