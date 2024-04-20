@@ -13,6 +13,10 @@ type TLessonToModule = Prisma.LessonToModuleGetPayload<{
 }>;
 
 type TLessonDataForCache = {
+	modules: Array<{
+		slug: string;
+		courses: string[];
+	}>;
 	delegateAuthTo: string[];
 } & TLessonToModule;
 
@@ -26,6 +30,10 @@ const getLessonDataForCache = (lessonToModule: TAllDataToBeCached['modules'][0][
 		publicationDate: lessonToModule.publicationDate,
 		createdAt: lessonToModule.createdAt,
 		updatedAt: lessonToModule.updatedAt,
+		modules: lessonToModule.lesson.modules.map(moduleToCourse => ({
+			slug: moduleToCourse.module.slug,
+			courses: moduleToCourse.module.courses.map(course => course.course.slug),
+		})),
 		delegateAuthTo: [...new Set(lessonToModule.lesson.modules.flatMap(moduleToCourse => moduleToCourse.module.courses.flatMap(course => course.course.delegateAuthTo.map(delegateAuthTo => delegateAuthTo.id))))],
 		lesson: {
 			id: lessonToModule.lesson.id,
