@@ -5,7 +5,7 @@ FROM node:20-alpine AS base
 RUN apk update && apk add --no-cache tzdata
 ENV TZ="America/Sao_Paulo"
 
-FROM base as deps
+FROM base AS deps
 
 ENV NODE_ENV development
 
@@ -15,7 +15,7 @@ COPY --link package*.json ./
 
 RUN npm ci
 
-FROM base as prod-deps
+FROM base AS prod-deps
 
 ENV NODE_ENV production
 
