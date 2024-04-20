@@ -2,10 +2,9 @@ import {type PrismaClient} from '@prisma/client';
 import {type TUser, type TUserRoles} from '../types/user.type.js';
 import {Course} from '../entities/course.entity.server.js';
 import {
-	type TPrismaPayloadGetCourseById,
+	type TPrismaPayloadGetCourseBySlug,
 	type TCourse, type TPrismaPayloadGetAllCourses,
-	type TPrismaPayloadCreateCourse,
-	type TPrismaPayloadUpdateCourse,
+	type TPrismaPayloadCreateOrUpdateCourse,
 } from '../types/course.type.js';
 import {CustomError} from '../utils/custom-error.js';
 import {type TServiceReturn} from '../types/service-return.type.js';
@@ -19,26 +18,10 @@ export class CourseService {
 		this._model = model;
 	}
 
-	public async create(courseData: TCourse): Promise<TServiceReturn<TPrismaPayloadCreateCourse>> {
+	public async create(courseData: TCourse): Promise<TServiceReturn<TPrismaPayloadCreateOrUpdateCourse>> {
 		const newCourse = new Course(courseData);
 
 		const createdCourse = await this._model.course.create({
-			include: {
-				tags: {
-					include: {
-						tagOption: {
-							select: {
-								name: true,
-							},
-						},
-						tagValue: {
-							select: {
-								name: true,
-							},
-						},
-					},
-				},
-			},
 			data: {
 				oldId: newCourse.oldId,
 				name: newCourse.name,
@@ -50,42 +33,10 @@ export class CourseService {
 				marketingVideoUrl: newCourse.marketingVideoUrl,
 				thumbnailUrl: newCourse.thumbnailUrl,
 				publicationDate: newCourse.publicationDate,
-				published: newCourse.published,
+				isPublished: newCourse.isPublished,
 				isSelling: newCourse.isSelling,
 				delegateAuthTo: {
 					connect: newCourse.delegateAuthTo?.map(slug => ({slug})),
-				},
-				tags: {
-					connectOrCreate: newCourse.tags?.map(tag => ({
-						where: {
-							tag: {
-								tagOptionName: tag[0],
-								tagValueName: tag[1],
-							},
-						},
-						create: {
-							tagOption: {
-								connectOrCreate: {
-									where: {
-										name: tag[0],
-									},
-									create: {
-										name: tag[0],
-									},
-								},
-							},
-							tagValue: {
-								connectOrCreate: {
-									where: {
-										name: tag[1],
-									},
-									create: {
-										name: tag[1],
-									},
-								},
-							},
-						},
-					})),
 				},
 			},
 		});
@@ -99,7 +50,7 @@ export class CourseService {
 	public async getAll(userRoles: TUserRoles = []): Promise<TServiceReturn<TPrismaPayloadGetAllCourses>> {
 		const courses = await this._model.course.findMany({
 			where: {
-				published: userRoles.includes('admin') ? undefined : true,
+				isPublished: userRoles.includes('admin') ? undefined : true,
 				publicationDate: {
 					lte: userRoles.includes('admin') ? undefined : new Date(),
 				},
@@ -114,7 +65,8 @@ export class CourseService {
 				description: true,
 				thumbnailUrl: true,
 				publicationDate: true,
-				published: true,
+				isPublished: true,
+				isSelling: true,
 			},
 		});
 
@@ -124,12 +76,12 @@ export class CourseService {
 		};
 	}
 
-	public async getBySlug(slug: string, user: TUser): Promise<TServiceReturn<TPrismaPayloadGetCourseById | undefined>> {
+	public async getBySlug(slug: string, user: TUser): Promise<TServiceReturn<TPrismaPayloadGetCourseBySlug | undefined>> {
 		try {
 			const course = await this._model.course.findUnique({
 				where: {
 					slug,
-					published: user.roles?.includes('admin') ? undefined : true,
+					isPublished: user.roles?.includes('admin') ? undefined : true,
 					publicationDate: {
 						lte: user.roles?.includes('admin') ? undefined : new Date(),
 					},
@@ -137,22 +89,28 @@ export class CourseService {
 				include: {
 					modules: {
 						where: {
-							published: user.roles?.includes('admin') ? undefined : true,
+							isPublished: user.roles?.includes('admin') ? undefined : true,
 							publicationDate: {
 								lte: user.roles?.includes('admin') ? undefined : new Date(),
 							},
 						},
 						orderBy: {
-							publicationDate: 'asc',
+							order: 'asc',
 						},
 						select: {
 							id: true,
-							name: true,
-							slug: true,
-							description: true,
-							thumbnailUrl: true,
-							published: true,
+							order: true,
+							isPublished: true,
 							publicationDate: true,
+							module: {
+								select: {
+									id: true,
+									slug: true,
+									name: true,
+									description: true,
+									thumbnailUrl: true,
+								},
+							},
 						},
 					},
 					comments: {
@@ -162,23 +120,13 @@ export class CourseService {
 						orderBy: {
 							createdAt: 'desc',
 						},
-						select: {
-							id: true,
-							content: true,
-							createdAt: true,
-							userId: true,
+						include: {
 							responses: {
 								where: {
 									published: user.roles?.includes('admin') ? undefined : true,
 								},
 								orderBy: {
 									createdAt: 'asc',
-								},
-								select: {
-									id: true,
-									content: true,
-									createdAt: true,
-									userId: true,
 								},
 							},
 						},
@@ -228,26 +176,10 @@ export class CourseService {
 		}
 	}
 
-	public async update(id: string, courseData: TCourse): Promise<TServiceReturn<TPrismaPayloadUpdateCourse>> {
+	public async update(id: string, courseData: TCourse): Promise<TServiceReturn<TPrismaPayloadCreateOrUpdateCourse>> {
 		const courseToUpdate = new Course(courseData);
 
 		const updatedCourse = await this._model.course.update({
-			include: {
-				tags: {
-					include: {
-						tagOption: {
-							select: {
-								name: true,
-							},
-						},
-						tagValue: {
-							select: {
-								name: true,
-							},
-						},
-					},
-				},
-			},
 			where: {
 				id,
 			},
@@ -262,43 +194,8 @@ export class CourseService {
 				marketingVideoUrl: courseToUpdate.marketingVideoUrl,
 				thumbnailUrl: courseToUpdate.thumbnailUrl,
 				publicationDate: courseToUpdate.publicationDate,
-				published: courseToUpdate.published,
+				isPublished: courseToUpdate.isPublished,
 				isSelling: courseToUpdate.isSelling,
-				delegateAuthTo: {
-					connect: courseToUpdate.delegateAuthTo?.map(slug => ({slug})),
-				},
-				tags: {
-					connectOrCreate: courseToUpdate.tags?.map(tag => ({
-						where: {
-							tag: {
-								tagOptionName: tag[0],
-								tagValueName: tag[1],
-							},
-						},
-						create: {
-							tagOption: {
-								connectOrCreate: {
-									where: {
-										name: tag[0],
-									},
-									create: {
-										name: tag[0],
-									},
-								},
-							},
-							tagValue: {
-								connectOrCreate: {
-									where: {
-										name: tag[1],
-									},
-									create: {
-										name: tag[1],
-									},
-								},
-							},
-						},
-					})),
-				},
 			},
 		});
 

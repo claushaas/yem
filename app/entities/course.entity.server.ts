@@ -5,7 +5,7 @@ import {CustomError} from '../utils/custom-error.js';
 const courseSchema = Joi.object({
 	oldId: Joi.string().allow(''),
 	name: Joi.string().required().min(3).max(35),
-	description: Joi.string().min(10).max(150),
+	description: Joi.string().min(10).max(150).required(),
 	content: Joi.string().allow(''),
 	marketingContent: Joi.string().allow(''),
 	videoSourceUrl: Joi.string().allow(''),
@@ -22,7 +22,7 @@ export class Course implements TCourse {
 	private readonly _oldId?: string;
 	private readonly _name: string;
 	private readonly _slug: string;
-	private readonly _description?: string;
+	private readonly _description: string;
 	private readonly _content?: string;
 	private readonly _marketingContent?: string;
 	private readonly _videoSourceUrl?: string;
