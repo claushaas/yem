@@ -21,7 +21,7 @@ model Course {
   createdAt         DateTime            @default(now())
   updatedAt         DateTime            @updatedAt
   publicationDate   DateTime
-  isPublished       Boolean             @default(true)
+  isPublished       Boolean             @default(false)
   comments          Comment[]
   subscriptions     UserSubscriptions[]
   isSelling         Boolean             @default(false)
