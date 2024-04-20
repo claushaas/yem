@@ -96,6 +96,7 @@ export class CourseService {
 						},
 						orderBy: {
 							order: 'asc',
+							publicationDate: 'asc',
 						},
 						select: {
 							id: true,
@@ -115,7 +116,10 @@ export class CourseService {
 					},
 					comments: {
 						where: {
-							published: user.roles?.includes('admin') ? undefined : true,
+							OR: [
+								{published: user.roles?.includes('admin') ? undefined : true},
+								{userId: user.id},
+							],
 						},
 						orderBy: {
 							createdAt: 'desc',
@@ -123,7 +127,10 @@ export class CourseService {
 						include: {
 							responses: {
 								where: {
-									published: user.roles?.includes('admin') ? undefined : true,
+									OR: [
+										{published: user.roles?.includes('admin') ? undefined : true},
+										{userId: user.id},
+									],
 								},
 								orderBy: {
 									createdAt: 'asc',
