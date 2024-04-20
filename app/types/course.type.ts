@@ -3,7 +3,7 @@ import {type Prisma} from '@prisma/client';
 export type TCourse = {
 	oldId?: string;
 	name: string;
-	description?: string;
+	description: string;
 	content?: string;
 	marketingContent?: string;
 	videoSourceUrl?: string;
@@ -53,6 +53,11 @@ export type TPrismaPayloadGetCourseBySlug = Prisma.CourseGetPayload<{
 				slug: true;
 				name: true;
 				subscriptions: true;
+			};
+		};
+		comments: {
+			include: {
+				responses: true;
 			};
 		};
 	};
