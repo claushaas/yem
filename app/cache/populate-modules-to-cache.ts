@@ -7,6 +7,7 @@ type TModuleToCourse = Prisma.ModuleToCourseGetPayload<{include: {module: true}}
 
 type moduleDataForCache = {
 	lessons: string[];
+	courses: string[];
 	delegateAuthTo: string[];
 } & TModuleToCourse;
 
@@ -21,6 +22,7 @@ const getModuleDataForCache = (moduleToCourse: TAllDataToBeCached['modules'][0])
 		createdAt: moduleToCourse.createdAt,
 		updatedAt: moduleToCourse.updatedAt,
 		lessons: moduleToCourse.module.lessons.map(lesson => lesson.id),
+		courses: moduleToCourse.module.courses.map(course => course.course.slug),
 		delegateAuthTo: [...new Set(moduleToCourse.module.courses.flatMap(course => course.course.delegateAuthTo.map(delegateAuthTo => delegateAuthTo.id)))],
 		module: {
 			id: moduleToCourse.module.id,
@@ -42,7 +44,7 @@ const getModuleDataForCache = (moduleToCourse: TAllDataToBeCached['modules'][0])
 	return moduleDataForCache;
 };
 
-export const populateModulesToCache = (course: TAllDataToBeCached) => {
+export const populateModulesAndLessonsToCache = (course: TAllDataToBeCached) => {
 	for (const moduleToCourse of course.modules) {
 		const moduleDataForCache = getModuleDataForCache(moduleToCourse);
 
