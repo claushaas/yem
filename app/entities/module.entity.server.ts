@@ -13,8 +13,8 @@ const moduleSchema = Joi.object({
 	marketingVideoUrl: Joi.string().allow(''),
 	thumbnailUrl: Joi.string().required(),
 	publicationDate: Joi.date().required().default(new Date()),
-	isPublished: Joi.boolean().required().default(true),
-	courses: Joi.array().items(Joi.string().uuid()),
+	isPublished: Joi.boolean().required().default(false),
+	courses: Joi.array().items(Joi.string().uuid()).unique(),
 	isLessonsOrderRandom: Joi.boolean().required().default(false),
 	order: Joi.number().integer().required().default(0),
 });

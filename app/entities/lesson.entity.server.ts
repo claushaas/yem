@@ -7,17 +7,18 @@ const lessonSchema = Joi.object({
 	oldId: Joi.string().allow(''),
 	name: Joi.string().required().min(3).max(35),
 	type: Joi.string().required().valid('video', 'text', 'courseWare'),
-	description: Joi.string().min(10).max(150),
+	description: Joi.string().min(10).max(150).required(),
 	content: Joi.string().allow(''),
 	marketingContent: Joi.string().allow(''),
 	videoSourceUrl: Joi.string().allow(''),
 	marketingVideoUrl: Joi.string().allow(''),
-	duration: Joi.number().min(0).max(200),
 	thumbnailUrl: Joi.string().required(),
-	modules: Joi.array().items(Joi.string().uuid()).required(),
-	publicationDate: Joi.date().required().default(new Date()),
-	published: Joi.boolean().required().default(true),
+	modules: Joi.array().items(Joi.string().uuid()).required().unique(),
 	tags: Joi.array().items(Joi.array().items(Joi.string()).min(2).max(2)).unique(),
+	duration: Joi.number().min(0).max(200),
+	order: Joi.number().integer().required().default(0),
+	isPublished: Joi.boolean().required().default(false),
+	publicationDate: Joi.date().required().default(new Date()),
 });
 
 export class Lesson implements TLesson {
@@ -25,17 +26,18 @@ export class Lesson implements TLesson {
 	private readonly _name: string;
 	private readonly _slug: string;
 	private readonly _type: TLessonType;
-	private readonly _description?: string;
+	private readonly _description: string;
 	private readonly _content?: string;
 	private readonly _marketingContent?: string;
 	private readonly _videoSourceUrl?: string;
 	private readonly _marketingVideoUrl?: string;
-	private readonly _duration?: number;
 	private readonly _thumbnailUrl: string;
 	private readonly _modules: string[];
-	private readonly _publicationDate: Date;
-	private readonly _published: boolean;
 	private readonly _tags?: TTags;
+	private readonly _duration?: number;
+	private readonly _order: number;
+	private readonly _isPublished: boolean;
+	private readonly _publicationDate: Date;
 
 	constructor(lesson: TLesson) {
 		const {error} = lessonSchema.validate(lesson);
@@ -57,7 +59,8 @@ export class Lesson implements TLesson {
 		this._thumbnailUrl = lesson.thumbnailUrl;
 		this._modules = lesson.modules;
 		this._publicationDate = lesson.publicationDate;
-		this._published = lesson.published;
+		this._order = lesson.order;
+		this._isPublished = lesson.isPublished;
 		this._tags = lesson.tags;
 	}
 
@@ -113,8 +116,12 @@ export class Lesson implements TLesson {
 		return this._publicationDate;
 	}
 
-	get published() {
-		return this._published;
+	get order() {
+		return this._order;
+	}
+
+	get isPublished() {
+		return this._isPublished;
 	}
 
 	get tags() {

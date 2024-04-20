@@ -7,40 +7,30 @@ export type TLesson = {
 	oldId?: string;
 	name: string;
 	type: TLessonType;
-	description?: string;
+	description: string;
 	content?: string;
 	marketingContent?: string;
 	videoSourceUrl?: string;
 	marketingVideoUrl?: string;
-	duration?: number;
 	thumbnailUrl: string;
 	modules: string[];
-	publicationDate: Date;
-	published: boolean;
 	tags?: TTags;
+	duration?: number;
+	order: number;
+	isPublished: boolean;
+	publicationDate: Date;
 };
 
-export type TPrismaPayloadCreateLesson = Prisma.LessonGetPayload<{
+export type TPrismaPayloadCreateOrUpdateLesson = Prisma.LessonGetPayload<{
 	include: {
-		modules: true;
-		tags: {
+		modules: {
 			include: {
-				tagOption: {
-					select: {
-						name: true;
-					};
-				};
-				tagValue: {
-					select: {
-						name: true;
-					};
-				};
+				module: true;
 			};
 		};
+		tags: true;
 	};
 }>;
-
-export type TPrismaPayloadUpdateLesson = TPrismaPayloadCreateLesson;
 
 export type TPrismaPayloadGetLessonList = Array<Prisma.LessonGetPayload<{
 	select: {
@@ -51,77 +41,56 @@ export type TPrismaPayloadGetLessonList = Array<Prisma.LessonGetPayload<{
 		description: true;
 		thumbnailUrl: true;
 		duration: true;
-		publicationDate: true;
-		published: true;
-		tags: {
-			include: {
-				tagOption: {
+		tags: true;
+		modules: {
+			select: {
+				isPublished: true;
+				publicationDate: true;
+				module: {
 					select: {
-						name: true;
-					};
-				};
-				tagValue: {
-					select: {
-						name: true;
+						id: true;
+						slug: true;
+						courses: {
+							select: {
+								course: {
+									select: {
+										id: true;
+										slug: true;
+									};
+								};
+							};
+						};
 					};
 				};
 			};
 		};
-		lessonProgress: true | false;
 	};
 }>>;
 
-export type TPrismaPayloadGetLessonById = Prisma.LessonGetPayload<{
+export type TPrismaPayloadGetLessonBySlug = Prisma.LessonGetPayload<{
 	include: {
-		tags: {
-			include: {
-				tagOption: {
-					select: {
-						name: true;
-					};
-				};
-				tagValue: {
-					select: {
-						name: true;
-					};
-				};
-			};
-		};
+		tags: true;
 		comments: {
-			select: {
-				id: true;
-				content: true;
-				createdAt: true;
-				userId: true;
-				published: true;
-				responses: {
-					select: {
-						id: true;
-						content: true;
-						createdAt: true;
-						userId: true;
-						published: true;
-					};
-				};
+			include: {
+				responses: true;
 			};
 		};
-		lessonProgress: true;
 		modules: {
-			select: {
-				id: true;
-				name: true;
-				slug: true;
-				course: {
+			include: {
+				module: {
 					select: {
-						id: true;
-						name: true;
-						slug: true;
-						delegateAuthTo: {
+						courses: {
 							select: {
-								id: true;
-								name: true;
-								slug: true;
-								subscriptions: true;
+								course: {
+									select: {
+										delegateAuthTo: {
+											select: {
+												id: true;
+												subscriptions: true;
+											};
+										};
+									};
+								};
 							};
 						};
 					};
