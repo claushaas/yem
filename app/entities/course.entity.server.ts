@@ -1,7 +1,6 @@
 import Joi from 'joi';
 import {type TCourse} from '../types/course.type.js';
 import {CustomError} from '../utils/custom-error.js';
-import {type TTags} from '../types/tag.type.js';
 
 const courseSchema = Joi.object({
 	oldId: Joi.string().allow(''),
@@ -13,7 +12,7 @@ const courseSchema = Joi.object({
 	marketingVideoUrl: Joi.string().allow(''),
 	thumbnailUrl: Joi.string().required(),
 	publicationDate: Joi.date().required().default(new Date()),
-	published: Joi.boolean().required().default(true),
+	isPublished: Joi.boolean().required().default(false),
 	isSelling: Joi.boolean().required().default(false),
 	tags: Joi.array().items(Joi.array().items(Joi.string()).min(2).max(2)).unique(),
 	delegateAuthTo: Joi.array().items(Joi.string()),
@@ -30,9 +29,8 @@ export class Course implements TCourse {
 	private readonly _marketingVideoUrl?: string;
 	private readonly _thumbnailUrl: string;
 	private readonly _publicationDate: Date;
-	private readonly _published: boolean;
+	private readonly _isPublished: boolean;
 	private readonly _isSelling: boolean;
-	private readonly _tags?: TTags;
 	private readonly _delegateAuthTo?: string[];
 
 	constructor(course: TCourse) {
@@ -52,9 +50,8 @@ export class Course implements TCourse {
 		this._marketingVideoUrl = course.marketingVideoUrl;
 		this._thumbnailUrl = course.thumbnailUrl;
 		this._publicationDate = course.publicationDate;
-		this._published = course.published;
+		this._isPublished = course.isPublished;
 		this._isSelling = course.isSelling;
-		this._tags = course.tags;
 		this._delegateAuthTo = course.delegateAuthTo;
 	}
 
@@ -98,16 +95,12 @@ export class Course implements TCourse {
 		return this._publicationDate;
 	}
 
-	get published() {
-		return this._published;
+	get isPublished() {
+		return this._isPublished;
 	}
 
 	get isSelling() {
 		return this._isSelling;
-	}
-
-	get tags() {
-		return this._tags;
 	}
 
 	get delegateAuthTo() {
