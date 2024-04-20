@@ -1,4 +1,4 @@
-import {PrismaClient} from '@prisma/client';
+import {type Prisma, PrismaClient} from '@prisma/client';
 
 const prisma = new PrismaClient();
 
@@ -82,10 +82,19 @@ const main = async () => {
 			thumbnailUrl: '78c0c3ab-7da6-46e8-742e-fd0e4b08b900',
 			publicationDate: new Date('2024-03-25 17:30:00'),
 			modules: {
-				connect: [{id: '0a609d33-97e1-4400-bd64-4834c8387950'}, {id: '16c63aa1-8122-4327-a990-56ec2e636808'}],
+				connectOrCreate: {
+					where: {
+						lessonToModule: {
+							moduleId: '16c63aa1-8122-4327-a990-56ec2e636808',
+							lessonId: 'd9fd2efe',
+						},
+					},
+					create: {
+						moduleId: '16c63aa1-8122-4327-a990-56ec2e636808',
+					},
+				},
 			},
 		},
-
 	});
 };
 
@@ -96,3 +105,22 @@ try {
 	console.error(error);
 	await prisma.$disconnect();
 }
+
+type test = Prisma.LessonToModuleWhereUniqueInput;
+
+const cache = {
+	curso1: {
+		id: 1,
+		outrosDadios: 'outros dados',
+		módulos: {
+			módulo1: {
+				id: 1,
+				aulas: {
+					aula1: {
+						id: 1,
+					},
+				},
+			},
+		},
+	},
+};
