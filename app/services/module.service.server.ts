@@ -112,7 +112,7 @@ export class ModuleService {
 		};
 	}
 
-	public async getBySlug(courseId: string, moduleId: string, user: TUser): Promise<TServiceReturn<TPrismaPayloadGetModuleBySlug | undefined>> {
+	public async getById(courseId: string, moduleId: string, user: TUser): Promise<TServiceReturn<TPrismaPayloadGetModuleBySlug | undefined>> {
 		try {
 			const moduleToCourse = await this._model.moduleToCourse.findUnique({
 				where: {

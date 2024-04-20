@@ -1,17 +1,16 @@
+/* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
 import {type PrismaClient} from '@prisma/client';
 import Fuse, {type IFuseOptions} from 'fuse.js';
 import {type TUser} from '../types/user.type.js';
 import {CustomError} from '../utils/custom-error.js';
 import {
-	type TPrismaPayloadCreateLesson,
+	type TPrismaPayloadCreateOrUpdateLesson,
 	type TLesson,
-	type TPrismaPayloadUpdateLesson,
 	type TPrismaPayloadGetLessonList,
 	type TPrismaPayloadGetLessonById,
 } from '../types/lesson.type.js';
 import {Lesson} from '../entities/lesson.entity.server.js';
 import {type TServiceReturn} from '../types/service-return.type.js';
-import {type TSearchableEntity} from '../types/searchable.type.js';
 import {db} from '../database/db.js';
 import {logger} from '~/utils/logger.util.js';
 
@@ -22,27 +21,10 @@ export class LessonService {
 		this._model = model;
 	}
 
-	public async create(lessonData: TLesson): Promise<TServiceReturn<TPrismaPayloadCreateLesson>> {
+	public async create(lessonData: TLesson): Promise<TServiceReturn<TPrismaPayloadCreateOrUpdateLesson>> {
 		const newLesson = new Lesson(lessonData);
 
 		const createdLesson = await this._model.lesson.create({
-			include: {
-				modules: true,
-				tags: {
-					include: {
-						tagOption: {
-							select: {
-								name: true,
-							},
-						},
-						tagValue: {
-							select: {
-								name: true,
-							},
-						},
-					},
-				},
-			},
 			data: {
 				oldId: newLesson.oldId,
 				name: newLesson.name,
@@ -55,40 +37,19 @@ export class LessonService {
 				marketingVideoUrl: newLesson.marketingVideoUrl,
 				duration: newLesson.duration,
 				thumbnailUrl: newLesson.thumbnailUrl,
-				publicationDate: newLesson.publicationDate,
-				published: newLesson.published,
 				modules: {
-					connect: newLesson.modules.map(module => ({id: module})),
+					connect: newLesson.modules.map(module => ({
+						id: module,
+						order: newLesson.order,
+						isPublished: newLesson.isPublished,
+						publicationDate: newLesson.publicationDate,
+					})),
 				},
 				tags: {
-					connectOrCreate: newLesson.tags?.map(tag => ({
-						where: {
-							tag: {
-								tagOptionName: tag[0],
-								tagValueName: tag[1],
-							},
-						},
-						create: {
-							tagOption: {
-								connectOrCreate: {
-									where: {
-										name: tag[0],
-									},
-									create: {
-										name: tag[0],
-									},
-								},
-							},
-							tagValue: {
-								connectOrCreate: {
-									where: {
-										name: tag[1],
-									},
-									create: {
-										name: tag[1],
-									},
-								},
-							},
+					connect: newLesson.tags?.map(tag => ({
+						tag: {
+							tagOptionName: tag[0],
+							tagValueName: tag[1],
 						},
 					})),
 				},
@@ -101,29 +62,12 @@ export class LessonService {
 		};
 	}
 
-	public async update(id: string, lessonData: TLesson): Promise<TServiceReturn<TPrismaPayloadUpdateLesson>> {
+	public async update(id: string, lessonData: TLesson): Promise<TServiceReturn<TPrismaPayloadCreateOrUpdateLesson>> {
 		const lessoToUpdate = new Lesson(lessonData);
 
 		const updatedLesson = await this._model.lesson.update({
 			where: {
 				id,
-			},
-			include: {
-				modules: true,
-				tags: {
-					include: {
-						tagOption: {
-							select: {
-								name: true,
-							},
-						},
-						tagValue: {
-							select: {
-								name: true,
-							},
-						},
-					},
-				},
 			},
 			data: {
 				oldId: lessoToUpdate.oldId,
@@ -137,43 +81,6 @@ export class LessonService {
 				marketingVideoUrl: lessoToUpdate.marketingVideoUrl,
 				duration: lessoToUpdate.duration,
 				thumbnailUrl: lessoToUpdate.thumbnailUrl,
-				publicationDate: lessoToUpdate.publicationDate,
-				published: lessoToUpdate.published,
-				modules: {
-					connect: lessoToUpdate.modules.map(module => ({id: module})),
-				},
-				tags: {
-					connectOrCreate: lessoToUpdate.tags?.map(tag => ({
-						where: {
-							tag: {
-								tagOptionName: tag[0],
-								tagValueName: tag[1],
-							},
-						},
-						create: {
-							tagOption: {
-								connectOrCreate: {
-									where: {
-										name: tag[0],
-									},
-									create: {
-										name: tag[0],
-									},
-								},
-							},
-							tagValue: {
-								connectOrCreate: {
-									where: {
-										name: tag[1],
-									},
-									create: {
-										name: tag[1],
-									},
-								},
-							},
-						},
-					})),
-				},
 			},
 		});
 
@@ -192,15 +99,12 @@ export class LessonService {
 			where: {
 				modules: {
 					some: {
-						OR: [
-							{id: moduleId},
-							{slug: moduleId},
+						AND: [
+							{OR: [{module: {id: moduleId}},	{module: {slug: moduleId}}]},
+							{publicationDate: {lte: user?.roles?.includes('admin') ? undefined : new Date()}},
+							{isPublished: user?.roles?.includes('admin') ? undefined : true},
 						],
 					},
-				},
-				published: user?.roles?.includes('admin') ? undefined : true,
-				publicationDate: {
-					lte: user?.roles?.includes('admin') ? undefined : new Date(),
 				},
 			},
 			select: {
@@ -211,25 +115,59 @@ export class LessonService {
 				description: true,
 				thumbnailUrl: true,
 				duration: true,
-				publicationDate: true,
-				published: true,
-				tags: {
-					include: {
-						tagOption: {
-							select: {
-								name: true,
-							},
+				modules: {
+					where: {
+						isPublished: user?.roles?.includes('admin') ? undefined : true,
+						publicationDate: {
+							lte: user?.roles?.includes('admin') ? undefined : new Date(),
 						},
-						tagValue: {
+					},
+					select: {
+						isPublished: true,
+						publicationDate: true,
+						module: {
 							select: {
-								name: true,
+								id: true,
+								slug: true,
+								courses: {
+									where: {
+										isPublished: user?.roles?.includes('admin') ? undefined : true,
+										publicationDate: {
+											lte: user?.roles?.includes('admin') ? undefined : new Date(),
+										},
+									},
+									select: {
+										course: {
+											select: {
+												id: true,
+												slug: true,
+												subscriptions: {
+													where: {
+														userId: user?.id ?? '',
+													},
+												},
+											},
+										},
+									},
+								},
 							},
 						},
 					},
 				},
-				lessonProgress: {
+				tags: true,
+				completedBy: {
 					where: {
-						userId: user?.id,
+						userId: user?.id ?? '',
+					},
+				},
+				FavoritedBy: {
+					where: {
+						userId: user?.id ?? '',
+					},
+				},
+				SavedBy: {
+					where: {
+						userId: user?.id ?? '',
 					},
 				},
 			},
@@ -248,7 +186,7 @@ export class LessonService {
 	public async search(moduleId: string, user: TUser | undefined, term: string): Promise<TServiceReturn<TPrismaPayloadGetLessonList>> {
 		const {data} = await this.getList(moduleId, user);
 
-		const searchOptions: IFuseOptions<TSearchableEntity> = {
+		const searchOptions: IFuseOptions<TPrismaPayloadGetLessonList[0]> = {
 			includeScore: true,
 			shouldSort: true,
 			isCaseSensitive: false,
@@ -267,87 +205,89 @@ export class LessonService {
 		};
 	}
 
-	public async getBySlug(courseSlug: string, moduleSlug: string, lessonSlug: string, user: TUser | undefined): Promise<TServiceReturn<TPrismaPayloadGetLessonById | undefined>> {
+	public async getById(courseId: string, moduleId: string, lessonId: string, user: TUser | undefined): Promise<TServiceReturn<TPrismaPayloadGetLessonById | undefined>> {
 		try {
-			const lesson = await this._model.lesson.findUnique({
+			const lessonToModule = await this._model.lessonToModule.findUnique({
 				where: {
-					published: user?.roles?.includes('admin') ? undefined : true,
+					isPublished: user?.roles?.includes('admin') ? undefined : true,
 					publicationDate: {
 						lte: user?.roles?.includes('admin') ? undefined : new Date(),
 					},
-					slug: lessonSlug,
-					modules: {
-						some: {
-							slug: moduleSlug,
-						},
+					lessonToModule: {
+						lessonId,
+						moduleId,
 					},
 				},
 				include: {
-					tags: {
+					lesson: {
 						include: {
-							tagOption: {
-								select: {
-									name: true,
-								},
-							},
-							tagValue: {
-								select: {
-									name: true,
-								},
-							},
-						},
-					},
-					comments: {
-						where: {
-							published: user?.roles?.includes('admin') ? undefined : true,
-						},
-						orderBy: {
-							createdAt: 'desc',
-						},
-						include: {
-							responses: {
+							tags: {
 								where: {
 									published: user?.roles?.includes('admin') ? undefined : true,
+								},
+							},
+							comments: {
+								where: {
+									OR: [
+										{published: user?.roles?.includes('admin') ? undefined : true},
+										{userId: user?.id},
+									],
 								},
 								orderBy: {
 									createdAt: 'desc',
 								},
-							},
-						},
-					},
-					lessonProgress: {
-						where: {
-							userId: user?.id ?? '',
-						},
-					},
-					modules: {
-						where: {
-							published: user?.roles?.includes('admin') ? undefined : true,
-							slug: user?.roles?.includes('admin') ? undefined : moduleSlug,
-						},
-						select: {
-							id: true,
-							name: true,
-							slug: true,
-							course: {
-								where: {
-									published: user?.roles?.includes('admin') ? undefined : true,
-									slug: user?.roles?.includes('admin') ? undefined : courseSlug,
+								include: {
+									responses: {
+										where: {
+											OR: [
+												{published: user?.roles?.includes('admin') ? undefined : true},
+												{userId: user?.id},
+											],
+										},
+										orderBy: {
+											createdAt: 'desc',
+										},
+									},
 								},
+							},
+							completedBy: {
+								where: {
+									userId: user?.id ?? '',
+								},
+							},
+							SavedBy: {
+								where: {
+									userId: user?.id ?? '',
+								},
+							},
+							FavoritedBy: {
+								where: {
+									userId: user?.id ?? '',
+								},
+							},
+							modules: {
 								select: {
-									id: true,
-									name: true,
-									slug: true,
-									delegateAuthTo: {
+									module: {
 										select: {
-											id: true,
-											name: true,
-											slug: true,
-											subscriptions: {
+											courses: {
 												where: {
-													userId: user?.id ?? '',
-													expiresAt: {
-														gte: new Date(),
+													courseId,
+												},
+												select: {
+													course: {
+														select: {
+															delegateAuthTo: {
+																select: {
+																	id: true,
+																	subscriptions: {
+																		where: {
+																			courseId,
+																			userId: user?.id ?? '',
+																		},
+																	},
+																},
+															},
+														},
 													},
 												},
 											},
@@ -360,32 +300,46 @@ export class LessonService {
 				},
 			});
 
-			if (!lesson) {
+			if (!lessonToModule) {
 				throw new CustomError('NOT_FOUND', 'Lesson not found');
 			}
 
-			const hasActiveSubscription = user?.roles?.includes('admin') || lesson?.modules?.some( // eslint-disable-line @typescript-eslint/prefer-nullish-coalescing
-				module => module.course?.some(
-					course => course.delegateAuthTo?.some(
-						course => course.subscriptions.length > 0,
-					),
-				),
-			);
+			const hasActiveSubscription = this._hasActiveSubscription(user, lessonToModule);
+
+			const returnableLesson = {
+				...lessonToModule,
+				lesson: {
+					...lessonToModule.lesson,
+					content: hasActiveSubscription ? lessonToModule.lesson.content : lessonToModule.lesson.marketingContent,
+					videoSourceUrl: hasActiveSubscription ? lessonToModule.lesson.videoSourceUrl : lessonToModule.lesson.marketingVideoUrl,
+				},
+			};
 
 			return {
 				status: 'SUCCESSFUL',
-				data: {
-					...lesson,
-					content: hasActiveSubscription ? lesson.content : lesson.marketingContent,
-					videoSourceUrl: hasActiveSubscription ? lesson.videoSourceUrl : lesson.marketingVideoUrl,
-				},
+				data: returnableLesson as TPrismaPayloadGetLessonById,
 			};
 		} catch (error) {
-			logger.logError(`Error getting lesson by slug: ${(error as Error).message}`);
+			logger.logError(`Error getting lesson by id: ${(error as Error).message}`);
 			return {
 				status: 'UNKNOWN',
 				data: undefined,
 			};
 		}
+	}
+
+	private _hasActiveSubscription(user: TUser | undefined, lessonToModule: TPrismaPayloadGetLessonById): boolean {
+		const isAdmin = user?.roles?.includes('admin');
+		const hasActiveSubscription = lessonToModule.lesson.modules.some(
+			lessonToCourse => lessonToCourse.module.courses.some(
+				moduleToCourse => moduleToCourse.course.delegateAuthTo.some(
+					course => course.subscriptions.some(
+						subscription => subscription.expiresAt >= new Date(),
+					),
+				),
+			),
+		);
+
+		return isAdmin || hasActiveSubscription;
 	}
 }

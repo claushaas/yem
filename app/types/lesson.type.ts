@@ -21,16 +21,7 @@ export type TLesson = {
 	publicationDate: Date;
 };
 
-export type TPrismaPayloadCreateOrUpdateLesson = Prisma.LessonGetPayload<{
-	include: {
-		modules: {
-			include: {
-				module: true;
-			};
-		};
-		tags: true;
-	};
-}>;
+export type TPrismaPayloadCreateOrUpdateLesson = Prisma.LessonGetPayload<undefined>;
 
 export type TPrismaPayloadGetLessonList = Array<Prisma.LessonGetPayload<{
 	select: {
@@ -67,26 +58,33 @@ export type TPrismaPayloadGetLessonList = Array<Prisma.LessonGetPayload<{
 	};
 }>>;
 
-export type TPrismaPayloadGetLessonBySlug = Prisma.LessonGetPayload<{
+export type TPrismaPayloadGetLessonById = Prisma.LessonToModuleGetPayload<{
 	include: {
-		tags: true;
-		comments: {
+		lesson: {
 			include: {
-				responses: true;
-			};
-		};
-		modules: {
-			include: {
-				module: {
-					select: {
-						courses: {
+				tags: true;
+				comments: {
+					include: {
+						responses: true;
+					};
+				};
+				completedBy: true;
+				SavedBy: true;
+				FavoritedBy: true;
+				modules: {
+					include: {
+						module: {
 							select: {
-								course: {
+								courses: {
 									select: {
-										delegateAuthTo: {
+										course: {
 											select: {
-												id: true;
-												subscriptions: true;
+												delegateAuthTo: {
+													select: {
+														id: true;
+														subscriptions: true;
+													};
+												};
 											};
 										};
 									};
