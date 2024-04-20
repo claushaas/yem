@@ -6,36 +6,35 @@ import {type TTags} from '../types/tag.type.js';
 const moduleSchema = Joi.object({
 	oldId: Joi.string().allow(''),
 	name: Joi.string().required().min(3).max(35),
-	description: Joi.string().min(10).max(150),
+	description: Joi.string().min(10).max(150).required(),
 	content: Joi.string().allow(''),
 	marketingContent: Joi.string().allow(''),
 	videoSourceUrl: Joi.string().allow(''),
 	marketingVideoUrl: Joi.string().allow(''),
 	thumbnailUrl: Joi.string().required(),
 	publicationDate: Joi.date().required().default(new Date()),
-	published: Joi.boolean().required().default(true),
+	isPublished: Joi.boolean().required().default(true),
 	courses: Joi.array().items(Joi.string().uuid()),
-	lessons: Joi.array().items(Joi.string().uuid()),
-	tags: Joi.array().items(Joi.array().items(Joi.string()).min(2).max(2)).unique(),
 	isLessonsOrderRandom: Joi.boolean().required().default(false),
+	order: Joi.number().integer().required().default(0),
 });
 
 export class Module implements TModule {
 	private readonly _oldId?: string;
 	private readonly _name: string;
 	private readonly _slug: string;
-	private readonly _description?: string;
+	private readonly _description: string;
 	private readonly _content?: string;
 	private readonly _marketingContent?: string;
 	private readonly _videoSourceUrl?: string;
 	private readonly _marketingVideoUrl?: string;
 	private readonly _thumbnailUrl: string;
 	private readonly _publicationDate: Date;
-	private readonly _published: boolean;
+	private readonly _isPublished: boolean;
 	private readonly _courses?: string[];
-	private readonly _lessons?: string[];
 	private readonly _tags?: TTags;
 	private readonly _isLessonsOrderRandom: boolean;
+	private readonly _order: number;
 
 	constructor(module: TModule) {
 		const {error} = moduleSchema.validate(module);
@@ -54,11 +53,10 @@ export class Module implements TModule {
 		this._marketingVideoUrl = module.marketingVideoUrl;
 		this._thumbnailUrl = module.thumbnailUrl;
 		this._publicationDate = module.publicationDate;
-		this._published = module.published;
+		this._isPublished = module.isPublished;
 		this._courses = module.courses;
-		this._lessons = module.lessons;
-		this._tags = module.tags;
 		this._isLessonsOrderRandom = module.isLessonsOrderRandom;
+		this._order = module.order;
 	}
 
 	get oldId() {
@@ -101,16 +99,12 @@ export class Module implements TModule {
 		return this._publicationDate;
 	}
 
-	get published() {
-		return this._published;
-	}
-
 	get courses() {
 		return this._courses;
 	}
 
-	get lessons() {
-		return this._lessons;
+	get order() {
+		return this._order;
 	}
 
 	get tags() {
@@ -119,5 +113,9 @@ export class Module implements TModule {
 
 	get isLessonsOrderRandom() {
 		return this._isLessonsOrderRandom;
+	}
+
+	get isPublished() {
+		return this._isPublished;
 	}
 }

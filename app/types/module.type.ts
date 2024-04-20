@@ -1,40 +1,28 @@
 import {type Prisma} from '@prisma/client';
-import {type TTags} from './tag.type.js';
 
 export type TModule = {
 	oldId?: string;
 	name: string;
-	description?: string;
+	description: string;
 	content?: string;
 	marketingContent?: string;
 	videoSourceUrl?: string;
 	marketingVideoUrl?: string;
 	thumbnailUrl: string;
-	publicationDate: Date;
-	published: boolean;
 	courses?: string[];
-	lessons?: string[];
-	tags?: TTags;
 	isLessonsOrderRandom: boolean;
+	order: number;
+	isPublished: boolean;
+	publicationDate: Date;
 };
 
 export type TModules = TModule[];
 
 export type TPrismaPayloadCreateOrUpdateModule = Prisma.ModuleGetPayload<{
 	include: {
-		course: true;
-		tags: {
+		courses: {
 			include: {
-				tagOption: {
-					select: {
-						name: true;
-					};
-				};
-				tagValue: {
-					select: {
-						name: true;
-					};
-				};
+				course: true;
 			};
 		};
 	};
@@ -48,63 +36,45 @@ export type TPrismaPayloadGetModulesList = Array<Prisma.ModuleGetPayload<{
 	};
 }>>;
 
-export type TPrismaPayloadGetModuleById = Prisma.ModuleGetPayload<{
+export type TPrismaPayloadGetModuleBySlug = Prisma.ModuleGetPayload<{
 	include: {
-		lessons: {
+		courses: {
 			select: {
-				id: true;
-				name: true;
-				slug: true;
-				description: true;
-				thumbnailUrl: true;
-				published: true;
+				isPublished: true;
 				publicationDate: true;
-				lessonProgress: true;
-				tags: {
-					include: {
-						tagOption: {
+				order: true;
+				course: {
+					select: {
+						slug: true;
+						id: true;
+						delegateAuthTo: {
 							select: {
-								name: true;
+								id: true;
+								slug: true;
+								subscriptions: true;
 							};
 						};
-						tagValue: {
-							select: {
-								name: true;
-							};
-						};
+					};
+				};
+			};
+		};
+		lessons: {
+			include: {
+				lesson: {
+					select: {
+						id: true;
+						name: true;
+						slug: true;
+						description: true;
+						thumbnailUrl: true;
+						tags: true;
 					};
 				};
 			};
 		};
 		comments: {
-			select: {
-				id: true;
-				content: true;
-				createdAt: true;
-				userId: true;
-				responses: {
-					select: {
-						id: true;
-						content: true;
-						createdAt: true;
-						userId: true;
-					};
-				};
-			};
-		};
-		course: {
-			select: {
-				id: true;
-				name: true;
-				slug: true;
-				delegateAuthTo: {
-					select: {
-						id: true;
-						name: true;
-						slug: true;
-						subscriptions: true;
-					};
-				};
+			include: {
+				responses: true;
 			};
 		};
 	};
