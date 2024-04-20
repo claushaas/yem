@@ -21,7 +21,7 @@ const getModuleDataForCache = (moduleToCourse: TAllDataToBeCached['modules'][0])
 		createdAt: moduleToCourse.createdAt,
 		updatedAt: moduleToCourse.updatedAt,
 		lessons: moduleToCourse.module.lessons.map(lesson => lesson.id),
-		delegateAuthTo: moduleToCourse.module.courses.flatMap(course => course.course.delegateAuthTo.map(delegateAuthTo => delegateAuthTo.id)),
+		delegateAuthTo: [...new Set(moduleToCourse.module.courses.flatMap(course => course.course.delegateAuthTo.map(delegateAuthTo => delegateAuthTo.id)))],
 		module: {
 			id: moduleToCourse.module.id,
 			oldId: moduleToCourse.module.oldId,
