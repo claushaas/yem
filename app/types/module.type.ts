@@ -36,45 +36,44 @@ export type TPrismaPayloadGetModulesList = Array<Prisma.ModuleGetPayload<{
 	};
 }>>;
 
-export type TPrismaPayloadGetModuleBySlug = Prisma.ModuleGetPayload<{
+export type TPrismaPayloadGetModuleBySlug = Prisma.ModuleToCourseGetPayload<{
 	include: {
-		courses: {
-			select: {
-				isPublished: true;
-				publicationDate: true;
-				order: true;
-				course: {
+		module: {
+			include: {
+				courses: {
 					select: {
-						slug: true;
-						id: true;
-						delegateAuthTo: {
+						course: {
 							select: {
-								id: true;
 								slug: true;
-								subscriptions: true;
+								id: true;
+								delegateAuthTo: {
+									select: {
+										subscriptions: true;
+									};
+								};
 							};
 						};
 					};
 				};
-			};
-		};
-		lessons: {
-			include: {
-				lesson: {
-					select: {
-						id: true;
-						name: true;
-						slug: true;
-						description: true;
-						thumbnailUrl: true;
-						tags: true;
+				lessons: {
+					include: {
+						lesson: {
+							select: {
+								id: true;
+								name: true;
+								slug: true;
+								description: true;
+								thumbnailUrl: true;
+								tags: true;
+							};
+						};
 					};
 				};
-			};
-		};
-		comments: {
-			include: {
-				responses: true;
+				comments: {
+					include: {
+						responses: true;
+					};
+				};
 			};
 		};
 	};
