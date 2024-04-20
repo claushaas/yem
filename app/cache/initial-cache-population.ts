@@ -52,7 +52,20 @@ type moduleDataForCache = {
 
 const getModuleDataForCache = (module: ModuleBruteData) => {
 	const moduleData = {...module};
+
+	if (module.isLessonsOrderRandom) {
+		for (let index = module.lessons.length - 1; index > 0; index -= 1) {
+			const randomIndex = Math.floor(Math.random() * (index));
+			[module.lessons[index], module.lessons[randomIndex]] = [module.lessons[randomIndex], module.lessons[index]];
+		}
+	}
+
+	if ((module.lessons as LessonToModule[]).every(lesson => Boolean(lesson.order))) {
+		(module.lessons as LessonToModule[]).sort((a, b) => a.order! - b.order!);
+	}
+
 	moduleData.lessons = module.lessons.map(lessonToModule => (lessonToModule as LessonToModule).lesson.id) ?? [];
+
 	return module as moduleDataForCache;
 };
 
