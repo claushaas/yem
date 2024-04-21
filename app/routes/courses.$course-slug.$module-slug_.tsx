@@ -3,7 +3,7 @@ import {json, type LoaderFunctionArgs} from '@remix-run/node';
 import {useLoaderData, type MetaFunction} from '@remix-run/react';
 import {QuillDeltaToHtmlConverter} from 'quill-delta-to-html';
 import {type OpIterator} from 'quill/core';
-import {CourseCard} from '~/components/course-card/index.js';
+import {CourseCard} from '~/components/generic-entity-card.js';
 import {ModuleService} from '~/services/module.service.server';
 import {type TPrismaPayloadGetModuleBySlug} from '~/types/module.type';
 import {type TUser} from '~/types/user.type';

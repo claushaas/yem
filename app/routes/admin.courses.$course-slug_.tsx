@@ -20,10 +20,10 @@ import {commitUserSession, getUserSession} from '~/utils/session.server';
 import {type TUser} from '~/types/user.type';
 import {logger} from '~/utils/logger.util';
 import {type TCourse, type TPrismaPayloadGetAllCourses, type TPrismaPayloadGetCourseBySlug} from '~/types/course.type';
-import {CourseCard} from '~/components/course-card/index.js';
-import {Button, ButtonPreset, ButtonType} from '~/components/button/index.js';
-import {Editor} from '~/components/text-editor/index.client.js';
-import {YemSpinner} from '~/components/yem-spinner/index.js';
+import {CourseCard} from '~/components/generic-entity-card.js';
+import {Button, ButtonPreset, ButtonType} from '~/components/button.js';
+import {Editor} from '~/components/text-editor.client.js';
+import {YemSpinner} from '~/components/yem-spinner.js';
 import {ModuleService} from '~/services/module.service.server';
 import {type TModule} from '~/types/module.type';
 

@@ -4,8 +4,8 @@ import {
 	type MetaFunction,
 	Form as RemixForm, json, redirect, useLoaderData, useNavigation,
 } from '@remix-run/react';
-import {Button, ButtonPreset, ButtonType} from '~/components/button/index.js';
-import {YemSpinner} from '~/components/yem-spinner/index.js';
+import {Button, ButtonPreset, ButtonType} from '~/components/button.js';
+import {YemSpinner} from '~/components/yem-spinner.js';
 import {UserService} from '~/services/user.service.server';
 import {commitUserSession, getUserSession} from '~/utils/session.server';
 
