@@ -11,8 +11,8 @@ import {getUserSession} from './utils/session.server.js';
 import {type TypeUserSession} from './types/user-session.type.js';
 import {useIsBot} from './context/is-bot.context.js';
 import styles from '~/tailwind.css?url';
-import {NavigateBar} from '~/components/navigation-bar/index.js';
-import {Footer} from '~/components/footer/index.js';
+import {NavigateBar} from '~/components/navigation-bar.js';
+import {Footer} from '~/components/footer.js';
 
 export const links: LinksFunction = () => [
 	{rel: 'stylesheet', href: styles},
