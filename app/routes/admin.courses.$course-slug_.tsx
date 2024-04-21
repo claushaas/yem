@@ -19,7 +19,7 @@ import {CourseService} from '~/services/course.service.server';
 import {commitUserSession, getUserSession} from '~/utils/session.server';
 import {type TUser} from '~/types/user.type';
 import {logger} from '~/utils/logger.util';
-import {type TCourse, type TPrismaPayloadGetAllCourses, type TPrismaPayloadGetCourseById} from '~/types/course.type';
+import {type TCourse, type TPrismaPayloadGetAllCourses, type TPrismaPayloadGetCourseBySlug} from '~/types/course.type';
 import {CourseCard} from '~/components/course-card/index.js';
 import {Button, ButtonPreset, ButtonType} from '~/components/button/index.js';
 import {Editor} from '~/components/text-editor/index.client.js';
@@ -37,7 +37,7 @@ export const meta: MetaFunction<typeof loader> = ({data}) => ([
 type CourseLoaderData = {
 	error: string | undefined;
 	success: string | undefined;
-	course: TPrismaPayloadGetCourseById | undefined;
+	course: TPrismaPayloadGetCourseBySlug | undefined;
 	courses: TPrismaPayloadGetAllCourses | undefined;
 	meta: Array<{tagName: string; rel: string; href: string}>;
 };

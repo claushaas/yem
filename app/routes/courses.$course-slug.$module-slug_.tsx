@@ -5,7 +5,7 @@ import {QuillDeltaToHtmlConverter} from 'quill-delta-to-html';
 import {type OpIterator} from 'quill/core';
 import {CourseCard} from '~/components/course-card/index.js';
 import {ModuleService} from '~/services/module.service.server';
-import {type TPrismaPayloadGetModuleById} from '~/types/module.type';
+import {type TPrismaPayloadGetModuleBySlug} from '~/types/module.type';
 import {type TUser} from '~/types/user.type';
 import {logger} from '~/utils/logger.util';
 import {getUserSession} from '~/utils/session.server';
@@ -17,7 +17,7 @@ export const meta: MetaFunction<typeof loader> = ({data}) => [
 ];
 
 type ModuleLoaderData = {
-	module: TPrismaPayloadGetModuleById | undefined;
+	module: TPrismaPayloadGetModuleBySlug | undefined;
 	meta: Array<{tagName: string; rel: string; href: string}>;
 };
 
@@ -33,7 +33,7 @@ export const loader = async ({request, params}: LoaderFunctionArgs) => {
 	];
 
 	try {
-		const {data: module} = await new ModuleService().getBySlug(courseSlug!, moduleSlug!, userSession.data as TUser);
+		const {data: module} = await new ModuleService().getById(courseSlug!, moduleSlug!, userSession.data as TUser);
 
 		return json<ModuleLoaderData>({
 			module,

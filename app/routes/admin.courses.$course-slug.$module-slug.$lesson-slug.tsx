@@ -59,8 +59,8 @@ export const loader = async ({request, params}: LoaderFunctionArgs) => {
 	];
 
 	try {
-		const {data: lesson} = await new LessonService().getBySlug(courseSlug!, moduleSlug!, lessonSlug!, userSession.data as TUser);
-		const {data: modules} = await new ModuleService().getAll(userSession.data as TUser);
+		const {data: lesson} = await new LessonService().getById(courseSlug!, moduleSlug!, lessonSlug!, userSession.data as TUser);
+		const {data: modules} = await new ModuleService().getAllForAdmin(userSession.data as TUser);
 		const {data: tags} = await new TagService().getAll();
 
 		return json<LessonLoaderData>({

@@ -5,7 +5,7 @@ import {QuillDeltaToHtmlConverter} from 'quill-delta-to-html';
 import {type OpIterator} from 'quill/core';
 import {CourseCard} from '~/components/course-card/index.js';
 import {CourseService} from '~/services/course.service.server';
-import {type TPrismaPayloadGetCourseById} from '~/types/course.type';
+import {type TPrismaPayloadGetCourseBySlug} from '~/types/course.type';
 import {type TUser} from '~/types/user.type';
 import {logger} from '~/utils/logger.util';
 import {getUserSession} from '~/utils/session.server';
@@ -17,7 +17,7 @@ export const meta: MetaFunction<typeof loader> = ({data}) => [
 ];
 
 type CourseLoaderData = {
-	course: TPrismaPayloadGetCourseById | undefined;
+	course: TPrismaPayloadGetCourseBySlug | undefined;
 	meta: Array<{tagName: string; rel: string; href: string}>;
 };
 

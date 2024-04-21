@@ -22,7 +22,7 @@ import {commitUserSession, getUserSession} from '~/utils/session.server';
 import {ModuleService} from '~/services/module.service.server';
 import {LessonService} from '~/services/lesson.service.server';
 import {type TUser} from '~/types/user.type';
-import {type TPrismaPayloadGetModulesList, type TModule, type TPrismaPayloadGetModuleById} from '~/types/module.type';
+import {type TPrismaPayloadGetModulesList, type TModule, type TPrismaPayloadGetModuleBySlug} from '~/types/module.type';
 import {CourseCard} from '~/components/course-card/index.js';
 import {Button, ButtonPreset, ButtonType} from '~/components/button/index.js';
 import {Editor} from '~/components/text-editor/index.client.js';
@@ -43,7 +43,7 @@ export const meta: MetaFunction<typeof loader> = ({data}) => [
 type ModuleLoaderData = {
 	error: string | undefined;
 	success: string | undefined;
-	module: TPrismaPayloadGetModuleById | undefined;
+	module: TPrismaPayloadGetModuleBySlug | undefined;
 	modules: TPrismaPayloadGetModulesList | undefined;
 	courses: TPrismaPayloadGetAllCourses | undefined;
 	tags: TPrismaPayloadGetAllTags | undefined;
@@ -64,8 +64,8 @@ export const loader = async ({request, params}: LoaderFunctionArgs) => {
 	const moduleService = new ModuleService();
 
 	try {
-		const {data: module} = await moduleService.getBySlug(courseSlug!, moduleSlug!, userSession.data as TUser);
-		const {data: modules} = await moduleService.getAll(userSession.data as TUser);
+		const {data: module} = await moduleService.getById(courseSlug!, moduleSlug!, userSession.data as TUser);
+		const {data: modules} = await moduleService.getAllForAdmin(userSession.data as TUser);
 		const {data: courses} = await new CourseService().getAll(userSession.get('roles') as string[]);
 		const {data: tags} = await new TagService().getAll();
 
