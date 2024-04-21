@@ -1,24 +1,24 @@
-import {type LessonToModule, type Prisma} from '@prisma/client';
+import {type Prisma} from '@prisma/client';
 import {MemoryCache} from './memory-cache.js';
 import {type TAllDataToBeCached} from './get-all-data-to-be-cached.js';
 import {populateLessonsToCache} from './populate-lessons-to-cache.js';
 
 type TModuleToCourse = Prisma.ModuleToCourseGetPayload<{include: {module: true}}>;
 
-type moduleDataForCache = {
+type TModuleDataForCache = {
 	lessons: string[];
 	courses: string[];
 	delegateAuthTo: string[];
 } & TModuleToCourse;
 
-const getModuleDataForCache = (moduleToCourse: TAllDataToBeCached['modules'][0]): moduleDataForCache => {
+const getModuleDataForCache = (moduleToCourse: TAllDataToBeCached['modules'][0]): TModuleDataForCache => {
 	const {module} = moduleToCourse;
 	if (module.isLessonsOrderRandom) {
 		for (let index = module.lessons.length - 1; index > 0; index -= 1) {
 			const randomIndex = Math.floor(Math.random() * (index));
 			[module.lessons[index], module.lessons[randomIndex]] = [module.lessons[randomIndex], module.lessons[index]];
 		}
-	} else if ((module.lessons as LessonToModule[]).every(lesson => Boolean(lesson.order))) {
+	} else if ((module.lessons).every(lesson => Boolean(lesson.order))) {
 		module.lessons = module.lessons.sort((a, b) => a.order - b.order);
 	}
 
