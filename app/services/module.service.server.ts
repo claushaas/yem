@@ -43,8 +43,8 @@ export class ModuleService {
 				thumbnailUrl: newModule.thumbnailUrl,
 				isLessonsOrderRandom: newModule.isLessonsOrderRandom,
 				courses: {
-					connect: newModule.courses?.map(course => ({
-						id: course,
+					create: newModule.courses?.map(course => ({
+						courseId: course,
 						isPublished: newModule.isPublished,
 						publicationDate: newModule.publicationDate,
 						order: newModule.order,

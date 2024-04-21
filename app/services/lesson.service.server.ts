@@ -38,8 +38,8 @@ export class LessonService {
 				duration: newLesson.duration,
 				thumbnailUrl: newLesson.thumbnailUrl,
 				modules: {
-					connect: newLesson.modules.map(module => ({
-						id: module,
+					create: newLesson.modules.map(module => ({
+						moduleId: module,
 						order: newLesson.order,
 						isPublished: newLesson.isPublished,
 						publicationDate: newLesson.publicationDate,
