@@ -13,47 +13,11 @@ export type TAllDataToBeCached = Prisma.CourseGetPayload<{
 			include: {
 				module: {
 					include: {
-						courses: {
-							include: {
-								course: {
-									select: {
-										slug: true;
-										delegateAuthTo: {
-											select: {
-												id: true;
-											};
-										};
-									};
-								};
-							};
-						};
 						lessons: {
 							include: {
 								lesson: {
 									include: {
 										tags: true;
-										modules: {
-											include: {
-												module: {
-													include: {
-														courses: {
-															include: {
-																course: {
-																	select: {
-																		slug: true;
-																		delegateAuthTo: {
-																			select: {
-																				id: true;
-																			};
-																		};
-																	};
-																};
-															};
-														};
-													};
-												};
-											};
-										};
 									};
 								};
 							};
@@ -77,47 +41,11 @@ export const allDataToBeCached: TAllDataToBeCached[] = await db.course.findMany(
 			include: {
 				module: {
 					include: {
-						courses: {
-							include: {
-								course: {
-									select: {
-										slug: true,
-										delegateAuthTo: {
-											select: {
-												id: true,
-											},
-										},
-									},
-								},
-							},
-						},
 						lessons: {
 							include: {
 								lesson: {
 									include: {
 										tags: true,
-										modules: {
-											include: {
-												module: {
-													include: {
-														courses: {
-															include: {
-																course: {
-																	select: {
-																		slug: true,
-																		delegateAuthTo: {
-																			select: {
-																				id: true,
-																			},
-																		},
-																	},
-																},
-															},
-														},
-													},
-												},
-											},
-										},
 									},
 								},
 							},

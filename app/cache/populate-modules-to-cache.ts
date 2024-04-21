@@ -2,16 +2,16 @@ import {type Prisma} from '@prisma/client';
 import {MemoryCache} from './memory-cache.js';
 import {type TAllDataToBeCached} from './get-all-data-to-be-cached.js';
 import {populateLessonsToCache} from './populate-lessons-to-cache.js';
+import {type TCourseDataForCache} from './populate-courses-to-cache.js';
 
 type TModuleToCourse = Prisma.ModuleToCourseGetPayload<{include: {module: true}}>;
 
 type TModuleDataForCache = {
 	lessons: string[];
-	courses: string[];
 	delegateAuthTo: string[];
 } & TModuleToCourse;
 
-const getModuleDataForCache = (moduleToCourse: TAllDataToBeCached['modules'][0]): TModuleDataForCache => {
+const getModuleDataForCache = (moduleToCourse: TAllDataToBeCached['modules'][0], delegateAuthTo: TCourseDataForCache['delegateAuthTo']): TModuleDataForCache => {
 	const {module} = moduleToCourse;
 	if (module.isLessonsOrderRandom) {
 		for (let index = module.lessons.length - 1; index > 0; index -= 1) {
@@ -34,8 +34,7 @@ const getModuleDataForCache = (moduleToCourse: TAllDataToBeCached['modules'][0])
 		createdAt: moduleToCourse.createdAt,
 		updatedAt: moduleToCourse.updatedAt,
 		lessons,
-		courses: moduleToCourse.module.courses.map(course => course.course.slug),
-		delegateAuthTo: [...new Set(moduleToCourse.module.courses.flatMap(course => course.course.delegateAuthTo.map(delegateAuthTo => delegateAuthTo.id)))],
+		delegateAuthTo,
 		module: {
 			id: moduleToCourse.module.id,
 			oldId: moduleToCourse.module.oldId,
@@ -56,11 +55,11 @@ const getModuleDataForCache = (moduleToCourse: TAllDataToBeCached['modules'][0])
 	return moduleDataForCache;
 };
 
-export const populateModulesAndLessonsToCache = (course: TAllDataToBeCached) => {
+export const populateModulesAndLessonsToCache = (course: TAllDataToBeCached, delegateAuthTo: TCourseDataForCache['delegateAuthTo']) => {
 	for (const moduleToCourse of course.modules) {
-		const moduleDataForCache = getModuleDataForCache(moduleToCourse);
+		const moduleDataForCache = getModuleDataForCache(moduleToCourse, delegateAuthTo);
 
 		MemoryCache.set(`${course.slug}:${moduleToCourse.module.slug}`, JSON.stringify(moduleDataForCache));
-		populateLessonsToCache(moduleToCourse.module.lessons, moduleToCourse.module.slug);
+		populateLessonsToCache(moduleToCourse.module.lessons, delegateAuthTo);
 	}
 };
