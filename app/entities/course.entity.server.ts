@@ -15,7 +15,7 @@ const courseSchema = Joi.object({
 	isPublished: Joi.boolean().required().default(false),
 	isSelling: Joi.boolean().required().default(false),
 	tags: Joi.array().items(Joi.array().items(Joi.string()).min(2).max(2)).unique(),
-	delegateAuthTo: Joi.array().items(Joi.string()),
+	delegateAuthTo: Joi.array().items(Joi.string().allow('')),
 });
 
 export class Course implements TCourse {
@@ -52,7 +52,7 @@ export class Course implements TCourse {
 		this._publicationDate = course.publicationDate;
 		this._isPublished = course.isPublished;
 		this._isSelling = course.isSelling;
-		this._delegateAuthTo = course.delegateAuthTo;
+		this._delegateAuthTo = course.delegateAuthTo?.some(Boolean) ? course.delegateAuthTo : [];
 	}
 
 	get oldId() {
