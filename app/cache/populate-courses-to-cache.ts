@@ -41,7 +41,7 @@ const populateCourseToCache = (course: TAllDataToBeCached) => {
 	const courseDataForCache = getCourseDataForCache(course);
 	const {delegateAuthTo} = courseDataForCache;
 
-	MemoryCache.set(course.slug, JSON.stringify(courseDataForCache));
+	MemoryCache.set(`course:${course.slug}`, JSON.stringify(courseDataForCache));
 	populateModulesAndLessonsToCache(course, delegateAuthTo);
 };
 
