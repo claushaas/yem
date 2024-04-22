@@ -126,26 +126,22 @@ export class ModuleService {
 					},
 				},
 				include: {
-					module: {
-						include: {
-							courses: {
+					course: {
+						select: {
+							delegateAuthTo: {
 								select: {
-									course: {
-										select: {
-											delegateAuthTo: {
-												select: {
-													id: true,
-													subscriptions: {
-														where: {
-															userId: user.id,
-														},
-													},
-												},
-											},
+									id: true,
+									subscriptions: {
+										where: {
+											userId: user.id,
 										},
 									},
 								},
 							},
+						},
+					},
+					module: {
+						include: {
 							lessons: {
 								where: {
 									moduleId,
@@ -205,11 +201,9 @@ export class ModuleService {
 			}
 
 			const hasActiveSubscription = user.roles?.includes('admin')
-				|| moduleToCourse.module.courses.some(
-					moduleToCourse => moduleToCourse.course.delegateAuthTo.some(
-						course => course.subscriptions.some(
-							subscription => subscription.expiresAt >= new Date(),
-						),
+				|| moduleToCourse.course.delegateAuthTo.some(
+					course => course.subscriptions.some(
+						subscription => subscription.expiresAt >= new Date(),
 					),
 				);
 

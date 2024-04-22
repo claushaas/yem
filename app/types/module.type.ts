@@ -38,23 +38,18 @@ export type TPrismaPayloadGetModulesList = Array<Prisma.ModuleGetPayload<{
 
 export type TPrismaPayloadGetModuleBySlug = Prisma.ModuleToCourseGetPayload<{
 	include: {
-		module: {
-			include: {
-				courses: {
+		course: {
+			select: {
+				delegateAuthTo: {
 					select: {
-						course: {
-							select: {
-								slug: true;
-								id: true;
-								delegateAuthTo: {
-									select: {
-										subscriptions: true;
-									};
-								};
-							};
-						};
+						id: true;
+						subscriptions: true;
 					};
 				};
+			};
+		};
+		module: {
+			include: {
 				lessons: {
 					include: {
 						lesson: {
