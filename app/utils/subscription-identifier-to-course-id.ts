@@ -14,7 +14,7 @@ export const subscriptionIdentifierToCourseId = {
 	escola_mensal_promocional: 'escola-online',
 	escola_anual_promocional: 'yoga-e-hinduismo',
 	'135340': 'escola-online',
-	'1392822': 'db66f261-f832-4f0b-9565-53d8f8422d51',
+	'1392822': 'formacao-em-yoga',
 	'Mensal 77': 'escola-online',
 	'Mensal boleto': 'escola-online',
 	'Anual 497': 'yoga-e-hinduismo',
