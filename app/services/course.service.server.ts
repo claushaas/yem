@@ -215,4 +215,50 @@ export class CourseService {
 			data: updatedCourse,
 		};
 	}
+
+	public async addDelegateAuthTo(courseId: string, delegateAuthTo: string[]): Promise<TServiceReturn<TPrismaPayloadCreateOrUpdateCourse>> {
+		const updatedCourse = await this._model.course.update({
+			where: {
+				id: courseId,
+			},
+			data: {
+				delegateAuthTo: {
+					connect: delegateAuthTo.map(slug => ({slug})),
+				},
+			},
+		});
+
+		if (!updatedCourse) {
+			throw new CustomError('NOT_FOUND', `Course with id ${courseId} not found`);
+		}
+
+		return {
+			status: 'SUCCESSFUL',
+			data: updatedCourse,
+		};
+	}
+
+	public async removeDelegateAuthTo(courseId: string, delegateAuthToSlug: string): Promise<TServiceReturn<TPrismaPayloadCreateOrUpdateCourse>> {
+		const updatedCourse = await this._model.course.update({
+			where: {
+				id: courseId,
+			},
+			data: {
+				delegateAuthTo: {
+					disconnect: {
+						slug: delegateAuthToSlug,
+					},
+				},
+			},
+		});
+
+		if (!updatedCourse) {
+			throw new CustomError('NOT_FOUND', `Course with id ${courseId} not found`);
+		}
+
+		return {
+			status: 'SUCCESSFUL',
+			data: updatedCourse,
+		};
+	}
 }
