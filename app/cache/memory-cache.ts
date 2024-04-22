@@ -1,4 +1,6 @@
-// eslint-disable-next-line @typescript-eslint/no-extraneous-class
+/* eslint-disable @typescript-eslint/no-dynamic-delete */
+/* eslint-disable @typescript-eslint/no-extraneous-class */
+/* eslint-disable @typescript-eslint/consistent-type-assertions */
 export class MemoryCache {
 	static get(key: string) {
 		const value = MemoryCache.cache[key];
@@ -16,6 +18,7 @@ export class MemoryCache {
 		}
 
 		MemoryCache.cache[key] = value;
+		console.log('keys inside cache class', MemoryCache.keys());
 	}
 
 	static del(key: string) {
@@ -23,12 +26,12 @@ export class MemoryCache {
 			return;
 		}
 
-		delete MemoryCache.cache[key]; // eslint-disable-line @typescript-eslint/no-dynamic-delete
+		delete MemoryCache.cache[key];
 	}
 
 	static keys() {
 		return Object.keys(MemoryCache.cache);
 	}
 
-	private static cache: Record<string, string> = {};
+	private static cache = {} as Record<string, string>;
 }

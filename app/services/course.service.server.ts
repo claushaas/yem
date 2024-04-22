@@ -10,12 +10,16 @@ import {CustomError} from '../utils/custom-error.js';
 import {type TServiceReturn} from '../types/service-return.type.js';
 import {db} from '../database/db.js';
 import {logger} from '~/utils/logger.util.js';
+import {MemoryCache} from '~/cache/memory-cache.js';
+import {type TCourseDataForCache} from '~/cache/populate-courses-to-cache.js';
 
 export class CourseService {
+	private static cache: typeof MemoryCache;
 	private readonly _model: PrismaClient;
 
 	constructor(model: PrismaClient = db) {
 		this._model = model;
+		CourseService.cache = MemoryCache;
 	}
 
 	public async create(courseData: TCourse): Promise<TServiceReturn<TPrismaPayloadCreateOrUpdateCourse>> {
@@ -73,6 +77,30 @@ export class CourseService {
 		return {
 			status: 'SUCCESSFUL',
 			data: courses,
+		};
+	}
+
+	public getAllFromCache(userRoles: TUserRoles = []): TServiceReturn<TCourseDataForCache[]> {
+		const isAdmin = userRoles.includes('admin');
+
+		const allCoursesKeys = CourseService.cache.keys();
+		logger.logDebug(`All courses keys: ${JSON.stringify(allCoursesKeys)}`);
+
+		const allCourses = allCoursesKeys.map(key => {
+			const course = JSON.parse(CourseService.cache.get(key) ?? '{}') as TCourseDataForCache;
+
+			return {
+				...course,
+				content: isAdmin ? course.content : course.marketingContent,
+				videoSourceUrl: isAdmin ? course.videoSourceUrl : course.marketingVideoUrl,
+			};
+		});
+
+		const filteredCourses = allCourses.filter(course => isAdmin || course.isPublished);
+
+		return {
+			status: 'SUCCESSFUL',
+			data: filteredCourses,
 		};
 	}
 
