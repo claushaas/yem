@@ -19,11 +19,11 @@ import {CourseService} from '~/services/course.service.server';
 import {commitUserSession, getUserSession} from '~/utils/session.server';
 import {type TUser} from '~/types/user.type';
 import {logger} from '~/utils/logger.util';
-import {type TCourse, type TPrismaPayloadGetAllCourses, type TPrismaPayloadGetCourseById} from '~/types/course.type';
-import {CourseCard} from '~/components/course-card/index.js';
-import {Button, ButtonPreset, ButtonType} from '~/components/button/index.js';
-import {Editor} from '~/components/text-editor/index.client.js';
-import {YemSpinner} from '~/components/yem-spinner/index.js';
+import {type TCourse, type TPrismaPayloadGetAllCourses, type TPrismaPayloadGetCourseBySlug} from '~/types/course.type';
+import {CourseCard} from '~/components/generic-entity-card.js';
+import {Button, ButtonPreset, ButtonType} from '~/components/button.js';
+import {Editor} from '~/components/text-editor.client.js';
+import {YemSpinner} from '~/components/yem-spinner.js';
 import {ModuleService} from '~/services/module.service.server';
 import {type TModule} from '~/types/module.type';
 
@@ -37,7 +37,7 @@ export const meta: MetaFunction<typeof loader> = ({data}) => ([
 type CourseLoaderData = {
 	error: string | undefined;
 	success: string | undefined;
-	course: TPrismaPayloadGetCourseById | undefined;
+	course: TPrismaPayloadGetCourseBySlug | undefined;
 	courses: TPrismaPayloadGetAllCourses | undefined;
 	meta: Array<{tagName: string; rel: string; href: string}>;
 };
@@ -104,7 +104,7 @@ export const action = async ({request, params}: ActionFunctionArgs) => {
 						marketingVideoUrl: formData.get('marketingVideoUrl') as string,
 						thumbnailUrl: formData.get('thumbnailUrl') as string,
 						publicationDate: new Date(formData.get('publicationDate') as string),
-						published: Boolean(formData.get('published')),
+						isPublished: Boolean(formData.get('published')),
 						isSelling: Boolean(formData.get('isSelling')),
 						delegateAuthTo: (formData.get('delegateAuthTo') as string).split(','),
 					};
@@ -125,9 +125,11 @@ export const action = async ({request, params}: ActionFunctionArgs) => {
 						videoSourceUrl: formData.get('videoSourceUrl') as string,
 						marketingVideoUrl: formData.get('marketingVideoUrl') as string,
 						thumbnailUrl: formData.get('thumbnailUrl') as string,
-						courses: (formData.get('course') as string).split(','),
+						courses: (formData.get('courses') as string).split(','),
 						publicationDate: new Date(formData.get('publicationDate') as string),
-						published: Boolean(formData.get('published')),
+						isPublished: Boolean(formData.get('published')),
+						isLessonsOrderRandom: Boolean(formData.get('isLessonsOrderRandom')),
+						order: Number(formData.get('order')),
 					};
 
 					await new ModuleService().create(moduleToCreate);
@@ -443,7 +445,7 @@ export default function Course() {
 										</RadixForm.Control>
 									</RadixForm.Field>
 
-									<RadixForm.Field name='published'>
+									<RadixForm.Field name='isPublished'>
 										<div className='flex items-baseline justify-between'>
 											<RadixForm.Label>
 												<p>Está publicado</p>
@@ -451,7 +453,7 @@ export default function Course() {
 										</div>
 										<RadixForm.Control asChild>
 											<Switch.Root
-												defaultChecked={course.published}
+												defaultChecked={course.isPublished}
 												disabled={isSubmittingAnyForm}
 												className='w-[42px] h-[25px] bg-blacka-6 rounded-full relative shadow-[0_2px_10px] shadow-blacka-4 focus:shadow-[0_0_0_2px] focus:shadow-black data-[state=checked]:bg-black outline-none cursor-default'
 											>
@@ -551,7 +553,7 @@ export default function Course() {
 			<div>
 				<h2>{course.description}</h2>
 				<p>Data de publicação: {new Date(course.publicationDate).toLocaleString('pt-BR')}</p>
-				<p>Está publicado: {course.published ? 'sim' : 'não'}</p>
+				<p>Está publicado: {course.isPublished ? 'sim' : 'não'}</p>
 				<p>Está com matrículas abertas: {course?.isSelling ? 'sim' : 'não'}</p>
 				{course.content && (
 					<>
@@ -733,7 +735,7 @@ export default function Course() {
 										</RadixForm.Control>
 									</RadixForm.Field>
 
-									<RadixForm.Field name='course'>
+									<RadixForm.Field name='courses'>
 										<div className='flex items-baseline justify-between'>
 											<RadixForm.Label>
 												<p>Cursos</p>
@@ -750,7 +752,7 @@ export default function Course() {
 										<Select
 											isMulti
 											value={coursesValue}
-											options={courses?.map(course => ({value: course.id, label: course.name}))}
+											options={courses?.map(course => ({value: course.slug, label: course.name}))}
 											onChange={selectedOption => {
 												setCoursesValue(selectedOption as Array<{value: string; label: string}>);
 											}}
@@ -776,6 +778,7 @@ export default function Course() {
 										</div>
 										<RadixForm.Control asChild>
 											<input
+												defaultValue={defaultDate.toISOString().slice(0, 16)}
 												disabled={isSubmittingAnyForm}
 												type='datetime-local'
 												min={3}
@@ -784,7 +787,7 @@ export default function Course() {
 										</RadixForm.Control>
 									</RadixForm.Field>
 
-									<RadixForm.Field name='published'>
+									<RadixForm.Field name='isPublished'>
 										<div className='flex items-baseline justify-between'>
 											<RadixForm.Label>
 												<p>Está publicado</p>
@@ -799,6 +802,40 @@ export default function Course() {
 													className='block w-[21px] h-[21px] bg-white rounded-full shadow-[0_2px_2px] shadow-blackA4 transition-transform duration-100 translate-x-0.5 will-change-transform data-[state=checked]:translate-x-[19px]'
 												/>
 											</Switch.Root>
+										</RadixForm.Control>
+									</RadixForm.Field>
+
+									<RadixForm.Field name='isLessonsOrderRandom'>
+										<div className='flex items-baseline justify-between'>
+											<RadixForm.Label>
+												<p>As aulas deste módulo devem ser embaralhadas?</p>
+											</RadixForm.Label>
+										</div>
+										<RadixForm.Control asChild>
+											<Switch.Root
+												disabled={isSubmittingAnyForm}
+												className='w-[42px] h-[25px] bg-blacka-6 rounded-full relative shadow-[0_2px_10px] shadow-blacka-4 focus:shadow-[0_0_0_2px] focus:shadow-black data-[state=checked]:bg-black outline-none cursor-default'
+											>
+												<Switch.Thumb
+													className='block w-[21px] h-[21px] bg-white rounded-full shadow-[0_2px_2px] shadow-blackA4 transition-transform duration-100 translate-x-0.5 will-change-transform data-[state=checked]:translate-x-[19px]'
+												/>
+											</Switch.Root>
+										</RadixForm.Control>
+									</RadixForm.Field>
+
+									<RadixForm.Field name='order'>
+										<div className='flex items-baseline justify-between'>
+											<RadixForm.Label>
+												<p>Posição deste módulo dentro do curso</p>
+											</RadixForm.Label>
+										</div>
+										<RadixForm.Control asChild>
+											<input
+												required
+												disabled={isSubmittingAnyForm}
+												type='number'
+												className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
+											/>
 										</RadixForm.Control>
 									</RadixForm.Field>
 
@@ -827,7 +864,7 @@ export default function Course() {
 
 				<div className='flex gap-4 my-4 flex-wrap'>
 					{course.modules.map(module => (
-						<CourseCard key={module.id} course={module} to={`./${module.slug}`}/>
+						<CourseCard key={module.module.id} course={module.module} to={`./${module.module.slug}`}/>
 					))}
 				</div>
 

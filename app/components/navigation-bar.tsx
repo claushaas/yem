@@ -2,7 +2,7 @@ import {Bars4Icon} from '@heroicons/react/24/outline';
 import * as NavigationMenu from '@radix-ui/react-navigation-menu';
 import * as Separator from '@radix-ui/react-separator';
 import {Link, useLocation} from '@remix-run/react';
-import {NavigateLink} from '~/components/navigation-bar/navigation-link/index.js';
+import {NavigateLink} from '~/components/navigation-link.js';
 import {type TypeUserSession} from '~/types/user-session.type';
 
 export function NavigateBar({userData}: {readonly userData: TypeUserSession | undefined}) {

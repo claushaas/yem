@@ -12,48 +12,61 @@ model Course {
   oldId             String?
   name              String              @unique
   slug              String              @unique @default(cuid())
-  description       String?
+  description       String
   content           String?             @db.Text
   marketingContent  String?             @db.Text
   videoSourceUrl    String?
   marketingVideoUrl String?
-  thumbnailUrl      String
+  thumbnailUrl      String              @default("d9fd2efe-ee41-45d6-25a5-4ec50aad7000")
   createdAt         DateTime            @default(now())
   updatedAt         DateTime            @updatedAt
   publicationDate   DateTime
-  published         Boolean             @default(true)
-  modules           Module[]
-  tags              TagOptionTagValue[]
+  isPublished       Boolean             @default(false)
   comments          Comment[]
   subscriptions     UserSubscriptions[]
   isSelling         Boolean             @default(false)
   delegateAuthTo    Course[]            @relation("AuthDelegation")
   authDelegatedFrom Course[]            @relation("AuthDelegation")
+  modules           ModuleToCourse[]
 
   @@map("courses")
 }
 
 model Module {
-  id                String              @id @default(uuid())
-  oldId             String?
-  name              String
-  slug              String              @unique @default(cuid())
-  description       String?
-  content           String?             @db.Text
-  marketingContent  String?             @db.Text
-  videoSourceUrl    String?
-  marketingVideoUrl String?
-  thumbnailUrl      String
-  course            Course[]
-  createdAt         DateTime            @default(now())
-  updatedAt         DateTime            @updatedAt
-  publicationDate   DateTime
-  published         Boolean             @default(false)
-  lessons           Lesson[]
-  tags              TagOptionTagValue[]
-  comments          Comment[]
+  id                   String           @id @default(uuid())
+  oldId                String?
+  name                 String
+  slug                 String           @unique @default(cuid())
+  description          String
+  content              String?          @db.Text
+  marketingContent     String?          @db.Text
+  videoSourceUrl       String?
+  marketingVideoUrl    String?
+  thumbnailUrl         String           @default("d9fd2efe-ee41-45d6-25a5-4ec50aad7000")
+  createdAt            DateTime         @default(now())
+  updatedAt            DateTime         @updatedAt
+  lessons              LessonToModule[]
+  isLessonsOrderRandom Boolean          @default(false)
+  comments             Comment[]
+  courses              ModuleToCourse[]
 
   @@map("modules")
+}
+
+model ModuleToCourse {
+  id              String   @id @default(uuid())
+  module          Module   @relation(fields: [moduleSlug], references: [slug])
+  moduleSlug      String
+  course          Course   @relation(fields: [courseSlug], references: [slug])
+  courseSlug      String
+  order           Int
+  isPublished     Boolean  @default(false)
+  publicationDate DateTime @default(now())
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@unique(name: "moduleToCourse", [moduleSlug, courseSlug])
+  @@map("module_to_course")
 }
 
 model Lesson {
@@ -62,22 +75,21 @@ model Lesson {
   name              String
   slug              String              @unique @default(cuid())
   type              LessonType          @default(video)
-  description       String?
+  description       String
   content           String?             @db.Text
   marketingContent  String?             @db.Text
   videoSourceUrl    String?
   marketingVideoUrl String?
-  thumbnailUrl      String
-  modules           Module[]
+  thumbnailUrl      String              @default("d9fd2efe-ee41-45d6-25a5-4ec50aad7000")
+  modules           LessonToModule[]
   createdAt         DateTime            @default(now())
   updatedAt         DateTime            @updatedAt
-  publicationDate   DateTime
-  published         Boolean             @default(false)
   tags              TagOptionTagValue[]
   comments          Comment[]
-  lessonProgress    LessonProgress[]
+  completedBy       CompletedLessons[]
   duration          Int?
   FavoritedBy       FavoritedLessons[]
+  SavedBy           SavedLessons[]
 
   @@map("lessons")
 }
@@ -88,10 +100,25 @@ enum LessonType {
   courseWare
 }
 
+model LessonToModule {
+  id              String   @id @default(uuid())
+  lesson          Lesson   @relation(fields: [lessonSlug], references: [slug])
+  lessonSlug      String
+  module          Module   @relation(fields: [moduleSlug], references: [slug])
+  moduleSlug      String
+  order           Int
+  isPublished     Boolean  @default(false)
+  publicationDate DateTime @default(now())
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@unique(name: "lessonToModule", [lessonSlug, moduleSlug])
+  @@map("lesson_to_module")
+}
+
 model TagOption {
   id                String              @id @default(uuid())
   name              String              @unique
-  description       String?
   createdAt         DateTime            @default(now())
   updatedAt         DateTime            @updatedAt
   TagOptionTagValue TagOptionTagValue[]
@@ -102,7 +129,6 @@ model TagOption {
 model TagValue {
   id                String              @id @default(uuid())
   name              String              @unique
-  description       String?
   createdAt         DateTime            @default(now())
   updatedAt         DateTime            @updatedAt
   TagOptionTagValue TagOptionTagValue[]
@@ -117,8 +143,6 @@ model TagOptionTagValue {
   tagOption     TagOption @relation(fields: [tagOptionName], references: [name], onDelete: Cascade)
   tagValue      TagValue  @relation(fields: [tagValueName], references: [name], onDelete: Cascade)
   lessons       Lesson[]
-  modules       Module[]
-  courses       Course[]
   published     Boolean   @default(true)
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
@@ -135,61 +159,76 @@ model Comment {
   userId          String
   authorFirstName String
   authorLastName  String
-  lesson          Lesson?   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
-  course          Course?   @relation(fields: [courseId], references: [id], onDelete: Cascade)
-  module          Module?   @relation(fields: [moduleId], references: [id], onDelete: Cascade)
-  lessonId        String?
-  courseId        String?
-  moduleId        String?
+  lesson          Lesson?   @relation(fields: [lessonSlug], references: [slug], onDelete: Cascade)
+  course          Course?   @relation(fields: [courseSlug], references: [slug], onDelete: Cascade)
+  module          Module?   @relation(fields: [moduleSlug], references: [slug], onDelete: Cascade)
+  lessonSlug      String?
+  courseSlug      String?
+  moduleSlug      String?
   responseToId    String?
   responseTo      Comment?  @relation("CommentToComment", fields: [responseToId], references: [id], onDelete: Cascade)
   responses       Comment[] @relation("CommentToComment")
-  notify          String[]
   published       Boolean   @default(true)
 
   @@map("comments")
 }
 
-model LessonProgress {
-  id                     String    @id @default(uuid())
-  lesson                 Lesson    @relation(fields: [lessonId], references: [id], onDelete: Cascade)
-  userId                 String
-  lessonId               String
-  progressInMilliseconds Int       @default(0)
-  startedAt              DateTime  @default(now())
-  updatedAt              DateTime  @updatedAt
-  finishedAt             DateTime?
+model CompletedLessons {
+  id          String   @id @default(uuid())
+  userId      String
+  lesson      Lesson   @relation(fields: [lessonSlug], references: [slug], onDelete: Cascade)
+  lessonSlug  String
+  isCompleted Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
-  @@unique([lessonId, userId])
+  @@unique([lessonSlug, userId])
   @@map("lesson_progress")
 }
 
 model FavoritedLessons {
-  id       String @id @default(uuid())
-  userId   String
-  lesson   Lesson @relation(fields: [lessonId], references: [id])
-  lessonId String
+  id          String   @id @default(uuid())
+  userId      String
+  lesson      Lesson   @relation(fields: [lessonSlug], references: [slug])
+  lessonSlug  String
+  isFavorited Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
-  @@unique([userId, lessonId])
+  @@unique([userId, lessonSlug])
   @@map("favorited_lessons")
 }
 
-model UserSubscriptions {
-  id                     String                    @id @default(uuid())
-  userId                 String
-  courseId               String
-  createdAt              DateTime                  @default(now())
-  updatedAt              DateTime                  @updatedAt
-  expiresAt              DateTime
-  course                 Course                    @relation(fields: [courseId], references: [id])
-  provider               SubscriptionProvidersType
-  providerSubscriptionId String                    @unique
+model SavedLessons {
+  id         String   @id @default(uuid())
+  userId     String
+  lesson     Lesson   @relation(fields: [lessonSlug], references: [slug])
+  lessonSlug String
+  isSaved    Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
-  @@unique([userId, courseId, providerSubscriptionId])
+  @@unique([userId, lessonSlug])
+  @@map("saved_lessons")
+}
+
+model UserSubscriptions {
+  id                         String                   @id @default(uuid())
+  userId                     String
+  courseSlug                 String
+  createdAt                  DateTime                 @default(now())
+  updatedAt                  DateTime                 @updatedAt
+  expiresAt                  DateTime
+  course                     Course                   @relation(fields: [courseSlug], references: [slug])
+  provider                   SubscriptionProviderType
+  providerSubscriptionId     String                   @unique
+  providerSubscriptionStatus String?
+
+  @@unique([userId, courseSlug, providerSubscriptionId])
   @@map("user_subscriptions")
 }
 
-enum SubscriptionProvidersType {
+enum SubscriptionProviderType {
   hotmart
   iugu
   manual

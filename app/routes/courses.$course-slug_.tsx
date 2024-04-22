@@ -3,9 +3,9 @@ import {json, type LoaderFunctionArgs} from '@remix-run/node';
 import {type MetaFunction, useLoaderData} from '@remix-run/react';
 import {QuillDeltaToHtmlConverter} from 'quill-delta-to-html';
 import {type OpIterator} from 'quill/core';
-import {CourseCard} from '~/components/course-card/index.js';
+import {CourseCard} from '~/components/generic-entity-card.js';
 import {CourseService} from '~/services/course.service.server';
-import {type TPrismaPayloadGetCourseById} from '~/types/course.type';
+import {type TPrismaPayloadGetCourseBySlug} from '~/types/course.type';
 import {type TUser} from '~/types/user.type';
 import {logger} from '~/utils/logger.util';
 import {getUserSession} from '~/utils/session.server';
@@ -17,7 +17,7 @@ export const meta: MetaFunction<typeof loader> = ({data}) => [
 ];
 
 type CourseLoaderData = {
-	course: TPrismaPayloadGetCourseById | undefined;
+	course: TPrismaPayloadGetCourseBySlug | undefined;
 	meta: Array<{tagName: string; rel: string; href: string}>;
 };
 
@@ -76,7 +76,7 @@ export default function Course() {
 					{course.modules && (
 						<section id='modules' className='flex flex-wrap gap-4 my-4'>
 							{course.modules.map(module => (
-								<CourseCard key={module.id} course={module} to={`./${module.slug}`}/>
+								<CourseCard key={module.module.id} course={module.module} to={`./${module.module.slug}`}/>
 							))}
 						</section>
 					)}

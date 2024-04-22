@@ -1,19 +1,17 @@
 import {type Prisma} from '@prisma/client';
-import {type TTags} from './tag.type.js';
 
 export type TCourse = {
 	oldId?: string;
 	name: string;
-	description?: string;
+	description: string;
 	content?: string;
 	marketingContent?: string;
 	videoSourceUrl?: string;
 	marketingVideoUrl?: string;
 	thumbnailUrl: string;
 	publicationDate: Date;
-	published: boolean;
+	isPublished: boolean;
 	isSelling: boolean;
-	tags?: TTags;
 	delegateAuthTo?: string[];
 };
 
@@ -24,36 +22,27 @@ export type TPrismaPayloadGetAllCourses = Array<Prisma.CourseGetPayload<{
 		slug: true;
 		description: true;
 		thumbnailUrl: true;
-		published: true;
 		publicationDate: true;
+		isPublished: true;
+		isSelling: true;
 	};
 }>>;
 
-export type TPrismaPayloadGetCourseById = Prisma.CourseGetPayload<{
+export type TPrismaPayloadGetCourseBySlug = Prisma.CourseGetPayload<{
 	include: {
 		modules: {
 			select: {
 				id: true;
-				name: true;
-				slug: true;
-				description: true;
-				thumbnailUrl: true;
-				published: true;
+				order: true;
+				isPublished: true;
 				publicationDate: true;
-			};
-		};
-		comments: {
-			select: {
-				id: true;
-				content: true;
-				createdAt: true;
-				userId: true;
-				responses: {
+				module: {
 					select: {
 						id: true;
-						content: true;
-						createdAt: true;
-						userId: true;
+						slug: true;
+						name: true;
+						description: true;
+						thumbnailUrl: true;
 					};
 				};
 			};
@@ -66,26 +55,12 @@ export type TPrismaPayloadGetCourseById = Prisma.CourseGetPayload<{
 				subscriptions: true;
 			};
 		};
-	};
-}>;
-
-export type TPrismaPayloadCreateCourse = Prisma.CourseGetPayload<{
-	include: {
-		tags: {
+		comments: {
 			include: {
-				tagOption: {
-					select: {
-						name: true;
-					};
-				};
-				tagValue: {
-					select: {
-						name: true;
-					};
-				};
+				responses: true;
 			};
 		};
 	};
 }>;
 
-export type TPrismaPayloadUpdateCourse = TPrismaPayloadCreateCourse;
+export type TPrismaPayloadCreateOrUpdateCourse = Prisma.CourseGetPayload<undefined>;

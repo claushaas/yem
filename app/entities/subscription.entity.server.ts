@@ -4,18 +4,20 @@ import {CustomError} from '../utils/custom-error.js';
 
 const subscriptionSchema = Joi.object({
 	userId: Joi.string().uuid().required(),
-	courseId: Joi.string().uuid().required(),
+	courseSlug: Joi.string().uuid().required(),
 	expiresAt: Joi.date().required(),
 	provider: Joi.string().valid('hotmart', 'iugu', 'manual').required(),
 	providerSubscriptionId: Joi.string().required(),
+	providerSubscriptionStatus: Joi.string().allow(''),
 });
 
 export class Subscription implements TSubscription {
 	private readonly _userId: string;
-	private readonly _courseId: string;
+	private readonly _courseSlug: string;
 	private readonly _expiresAt: Date;
 	private readonly _provider: 'hotmart' | 'iugu' | 'manual';
 	private readonly _providerSubscriptionId: string;
+	private readonly _providerSubscriptionStatus?: string;
 
 	constructor(subscription: TSubscription) {
 		const {error} = subscriptionSchema.validate(subscription);
@@ -25,18 +27,19 @@ export class Subscription implements TSubscription {
 		}
 
 		this._userId = subscription.userId;
-		this._courseId = subscription.courseId;
+		this._courseSlug = subscription.courseSlug;
 		this._expiresAt = subscription.expiresAt;
 		this._provider = subscription.provider;
 		this._providerSubscriptionId = subscription.providerSubscriptionId;
+		this._providerSubscriptionStatus = subscription.providerSubscriptionStatus;
 	}
 
 	get userId() {
 		return this._userId;
 	}
 
-	get courseId() {
-		return this._courseId;
+	get courseSlug() {
+		return this._courseSlug;
 	}
 
 	get expiresAt() {
@@ -49,5 +52,9 @@ export class Subscription implements TSubscription {
 
 	get providerSubscriptionId() {
 		return this._providerSubscriptionId;
+	}
+
+	get providerSubscriptionStatus() {
+		return this._providerSubscriptionStatus;
 	}
 }

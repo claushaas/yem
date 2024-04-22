@@ -22,20 +22,18 @@ import {commitUserSession, getUserSession} from '~/utils/session.server';
 import {ModuleService} from '~/services/module.service.server';
 import {LessonService} from '~/services/lesson.service.server';
 import {type TUser} from '~/types/user.type';
-import {type TPrismaPayloadGetModulesList, type TModule, type TPrismaPayloadGetModuleById} from '~/types/module.type';
-import {CourseCard} from '~/components/course-card/index.js';
-import {Button, ButtonPreset, ButtonType} from '~/components/button/index.js';
-import {Editor} from '~/components/text-editor/index.client.js';
-import {YemSpinner} from '~/components/yem-spinner/index.js';
-import {CourseService} from '~/services/course.service.server';
-import {type TPrismaPayloadGetAllCourses} from '~/types/course.type';
+import {type TPrismaPayloadGetModulesList, type TModule, type TPrismaPayloadGetModuleBySlug} from '~/types/module.type';
+import {CourseCard} from '~/components/generic-entity-card.js';
+import {Button, ButtonPreset, ButtonType} from '~/components/button.js';
+import {Editor} from '~/components/text-editor.client.js';
+import {YemSpinner} from '~/components/yem-spinner.js';
 import {type TLesson, type TLessonType} from '~/types/lesson.type';
 import {type TTags, type TPrismaPayloadGetAllTags, type TTag} from '~/types/tag.type';
 import {TagService} from '~/services/tag.service.server';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => [
-	{title: `${data?.module?.name} - Yoga em Movimento`},
-	{name: 'description', content: data?.module?.description},
+	{title: `${data?.module?.module.name} - Yoga em Movimento`},
+	{name: 'description', content: data?.module?.module.description},
 	{name: 'robots', content: 'noindex, nofollow'},
 	...data!.meta,
 ];
@@ -43,9 +41,8 @@ export const meta: MetaFunction<typeof loader> = ({data}) => [
 type ModuleLoaderData = {
 	error: string | undefined;
 	success: string | undefined;
-	module: TPrismaPayloadGetModuleById | undefined;
+	module: TPrismaPayloadGetModuleBySlug | undefined;
 	modules: TPrismaPayloadGetModulesList | undefined;
-	courses: TPrismaPayloadGetAllCourses | undefined;
 	tags: TPrismaPayloadGetAllTags | undefined;
 	meta: Array<{tagName: string; rel: string; href: string}>;
 };
@@ -65,14 +62,12 @@ export const loader = async ({request, params}: LoaderFunctionArgs) => {
 
 	try {
 		const {data: module} = await moduleService.getBySlug(courseSlug!, moduleSlug!, userSession.data as TUser);
-		const {data: modules} = await moduleService.getAll(userSession.data as TUser);
-		const {data: courses} = await new CourseService().getAll(userSession.get('roles') as string[]);
+		const {data: modules} = await moduleService.getAllForAdmin(userSession.data as TUser);
 		const {data: tags} = await new TagService().getAll();
 
 		return json<ModuleLoaderData>({
 			module,
 			modules,
-			courses,
 			tags,
 			error: userSession.get('error') as string | undefined,
 			success: userSession.get('success') as string | undefined,
@@ -87,7 +82,6 @@ export const loader = async ({request, params}: LoaderFunctionArgs) => {
 		return json<ModuleLoaderData>({
 			module: undefined,
 			modules: undefined,
-			courses: undefined,
 			tags: undefined,
 			error: (error as Error).message,
 			success: undefined,
@@ -121,9 +115,7 @@ export const action = async ({request, params}: ActionFunctionArgs) => {
 						videoSourceUrl: formData.get('videoSourceUrl') as string,
 						marketingVideoUrl: formData.get('marketingVideoUrl') as string,
 						thumbnailUrl: formData.get('thumbnailUrl') as string,
-						courses: (formData.get('course') as string).split(','),
-						publicationDate: new Date(formData.get('publicationDate') as string),
-						published: Boolean(formData.get('published')),
+						isLessonsOrderRandom: Boolean(formData.get('isLessonsOrderRandom')),
 					};
 
 					await new ModuleService().update(id, moduleToUpdate);
@@ -146,8 +138,9 @@ export const action = async ({request, params}: ActionFunctionArgs) => {
 						thumbnailUrl: formData.get('thumbnailUrl') as string,
 						modules: (formData.get('modules') as string).split(','),
 						publicationDate: new Date(formData.get('publicationDate') as string),
-						published: Boolean(formData.get('published')),
+						isPublished: Boolean(formData.get('published')),
 						tags: JSON.parse(formData.get('tags') as string) as TTags,
+						order: Number(formData.get('order')),
 					};
 
 					await new LessonService().create(newLesson);
@@ -185,7 +178,6 @@ export default function Module() {
 	const {
 		module,
 		modules,
-		courses,
 		tags: rawTags,
 		error,
 		success,
@@ -202,19 +194,18 @@ export default function Module() {
 	const [moduleMktEditQuill, setModuleMktEditQuill] = useState<Quill | null>(null); // eslint-disable-line @typescript-eslint/ban-types
 	const [newLessonQuill, setNewLessonQuill] = useState<Quill | null>(null); // eslint-disable-line @typescript-eslint/ban-types
 	const [newLessonMktQuill, setNewLessonMktQuill] = useState<Quill | null>(null); // eslint-disable-line @typescript-eslint/ban-types
-	const [moduleEditQuillContent, setModuleEditQuillContent] = useState(module?.content ?? '');
-	const [moduleEditQuillMktContent, setModuleEditQuillMktContent] = useState(module?.marketingContent ?? '');
+	const [moduleEditQuillContent, setModuleEditQuillContent] = useState(module?.module.content ?? '');
+	const [moduleEditQuillMktContent, setModuleEditQuillMktContent] = useState(module?.module.marketingContent ?? '');
 	const [newLessonQuillContent, setNewLessonQuillContent] = useState('');
 	const [newLessonQuillMktContent, setNewLessonQuillMktContent] = useState('');
 	const [moduleEditDialogIsOpen, setModuleEditDialogIsOpen] = useState(false);
 	const [newLessonDialogIsOpen, setNewLessonDialogIsOpen] = useState(false);
-	const [coursesValue, setCoursesValue] = useState<Array<{value: string; label: string}>>(module ? module.course.map(course => ({value: course.id, label: course.name})) : []);
-	const [modulesValue, setModulesValue] = useState<Array<{value: string; label: string}>>(module ? [{value: module.id, label: module.name}] : []);
+	const [modulesValue, setModulesValue] = useState<Array<{value: string; label: string}>>(module ? [{value: module.module.id, label: module.module.name}] : []);
 	const [tagsValue, setTagsValue] = useState<Array<{value: TTag; label: string}>>([]);
 	const navigation = useNavigation();
 	const isSubmittingAnyForm = navigation.formAction === `/admin/courses/${courseSlug}/${moduleSlug}`;
 
-	const {ops} = module?.content ? JSON.parse(module.content) as OpIterator : {ops: []};
+	const {ops} = module?.module.content ? JSON.parse(module.module.content) as OpIterator : {ops: []};
 	const contentConverter = new QuillDeltaToHtmlConverter(ops, {
 		multiLineParagraph: false,
 	});
@@ -262,14 +253,14 @@ export default function Module() {
 	}, [newLessonMktQuill]);
 
 	useEffect(() => {
-		if (module?.content && moduleEditQuill) {
-			moduleEditQuill.setContents(JSON.parse(module.content) as Delta);
+		if (module?.module.content && moduleEditQuill) {
+			moduleEditQuill.setContents(JSON.parse(module.module.content) as Delta);
 		}
 	}, [moduleEditQuill]); // eslint-disable-line react-hooks/exhaustive-deps
 
 	useEffect(() => {
-		if (module?.marketingContent && moduleMktEditQuill) {
-			moduleMktEditQuill.setContents(JSON.parse(module.marketingContent) as Delta);
+		if (module?.module.marketingContent && moduleMktEditQuill) {
+			moduleMktEditQuill.setContents(JSON.parse(module.module.marketingContent) as Delta);
 		}
 	}, [moduleMktEditQuill]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -283,7 +274,7 @@ export default function Module() {
 
 			<Dialog.Root open={moduleEditDialogIsOpen} onOpenChange={setModuleEditDialogIsOpen}>
 				<div className='flex items-center gap-5'>
-					<h1>{module.name}</h1>
+					<h1>{module.module.name}</h1>
 					<Dialog.Trigger asChild>
 						<div className='w-fit'>
 							<Button
@@ -301,7 +292,7 @@ export default function Module() {
 					<Dialog.Content className='fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] p-4 max-w-screen-lg w-[90%] bg-mauve-2 dark:bg-mauvedark-2 rounded-xl overflow-y-auto max-h-[90%]'>
 						<Dialog.Title asChild>
 							<h1 className='mb-4'>
-								{`Editar o Módulo ${module.name}`}
+								{`Editar o Módulo ${module.module.name}`}
 							</h1>
 						</Dialog.Title>
 
@@ -316,7 +307,7 @@ export default function Module() {
 									</div>
 									<RadixForm.Control asChild>
 										<input
-											defaultValue={module.oldId ?? ''}
+											defaultValue={module.module.oldId ?? ''}
 											disabled={isSubmittingAnyForm}
 											type='text'
 											min={8}
@@ -334,7 +325,7 @@ export default function Module() {
 									<RadixForm.Control asChild>
 										<input
 											required
-											defaultValue={module.name}
+											defaultValue={module.module.name}
 											disabled={isSubmittingAnyForm}
 											type='text'
 											min={8}
@@ -352,7 +343,7 @@ export default function Module() {
 									<RadixForm.Control asChild>
 										<input
 											required
-											defaultValue={module.description ?? ''}
+											defaultValue={module.module.description ?? ''}
 											disabled={isSubmittingAnyForm}
 											type='text'
 											min={8}
@@ -411,7 +402,7 @@ export default function Module() {
 									</div>
 									<RadixForm.Control asChild>
 										<input
-											defaultValue={module.videoSourceUrl ?? ''}
+											defaultValue={module.module.videoSourceUrl ?? ''}
 											disabled={isSubmittingAnyForm}
 											type='text'
 											min={3}
@@ -428,7 +419,7 @@ export default function Module() {
 									</div>
 									<RadixForm.Control asChild>
 										<input
-											defaultValue={module.marketingVideoUrl ?? ''}
+											defaultValue={module.module.marketingVideoUrl ?? ''}
 											disabled={isSubmittingAnyForm}
 											type='text'
 											min={3}
@@ -446,72 +437,12 @@ export default function Module() {
 									<RadixForm.Control asChild>
 										<input
 											required
-											defaultValue={module.thumbnailUrl}
+											defaultValue={module.module.thumbnailUrl}
 											disabled={isSubmittingAnyForm}
 											type='text'
 											min={3}
 											className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
 										/>
-									</RadixForm.Control>
-								</RadixForm.Field>
-
-								<RadixForm.Field name='course'>
-									<div className='flex items-baseline justify-between'>
-										<RadixForm.Label>
-											<p>Cursos</p>
-										</RadixForm.Label>
-									</div>
-									<RadixForm.Control asChild>
-										<input
-											disabled={isSubmittingAnyForm}
-											type='text'
-											className='hidden'
-											value={coursesValue.map(course => course.value).join(',')}
-										/>
-									</RadixForm.Control>
-									<Select
-										isMulti
-										value={coursesValue}
-										options={courses?.map(course => ({value: course.id, label: course.name}))}
-										onChange={selectedOption => {
-											setCoursesValue(selectedOption as Array<{value: string; label: string}>);
-										}}
-									/>
-								</RadixForm.Field>
-
-								<RadixForm.Field name='publicationDate'>
-									<div className='flex items-baseline justify-between'>
-										<RadixForm.Label>
-											<p>Data de publicação</p>
-										</RadixForm.Label>
-									</div>
-									<RadixForm.Control asChild>
-										<input
-											defaultValue={defaultDate.toISOString().slice(0, 16)}
-											disabled={isSubmittingAnyForm}
-											type='datetime-local'
-											min={3}
-											className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
-										/>
-									</RadixForm.Control>
-								</RadixForm.Field>
-
-								<RadixForm.Field name='published'>
-									<div className='flex items-baseline justify-between'>
-										<RadixForm.Label>
-											<p>Está publicado</p>
-										</RadixForm.Label>
-									</div>
-									<RadixForm.Control asChild>
-										<Switch.Root
-											defaultChecked={module.published}
-											disabled={isSubmittingAnyForm}
-											className='w-[42px] h-[25px] bg-blacka-6 rounded-full relative shadow-[0_2px_10px] shadow-blacka-4 focus:shadow-[0_0_0_2px] focus:shadow-black data-[state=checked]:bg-black outline-none cursor-default'
-										>
-											<Switch.Thumb
-												className='block w-[21px] h-[21px] bg-white rounded-full shadow-[0_2px_2px] shadow-blackA4 transition-transform duration-100 translate-x-0.5 will-change-transform data-[state=checked]:translate-x-[19px]'
-											/>
-										</Switch.Root>
 									</RadixForm.Control>
 								</RadixForm.Field>
 
@@ -530,7 +461,7 @@ export default function Module() {
 										<input
 											disabled={isSubmittingAnyForm}
 											type='text'
-											value={module.id}
+											value={module.module.id}
 										/>
 									</RadixForm.Control>
 								</RadixForm.Field>
@@ -558,10 +489,10 @@ export default function Module() {
 			</Dialog.Root>
 
 			<div>
-				<h4>{module.description}</h4>
+				<h4>{module.module.description}</h4>
 				<p>Data de publicação: {new Date(module.publicationDate).toLocaleString('pt-BR')}</p>
-				<p>Está publicado: {module.published ? 'sim' : 'não'}</p>
-				{module.content && (
+				<p>Está publicado: {module.isPublished ? 'sim' : 'não'}</p>
+				{module.module.content && (
 					<>
 						<h2>Conteúdo do Módulo:</h2>
 						{/* eslint-disable-next-line @typescript-eslint/naming-convention, react/no-danger */}
@@ -835,7 +766,7 @@ export default function Module() {
 										<Select
 											isMulti
 											value={modulesValue}
-											options={modules?.map(module => ({value: module.id, label: module.name}))}
+											options={modules?.map(module => ({value: module.slug, label: module.name}))}
 											onChange={selectedOption => {
 												setModulesValue(selectedOption as Array<{value: string; label: string}>);
 											}}
@@ -884,6 +815,7 @@ export default function Module() {
 										</div>
 										<RadixForm.Control asChild>
 											<input
+												defaultValue={defaultDate.toISOString().slice(0, 16)}
 												disabled={isSubmittingAnyForm}
 												type='datetime-local'
 												min={3}
@@ -892,7 +824,7 @@ export default function Module() {
 										</RadixForm.Control>
 									</RadixForm.Field>
 
-									<RadixForm.Field name='published'>
+									<RadixForm.Field name='isPublished'>
 										<div className='flex items-baseline justify-between'>
 											<RadixForm.Label>
 												<p>Está publicada</p>
@@ -907,6 +839,22 @@ export default function Module() {
 													className='block w-[21px] h-[21px] bg-white rounded-full shadow-[0_2px_2px] shadow-blackA4 transition-transform duration-100 translate-x-0.5 will-change-transform data-[state=checked]:translate-x-[19px]'
 												/>
 											</Switch.Root>
+										</RadixForm.Control>
+									</RadixForm.Field>
+
+									<RadixForm.Field name='order'>
+										<div className='flex items-baseline justify-between'>
+											<RadixForm.Label>
+												<p>Posição da aula dentro do módulo</p>
+											</RadixForm.Label>
+										</div>
+										<RadixForm.Control asChild>
+											<input
+												required
+												disabled={isSubmittingAnyForm}
+												type='text'
+												className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
+											/>
 										</RadixForm.Control>
 									</RadixForm.Field>
 
@@ -933,8 +881,8 @@ export default function Module() {
 				</Dialog.Root>
 
 				<div className='flex gap-4 my-4 flex-wrap'>
-					{module.lessons.map(lesson => (
-						<CourseCard key={lesson.id} course={lesson} to={`./${lesson.slug}`}/>
+					{module.module.lessons.map(lesson => (
+						<CourseCard key={lesson.lesson.id} course={lesson.lesson} to={`./${lesson.lesson.slug}`}/>
 					))}
 				</div>
 			</div>
