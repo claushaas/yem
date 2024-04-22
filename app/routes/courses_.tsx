@@ -1,8 +1,8 @@
 import {json, type LoaderFunctionArgs} from '@remix-run/node';
 import {useLoaderData, type MetaFunction} from '@remix-run/react';
+import {type TCourseDataForCache} from '~/cache/populate-courses-to-cache.js';
 import {CourseCard} from '~/components/generic-entity-card.js';
 import {CourseService} from '~/services/course.service.server';
-import {type TPrismaPayloadGetAllCourses} from '~/types/course.type';
 import {type TUserRoles} from '~/types/user.type';
 import {logger} from '~/utils/logger.util';
 import {getUserSession} from '~/utils/session.server';
@@ -14,7 +14,7 @@ export const meta: MetaFunction<typeof loader> = ({data}) => [
 ];
 
 type CoursesLoaderData = {
-	courses: TPrismaPayloadGetAllCourses | undefined;
+	courses: TCourseDataForCache[] | undefined;
 	meta: Array<{tagName: string; rel: string; href: string}>;
 };
 
@@ -26,7 +26,8 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
 	];
 
 	try {
-		const {data: courses} = await new CourseService().getAll(userSession.get('roles') as TUserRoles);
+		const userRoles = userSession.get('roles') as TUserRoles;
+		const {data: courses} = new CourseService().getAllFromCache(userRoles);
 
 		return json<CoursesLoaderData>({
 			courses,
