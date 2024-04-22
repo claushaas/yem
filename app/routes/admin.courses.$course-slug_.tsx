@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 import {
 	type ActionFunctionArgs, json, type LoaderFunctionArgs, redirect,
 } from '@remix-run/node';
@@ -89,6 +90,7 @@ export const action = async ({request, params}: ActionFunctionArgs) => {
 	try {
 		if ((userSession.get('roles') as string[])?.includes('admin')) {
 			const formData = await request.formData();
+			const courseService = new CourseService();
 
 			switch (formData.get('type')) {
 				case 'editCourse': {
@@ -106,10 +108,9 @@ export const action = async ({request, params}: ActionFunctionArgs) => {
 						publicationDate: new Date(formData.get('publicationDate') as string),
 						isPublished: Boolean(formData.get('published')),
 						isSelling: Boolean(formData.get('isSelling')),
-						delegateAuthTo: (formData.get('delegateAuthTo') as string).split(','),
 					};
 
-					await new CourseService().update(id, courseToUpdate);
+					await courseService.update(id, courseToUpdate);
 
 					userSession.flash('success', `Curso ${courseToUpdate.name} atualizado com sucesso`);
 					break;
@@ -135,6 +136,26 @@ export const action = async ({request, params}: ActionFunctionArgs) => {
 					await new ModuleService().create(moduleToCreate);
 
 					userSession.flash('success', `Módulo ${moduleToCreate.name} criado com sucesso`);
+					break;
+				}
+
+				case 'addDelegateAuth': {
+					const courseId = formData.get('courseId') as string;
+					const courses = (formData.get('courses') as string).split(',');
+
+					await courseService.addDelegateAuthTo(courseId, courses);
+
+					userSession.flash('success', 'Autorização adicionada com sucesso');
+					break;
+				}
+
+				case 'removeDelegateAuth': {
+					const courseId = formData.get('courseId') as string;
+					const delegateAuthToSlug = formData.get('delegateAuthToSlug') as string;
+
+					await courseService.removeDelegateAuthTo(courseId, delegateAuthToSlug);
+
+					userSession.flash('success', 'Autorização removida com sucesso');
 					break;
 				}
 
@@ -182,7 +203,8 @@ export default function Course() {
 	const [newModuleQuillMktContent, setNewModuleQuillMktContent] = useState('');
 	const [courseEditDialogIsOpen, setCourseEditDialogIsOpen] = useState<boolean>(false);
 	const [newModuleDialogIsOpen, setNewModuleDialogIsOpen] = useState<boolean>(false);
-	const [coursesValue, setCoursesValue] = useState<Array<{value: string; label: string}>>(course ? [{value: course.id, label: course.name}] : []);
+	const [newDelegateAuthDialogIsOpen, setNewDelegateAuthDialogIsOpen] = useState<boolean>(false);
+	const [coursesValue, setCoursesValue] = useState<Array<{value: string; label: string}>>(course ? [{value: course.slug, label: course.name}] : []);
 	const [coursesSlug, setCoursesSlug] = useState<Array<{value: string; label: string}>>(course?.delegateAuthTo?.map(course => ({value: course.slug, label: course.name})) ?? []);
 	const navigation = useNavigation();
 	const isSubmittingAnyForm = navigation.formAction === `/admin/courses/${courseSlug}`;
@@ -199,6 +221,7 @@ export default function Course() {
 		if (success ?? error) {
 			setCourseEditDialogIsOpen(false);
 			setNewModuleDialogIsOpen(false);
+			setNewDelegateAuthDialogIsOpen(false);
 		}
 	}, [success, error]);
 
@@ -483,30 +506,6 @@ export default function Course() {
 										</RadixForm.Control>
 									</RadixForm.Field>
 
-									<RadixForm.Field name='delegateAuthTo'>
-										<div className='flex items-baseline justify-between'>
-											<RadixForm.Label>
-												<p>Delegar Autorização Para</p>
-											</RadixForm.Label>
-										</div>
-										<RadixForm.Control asChild>
-											<input
-												disabled={isSubmittingAnyForm}
-												type='text'
-												className='hidden'
-												value={coursesSlug.map(course => course.value).join(',')}
-											/>
-										</RadixForm.Control>
-										<Select
-											isMulti
-											defaultValue={coursesSlug}
-											options={courses?.map(course => ({value: course.slug, label: course.name}))}
-											onChange={selectedOption => {
-												setCoursesSlug(selectedOption as Array<{value: string; label: string}>);
-											}}
-										/>
-									</RadixForm.Field>
-
 									<RadixForm.Field name='type' className='hidden'>
 										<RadixForm.Control asChild>
 											<input
@@ -552,9 +551,11 @@ export default function Course() {
 
 			<div>
 				<h2>{course.description}</h2>
+
 				<p>Data de publicação: {new Date(course.publicationDate).toLocaleString('pt-BR')}</p>
 				<p>Está publicado: {course.isPublished ? 'sim' : 'não'}</p>
 				<p>Está com matrículas abertas: {course?.isSelling ? 'sim' : 'não'}</p>
+
 				{course.content && (
 					<>
 						<h2>Conteúdo do curso:</h2>
@@ -562,8 +563,141 @@ export default function Course() {
 						<div dangerouslySetInnerHTML={{__html: contentConverter.convert()}} className='p-4 rounded-lg border-2 border-mauve-6 dark:border-mauvedark-6 max-w-screen-lg'/>
 					</>
 				)}
-			</div>
 
+				<Dialog.Root open={newDelegateAuthDialogIsOpen} onOpenChange={setNewDelegateAuthDialogIsOpen}>
+					<div className='flex items-center gap-5'>
+						<h2>Delegou autorização para:</h2>
+						<Dialog.Trigger asChild>
+							<div className='w-fit'>
+								<Button
+									preset={ButtonPreset.Primary}
+									text='Adicionar Nova Autorização'
+									type={ButtonType.Button}
+								/>
+							</div>
+						</Dialog.Trigger>
+
+						<Dialog.Portal>
+							<Dialog.Overlay className='bg-mauvea-12 fixed inset-0'/>
+
+							<Dialog.Content className='fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] p-4 max-w-screen-lg w-[90%] bg-mauve-2 dark:bg-mauvedark-2 rounded-xl overflow-y-auto max-h-[90%]'>
+								<Dialog.Title asChild>
+									<h1 className='mb-4'>
+										Adicionar Nova Autorização
+									</h1>
+								</Dialog.Title>
+
+								<RadixForm.Root asChild>
+									<Form method='post' action={`/admin/courses/${courseSlug}`} className='flex flex-col gap-3'>
+										<RadixForm.Field name='type'>
+
+											<RadixForm.Control asChild>
+												<input
+													disabled={isSubmittingAnyForm}
+													type='text'
+													className='hidden'
+													value='addDelegateAuth'
+												/>
+											</RadixForm.Control>
+										</RadixForm.Field>
+
+										<RadixForm.Field name='courseId'>
+											<RadixForm.Control asChild>
+												<input
+													disabled={isSubmittingAnyForm}
+													type='text'
+													className='hidden'
+													value={course.id}
+												/>
+											</RadixForm.Control>
+										</RadixForm.Field>
+
+										<RadixForm.Field name='courses'>
+											<div className='flex items-baseline justify-between'>
+												<RadixForm.Label>
+													<p>Cursos</p>
+												</RadixForm.Label>
+											</div>
+											<RadixForm.Control asChild>
+												<input
+													disabled={isSubmittingAnyForm}
+													type='text'
+													className='hidden'
+													value={coursesSlug.map(course => course.value).join(',')}
+												/>
+											</RadixForm.Control>
+											<Select
+												isMulti
+												value={coursesSlug}
+												options={courses?.map(course => ({value: course.slug, label: course.name}))}
+												onChange={selectedOption => {
+													setCoursesSlug(selectedOption as Array<{value: string; label: string}>);
+												}}
+											/>
+										</RadixForm.Field>
+
+										<RadixForm.Submit asChild>
+											<Button isDisabled={isSubmittingAnyForm} className='m-auto mt-2' text='Adicionar Autorização' preset={ButtonPreset.Primary} type={ButtonType.Submit}/>
+										</RadixForm.Submit>
+
+										{isSubmittingAnyForm && <YemSpinner/>}
+
+									</Form>
+								</RadixForm.Root>
+							</Dialog.Content>
+						</Dialog.Portal>
+					</div>
+				</Dialog.Root>
+
+				{course.delegateAuthTo.length > 0 ? course.delegateAuthTo.map(delegatedToCourse => (
+					<div key={delegatedToCourse.id} className='flex items-center gap-5'>
+						<p>{delegatedToCourse.name}</p>
+						<RadixForm.Root asChild>
+							<Form method='post' action={`/admin/courses/${courseSlug}`}>
+
+								<RadixForm.Field name='type'>
+
+									<RadixForm.Control asChild>
+										<input
+											disabled={isSubmittingAnyForm}
+											type='text'
+											className='hidden'
+											value='removeDelegateAuth'
+										/>
+									</RadixForm.Control>
+								</RadixForm.Field>
+
+								<RadixForm.Field name='courseId'>
+									<RadixForm.Control asChild>
+										<input
+											disabled={isSubmittingAnyForm}
+											type='text'
+											className='hidden'
+											value={course.id}
+										/>
+									</RadixForm.Control>
+								</RadixForm.Field>
+
+								<RadixForm.Field name='delegateAuthToSlug'>
+									<RadixForm.Control asChild>
+										<input
+											disabled={isSubmittingAnyForm}
+											type='text'
+											className='hidden'
+											value={delegatedToCourse.slug}
+										/>
+									</RadixForm.Control>
+								</RadixForm.Field>
+
+								<RadixForm.Submit asChild>
+									<Button isDisabled={isSubmittingAnyForm} className='m-auto mt-2' text='Remover Autorização' preset={ButtonPreset.Primary} type={ButtonType.Submit}/>
+								</RadixForm.Submit>
+
+							</Form>
+						</RadixForm.Root>
+					</div>
+				)) : (<p>Nenhum curso</p>)}
+			</div>
 			<div>
 
 				<Dialog.Root open={newModuleDialogIsOpen} onOpenChange={setNewModuleDialogIsOpen}>
