@@ -15,8 +15,10 @@ export class IuguService {
 	private readonly _request: Request;
 
 	constructor() {
+		const token = process.env.IUGU_API_TOKEN ?? '';
+		const base64Token = Buffer.from(token + ':').toString('base64');
 		this._request = new Request(process.env.IUGU_API_URL ?? '', {
-			Authorization: `Basic ${Buffer.from(`${process.env.IUGU_API_TOKEN}:`).toString('base64')}`,
+			Authorization: `Basic ${base64Token}`,
 		});
 	}
 

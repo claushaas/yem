@@ -11,8 +11,8 @@ import {logger} from '~/utils/logger.util';
 import {getUserSession} from '~/utils/session.server';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => [
-	{title: data!.module?.name ?? 'Módulo do Curso do Yoga em Movimento'},
-	{name: 'description', content: data!.module?.description ?? 'Conheça o módulo do curso oferecido pela Yoga em Movimento'},
+	{title: data!.module?.module.name ?? 'Módulo do Curso do Yoga em Movimento'},
+	{name: 'description', content: data!.module?.module.description ?? 'Conheça o módulo do curso oferecido pela Yoga em Movimento'},
 	...data!.meta,
 ];
 
@@ -51,7 +51,7 @@ export const loader = async ({request, params}: LoaderFunctionArgs) => {
 export default function Module() {
 	const {module} = useLoaderData<ModuleLoaderData>();
 
-	const {ops} = module?.content ? JSON.parse(module?.content) as OpIterator : {ops: []};
+	const {ops} = module?.module.content ? JSON.parse(module?.module.content) as OpIterator : {ops: []};
 	const contentConverter = new QuillDeltaToHtmlConverter(ops, {
 		multiLineParagraph: false,
 	});
@@ -59,27 +59,27 @@ export default function Module() {
 	return module && (
 		<main className='w-full max-w-[95%] sm:max-w-[90%] mx-auto'>
 			<div className='w-full max-w-screen-md mx-auto'>
-				<section id={module.name}>
-					<h1 className='text-center'>{module.name}</h1>
+				<section id={module.module.name}>
+					<h1 className='text-center'>{module.module.name}</h1>
 				</section>
 				<div className='p-1 sm:p-5 bg-mauvea-2 dark:bg-mauvedarka-2 rounded-xl flex flex-col gap-6'>
 					{/* eslint-disable-next-line react/no-danger, @typescript-eslint/naming-convention */}
 					<section dangerouslySetInnerHTML={{__html: contentConverter.convert()}} id='content'/>
-					{module.videoSourceUrl && (
+					{module.module.videoSourceUrl && (
 						<section id='video' className='h-fit'>
 							<Stream
 								controls
 								preload='auto'
 								className='pt-[56.25%] relative *:absolute *:w-full *:h-full *:top-0 *:left-0 *:inset-0'
-								src={module.videoSourceUrl}
+								src={module.module.videoSourceUrl}
 								responsive={false}
 							/>
 						</section>
 					)}
-					{module.lessons && (
+					{module.module.lessons && (
 						<section id='modules' className='flex flex-wrap gap-4 my-4'>
-							{module.lessons.map(lesson => (
-								<CourseCard key={lesson.id} course={lesson} to={`./${lesson.slug}`}/>
+							{module.module.lessons.map(lesson => (
+								<CourseCard key={lesson.lesson.id} course={lesson} to={`./${lesson.lesson.slug}`}/>
 							))}
 						</section>
 					)}

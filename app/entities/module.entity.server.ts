@@ -29,12 +29,12 @@ export class Module implements TModule {
 	private readonly _videoSourceUrl?: string;
 	private readonly _marketingVideoUrl?: string;
 	private readonly _thumbnailUrl: string;
-	private readonly _publicationDate: Date;
-	private readonly _isPublished: boolean;
+	private readonly _publicationDate?: Date;
+	private readonly _isPublished?: boolean;
 	private readonly _courses?: string[];
 	private readonly _tags?: TTags;
 	private readonly _isLessonsOrderRandom: boolean;
-	private readonly _order: number;
+	private readonly _order?: number;
 
 	constructor(module: TModule) {
 		const {error} = moduleSchema.validate(module);

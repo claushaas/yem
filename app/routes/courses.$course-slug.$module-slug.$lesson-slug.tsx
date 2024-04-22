@@ -10,8 +10,8 @@ import {logger} from '~/utils/logger.util';
 import {getUserSession} from '~/utils/session.server';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => [
-	{title: data!.lesson?.name ?? 'Aula do Curso do Yoga em Movimento'},
-	{name: 'description', content: data!.lesson?.description ?? 'Conheça a aula do curso oferecido pela Yoga em Movimento'},
+	{title: data!.lesson?.lesson.name ?? 'Aula do Curso do Yoga em Movimento'},
+	{name: 'description', content: data!.lesson?.lesson.description ?? 'Conheça a aula do curso oferecido pela Yoga em Movimento'},
 	...data!.meta,
 ];
 
@@ -51,7 +51,7 @@ export const loader = async ({request, params}: LoaderFunctionArgs) => {
 export default function Lesson() {
 	const {lesson} = useLoaderData<LessonLoaderData>();
 
-	const {ops} = lesson?.content ? JSON.parse(lesson?.content) as OpIterator : {ops: []};
+	const {ops} = lesson?.lesson.content ? JSON.parse(lesson?.lesson.content) as OpIterator : {ops: []};
 	const contentConverter = new QuillDeltaToHtmlConverter(ops, {
 		multiLineParagraph: false,
 	});
@@ -59,19 +59,19 @@ export default function Lesson() {
 	return lesson && (
 		<main className='w-full max-w-[95%] sm:max-w-[90%] mx-auto'>
 			<div className='w-full max-w-screen-md mx-auto'>
-				<section id={lesson.name}>
-					<h1 className='text-center'>{lesson.name}</h1>
+				<section id={lesson.lesson.name}>
+					<h1 className='text-center'>{lesson.lesson.name}</h1>
 				</section>
 				<div className='p-1 sm:p-5 bg-mauvea-2 dark:bg-mauvedarka-2 rounded-xl flex flex-col gap-6'>
 					{/* eslint-disable-next-line react/no-danger, @typescript-eslint/naming-convention */}
 					<section dangerouslySetInnerHTML={{__html: contentConverter.convert()}} id='content'/>
-					{lesson.videoSourceUrl && (
+					{lesson.lesson.videoSourceUrl && (
 						<section id='video' className='h-fit'>
 							<Stream
 								controls
 								preload='auto'
 								className='pt-[56.25%] relative *:absolute *:w-full *:h-full *:top-0 *:left-0 *:inset-0'
-								src={lesson.videoSourceUrl}
+								src={lesson.lesson.videoSourceUrl}
 								responsive={false}
 							/>
 						</section>

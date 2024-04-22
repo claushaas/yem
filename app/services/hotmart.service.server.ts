@@ -140,10 +140,15 @@ export class HotmartService {
 		const futureDate = new Date(subscription.purchase.approved_date);
 		futureDate.setDate(futureDate.getDate() + 32);
 
-		return subscription.purchase.offer.payment_mode === 'MULTIPLE_PAYMENTS'
-			? (subscription.purchase.recurrency_number < subscription.purchase.payment.installments_number ? futureDate
-				: new Date(2_556_113_460_000))
-			: new Date(2_556_113_460_000);
+		let expiresAt: Date;
+
+		if (subscription.purchase.offer.payment_mode === 'MULTIPLE_PAYMENTS') {
+			expiresAt = subscription.purchase.recurrency_number < subscription.purchase.payment.installments_number ? futureDate : new Date(2_556_113_460_000);
+		} else {
+			expiresAt = new Date(2_556_113_460_000);
+		}
+
+		return expiresAt;
 	}
 
 	private _mapSchoolSubscriptions(subscriptions: THotmartSubscription[], user: TUser): TSubscription[] {

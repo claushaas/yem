@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
-import {type PrismaClient} from '@prisma/client';
+import {type Prisma, type PrismaClient} from '@prisma/client';
 import Fuse, {type IFuseOptions} from 'fuse.js';
 import {type TUser} from '../types/user.type.js';
 import {CustomError} from '../utils/custom-error.js';
@@ -38,11 +38,11 @@ export class LessonService {
 				duration: newLesson.duration,
 				thumbnailUrl: newLesson.thumbnailUrl,
 				modules: {
-					create: newLesson.modules.map(module => ({
+					create: newLesson.modules!.map(module => ({
 						moduleId: module,
-						order: newLesson.order,
-						isPublished: newLesson.isPublished,
-						publicationDate: newLesson.publicationDate,
+						order: newLesson.order!,
+						isPublished: newLesson.isPublished!,
+						publicationDate: newLesson.publicationDate!,
 					})),
 				},
 				tags: {
@@ -337,3 +337,5 @@ export class LessonService {
 		return isAdmin || hasActiveSubscription;
 	}
 }
+
+type test = Prisma.LessonToModuleCreateManyLessonInputEnvelope;

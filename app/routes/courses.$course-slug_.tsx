@@ -76,7 +76,7 @@ export default function Course() {
 					{course.modules && (
 						<section id='modules' className='flex flex-wrap gap-4 my-4'>
 							{course.modules.map(module => (
-								<CourseCard key={module.id} course={module} to={`./${module.slug}`}/>
+								<CourseCard key={module.module.id} course={module} to={`./${module.module.slug}`}/>
 							))}
 						</section>
 					)}

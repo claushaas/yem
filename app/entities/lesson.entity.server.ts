@@ -32,12 +32,12 @@ export class Lesson implements TLesson {
 	private readonly _videoSourceUrl?: string;
 	private readonly _marketingVideoUrl?: string;
 	private readonly _thumbnailUrl: string;
-	private readonly _modules: string[];
+	private readonly _modules?: string[];
 	private readonly _tags?: TTags;
 	private readonly _duration?: number;
-	private readonly _order: number;
-	private readonly _isPublished: boolean;
-	private readonly _publicationDate: Date;
+	private readonly _order?: number;
+	private readonly _isPublished?: boolean;
+	private readonly _publicationDate?: Date;
 
 	constructor(lesson: TLesson) {
 		const {error} = lessonSchema.validate(lesson);

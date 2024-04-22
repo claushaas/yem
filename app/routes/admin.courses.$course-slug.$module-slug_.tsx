@@ -27,8 +27,6 @@ import {CourseCard} from '~/components/generic-entity-card.js';
 import {Button, ButtonPreset, ButtonType} from '~/components/button.js';
 import {Editor} from '~/components/text-editor.client.js';
 import {YemSpinner} from '~/components/yem-spinner.js';
-import {CourseService} from '~/services/course.service.server';
-import {type TPrismaPayloadGetAllCourses} from '~/types/course.type';
 import {type TLesson, type TLessonType} from '~/types/lesson.type';
 import {type TTags, type TPrismaPayloadGetAllTags, type TTag} from '~/types/tag.type';
 import {TagService} from '~/services/tag.service.server';
@@ -45,7 +43,6 @@ type ModuleLoaderData = {
 	success: string | undefined;
 	module: TPrismaPayloadGetModuleBySlug | undefined;
 	modules: TPrismaPayloadGetModulesList | undefined;
-	courses: TPrismaPayloadGetAllCourses | undefined;
 	tags: TPrismaPayloadGetAllTags | undefined;
 	meta: Array<{tagName: string; rel: string; href: string}>;
 };
@@ -66,13 +63,11 @@ export const loader = async ({request, params}: LoaderFunctionArgs) => {
 	try {
 		const {data: module} = await moduleService.getById(courseSlug!, moduleSlug!, userSession.data as TUser);
 		const {data: modules} = await moduleService.getAllForAdmin(userSession.data as TUser);
-		const {data: courses} = await new CourseService().getAll(userSession.get('roles') as string[]);
 		const {data: tags} = await new TagService().getAll();
 
 		return json<ModuleLoaderData>({
 			module,
 			modules,
-			courses,
 			tags,
 			error: userSession.get('error') as string | undefined,
 			success: userSession.get('success') as string | undefined,
@@ -87,7 +82,6 @@ export const loader = async ({request, params}: LoaderFunctionArgs) => {
 		return json<ModuleLoaderData>({
 			module: undefined,
 			modules: undefined,
-			courses: undefined,
 			tags: undefined,
 			error: (error as Error).message,
 			success: undefined,
@@ -184,7 +178,6 @@ export default function Module() {
 	const {
 		module,
 		modules,
-		courses,
 		tags: rawTags,
 		error,
 		success,

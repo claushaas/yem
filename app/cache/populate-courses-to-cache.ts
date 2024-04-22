@@ -11,6 +11,9 @@ export type TCourseDataForCache = {
 } & TCourse;
 
 const getCourseDataForCache = (course: TAllDataToBeCached): TCourseDataForCache => {
+	course.modules.sort((a, b) => a.order - b.order);
+	const modules = course.modules.map(moduleToCourse => moduleToCourse.module.slug);
+
 	const courseDataForCache = {
 		id: course.id,
 		oldId: course.oldId,
@@ -28,7 +31,7 @@ const getCourseDataForCache = (course: TAllDataToBeCached): TCourseDataForCache 
 		isPublished: course.isPublished,
 		isSelling: course.isSelling,
 		delegateAuthTo: course.delegateAuthTo.map(delegateAuthTo => delegateAuthTo.id),
-		modules: course.modules.sort((a, b) => a.order - b.order).map(moduleToCourse => moduleToCourse.module.slug),
+		modules,
 	};
 
 	return courseDataForCache;

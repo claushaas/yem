@@ -10,13 +10,11 @@ import {type Delta, type OpIterator} from 'quill/core';
 import {QuillDeltaToHtmlConverter} from 'quill-delta-to-html';
 import * as Dialog from '@radix-ui/react-dialog';
 import * as RadixForm from '@radix-ui/react-form';
-import * as Switch from '@radix-ui/react-switch';
 import * as RadixSelect from '@radix-ui/react-select';
 import {
 	XMarkIcon, ChevronDownIcon, ChevronUpIcon, CheckIcon,
 } from '@heroicons/react/24/outline';
 import {ClientOnly} from 'remix-utils/client-only';
-import Select from 'react-select';
 import {LessonService} from '~/services/lesson.service.server';
 import {type TUser} from '~/types/user.type';
 import {logger} from '~/utils/logger.util';
@@ -25,10 +23,6 @@ import {type TLesson, type TLessonType, type TPrismaPayloadGetLessonById} from '
 import {Button, ButtonPreset, ButtonType} from '~/components/button.js';
 import {Editor} from '~/components/text-editor.client.js';
 import {YemSpinner} from '~/components/yem-spinner.js';
-import {type TPrismaPayloadGetModulesList} from '~/types/module.type';
-import {ModuleService} from '~/services/module.service.server';
-import {type TTags, type TPrismaPayloadGetAllTags, type TTag} from '~/types/tag.type';
-import {TagService} from '~/services/tag.service.server';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => ([
 	{title: `Aula ${data!.lesson?.lesson.name} - Yoga em Movimento`},
@@ -41,8 +35,6 @@ type LessonLoaderData = {
 	error: string | undefined;
 	success: string | undefined;
 	lesson: TPrismaPayloadGetLessonById | undefined;
-	modules: TPrismaPayloadGetModulesList | undefined;
-	tags: TPrismaPayloadGetAllTags | undefined;
 	meta: Array<{tagName: string; rel: string; href: string}>;
 };
 
@@ -60,13 +52,9 @@ export const loader = async ({request, params}: LoaderFunctionArgs) => {
 
 	try {
 		const {data: lesson} = await new LessonService().getById(courseSlug!, moduleSlug!, lessonSlug!, userSession.data as TUser);
-		const {data: modules} = await new ModuleService().getAllForAdmin(userSession.data as TUser);
-		const {data: tags} = await new TagService().getAll();
 
 		return json<LessonLoaderData>({
 			lesson,
-			modules,
-			tags,
 			error: userSession.get('error') as string | undefined,
 			success: userSession.get('success') as string | undefined,
 			meta,
@@ -79,8 +67,6 @@ export const loader = async ({request, params}: LoaderFunctionArgs) => {
 		logger.logError(`Error fetching lesson: ${(error as Error).message}`);
 		return json<LessonLoaderData>({
 			lesson: undefined,
-			modules: undefined,
-			tags: undefined,
 			error: `Error fetching lesson: ${(error as Error).message}`,
 			success: undefined,
 			meta,
@@ -146,11 +132,7 @@ export default function Lesson() {
 		error,
 		success,
 		lesson,
-		modules,
-		tags: rawTags,
 	} = useLoaderData<LessonLoaderData>();
-
-	const tags: Array<{value: TTag; label: string}> = rawTags ? rawTags.map(tag => ({value: [tag.tagOptionName, tag.tagValueName], label: `${tag.tagOptionName}: ${tag.tagValueName}`})) : [];
 
 	const {
 		'course-slug': courseSlug,

@@ -19,7 +19,7 @@ const getModuleDataForCache = (moduleToCourse: TAllDataToBeCached['modules'][0],
 			[module.lessons[index], module.lessons[randomIndex]] = [module.lessons[randomIndex], module.lessons[index]];
 		}
 	} else if ((module.lessons).every(lesson => Boolean(lesson.order))) {
-		module.lessons = module.lessons.sort((a, b) => a.order - b.order);
+		module.lessons.sort((a, b) => a.order - b.order);
 	}
 
 	const lessons = module.lessons.map(lesson => lesson.id);
