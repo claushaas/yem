@@ -11,8 +11,8 @@ import {getUserSession} from './utils/session.server.js';
 import {type TypeUserSession} from './types/user-session.type.js';
 import {useIsBot} from './context/is-bot.context.js';
 import styles from '~/tailwind.css?url';
-import {NavigateBar} from '~/components/navigation-bar/index.js';
-import {Footer} from '~/components/footer/index.js';
+import {NavigateBar} from '~/components/navigation-bar.js';
+import {Footer} from '~/components/footer.js';
 
 export const links: LinksFunction = () => [
 	{rel: 'stylesheet', href: styles},
@@ -38,7 +38,7 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
 };
 
 function App() {
-	const data = useLoaderData() as {userData?: TypeUserSession | undefined} ?? {};
+	const data = useLoaderData() as {userData: TypeUserSession | undefined} ?? {};
 	const userData = data?.userData;
 
 	const isBot = useIsBot();

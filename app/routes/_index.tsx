@@ -1,7 +1,7 @@
 import {json, type LoaderFunctionArgs, type MetaFunction} from '@remix-run/node';
 import {Image} from '@unpic/react';
 import {buildImgSource} from '~/utils/build-cloudflare-image-source.js';
-import {Testimony} from '~/components/testimony/index.js';
+import {Testimony} from '~/components/testimony-card.js';
 
 type TLoaderData = {
 	meta: Array<{tagName: string; rel: string; href: string}>;

@@ -8,11 +8,11 @@ import * as Dialog from '@radix-ui/react-dialog';
 import * as RadixForm from '@radix-ui/react-form';
 import {useEffect, useState} from 'react';
 import {XMarkIcon} from '@heroicons/react/24/outline';
-import {Button, ButtonPreset, ButtonType} from '~/components/button/index.js';
+import {Button, ButtonPreset, ButtonType} from '~/components/button.js';
 import {UserService} from '~/services/user.service.server';
 import {type TUser} from '~/types/user.type';
 import {commitUserSession, getUserSession} from '~/utils/session.server';
-import {YemSpinner} from '~/components/yem-spinner/index.js';
+import {YemSpinner} from '~/components/yem-spinner.js';
 import {logger} from '~/utils/logger.util';
 import SubscriptionService from '~/services/subscription.service.server';
 import {type TPrismaPayloadGetUserSubscriptions} from '~/types/subscription.type';
@@ -474,8 +474,8 @@ export default function Student() {
 			</div>
 
 			<div>
-				{/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing */}
-				<h3>{studentData.document || 'Pedir para cadastrar CPF'}</h3>
+				{ }
+				<h3>{studentData.document && studentData.document.length > 3 ? studentData.document : 'Pedir para cadastrar CPF'}</h3>
 				<Dialog.Root open={documentDialogIsOpen} onOpenChange={setDocumentDialogIsOpen}>
 					<Dialog.Trigger asChild>
 						<div>

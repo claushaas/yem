@@ -27,9 +27,9 @@ export default class SubscriptionService {
 		const createdOrUpdatedSubscription = await this._model.userSubscriptions.upsert({
 			where: {
 				// eslint-disable-next-line @typescript-eslint/naming-convention
-				userId_courseId_providerSubscriptionId: {
+				userId_courseSlug_providerSubscriptionId: {
 					userId: subscription.userId,
-					courseId: subscription.courseId,
+					courseSlug: subscription.courseSlug,
 					providerSubscriptionId: subscription.providerSubscriptionId,
 				},
 			},
@@ -38,7 +38,7 @@ export default class SubscriptionService {
 			},
 			create: {
 				userId: subscription.userId,
-				courseId: subscription.courseId,
+				courseSlug: subscription.courseSlug,
 				expiresAt: subscription.expiresAt,
 				provider: subscription.provider,
 				providerSubscriptionId: subscription.providerSubscriptionId,
@@ -60,10 +60,10 @@ export default class SubscriptionService {
 
 		const hasIuguSubscriptions = actualSubscriptions?.some(subscription => subscription.provider === 'iugu');
 		const hasHotmartSchoolSubscriptions = actualSubscriptions?.some(subscription => (subscription.provider === 'hotmart'
-				&& (subscription.courseId === '750c5893-e395-411c-8438-1754e1fd0663' || subscription.courseId === 'c15efa5f-17f3-4db2-8e5a-b3cb287065d3')));
+				&& (subscription.courseSlug === 'escola-online' || subscription.courseSlug === 'escola-anual')));
 		const hasHotmartFormationSubscriptions = actualSubscriptions?.some(subscription =>
-			(subscription.provider === 'hotmart' && subscription.courseId === 'db66f261-f832-4f0b-9565-53d8f8422d51'));
-		const hasBeginnerSubscription = actualSubscriptions?.some(subscription => subscription.courseId === '8c49ad51-dcb3-4a69-bbeb-2f95970194ae');
+			(subscription.provider === 'hotmart' && subscription.courseSlug === 'formacao-em-yoga'));
+		const hasBeginnerSubscription = actualSubscriptions?.some(subscription => subscription.courseSlug === 'yoga-para-iniciantes');
 
 		if (!hasIuguSubscriptions || !hasHotmartSchoolSubscriptions || !hasHotmartFormationSubscriptions || !hasBeginnerSubscription) {
 			await Promise.all([
@@ -127,7 +127,7 @@ export default class SubscriptionService {
 			} else if (iuguSubscriptions.length === 0) {
 				await this.createOrUpdate({
 					userId: user.id,
-					courseId: convertSubscriptionIdentifierToCourseId('escola_mensal'),
+					courseSlug: convertSubscriptionIdentifierToCourseId('escola_mensal'),
 					provider: 'iugu',
 					providerSubscriptionId: `no-iugu-${user.id}`,
 					expiresAt: new Date(946_684_800),
@@ -151,7 +151,7 @@ export default class SubscriptionService {
 			} else if (hotmartSubscriptions.length === 0) {
 				await this.createOrUpdate({
 					userId: user.id,
-					courseId: convertSubscriptionIdentifierToCourseId('escola_mensal'),
+					courseSlug: convertSubscriptionIdentifierToCourseId('escola_mensal'),
 					provider: 'hotmart',
 					providerSubscriptionId: `no-hotmart-school-${user.id}`,
 					expiresAt: new Date(946_684_800),
@@ -175,7 +175,7 @@ export default class SubscriptionService {
 			} else if (hotmartSubscriptions.length === 0) {
 				await this.createOrUpdate({
 					userId: user.id,
-					courseId: convertSubscriptionIdentifierToCourseId('1392822'),
+					courseSlug: convertSubscriptionIdentifierToCourseId('1392822'),
 					provider: 'hotmart',
 					providerSubscriptionId: `no-hotmart-formation-${user.id}`,
 					expiresAt: new Date(946_684_800),
@@ -189,7 +189,7 @@ export default class SubscriptionService {
 	private async _createOrUpdateBeginnerSubscription(user: TUser): Promise<void> {
 		await this.createOrUpdate({
 			userId: user.id,
-			courseId: convertSubscriptionIdentifierToCourseId('beginner'),
+			courseSlug: convertSubscriptionIdentifierToCourseId('beginner'),
 			provider: 'manual',
 			providerSubscriptionId: `begginner-${user.id}`,
 			expiresAt: new Date(2_556_113_460_000),

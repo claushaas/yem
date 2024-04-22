@@ -5,9 +5,9 @@ import {
 	json,
 } from '@remix-run/node';
 import {Form, type MetaFunction, useNavigation} from '@remix-run/react';
-import {Button, ButtonPreset, ButtonType} from '~/components/button/index.js';
+import {Button, ButtonPreset, ButtonType} from '~/components/button.js';
 import {getUserSession, destroyUserSession} from '~/utils/session.server';
-import {YemSpinner} from '~/components/yem-spinner/index.js';
+import {YemSpinner} from '~/components/yem-spinner.js';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => [
 	{title: 'Yoga em Movimento - Sair'},

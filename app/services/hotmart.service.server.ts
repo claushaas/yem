@@ -129,7 +129,7 @@ export class HotmartService {
 	private _mapFormationSubscriptions(subscriptions: THotmartFormationPurchase[], user: TUser): TSubscription[] {
 		return subscriptions.map(subscription => ({
 			userId: user.id,
-			courseId: convertSubscriptionIdentifierToCourseId(subscription.product.id.toString() as TPlanIdentifier),
+			courseSlug: convertSubscriptionIdentifierToCourseId(subscription.product.id.toString() as TPlanIdentifier),
 			expiresAt: this._getFormationSubscriptionExpiresAt(subscription),
 			provider: 'hotmart',
 			providerSubscriptionId: subscription.purchase.transaction,
@@ -140,16 +140,21 @@ export class HotmartService {
 		const futureDate = new Date(subscription.purchase.approved_date);
 		futureDate.setDate(futureDate.getDate() + 32);
 
-		return subscription.purchase.offer.payment_mode === 'MULTIPLE_PAYMENTS'
-			? (subscription.purchase.recurrency_number < subscription.purchase.payment.installments_number ? futureDate
-				: new Date(2_556_113_460_000))
-			: new Date(2_556_113_460_000);
+		let expiresAt: Date;
+
+		if (subscription.purchase.offer.payment_mode === 'MULTIPLE_PAYMENTS') {
+			expiresAt = subscription.purchase.recurrency_number < subscription.purchase.payment.installments_number ? futureDate : new Date(2_556_113_460_000);
+		} else {
+			expiresAt = new Date(2_556_113_460_000);
+		}
+
+		return expiresAt;
 	}
 
 	private _mapSchoolSubscriptions(subscriptions: THotmartSubscription[], user: TUser): TSubscription[] {
 		return subscriptions.map(subscription => ({
 			userId: user.id,
-			courseId: convertSubscriptionIdentifierToCourseId(subscription.plan.name as TPlanIdentifier),
+			courseSlug: convertSubscriptionIdentifierToCourseId(subscription.plan.name as TPlanIdentifier),
 			expiresAt: subscription.date_next_charge ? new Date(subscription.date_next_charge) : new Date(subscription.accession_date),
 			provider: 'hotmart',
 			providerSubscriptionId: subscription.subscriber_code,

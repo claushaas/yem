@@ -10,9 +10,9 @@ import 'react-phone-number-input/style.css';
 import PhoneInput from 'react-phone-number-input';
 import {type E164Number} from 'libphonenumber-js/core'; // eslint-disable-line import/no-extraneous-dependencies
 import {getUserSession, commitUserSession} from '~/utils/session.server';
-import {YemSpinner} from '~/components/yem-spinner/index.js';
+import {YemSpinner} from '~/components/yem-spinner.js';
 import {UserService} from '~/services/user.service.server';
-import {Button, ButtonPreset, ButtonType} from '~/components/button/index.js';
+import {Button, ButtonPreset, ButtonType} from '~/components/button.js';
 import type {CustomError} from '~/utils/custom-error';
 import {logger} from '~/utils/logger.util.js';
 
