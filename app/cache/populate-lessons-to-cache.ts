@@ -20,8 +20,8 @@ type TLessonDataForCache = {
 const getLessonDataForCache = (lessonToModule: TAllDataToBeCached['modules'][0]['module']['lessons'][0], delegateAuthTo: TCourseDataForCache['delegateAuthTo']): TLessonDataForCache => {
 	const lessonDataForCache = {
 		id: lessonToModule.id,
-		lessonId: lessonToModule.lessonId,
-		moduleId: lessonToModule.moduleId,
+		lessonSlug: lessonToModule.lessonSlug,
+		moduleSlug: lessonToModule.moduleSlug,
 		order: lessonToModule.order,
 		isPublished: lessonToModule.isPublished,
 		publicationDate: lessonToModule.publicationDate,

@@ -39,7 +39,7 @@ export class LessonService {
 				thumbnailUrl: newLesson.thumbnailUrl,
 				modules: {
 					create: newLesson.modules!.map(module => ({
-						moduleId: module,
+						moduleSlug: module,
 						order: newLesson.order!,
 						isPublished: newLesson.isPublished!,
 						publicationDate: newLesson.publicationDate!,
@@ -205,7 +205,7 @@ export class LessonService {
 		};
 	}
 
-	public async getById(courseId: string, moduleId: string, lessonId: string, user: TUser | undefined): Promise<TServiceReturn<TPrismaPayloadGetLessonById | undefined>> {
+	public async getBySlug(courseSlug: string, moduleSlug: string, lessonSlug: string, user: TUser | undefined): Promise<TServiceReturn<TPrismaPayloadGetLessonById | undefined>> {
 		try {
 			const lessonToModule = await this._model.lessonToModule.findUnique({
 				where: {
@@ -214,8 +214,8 @@ export class LessonService {
 						lte: user?.roles?.includes('admin') ? undefined : new Date(),
 					},
 					lessonToModule: {
-						lessonId,
-						moduleId,
+						lessonSlug,
+						moduleSlug,
 					},
 				},
 				include: {
@@ -223,8 +223,8 @@ export class LessonService {
 						select: {
 							courses: {
 								where: {
-									courseId,
-									moduleId,
+									courseSlug,
+									moduleSlug,
 								},
 								select: {
 									course: {

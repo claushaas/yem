@@ -752,7 +752,7 @@ export default function Course() {
 										<Select
 											isMulti
 											value={coursesValue}
-											options={courses?.map(course => ({value: course.id, label: course.name}))}
+											options={courses?.map(course => ({value: course.slug, label: course.name}))}
 											onChange={selectedOption => {
 												setCoursesValue(selectedOption as Array<{value: string; label: string}>);
 											}}

@@ -44,7 +44,7 @@ export class ModuleService {
 				isLessonsOrderRandom: newModule.isLessonsOrderRandom,
 				courses: {
 					create: newModule.courses!.map(course => ({
-						courseId: course,
+						courseSlug: course,
 						isPublished: newModule.isPublished!,
 						publicationDate: newModule.publicationDate!,
 						order: newModule.order!,
@@ -112,13 +112,13 @@ export class ModuleService {
 		};
 	}
 
-	public async getById(courseId: string, moduleId: string, user: TUser): Promise<TServiceReturn<TPrismaPayloadGetModuleBySlug | undefined>> {
+	public async getBySlug(courseSlug: string, moduleSlug: string, user: TUser): Promise<TServiceReturn<TPrismaPayloadGetModuleBySlug | undefined>> {
 		try {
 			const moduleToCourse = await this._model.moduleToCourse.findUnique({
 				where: {
 					moduleToCourse: {
-						moduleId,
-						courseId,
+						moduleSlug,
+						courseSlug,
 					},
 					isPublished: user.roles?.includes('admin') ? undefined : true,
 					publicationDate: {
@@ -144,7 +144,7 @@ export class ModuleService {
 						include: {
 							lessons: {
 								where: {
-									moduleId,
+									moduleSlug,
 									isPublished: user.roles?.includes('admin') ? undefined : true,
 									publicationDate: {
 										lte: user.roles?.includes('admin') ? undefined : new Date(),

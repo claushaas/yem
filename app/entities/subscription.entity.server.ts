@@ -4,7 +4,7 @@ import {CustomError} from '../utils/custom-error.js';
 
 const subscriptionSchema = Joi.object({
 	userId: Joi.string().uuid().required(),
-	courseId: Joi.string().uuid().required(),
+	courseSlug: Joi.string().uuid().required(),
 	expiresAt: Joi.date().required(),
 	provider: Joi.string().valid('hotmart', 'iugu', 'manual').required(),
 	providerSubscriptionId: Joi.string().required(),
@@ -13,7 +13,7 @@ const subscriptionSchema = Joi.object({
 
 export class Subscription implements TSubscription {
 	private readonly _userId: string;
-	private readonly _courseId: string;
+	private readonly _courseSlug: string;
 	private readonly _expiresAt: Date;
 	private readonly _provider: 'hotmart' | 'iugu' | 'manual';
 	private readonly _providerSubscriptionId: string;
@@ -27,7 +27,7 @@ export class Subscription implements TSubscription {
 		}
 
 		this._userId = subscription.userId;
-		this._courseId = subscription.courseId;
+		this._courseSlug = subscription.courseSlug;
 		this._expiresAt = subscription.expiresAt;
 		this._provider = subscription.provider;
 		this._providerSubscriptionId = subscription.providerSubscriptionId;
@@ -38,8 +38,8 @@ export class Subscription implements TSubscription {
 		return this._userId;
 	}
 
-	get courseId() {
-		return this._courseId;
+	get courseSlug() {
+		return this._courseSlug;
 	}
 
 	get expiresAt() {

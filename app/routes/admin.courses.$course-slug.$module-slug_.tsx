@@ -61,7 +61,7 @@ export const loader = async ({request, params}: LoaderFunctionArgs) => {
 	const moduleService = new ModuleService();
 
 	try {
-		const {data: module} = await moduleService.getById(courseSlug!, moduleSlug!, userSession.data as TUser);
+		const {data: module} = await moduleService.getBySlug(courseSlug!, moduleSlug!, userSession.data as TUser);
 		const {data: modules} = await moduleService.getAllForAdmin(userSession.data as TUser);
 		const {data: tags} = await new TagService().getAll();
 
@@ -766,7 +766,7 @@ export default function Module() {
 										<Select
 											isMulti
 											value={modulesValue}
-											options={modules?.map(module => ({value: module.id, label: module.name}))}
+											options={modules?.map(module => ({value: module.slug, label: module.name}))}
 											onChange={selectedOption => {
 												setModulesValue(selectedOption as Array<{value: string; label: string}>);
 											}}

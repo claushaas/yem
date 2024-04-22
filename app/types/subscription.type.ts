@@ -3,7 +3,7 @@ import {type subscriptionIdentifierToCourseId} from '~/utils/subscription-identi
 
 export type TSubscription = {
 	userId: string;
-	courseId: string;
+	courseSlug: string;
 	expiresAt: Date;
 	provider: 'hotmart' | 'iugu' | 'manual';
 	providerSubscriptionId: string;

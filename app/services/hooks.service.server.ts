@@ -150,7 +150,7 @@ export class HooksService {
 					await Promise.all([
 						this._subscriptionService.createOrUpdate({
 							userId: user.id,
-							courseId: convertSubscriptionIdentifierToCourseId(subscription.plan_identifier),
+							courseSlug: convertSubscriptionIdentifierToCourseId(subscription.plan_identifier),
 							expiresAt: new Date(subscription.expires_at),
 							provider: 'iugu',
 							providerSubscriptionId: subscription.id,
@@ -249,7 +249,7 @@ export class HooksService {
 						this._userService.addRolesToUser(userData!, rolesToAdd), // Should be deleted when old site stops being suported
 						this._subscriptionService.createOrUpdate({
 							userId: userData!.id,
-							courseId: convertSubscriptionIdentifierToCourseId(data.product.id.toString() as TPlanIdentifier),
+							courseSlug: convertSubscriptionIdentifierToCourseId(data.product.id.toString() as TPlanIdentifier),
 							expiresAt,
 							provider: 'hotmart',
 							providerSubscriptionId: data.subscription?.subscriber.code ?? data.purchase.transaction,
@@ -290,7 +290,7 @@ export class HooksService {
 						this._userService.addRolesToUser(userData!, rolesToAdd), // Should be deleted when old site stops being suported
 						this._subscriptionService.createOrUpdate({
 							userId: userData!.id,
-							courseId: convertSubscriptionIdentifierToCourseId(data.subscription?.plan?.name as TPlanIdentifier) ?? convertSubscriptionIdentifierToCourseId(data.product.id.toString() as TPlanIdentifier),
+							courseSlug: convertSubscriptionIdentifierToCourseId(data.subscription?.plan?.name as TPlanIdentifier) ?? convertSubscriptionIdentifierToCourseId(data.product.id.toString() as TPlanIdentifier),
 							expiresAt: new Date(data.purchase.date_next_charge!),
 							provider: 'hotmart',
 							providerSubscriptionId: data.subscription?.subscriber.code ?? data.purchase.transaction,

@@ -26,8 +26,8 @@ const getModuleDataForCache = (moduleToCourse: TAllDataToBeCached['modules'][0],
 
 	const moduleDataForCache = {
 		id: moduleToCourse.id,
-		moduleId: moduleToCourse.moduleId,
-		courseId: moduleToCourse.courseId,
+		moduleSlug: moduleToCourse.moduleSlug,
+		courseSlug: moduleToCourse.courseSlug,
 		order: moduleToCourse.order,
 		isPublished: moduleToCourse.isPublished,
 		publicationDate: moduleToCourse.publicationDate,

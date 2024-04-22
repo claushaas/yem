@@ -63,7 +63,7 @@ export class IuguService {
 	private _mapSubscriptions(subscriptions: TIuguSubscription[], user: TUser): TSubscription[] {
 		return subscriptions.map(subscription => ({
 			userId: user.id,
-			courseId: convertSubscriptionIdentifierToCourseId(subscription.plan_identifier as TPlanIdentifier),
+			courseSlug: convertSubscriptionIdentifierToCourseId(subscription.plan_identifier as TPlanIdentifier),
 			expiresAt: new Date(subscription.expires_at),
 			provider: 'iugu',
 			providerSubscriptionId: subscription.id,

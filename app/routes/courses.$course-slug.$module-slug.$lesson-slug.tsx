@@ -33,7 +33,7 @@ export const loader = async ({request, params}: LoaderFunctionArgs) => {
 	];
 
 	try {
-		const {data: lesson} = await new LessonService().getById(courseSlug!, moduleSlug!, lessonSlug!, userSession.data as TUser);
+		const {data: lesson} = await new LessonService().getBySlug(courseSlug!, moduleSlug!, lessonSlug!, userSession.data as TUser);
 
 		return json<LessonLoaderData>({
 			lesson,

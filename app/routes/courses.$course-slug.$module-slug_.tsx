@@ -33,7 +33,7 @@ export const loader = async ({request, params}: LoaderFunctionArgs) => {
 	];
 
 	try {
-		const {data: module} = await new ModuleService().getById(courseSlug!, moduleSlug!, userSession.data as TUser);
+		const {data: module} = await new ModuleService().getBySlug(courseSlug!, moduleSlug!, userSession.data as TUser);
 
 		return json<ModuleLoaderData>({
 			module,
@@ -79,7 +79,7 @@ export default function Module() {
 					{module.module.lessons && (
 						<section id='modules' className='flex flex-wrap gap-4 my-4'>
 							{module.module.lessons.map(lesson => (
-								<CourseCard key={lesson.lesson.id} course={lesson} to={`./${lesson.lesson.slug}`}/>
+								<CourseCard key={lesson.lesson.id} course={lesson.lesson} to={`./${lesson.lesson.slug}`}/>
 							))}
 						</section>
 					)}
