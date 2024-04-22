@@ -1,8 +1,8 @@
 import {json, type LoaderFunctionArgs} from '@remix-run/node';
 import {useLoaderData, type MetaFunction} from '@remix-run/react';
-import {MemoryCache} from '~/cache/memory-cache.js';
 import {type TCourseDataForCache} from '~/cache/populate-courses-to-cache.js';
 import {CourseCard} from '~/components/generic-entity-card.js';
+import {CourseService} from '~/services/course.service.server';
 import {type TUserRoles} from '~/types/user.type';
 import {logger} from '~/utils/logger.util';
 import {getUserSession} from '~/utils/session.server';
@@ -27,24 +27,10 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
 
 	try {
 		const userRoles = userSession.get('roles') as TUserRoles;
-		const isAdmin = userRoles.includes('admin');
-		const allCoursesKeys = MemoryCache.keys();
-		console.log(allCoursesKeys);
-
-		const allCourses = allCoursesKeys.map(key => {
-			const course = JSON.parse(MemoryCache.get(key) ?? '{}') as TCourseDataForCache;
-
-			return {
-				...course,
-				content: isAdmin ? course.content : course.marketingContent,
-				videoSourceUrl: isAdmin ? course.videoSourceUrl : course.marketingVideoUrl,
-			};
-		});
-
-		const filteredCourses = allCourses.filter(course => isAdmin || course.isPublished);
+		const {data: courses} = new CourseService().getAllFromCache(userRoles);
 
 		return json<CoursesLoaderData>({
-			courses: filteredCourses,
+			courses,
 			meta,
 		});
 	} catch (error) {
