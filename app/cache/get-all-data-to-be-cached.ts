@@ -30,6 +30,9 @@ export type TAllDataToBeCached = Prisma.CourseGetPayload<{
 }>;
 
 export const allDataToBeCached: TAllDataToBeCached[] = await db.course.findMany({
+	orderBy: {
+		name: 'asc',
+	},
 	include: {
 		subscriptions: true,
 		delegateAuthTo: {
