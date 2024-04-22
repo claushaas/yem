@@ -31,8 +31,8 @@ import {type TTags, type TPrismaPayloadGetAllTags, type TTag} from '~/types/tag.
 import {TagService} from '~/services/tag.service.server';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => ([
-	{title: `Aula ${data!.lesson?.name} - Yoga em Movimento`},
-	{name: 'description', content: data!.lesson?.description},
+	{title: `Aula ${data!.lesson?.lesson.name} - Yoga em Movimento`},
+	{name: 'description', content: data!.lesson?.lesson.description},
 	{name: 'robots', content: 'noindex, nofollow'},
 	...data!.meta,
 ]);
@@ -117,10 +117,6 @@ export const action = async ({request, params}: ActionFunctionArgs) => {
 				marketingVideoUrl: formData.get('marketingVideoUrl') as string,
 				duration: Number(formData.get('duration')),
 				thumbnailUrl: formData.get('thumbnailUrl') as string,
-				modules: (formData.get('modules') as string).split(','),
-				publicationDate: new Date(formData.get('publicationDate') as string),
-				published: formData.get('published') === 'on',
-				tags: JSON.parse(formData.get('tags') as string) as TTags,
 			};
 
 			await new LessonService().update(id, lessonToUpdate);
@@ -164,15 +160,13 @@ export default function Lesson() {
 
 	const [lessonEditQuill, setLessonEditQuill] = useState<Quill | null>(null); // eslint-disable-line @typescript-eslint/ban-types
 	const [lessonEditMktQuill, setLessonEditMktQuill] = useState<Quill | null>(null); // eslint-disable-line @typescript-eslint/ban-types
-	const [lessonEditQuillContent, setLessonEditQuillContent] = useState(lesson?.content ?? '');
-	const [lessonEditQuillMktContent, setLessonEditQuillMktContent] = useState(lesson?.content ?? '');
+	const [lessonEditQuillContent, setLessonEditQuillContent] = useState(lesson?.lesson.content ?? '');
+	const [lessonEditQuillMktContent, setLessonEditQuillMktContent] = useState(lesson?.lesson.content ?? '');
 	const [lessonEditDialogIsOpen, setLessonEditDialogIsOpen] = useState(false);
-	const [modulesValue, setModulesValue] = useState<Array<{value: string; label: string}>>(lesson?.modules ? lesson?.modules.map(module => ({value: module.id, label: module.name})) : []);
-	const [tagsValue, setTagsValue] = useState<Array<{value: TTag; label: string}>>(lesson?.tags ? lesson.tags.map(tag => ({value: [tag.tagOptionName, tag.tagValueName], label: `${tag.tagOptionName}: ${tag.tagValueName}`})) : []);
 	const navigation = useNavigation();
 	const isSubmittingAnyForm = navigation.formAction === `/admin/courses/${courseSlug}/${moduleSlug}/${lessonSlug}`;
 
-	const {ops} = lesson?.content ? JSON.parse(lesson.content) as OpIterator : {ops: []};
+	const {ops} = lesson?.lesson.content ? JSON.parse(lesson?.lesson.content) as OpIterator : {ops: []};
 	const contentConverter = new QuillDeltaToHtmlConverter(ops, {
 		multiLineParagraph: false,
 	});
@@ -203,14 +197,14 @@ export default function Lesson() {
 	}, [lessonEditMktQuill]);
 
 	useEffect(() => {
-		if (lesson?.content && lessonEditQuill) {
-			lessonEditQuill.setContents(JSON.parse(lesson.content) as Delta);
+		if (lesson?.lesson.content && lessonEditQuill) {
+			lessonEditQuill.setContents(JSON.parse(lesson.lesson.content) as Delta);
 		}
 	}, [lessonEditQuill]); // eslint-disable-line react-hooks/exhaustive-deps
 
 	useEffect(() => {
-		if (lesson?.marketingContent && lessonEditMktQuill) {
-			lessonEditMktQuill.setContents(JSON.parse(lesson.marketingContent) as Delta);
+		if (lesson?.lesson.marketingContent && lessonEditMktQuill) {
+			lessonEditMktQuill.setContents(JSON.parse(lesson.lesson.marketingContent) as Delta);
 		}
 	}, [lessonEditMktQuill]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -224,7 +218,7 @@ export default function Lesson() {
 
 			<Dialog.Root open={lessonEditDialogIsOpen} onOpenChange={setLessonEditDialogIsOpen}>
 				<div className='flex items-center gap-5'>
-					<h1>{lesson.name}</h1>
+					<h1>{lesson.lesson.name}</h1>
 					<Dialog.Trigger asChild>
 						<div className='w-fit'>
 							<Button
@@ -242,7 +236,7 @@ export default function Lesson() {
 					<Dialog.Content className='fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] p-4 max-w-screen-lg w-[90%] bg-mauve-2 dark:bg-mauvedark-2 rounded-xl overflow-y-auto max-h-[90%]'>
 						<Dialog.Title asChild>
 							<h1 className='mb-4'>
-								{`Editar a Aula ${lesson.name}`}
+								{`Editar a Aula ${lesson.lesson.name}`}
 							</h1>
 						</Dialog.Title>
 
@@ -257,7 +251,7 @@ export default function Lesson() {
 									</div>
 									<RadixForm.Control asChild>
 										<input
-											defaultValue={lesson.oldId ?? ''}
+											defaultValue={lesson.lesson.oldId ?? ''}
 											disabled={isSubmittingAnyForm}
 											type='text'
 											min={8}
@@ -275,7 +269,7 @@ export default function Lesson() {
 									<RadixForm.Control asChild>
 										<input
 											required
-											defaultValue={lesson.name}
+											defaultValue={lesson.lesson.name}
 											disabled={isSubmittingAnyForm}
 											type='text'
 											min={8}
@@ -293,7 +287,7 @@ export default function Lesson() {
 									<RadixForm.Control asChild>
 										<input
 											required
-											defaultValue={lesson.description ?? ''}
+											defaultValue={lesson.lesson.description ?? ''}
 											disabled={isSubmittingAnyForm}
 											type='text'
 											min={8}
@@ -308,7 +302,7 @@ export default function Lesson() {
 											<p>Tipo da aula</p>
 										</RadixForm.Label>
 									</div>
-									<RadixSelect.Root name='type' defaultValue={lesson.type}>
+									<RadixSelect.Root name='type' defaultValue={lesson.lesson.type}>
 										<RadixSelect.Trigger
 											className='inline-flex items-center justify-center rounded px-[15px] text-[13px] leading-none h-[35px] gap-[5px] bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 shadow-[0_2px_10px] shadow-black/10 hover:bg-mauve3 focus:shadow-[0_0_0_2px] focus:shadow-black data-[placeholder]:text-violet9 outline-none'
 											aria-label='Tipo da aula'
@@ -416,7 +410,7 @@ export default function Lesson() {
 									</div>
 									<RadixForm.Control asChild>
 										<input
-											defaultValue={lesson.videoSourceUrl ?? ''}
+											defaultValue={lesson.lesson.videoSourceUrl ?? ''}
 											disabled={isSubmittingAnyForm}
 											type='text'
 											min={3}
@@ -433,7 +427,7 @@ export default function Lesson() {
 									</div>
 									<RadixForm.Control asChild>
 										<input
-											defaultValue={lesson.marketingVideoUrl ?? ''}
+											defaultValue={lesson.lesson.marketingVideoUrl ?? ''}
 											disabled={isSubmittingAnyForm}
 											type='text'
 											min={3}
@@ -450,7 +444,7 @@ export default function Lesson() {
 									</div>
 									<RadixForm.Control asChild>
 										<input
-											defaultValue={Number(lesson.duration)}
+											defaultValue={Number(lesson.lesson.duration)}
 											disabled={isSubmittingAnyForm}
 											type='number'
 											className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
@@ -467,61 +461,13 @@ export default function Lesson() {
 									<RadixForm.Control asChild>
 										<input
 											required
-											defaultValue={lesson.thumbnailUrl}
+											defaultValue={lesson.lesson.thumbnailUrl}
 											disabled={isSubmittingAnyForm}
 											type='text'
 											min={3}
 											className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
 										/>
 									</RadixForm.Control>
-								</RadixForm.Field>
-
-								<RadixForm.Field name='modules'>
-									<div className='flex items-baseline justify-between'>
-										<RadixForm.Label>
-											<p>Módulos</p>
-										</RadixForm.Label>
-									</div>
-									<RadixForm.Control asChild>
-										<input
-											disabled={isSubmittingAnyForm}
-											type='text'
-											className='hidden'
-											value={modulesValue.map(course => course.value).join(',')}
-										/>
-									</RadixForm.Control>
-									<Select
-										isMulti
-										value={modulesValue}
-										options={modules?.map(module => ({value: module.id, label: module.name}))}
-										onChange={selectedOption => {
-											setModulesValue(selectedOption as Array<{value: string; label: string}>);
-										}}
-									/>
-								</RadixForm.Field>
-
-								<RadixForm.Field name='tags'>
-									<div className='flex items-baseline justify-between'>
-										<RadixForm.Label>
-											<p>Tags</p>
-										</RadixForm.Label>
-									</div>
-									<RadixForm.Control asChild>
-										<input
-											disabled={isSubmittingAnyForm}
-											type='text'
-											className='hidden'
-											value={JSON.stringify(tagsValue.map(tag => tag.value))}
-										/>
-									</RadixForm.Control>
-									<Select
-										isMulti
-										value={tagsValue}
-										options={tags}
-										onChange={selectedOption => {
-											setTagsValue(selectedOption as Array<{value: TTag; label: string}>);
-										}}
-									/>
 								</RadixForm.Field>
 
 								<RadixForm.Field name='id' className='hidden'>
@@ -529,44 +475,8 @@ export default function Lesson() {
 										<input
 											disabled={isSubmittingAnyForm}
 											type='text'
-											value={lesson.id}
+											value={lesson.lesson.id}
 										/>
-									</RadixForm.Control>
-								</RadixForm.Field>
-
-								<RadixForm.Field name='publicationDate'>
-									<div className='flex items-baseline justify-between'>
-										<RadixForm.Label>
-											<p>Data de publicação</p>
-										</RadixForm.Label>
-									</div>
-									<RadixForm.Control asChild>
-										<input
-											defaultValue={defaultDate.toISOString().slice(0, 16)}
-											disabled={isSubmittingAnyForm}
-											type='datetime-local'
-											min={3}
-											className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
-										/>
-									</RadixForm.Control>
-								</RadixForm.Field>
-
-								<RadixForm.Field name='published'>
-									<div className='flex items-baseline justify-between'>
-										<RadixForm.Label>
-											<p>Está publicado</p>
-										</RadixForm.Label>
-									</div>
-									<RadixForm.Control asChild>
-										<Switch.Root
-											defaultChecked={lesson.published}
-											disabled={isSubmittingAnyForm}
-											className='w-[42px] h-[25px] bg-blacka-6 rounded-full relative shadow-[0_2px_10px] shadow-blacka-4 focus:shadow-[0_0_0_2px] focus:shadow-black data-[state=checked]:bg-black outline-none cursor-default'
-										>
-											<Switch.Thumb
-												className='block w-[21px] h-[21px] bg-white rounded-full shadow-[0_2px_2px] shadow-blackA4 transition-transform duration-100 translate-x-0.5 will-change-transform data-[state=checked]:translate-x-[19px]'
-											/>
-										</Switch.Root>
 									</RadixForm.Control>
 								</RadixForm.Field>
 
@@ -593,10 +503,10 @@ export default function Lesson() {
 			</Dialog.Root>
 
 			<div>
-				<h4>{lesson.description}</h4>
+				<h4>{lesson.lesson.description}</h4>
 				<p>Data de publicação: {new Date(lesson.publicationDate).toLocaleString('pt-BR')}</p>
-				<p>Está publicado: {lesson.published ? 'sim' : 'não'}</p>
-				{lesson.content && (
+				<p>Está publicado: {lesson.isPublished ? 'sim' : 'não'}</p>
+				{lesson.lesson.content && (
 					<>
 						<h2>Conteúdo da Aula:</h2>
 						{/* eslint-disable-next-line @typescript-eslint/naming-convention, react/no-danger */}

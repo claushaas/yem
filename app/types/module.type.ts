@@ -11,9 +11,9 @@ export type TModule = {
 	thumbnailUrl: string;
 	courses?: string[];
 	isLessonsOrderRandom: boolean;
-	order: number;
-	isPublished: boolean;
-	publicationDate: Date;
+	order?: number;
+	isPublished?: boolean;
+	publicationDate?: Date;
 };
 
 export type TModules = TModule[];

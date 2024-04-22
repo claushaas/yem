@@ -6,19 +6,19 @@ export type TLessonType = 'video' | 'text' | 'courseWare';
 export type TLesson = {
 	oldId?: string;
 	name: string;
-	type: TLessonType;
 	description: string;
+	type: TLessonType;
 	content?: string;
 	marketingContent?: string;
 	videoSourceUrl?: string;
 	marketingVideoUrl?: string;
-	thumbnailUrl: string;
-	modules: string[];
-	tags?: TTags;
 	duration?: number;
-	order: number;
-	isPublished: boolean;
-	publicationDate: Date;
+	thumbnailUrl: string;
+	modules?: string[];
+	tags?: TTags;
+	order?: number;
+	isPublished?: boolean;
+	publicationDate?: Date;
 };
 
 export type TPrismaPayloadCreateOrUpdateLesson = Prisma.LessonGetPayload<undefined>;
@@ -60,6 +60,24 @@ export type TPrismaPayloadGetLessonList = Array<Prisma.LessonGetPayload<{
 
 export type TPrismaPayloadGetLessonById = Prisma.LessonToModuleGetPayload<{
 	include: {
+		module: {
+			select: {
+				courses: {
+					select: {
+						course: {
+							select: {
+								delegateAuthTo: {
+									select: {
+										id: true;
+										subscriptions: true;
+									};
+								};
+							};
+						};
+					};
+				};
+			};
+		};
 		lesson: {
 			include: {
 				tags: true;
@@ -71,28 +89,6 @@ export type TPrismaPayloadGetLessonById = Prisma.LessonToModuleGetPayload<{
 				completedBy: true;
 				SavedBy: true;
 				FavoritedBy: true;
-				modules: {
-					include: {
-						module: {
-							select: {
-								courses: {
-									select: {
-										course: {
-											select: {
-												delegateAuthTo: {
-													select: {
-														id: true;
-														subscriptions: true;
-													};
-												};
-											};
-										};
-									};
-								};
-							};
-						};
-					};
-				};
 			};
 		};
 	};

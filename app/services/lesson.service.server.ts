@@ -219,6 +219,32 @@ export class LessonService {
 					},
 				},
 				include: {
+					module: {
+						select: {
+							courses: {
+								where: {
+									courseId,
+									moduleId,
+								},
+								select: {
+									course: {
+										select: {
+											delegateAuthTo: {
+												select: {
+													id: true,
+													subscriptions: {
+														where: {
+															userId: user?.id ?? '',
+														},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
 					lesson: {
 						include: {
 							tags: {
@@ -265,36 +291,6 @@ export class LessonService {
 									userId: user?.id ?? '',
 								},
 							},
-							modules: {
-								select: {
-									module: {
-										select: {
-											courses: {
-												where: {
-													courseId,
-												},
-												select: {
-													course: {
-														select: {
-															delegateAuthTo: {
-																select: {
-																	id: true,
-																	subscriptions: {
-																		where: {
-																			courseId,
-																			userId: user?.id ?? '',
-																		},
-																	},
-																},
-															},
-														},
-													},
-												},
-											},
-										},
-									},
-								},
-							},
 						},
 					},
 				},
@@ -330,12 +326,10 @@ export class LessonService {
 
 	private _hasActiveSubscription(user: TUser | undefined, lessonToModule: TPrismaPayloadGetLessonById): boolean {
 		const isAdmin = user?.roles?.includes('admin');
-		const hasActiveSubscription = lessonToModule.lesson.modules.some(
-			lessonToCourse => lessonToCourse.module.courses.some(
-				moduleToCourse => moduleToCourse.course.delegateAuthTo.some(
-					course => course.subscriptions.some(
-						subscription => subscription.expiresAt >= new Date(),
-					),
+		const hasActiveSubscription = lessonToModule.module.courses.some(
+			course => course.course.delegateAuthTo.some(
+				course => course.subscriptions.some(
+					subscription => subscription.expiresAt >= new Date(),
 				),
 			),
 		);
