@@ -1,7 +1,10 @@
 /* eslint-disable @typescript-eslint/no-dynamic-delete */
 /* eslint-disable @typescript-eslint/no-extraneous-class */
 /* eslint-disable @typescript-eslint/consistent-type-assertions */
-export class MemoryCache {
+
+import {remember} from '@epic-web/remember';
+
+class MemoryCache {
 	static get(key: string) {
 		const value = MemoryCache.cache[key];
 
@@ -33,5 +36,7 @@ export class MemoryCache {
 		return Object.keys(MemoryCache.cache);
 	}
 
-	private static cache = {} as Record<string, string>;
+	private static readonly cache = {} as Record<string, string>;
 }
+
+export const memorycache = remember('memoryCache', () => MemoryCache);

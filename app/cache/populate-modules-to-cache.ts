@@ -1,5 +1,5 @@
 import {type Prisma} from '@prisma/client';
-import {MemoryCache} from './memory-cache.js';
+import {memorycache} from './memory-cache.js';
 import {type TAllDataToBeCached} from './get-all-data-to-be-cached.js';
 import {populateLessonsToCache} from './populate-lessons-to-cache.js';
 import {type TCourseDataForCache} from './populate-courses-to-cache.js';
@@ -59,7 +59,7 @@ export const populateModulesAndLessonsToCache = (course: TAllDataToBeCached, del
 	for (const moduleToCourse of course.modules) {
 		const moduleDataForCache = getModuleDataForCache(moduleToCourse, delegateAuthTo);
 
-		MemoryCache.set(`${course.slug}:${moduleToCourse.module.slug}`, JSON.stringify(moduleDataForCache));
+		memorycache.set(`${course.slug}:${moduleToCourse.module.slug}`, JSON.stringify(moduleDataForCache));
 		populateLessonsToCache(moduleToCourse.module.lessons, delegateAuthTo);
 	}
 };
