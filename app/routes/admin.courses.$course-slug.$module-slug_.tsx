@@ -138,7 +138,7 @@ export const action = async ({request, params}: ActionFunctionArgs) => {
 						thumbnailUrl: formData.get('thumbnailUrl') as string,
 						modules: (formData.get('modules') as string).split(','),
 						publicationDate: new Date(formData.get('publicationDate') as string),
-						isPublished: Boolean(formData.get('published')),
+						isPublished: Boolean(formData.get('isPublished')),
 						tags: JSON.parse(formData.get('tags') as string) as TTags,
 						order: Number(formData.get('order')),
 					};

@@ -106,7 +106,7 @@ export const action = async ({request, params}: ActionFunctionArgs) => {
 						marketingVideoUrl: formData.get('marketingVideoUrl') as string,
 						thumbnailUrl: formData.get('thumbnailUrl') as string,
 						publicationDate: new Date(formData.get('publicationDate') as string),
-						isPublished: Boolean(formData.get('published')),
+						isPublished: Boolean(formData.get('isPublished')),
 						isSelling: Boolean(formData.get('isSelling')),
 					};
 
@@ -128,7 +128,7 @@ export const action = async ({request, params}: ActionFunctionArgs) => {
 						thumbnailUrl: formData.get('thumbnailUrl') as string,
 						courses: (formData.get('courses') as string).split(','),
 						publicationDate: new Date(formData.get('publicationDate') as string),
-						isPublished: Boolean(formData.get('published')),
+						isPublished: Boolean(formData.get('isPublished')),
 						isLessonsOrderRandom: Boolean(formData.get('isLessonsOrderRandom')),
 						order: Number(formData.get('order')),
 					};
