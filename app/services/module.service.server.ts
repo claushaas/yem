@@ -150,10 +150,10 @@ export class ModuleService {
 										lte: user.roles?.includes('admin') ? undefined : new Date(),
 									},
 								},
-								orderBy: {
-									order: 'asc',
-									publicationDate: 'asc',
-								},
+								orderBy: [
+									{order: 'asc'},
+									{publicationDate: 'asc'},
+								],
 								include: {
 									lesson: {
 										select: {

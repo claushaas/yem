@@ -48,11 +48,11 @@ const main = async () => {
 			name: 'Módulo 1',
 			slug: 'modulo-1',
 			description: 'Introdução ao Yoga',
-			thumbnailUrl: 'd9fd2efe-ee41-45d6-25a5-4ec50aad7000',
+			thumbnailUrl: '78c0c3ab-7da6-46e8-742e-fd0e4b08b900',
 			isLessonsOrderRandom: false,
 			courses: {
 				create: {
-					courseId: 'db66f261-f832-4f0b-9565-53d8f8422d51',
+					courseSlug: 'formacao-em-yoga',
 					isPublished: true,
 					publicationDate: new Date('2024-03-25 17:30:00'),
 					order: 1,
@@ -72,7 +72,7 @@ const main = async () => {
 			courses: {
 				create: {
 					id: undefined,
-					courseId: 'db66f261-f832-4f0b-9565-53d8f8422d51',
+					courseSlug: 'escola-online',
 					isPublished: true,
 					publicationDate: new Date('2024-03-25 18:30:00'),
 					order: 2,
@@ -91,7 +91,7 @@ const main = async () => {
 			thumbnailUrl: '78c0c3ab-7da6-46e8-742e-fd0e4b08b900',
 			modules: {
 				create: {
-					moduleId: '16c63aa1-8122-4327-a990-56ec2e636808',
+					moduleSlug: 'aulas-praticas',
 					isPublished: true,
 					publicationDate: new Date('2024-03-25 17:30:00'),
 					order: 1,

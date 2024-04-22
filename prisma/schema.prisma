@@ -55,17 +55,17 @@ model Module {
 
 model ModuleToCourse {
   id              String   @id @default(uuid())
-  module          Module   @relation(fields: [moduleId], references: [id])
-  moduleId        String
-  course          Course   @relation(fields: [courseId], references: [id])
-  courseId        String
+  module          Module   @relation(fields: [moduleSlug], references: [slug])
+  moduleSlug      String
+  course          Course   @relation(fields: [courseSlug], references: [slug])
+  courseSlug      String
   order           Int
   isPublished     Boolean  @default(false)
   publicationDate DateTime @default(now())
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
-  @@unique(name: "moduleToCourse", [moduleId, courseId])
+  @@unique(name: "moduleToCourse", [moduleSlug, courseSlug])
   @@map("module_to_course")
 }
 
@@ -102,17 +102,17 @@ enum LessonType {
 
 model LessonToModule {
   id              String   @id @default(uuid())
-  lesson          Lesson   @relation(fields: [lessonId], references: [id])
-  lessonId        String
-  module          Module   @relation(fields: [moduleId], references: [id])
-  moduleId        String
+  lesson          Lesson   @relation(fields: [lessonSlug], references: [slug])
+  lessonSlug      String
+  module          Module   @relation(fields: [moduleSlug], references: [slug])
+  moduleSlug      String
   order           Int
   isPublished     Boolean  @default(false)
   publicationDate DateTime @default(now())
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
-  @@unique(name: "lessonToModule", [lessonId, moduleId])
+  @@unique(name: "lessonToModule", [lessonSlug, moduleSlug])
   @@map("lesson_to_module")
 }
 
@@ -159,12 +159,12 @@ model Comment {
   userId          String
   authorFirstName String
   authorLastName  String
-  lesson          Lesson?   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
-  course          Course?   @relation(fields: [courseId], references: [id], onDelete: Cascade)
-  module          Module?   @relation(fields: [moduleId], references: [id], onDelete: Cascade)
-  lessonId        String?
-  courseId        String?
-  moduleId        String?
+  lesson          Lesson?   @relation(fields: [lessonSlug], references: [slug], onDelete: Cascade)
+  course          Course?   @relation(fields: [courseSlug], references: [slug], onDelete: Cascade)
+  module          Module?   @relation(fields: [moduleSlug], references: [slug], onDelete: Cascade)
+  lessonSlug      String?
+  courseSlug      String?
+  moduleSlug      String?
   responseToId    String?
   responseTo      Comment?  @relation("CommentToComment", fields: [responseToId], references: [id], onDelete: Cascade)
   responses       Comment[] @relation("CommentToComment")
@@ -176,55 +176,55 @@ model Comment {
 model CompletedLessons {
   id          String   @id @default(uuid())
   userId      String
-  lesson      Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
-  lessonId    String
+  lesson      Lesson   @relation(fields: [lessonSlug], references: [slug], onDelete: Cascade)
+  lessonSlug  String
   isCompleted Boolean  @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  @@unique([lessonId, userId])
+  @@unique([lessonSlug, userId])
   @@map("lesson_progress")
 }
 
 model FavoritedLessons {
   id          String   @id @default(uuid())
   userId      String
-  lesson      Lesson   @relation(fields: [lessonId], references: [id])
-  lessonId    String
+  lesson      Lesson   @relation(fields: [lessonSlug], references: [slug])
+  lessonSlug  String
   isFavorited Boolean  @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  @@unique([userId, lessonId])
+  @@unique([userId, lessonSlug])
   @@map("favorited_lessons")
 }
 
 model SavedLessons {
-  id        String   @id @default(uuid())
-  userId    String
-  lesson    Lesson   @relation(fields: [lessonId], references: [id])
-  lessonId  String
-  isSaved   Boolean  @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id         String   @id @default(uuid())
+  userId     String
+  lesson     Lesson   @relation(fields: [lessonSlug], references: [slug])
+  lessonSlug String
+  isSaved    Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
-  @@unique([userId, lessonId])
+  @@unique([userId, lessonSlug])
   @@map("saved_lessons")
 }
 
 model UserSubscriptions {
   id                         String                   @id @default(uuid())
   userId                     String
-  courseId                   String
+  courseSlug                 String
   createdAt                  DateTime                 @default(now())
   updatedAt                  DateTime                 @updatedAt
   expiresAt                  DateTime
-  course                     Course                   @relation(fields: [courseId], references: [id])
+  course                     Course                   @relation(fields: [courseSlug], references: [slug])
   provider                   SubscriptionProviderType
   providerSubscriptionId     String                   @unique
   providerSubscriptionStatus String?
 
-  @@unique([userId, courseId, providerSubscriptionId])
+  @@unique([userId, courseSlug, providerSubscriptionId])
   @@map("user_subscriptions")
 }
 

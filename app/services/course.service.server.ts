@@ -94,10 +94,10 @@ export class CourseService {
 								lte: user.roles?.includes('admin') ? undefined : new Date(),
 							},
 						},
-						orderBy: {
-							order: 'asc',
-							publicationDate: 'asc',
-						},
+						orderBy: [
+							{order: 'asc'},
+							{publicationDate: 'asc'},
+						],
 						select: {
 							id: true,
 							order: true,

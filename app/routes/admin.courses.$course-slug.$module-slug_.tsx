@@ -815,6 +815,7 @@ export default function Module() {
 										</div>
 										<RadixForm.Control asChild>
 											<input
+												defaultValue={defaultDate.toISOString().slice(0, 16)}
 												disabled={isSubmittingAnyForm}
 												type='datetime-local'
 												min={3}
@@ -881,7 +882,7 @@ export default function Module() {
 
 				<div className='flex gap-4 my-4 flex-wrap'>
 					{module.module.lessons.map(lesson => (
-						<CourseCard key={lesson.lesson.id} course={lesson} to={`./${lesson.lesson.slug}`}/>
+						<CourseCard key={lesson.lesson.id} course={lesson.lesson} to={`./${lesson.lesson.slug}`}/>
 					))}
 				</div>
 			</div>
