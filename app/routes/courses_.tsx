@@ -1,6 +1,6 @@
 import {json, type LoaderFunctionArgs} from '@remix-run/node';
 import {useLoaderData, type MetaFunction} from '@remix-run/react';
-import {CourseCard} from '~/components/course-card/index.js';
+import {CourseCard} from '~/components/generic-entity-card.js';
 import {CourseService} from '~/services/course.service.server';
 import {type TPrismaPayloadGetAllCourses} from '~/types/course.type';
 import {type TUserRoles} from '~/types/user.type';

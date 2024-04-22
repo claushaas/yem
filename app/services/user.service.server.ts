@@ -355,7 +355,7 @@ export class UserService {
 				{Name: 'phone_number', Value: phoneNumber},
 				{Name: 'given_name', Value: firstName},
 				{Name: 'family_name', Value: lastName},
-				{Name: 'custom:roles', Value: roles ? (roles.length > 1 ? roles.join('-') : roles[0]) : 'iniciantes'},
+				{Name: 'custom:roles', Value: roles ? roles.join('-') : 'iniciantes'},
 				{Name: 'custom:CPF', Value: document ?? ''},
 				{Name: 'custom:iuguId', Value: 'INVALID-IUGU-ID'}, // Added for support for old site, should be deleted when old site is no more supported
 				{Name: 'custom:mauticId', Value: 'INVALID-MAUTIC-ID'}, // Added for support for old site, should be deleted when old site is no more supported

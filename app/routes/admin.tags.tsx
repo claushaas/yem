@@ -13,8 +13,8 @@ import {type TServiceReturn} from '~/types/service-return.type';
 import {type TTag, type TPrismaPayloadGetAllTags} from '~/types/tag.type';
 import {logger} from '~/utils/logger.util';
 import {commitUserSession, getUserSession} from '~/utils/session.server';
-import {Button, ButtonPreset, ButtonType} from '~/components/button/index.js';
-import {YemSpinner} from '~/components/yem-spinner/index.js';
+import {Button, ButtonPreset, ButtonType} from '~/components/button.js';
+import {YemSpinner} from '~/components/yem-spinner.js';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => ([
 	{title: 'Tags - Yoga em Movimento'},

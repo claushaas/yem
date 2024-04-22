@@ -6,10 +6,10 @@ import {
 	Form, Link, type MetaFunction, useLoaderData, useNavigation,
 } from '@remix-run/react';
 import {Separator} from '@radix-ui/react-separator';
-import {Button, ButtonPreset, ButtonType} from '~/components/button/index.js';
+import {Button, ButtonPreset, ButtonType} from '~/components/button.js';
 import {getUserSession, commitUserSession} from '~/utils/session.server';
 import {type TypeUserSession} from '~/types/user-session.type';
-import {YemSpinner} from '~/components/yem-spinner/index.js';
+import {YemSpinner} from '~/components/yem-spinner.js';
 import {UserService} from '~/services/user.service.server';
 import {logger} from '~/utils/logger.util';
 

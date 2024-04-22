@@ -9,9 +9,13 @@ export class MauticService {
 	private readonly _request: Request;
 
 	constructor() {
+		const username = process.env.MAUTIC_API_USERNAME ?? '';
+		const password = process.env.MAUTIC_API_PASSWORD ?? '';
+		const credentials = `${username}:${password}`;
+		const base64Credentials = Buffer.from(credentials).toString('base64');
 		this._request = new Request(process.env.MAUTIC_API_URL!, {
 			'Content-Type': 'application/json', // eslint-disable-line @typescript-eslint/naming-convention
-			Authorization: `Basic ${Buffer.from(`${process.env.MAUTIC_API_USERNAME}:${process.env.MAUTIC_API_PASSWORD}`).toString('base64')}`,
+			Authorization: `Basic ${base64Credentials}`,
 		});
 	}
 

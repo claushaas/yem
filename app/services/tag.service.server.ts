@@ -1,4 +1,4 @@
-import {type Prisma, type PrismaClient} from '@prisma/client';
+import {type PrismaClient} from '@prisma/client';
 import {type TServiceReturn} from '../types/service-return.type.js';
 import {logger} from '../utils/logger.util.js';
 import {db} from '../database/db.js';

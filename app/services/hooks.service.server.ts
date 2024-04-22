@@ -150,13 +150,18 @@ export class HooksService {
 					await Promise.all([
 						this._subscriptionService.createOrUpdate({
 							userId: user.id,
-							courseId: convertSubscriptionIdentifierToCourseId(subscription.plan_identifier),
+							courseSlug: convertSubscriptionIdentifierToCourseId(subscription.plan_identifier),
 							expiresAt: new Date(subscription.expires_at),
 							provider: 'iugu',
 							providerSubscriptionId: subscription.id,
 						}),
 						this._slackService.sendMessage({message: `Assinatura iugu atualizada\nNome: ${user.firstName} ${user.lastName}\nEmail: ${user.email}\nTelefone: ${user.phoneNumber}`}),
 					]);
+					break;
+				}
+
+				case 'pending': {
+					await this._slackService.sendMessage({message: 'Iugu invoice status changed not handled', ...body});
 					break;
 				}
 
@@ -233,16 +238,18 @@ export class HooksService {
 
 					const rolesToAdd = ['iniciantes', 'escolaOnline', 'escolaAnual', 'novaFormacao'];
 
-					const expiresAt = data.purchase.recurrence_number
-						? (data.purchase.recurrence_number < data.purchase.payment.installments_number ? new Date(data.purchase.date_next_charge!)
-							: new Date(2_556_113_460_000))
-						: new Date(2_556_113_460_000);
+					let expiresAt: Date;
+					if (data.purchase.recurrence_number) {
+						expiresAt = data.purchase.recurrence_number < data.purchase.payment.installments_number ? new Date(data.purchase.date_next_charge!) : new Date(2_556_113_460_000);
+					} else {
+						expiresAt = new Date(2_556_113_460_000);
+					}
 
 					await Promise.all([
 						this._userService.addRolesToUser(userData!, rolesToAdd), // Should be deleted when old site stops being suported
 						this._subscriptionService.createOrUpdate({
 							userId: userData!.id,
-							courseId: convertSubscriptionIdentifierToCourseId(data.product.id.toString() as TPlanIdentifier),
+							courseSlug: convertSubscriptionIdentifierToCourseId(data.product.id.toString() as TPlanIdentifier),
 							expiresAt,
 							provider: 'hotmart',
 							providerSubscriptionId: data.subscription?.subscriber.code ?? data.purchase.transaction,
@@ -269,16 +276,21 @@ export class HooksService {
 						]);
 					}
 
-					const rolesToAdd
-						= (data.subscription?.plan?.name === 'Mensal 77') || (data.subscription?.plan?.name === 'Mensal boleto') ? ['iniciantes', 'escolaOnline']
-							: ((data.subscription?.plan?.name === 'Anual 497') || (data.subscription?.plan?.name === 'Anual - boleto') ? ['iniciantes', 'escolaOnline', 'escolaAnual']
-								: ['iniciantes']);
+					let rolesToAdd: string[] = [];
+
+					if (data.subscription?.plan?.name === 'Mensal 77' || data.subscription?.plan?.name === 'Mensal boleto') {
+						rolesToAdd = ['iniciantes', 'escolaOnline'];
+					} else if (data.subscription?.plan?.name === 'Anual 497' || data.subscription?.plan?.name === 'Anual - boleto') {
+						rolesToAdd = ['iniciantes', 'escolaOnline', 'escolaAnual'];
+					} else {
+						rolesToAdd = ['iniciantes'];
+					}
 
 					await Promise.all([
 						this._userService.addRolesToUser(userData!, rolesToAdd), // Should be deleted when old site stops being suported
 						this._subscriptionService.createOrUpdate({
 							userId: userData!.id,
-							courseId: convertSubscriptionIdentifierToCourseId(data.subscription?.plan?.name as TPlanIdentifier) ?? convertSubscriptionIdentifierToCourseId(data.product.id.toString() as TPlanIdentifier),
+							courseSlug: convertSubscriptionIdentifierToCourseId(data.subscription?.plan?.name as TPlanIdentifier) ?? convertSubscriptionIdentifierToCourseId(data.product.id.toString() as TPlanIdentifier),
 							expiresAt: new Date(data.purchase.date_next_charge!),
 							provider: 'hotmart',
 							providerSubscriptionId: data.subscription?.subscriber.code ?? data.purchase.transaction,

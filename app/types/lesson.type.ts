@@ -1,47 +1,27 @@
 import {type Prisma} from '@prisma/client';
 import {type TTags} from './tag.type.js';
-import {type TUuid} from './uuid.type.js';
 
 export type TLessonType = 'video' | 'text' | 'courseWare';
 
 export type TLesson = {
 	oldId?: string;
 	name: string;
+	description: string;
 	type: TLessonType;
-	description?: string;
 	content?: string;
 	marketingContent?: string;
 	videoSourceUrl?: string;
 	marketingVideoUrl?: string;
 	duration?: number;
 	thumbnailUrl: string;
-	modules: TUuid[];
-	publicationDate: Date;
-	published: boolean;
+	modules?: string[];
 	tags?: TTags;
+	order?: number;
+	isPublished?: boolean;
+	publicationDate?: Date;
 };
 
-export type TPrismaPayloadCreateLesson = Prisma.LessonGetPayload<{
-	include: {
-		modules: true;
-		tags: {
-			include: {
-				tagOption: {
-					select: {
-						name: true;
-					};
-				};
-				tagValue: {
-					select: {
-						name: true;
-					};
-				};
-			};
-		};
-	};
-}>;
-
-export type TPrismaPayloadUpdateLesson = TPrismaPayloadCreateLesson;
+export type TPrismaPayloadCreateOrUpdateLesson = Prisma.LessonGetPayload<undefined>;
 
 export type TPrismaPayloadGetLessonList = Array<Prisma.LessonGetPayload<{
 	select: {
@@ -52,81 +32,63 @@ export type TPrismaPayloadGetLessonList = Array<Prisma.LessonGetPayload<{
 		description: true;
 		thumbnailUrl: true;
 		duration: true;
-		publicationDate: true;
-		published: true;
-		tags: {
-			include: {
-				tagOption: {
-					select: {
-						name: true;
-					};
-				};
-				tagValue: {
-					select: {
-						name: true;
-					};
-				};
-			};
-		};
-		lessonProgress: true | false;
-	};
-}>>;
-
-export type TPrismaPayloadGetLessonById = Prisma.LessonGetPayload<{
-	include: {
-		tags: {
-			include: {
-				tagOption: {
-					select: {
-						name: true;
-					};
-				};
-				tagValue: {
-					select: {
-						name: true;
-					};
-				};
-			};
-		};
-		comments: {
-			select: {
-				id: true;
-				content: true;
-				createdAt: true;
-				userId: true;
-				published: true;
-				responses: {
-					select: {
-						id: true;
-						content: true;
-						createdAt: true;
-						userId: true;
-						published: true;
-					};
-				};
-			};
-		};
-		lessonProgress: true;
+		tags: true;
 		modules: {
 			select: {
-				id: true;
-				name: true;
-				slug: true;
-				course: {
+				isPublished: true;
+				publicationDate: true;
+				module: {
 					select: {
 						id: true;
-						name: true;
 						slug: true;
-						delegateAuthTo: {
+						courses: {
 							select: {
-								id: true;
-								name: true;
-								slug: true;
-								subscriptions: true;
+								course: {
+									select: {
+										id: true;
+										slug: true;
+									};
+								};
 							};
 						};
 					};
 				};
+			};
+		};
+	};
+}>>;
+
+export type TPrismaPayloadGetLessonById = Prisma.LessonToModuleGetPayload<{
+	include: {
+		module: {
+			select: {
+				courses: {
+					select: {
+						course: {
+							select: {
+								delegateAuthTo: {
+									select: {
+										id: true;
+										subscriptions: true;
+									};
+								};
+							};
+						};
+					};
+				};
+			};
+		};
+		lesson: {
+			include: {
+				tags: true;
+				comments: {
+					include: {
+						responses: true;
+					};
+				};
+				completedBy: true;
+				SavedBy: true;
+				FavoritedBy: true;
 			};
 		};
 	};

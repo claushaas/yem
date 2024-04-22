@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 import {
 	type ActionFunctionArgs, json, type LoaderFunctionArgs, redirect,
 } from '@remix-run/node';
@@ -19,11 +20,11 @@ import {CourseService} from '~/services/course.service.server';
 import {commitUserSession, getUserSession} from '~/utils/session.server';
 import {type TUser} from '~/types/user.type';
 import {logger} from '~/utils/logger.util';
-import {type TCourse, type TPrismaPayloadGetAllCourses, type TPrismaPayloadGetCourseById} from '~/types/course.type';
-import {CourseCard} from '~/components/course-card/index.js';
-import {Button, ButtonPreset, ButtonType} from '~/components/button/index.js';
-import {Editor} from '~/components/text-editor/index.client.js';
-import {YemSpinner} from '~/components/yem-spinner/index.js';
+import {type TCourse, type TPrismaPayloadGetAllCourses, type TPrismaPayloadGetCourseBySlug} from '~/types/course.type';
+import {CourseCard} from '~/components/generic-entity-card.js';
+import {Button, ButtonPreset, ButtonType} from '~/components/button.js';
+import {Editor} from '~/components/text-editor.client.js';
+import {YemSpinner} from '~/components/yem-spinner.js';
 import {ModuleService} from '~/services/module.service.server';
 import {type TModule} from '~/types/module.type';
 
@@ -37,7 +38,7 @@ export const meta: MetaFunction<typeof loader> = ({data}) => ([
 type CourseLoaderData = {
 	error: string | undefined;
 	success: string | undefined;
-	course: TPrismaPayloadGetCourseById | undefined;
+	course: TPrismaPayloadGetCourseBySlug | undefined;
 	courses: TPrismaPayloadGetAllCourses | undefined;
 	meta: Array<{tagName: string; rel: string; href: string}>;
 };
@@ -89,6 +90,7 @@ export const action = async ({request, params}: ActionFunctionArgs) => {
 	try {
 		if ((userSession.get('roles') as string[])?.includes('admin')) {
 			const formData = await request.formData();
+			const courseService = new CourseService();
 
 			switch (formData.get('type')) {
 				case 'editCourse': {
@@ -104,12 +106,11 @@ export const action = async ({request, params}: ActionFunctionArgs) => {
 						marketingVideoUrl: formData.get('marketingVideoUrl') as string,
 						thumbnailUrl: formData.get('thumbnailUrl') as string,
 						publicationDate: new Date(formData.get('publicationDate') as string),
-						published: Boolean(formData.get('published')),
+						isPublished: Boolean(formData.get('published')),
 						isSelling: Boolean(formData.get('isSelling')),
-						delegateAuthTo: (formData.get('delegateAuthTo') as string).split(','),
 					};
 
-					await new CourseService().update(id, courseToUpdate);
+					await courseService.update(id, courseToUpdate);
 
 					userSession.flash('success', `Curso ${courseToUpdate.name} atualizado com sucesso`);
 					break;
@@ -125,14 +126,36 @@ export const action = async ({request, params}: ActionFunctionArgs) => {
 						videoSourceUrl: formData.get('videoSourceUrl') as string,
 						marketingVideoUrl: formData.get('marketingVideoUrl') as string,
 						thumbnailUrl: formData.get('thumbnailUrl') as string,
-						courses: (formData.get('course') as string).split(','),
+						courses: (formData.get('courses') as string).split(','),
 						publicationDate: new Date(formData.get('publicationDate') as string),
-						published: Boolean(formData.get('published')),
+						isPublished: Boolean(formData.get('published')),
+						isLessonsOrderRandom: Boolean(formData.get('isLessonsOrderRandom')),
+						order: Number(formData.get('order')),
 					};
 
 					await new ModuleService().create(moduleToCreate);
 
 					userSession.flash('success', `Módulo ${moduleToCreate.name} criado com sucesso`);
+					break;
+				}
+
+				case 'addDelegateAuth': {
+					const courseId = formData.get('courseId') as string;
+					const courses = (formData.get('courses') as string).split(',');
+
+					await courseService.addDelegateAuthTo(courseId, courses);
+
+					userSession.flash('success', 'Autorização adicionada com sucesso');
+					break;
+				}
+
+				case 'removeDelegateAuth': {
+					const courseId = formData.get('courseId') as string;
+					const delegateAuthToSlug = formData.get('delegateAuthToSlug') as string;
+
+					await courseService.removeDelegateAuthTo(courseId, delegateAuthToSlug);
+
+					userSession.flash('success', 'Autorização removida com sucesso');
 					break;
 				}
 
@@ -152,13 +175,13 @@ export const action = async ({request, params}: ActionFunctionArgs) => {
 				'Set-Cookie': await commitUserSession(userSession), // eslint-disable-line @typescript-eslint/naming-convention
 			},
 		});
-	} finally {
-		return redirect(`/admin/courses/${courseSlug}`, { // eslint-disable-line no-unsafe-finally
-			headers: {
-				'Set-Cookie': await commitUserSession(userSession), // eslint-disable-line @typescript-eslint/naming-convention
-			},
-		});
 	}
+
+	return redirect(`/admin/courses/${courseSlug}`, {
+		headers: {
+			'Set-Cookie': await commitUserSession(userSession), // eslint-disable-line @typescript-eslint/naming-convention
+		},
+	});
 };
 
 export default function Course() {
@@ -180,7 +203,8 @@ export default function Course() {
 	const [newModuleQuillMktContent, setNewModuleQuillMktContent] = useState('');
 	const [courseEditDialogIsOpen, setCourseEditDialogIsOpen] = useState<boolean>(false);
 	const [newModuleDialogIsOpen, setNewModuleDialogIsOpen] = useState<boolean>(false);
-	const [coursesValue, setCoursesValue] = useState<Array<{value: string; label: string}>>(course ? [{value: course.id, label: course.name}] : []);
+	const [newDelegateAuthDialogIsOpen, setNewDelegateAuthDialogIsOpen] = useState<boolean>(false);
+	const [coursesValue, setCoursesValue] = useState<Array<{value: string; label: string}>>(course ? [{value: course.slug, label: course.name}] : []);
 	const [coursesSlug, setCoursesSlug] = useState<Array<{value: string; label: string}>>(course?.delegateAuthTo?.map(course => ({value: course.slug, label: course.name})) ?? []);
 	const navigation = useNavigation();
 	const isSubmittingAnyForm = navigation.formAction === `/admin/courses/${courseSlug}`;
@@ -197,6 +221,7 @@ export default function Course() {
 		if (success ?? error) {
 			setCourseEditDialogIsOpen(false);
 			setNewModuleDialogIsOpen(false);
+			setNewDelegateAuthDialogIsOpen(false);
 		}
 	}, [success, error]);
 
@@ -443,7 +468,7 @@ export default function Course() {
 										</RadixForm.Control>
 									</RadixForm.Field>
 
-									<RadixForm.Field name='published'>
+									<RadixForm.Field name='isPublished'>
 										<div className='flex items-baseline justify-between'>
 											<RadixForm.Label>
 												<p>Está publicado</p>
@@ -451,7 +476,7 @@ export default function Course() {
 										</div>
 										<RadixForm.Control asChild>
 											<Switch.Root
-												defaultChecked={course.published}
+												defaultChecked={course.isPublished}
 												disabled={isSubmittingAnyForm}
 												className='w-[42px] h-[25px] bg-blacka-6 rounded-full relative shadow-[0_2px_10px] shadow-blacka-4 focus:shadow-[0_0_0_2px] focus:shadow-black data-[state=checked]:bg-black outline-none cursor-default'
 											>
@@ -479,30 +504,6 @@ export default function Course() {
 												/>
 											</Switch.Root>
 										</RadixForm.Control>
-									</RadixForm.Field>
-
-									<RadixForm.Field name='delegateAuthTo'>
-										<div className='flex items-baseline justify-between'>
-											<RadixForm.Label>
-												<p>Delegar Autorização Para</p>
-											</RadixForm.Label>
-										</div>
-										<RadixForm.Control asChild>
-											<input
-												disabled={isSubmittingAnyForm}
-												type='text'
-												className='hidden'
-												value={coursesSlug.map(course => course.value).join(',')}
-											/>
-										</RadixForm.Control>
-										<Select
-											isMulti
-											defaultValue={coursesSlug}
-											options={courses?.map(course => ({value: course.slug, label: course.name}))}
-											onChange={selectedOption => {
-												setCoursesSlug(selectedOption as Array<{value: string; label: string}>);
-											}}
-										/>
 									</RadixForm.Field>
 
 									<RadixForm.Field name='type' className='hidden'>
@@ -550,9 +551,11 @@ export default function Course() {
 
 			<div>
 				<h2>{course.description}</h2>
+
 				<p>Data de publicação: {new Date(course.publicationDate).toLocaleString('pt-BR')}</p>
-				<p>Está publicado: {course.published ? 'sim' : 'não'}</p>
+				<p>Está publicado: {course.isPublished ? 'sim' : 'não'}</p>
 				<p>Está com matrículas abertas: {course?.isSelling ? 'sim' : 'não'}</p>
+
 				{course.content && (
 					<>
 						<h2>Conteúdo do curso:</h2>
@@ -560,8 +563,141 @@ export default function Course() {
 						<div dangerouslySetInnerHTML={{__html: contentConverter.convert()}} className='p-4 rounded-lg border-2 border-mauve-6 dark:border-mauvedark-6 max-w-screen-lg'/>
 					</>
 				)}
-			</div>
 
+				<Dialog.Root open={newDelegateAuthDialogIsOpen} onOpenChange={setNewDelegateAuthDialogIsOpen}>
+					<div className='flex items-center gap-5'>
+						<h2>Delegou autorização para:</h2>
+						<Dialog.Trigger asChild>
+							<div className='w-fit'>
+								<Button
+									preset={ButtonPreset.Primary}
+									text='Adicionar Nova Autorização'
+									type={ButtonType.Button}
+								/>
+							</div>
+						</Dialog.Trigger>
+
+						<Dialog.Portal>
+							<Dialog.Overlay className='bg-mauvea-12 fixed inset-0'/>
+
+							<Dialog.Content className='fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] p-4 max-w-screen-lg w-[90%] bg-mauve-2 dark:bg-mauvedark-2 rounded-xl overflow-y-auto max-h-[90%]'>
+								<Dialog.Title asChild>
+									<h1 className='mb-4'>
+										Adicionar Nova Autorização
+									</h1>
+								</Dialog.Title>
+
+								<RadixForm.Root asChild>
+									<Form method='post' action={`/admin/courses/${courseSlug}`} className='flex flex-col gap-3'>
+										<RadixForm.Field name='type'>
+
+											<RadixForm.Control asChild>
+												<input
+													disabled={isSubmittingAnyForm}
+													type='text'
+													className='hidden'
+													value='addDelegateAuth'
+												/>
+											</RadixForm.Control>
+										</RadixForm.Field>
+
+										<RadixForm.Field name='courseId'>
+											<RadixForm.Control asChild>
+												<input
+													disabled={isSubmittingAnyForm}
+													type='text'
+													className='hidden'
+													value={course.id}
+												/>
+											</RadixForm.Control>
+										</RadixForm.Field>
+
+										<RadixForm.Field name='courses'>
+											<div className='flex items-baseline justify-between'>
+												<RadixForm.Label>
+													<p>Cursos</p>
+												</RadixForm.Label>
+											</div>
+											<RadixForm.Control asChild>
+												<input
+													disabled={isSubmittingAnyForm}
+													type='text'
+													className='hidden'
+													value={coursesSlug.map(course => course.value).join(',')}
+												/>
+											</RadixForm.Control>
+											<Select
+												isMulti
+												value={coursesSlug}
+												options={courses?.map(course => ({value: course.slug, label: course.name}))}
+												onChange={selectedOption => {
+													setCoursesSlug(selectedOption as Array<{value: string; label: string}>);
+												}}
+											/>
+										</RadixForm.Field>
+
+										<RadixForm.Submit asChild>
+											<Button isDisabled={isSubmittingAnyForm} className='m-auto mt-2' text='Adicionar Autorização' preset={ButtonPreset.Primary} type={ButtonType.Submit}/>
+										</RadixForm.Submit>
+
+										{isSubmittingAnyForm && <YemSpinner/>}
+
+									</Form>
+								</RadixForm.Root>
+							</Dialog.Content>
+						</Dialog.Portal>
+					</div>
+				</Dialog.Root>
+
+				{course.delegateAuthTo.length > 0 ? course.delegateAuthTo.map(delegatedToCourse => (
+					<div key={delegatedToCourse.id} className='flex items-center gap-5'>
+						<p>{delegatedToCourse.name}</p>
+						<RadixForm.Root asChild>
+							<Form method='post' action={`/admin/courses/${courseSlug}`}>
+
+								<RadixForm.Field name='type'>
+
+									<RadixForm.Control asChild>
+										<input
+											disabled={isSubmittingAnyForm}
+											type='text'
+											className='hidden'
+											value='removeDelegateAuth'
+										/>
+									</RadixForm.Control>
+								</RadixForm.Field>
+
+								<RadixForm.Field name='courseId'>
+									<RadixForm.Control asChild>
+										<input
+											disabled={isSubmittingAnyForm}
+											type='text'
+											className='hidden'
+											value={course.id}
+										/>
+									</RadixForm.Control>
+								</RadixForm.Field>
+
+								<RadixForm.Field name='delegateAuthToSlug'>
+									<RadixForm.Control asChild>
+										<input
+											disabled={isSubmittingAnyForm}
+											type='text'
+											className='hidden'
+											value={delegatedToCourse.slug}
+										/>
+									</RadixForm.Control>
+								</RadixForm.Field>
+
+								<RadixForm.Submit asChild>
+									<Button isDisabled={isSubmittingAnyForm} className='m-auto mt-2' text='Remover Autorização' preset={ButtonPreset.Primary} type={ButtonType.Submit}/>
+								</RadixForm.Submit>
+
+							</Form>
+						</RadixForm.Root>
+					</div>
+				)) : (<p>Nenhum curso</p>)}
+			</div>
 			<div>
 
 				<Dialog.Root open={newModuleDialogIsOpen} onOpenChange={setNewModuleDialogIsOpen}>
@@ -733,7 +869,7 @@ export default function Course() {
 										</RadixForm.Control>
 									</RadixForm.Field>
 
-									<RadixForm.Field name='course'>
+									<RadixForm.Field name='courses'>
 										<div className='flex items-baseline justify-between'>
 											<RadixForm.Label>
 												<p>Cursos</p>
@@ -750,7 +886,7 @@ export default function Course() {
 										<Select
 											isMulti
 											value={coursesValue}
-											options={courses?.map(course => ({value: course.id, label: course.name}))}
+											options={courses?.map(course => ({value: course.slug, label: course.name}))}
 											onChange={selectedOption => {
 												setCoursesValue(selectedOption as Array<{value: string; label: string}>);
 											}}
@@ -776,6 +912,7 @@ export default function Course() {
 										</div>
 										<RadixForm.Control asChild>
 											<input
+												defaultValue={defaultDate.toISOString().slice(0, 16)}
 												disabled={isSubmittingAnyForm}
 												type='datetime-local'
 												min={3}
@@ -784,7 +921,7 @@ export default function Course() {
 										</RadixForm.Control>
 									</RadixForm.Field>
 
-									<RadixForm.Field name='published'>
+									<RadixForm.Field name='isPublished'>
 										<div className='flex items-baseline justify-between'>
 											<RadixForm.Label>
 												<p>Está publicado</p>
@@ -799,6 +936,40 @@ export default function Course() {
 													className='block w-[21px] h-[21px] bg-white rounded-full shadow-[0_2px_2px] shadow-blackA4 transition-transform duration-100 translate-x-0.5 will-change-transform data-[state=checked]:translate-x-[19px]'
 												/>
 											</Switch.Root>
+										</RadixForm.Control>
+									</RadixForm.Field>
+
+									<RadixForm.Field name='isLessonsOrderRandom'>
+										<div className='flex items-baseline justify-between'>
+											<RadixForm.Label>
+												<p>As aulas deste módulo devem ser embaralhadas?</p>
+											</RadixForm.Label>
+										</div>
+										<RadixForm.Control asChild>
+											<Switch.Root
+												disabled={isSubmittingAnyForm}
+												className='w-[42px] h-[25px] bg-blacka-6 rounded-full relative shadow-[0_2px_10px] shadow-blacka-4 focus:shadow-[0_0_0_2px] focus:shadow-black data-[state=checked]:bg-black outline-none cursor-default'
+											>
+												<Switch.Thumb
+													className='block w-[21px] h-[21px] bg-white rounded-full shadow-[0_2px_2px] shadow-blackA4 transition-transform duration-100 translate-x-0.5 will-change-transform data-[state=checked]:translate-x-[19px]'
+												/>
+											</Switch.Root>
+										</RadixForm.Control>
+									</RadixForm.Field>
+
+									<RadixForm.Field name='order'>
+										<div className='flex items-baseline justify-between'>
+											<RadixForm.Label>
+												<p>Posição deste módulo dentro do curso</p>
+											</RadixForm.Label>
+										</div>
+										<RadixForm.Control asChild>
+											<input
+												required
+												disabled={isSubmittingAnyForm}
+												type='number'
+												className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
+											/>
 										</RadixForm.Control>
 									</RadixForm.Field>
 
@@ -827,7 +998,7 @@ export default function Course() {
 
 				<div className='flex gap-4 my-4 flex-wrap'>
 					{course.modules.map(module => (
-						<CourseCard key={module.id} course={module} to={`./${module.slug}`}/>
+						<CourseCard key={module.module.id} course={module.module} to={`./${module.module.slug}`}/>
 					))}
 				</div>
 
