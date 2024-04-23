@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 import {UserService} from './user.service.server.js';
 import SubscriptionService from './subscription.service.server.js';
 import {IuguService} from './iugu.service.server.js';
@@ -278,9 +279,9 @@ export class HooksService {
 
 					let rolesToAdd: string[] = [];
 
-					if (data.subscription?.plan?.name === 'Mensal 77' || data.subscription?.plan?.name === 'Mensal boleto') {
+					if (data.subscription?.plan?.name === 'Mensal 77' || data.subscription?.plan?.name === 'Mensal boleto' || data.subscription?.plan?.name === 'Mensal') {
 						rolesToAdd = ['iniciantes', 'escolaOnline'];
-					} else if (data.subscription?.plan?.name === 'Anual 497' || data.subscription?.plan?.name === 'Anual - boleto') {
+					} else if (data.subscription?.plan?.name === 'Anual 497' || data.subscription?.plan?.name === 'Anual - boleto' || data.subscription?.plan?.name === 'Anual') {
 						rolesToAdd = ['iniciantes', 'escolaOnline', 'escolaAnual'];
 					} else {
 						rolesToAdd = ['iniciantes'];

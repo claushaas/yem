@@ -219,14 +219,20 @@ export class CourseService {
 		const course = JSON.parse(CourseService.cache.get(`course:${slug}`) ?? '{}') as TCourseDataForCache;
 
 		if (!course) {
+			logger.logError(`Course with slug ${slug} not found in cache`);
 			throw new CustomError('NOT_FOUND', 'Course not found');
 		}
 
 		// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 		const hasActiveSubscription = isAdmin || course.delegateAuthTo.some(courseSlug => {
-			const subscription = JSON.parse(CourseService.cache.get(`${courseSlug}:${user.id}`) ?? '') as TSubscription | undefined;
+			const subscription = CourseService.cache.get(`${courseSlug}:${user.id}`);
 
-			return subscription?.expiresAt ? subscription.expiresAt >= new Date() : false;
+			if (!subscription) {
+				return false;
+			}
+
+			const parsedSubscription = JSON.parse(subscription) as TSubscription;
+			return new Date(parsedSubscription.expiresAt) >= new Date();
 		});
 
 		const modules = course.modules.map(module => {
