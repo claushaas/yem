@@ -3,9 +3,10 @@ import {json, type LoaderFunctionArgs} from '@remix-run/node';
 import {type MetaFunction, useLoaderData} from '@remix-run/react';
 import {QuillDeltaToHtmlConverter} from 'quill-delta-to-html';
 import {type OpIterator} from 'quill/core';
+import {type TCourseDataForCache} from '~/cache/populate-courses-to-cache.js';
+import {type TModuleDataForCache} from '~/cache/populate-modules-to-cache.js';
 import {CourseCard} from '~/components/generic-entity-card.js';
 import {CourseService} from '~/services/course.service.server';
-import {type TPrismaPayloadGetCourseBySlug} from '~/types/course.type';
 import {type TUser} from '~/types/user.type';
 import {logger} from '~/utils/logger.util';
 import {getUserSession} from '~/utils/session.server';
@@ -17,7 +18,7 @@ export const meta: MetaFunction<typeof loader> = ({data}) => [
 ];
 
 type CourseLoaderData = {
-	course: TPrismaPayloadGetCourseBySlug | undefined;
+	course: TCourseDataForCache | undefined;
 	meta: Array<{tagName: string; rel: string; href: string}>;
 };
 
@@ -30,7 +31,7 @@ export const loader = async ({request, params}: LoaderFunctionArgs) => {
 	];
 
 	try {
-		const {data: course} = await new CourseService().getBySlug(courseSlug!, userSession.data as TUser);
+		const {data: course} = new CourseService().getBySlugFromCache(courseSlug!, userSession.data as TUser);
 
 		return json<CourseLoaderData>({
 			course,
@@ -75,7 +76,7 @@ export default function Course() {
 					)}
 					{course.modules && (
 						<section id='modules' className='flex flex-wrap gap-4 my-4'>
-							{course.modules.map(module => (
+							{(course.modules as unknown as TModuleDataForCache[]).map(module => (
 								<CourseCard key={module.module.id} course={module.module} to={`./${module.module.slug}`}/>
 							))}
 						</section>

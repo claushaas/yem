@@ -10,16 +10,18 @@ import {CustomError} from '../utils/custom-error.js';
 import {type TServiceReturn} from '../types/service-return.type.js';
 import {db} from '../database/db.js';
 import {logger} from '~/utils/logger.util.js';
-import {memorycache} from '~/cache/memory-cache.js';
+import {memoryCache} from '~/cache/memory-cache.js';
 import {type TCourseDataForCache} from '~/cache/populate-courses-to-cache.js';
+import {type TModuleDataForCache} from '~/cache/populate-modules-to-cache.js';
+import {type TSubscription} from '~/types/subscription.type.js';
 
 export class CourseService {
-	private static cache: typeof memorycache;
+	private static cache: typeof memoryCache;
 	private readonly _model: PrismaClient;
 
 	constructor(model: PrismaClient = db) {
 		this._model = model;
-		CourseService.cache = memorycache;
+		CourseService.cache = memoryCache;
 	}
 
 	public async create(courseData: TCourse): Promise<TServiceReturn<TPrismaPayloadCreateOrUpdateCourse>> {
@@ -209,6 +211,46 @@ export class CourseService {
 				data: undefined,
 			};
 		}
+	}
+
+	public getBySlugFromCache(slug: string, user: TUser): TServiceReturn<TCourseDataForCache> {
+		const isAdmin = user.roles?.includes('admin');
+
+		const course = JSON.parse(CourseService.cache.get(`course:${slug}`) ?? '{}') as TCourseDataForCache;
+
+		if (!course) {
+			logger.logError(`Course with slug ${slug} not found in cache`);
+			throw new CustomError('NOT_FOUND', 'Course not found');
+		}
+
+		// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+		const hasActiveSubscription = isAdmin || course.delegateAuthTo.some(courseSlug => {
+			const subscription = CourseService.cache.get(`${courseSlug}:${user.id}`);
+
+			if (!subscription) {
+				return false;
+			}
+
+			const parsedSubscription = JSON.parse(subscription) as TSubscription;
+			return new Date(parsedSubscription.expiresAt) >= new Date();
+		});
+
+		const modules = course.modules.map(module => {
+			const moduleData = JSON.parse(CourseService.cache.get(`${course.slug}:${module as string}`) ?? '{}') as TModuleDataForCache;
+
+			moduleData.module.content = hasActiveSubscription ? moduleData.module.content : moduleData.module.marketingContent;
+			moduleData.module.videoSourceUrl = hasActiveSubscription ? moduleData.module.videoSourceUrl : moduleData.module.marketingVideoUrl;
+
+			return moduleData;
+		});
+		course.modules = modules;
+		course.content = hasActiveSubscription ? course.content : course.marketingContent;
+		course.videoSourceUrl = hasActiveSubscription ? course.videoSourceUrl : course.marketingVideoUrl;
+
+		return {
+			status: 'SUCCESSFUL',
+			data: course,
+		};
 	}
 
 	public async update(id: string, courseData: TCourse): Promise<TServiceReturn<TPrismaPayloadCreateOrUpdateCourse>> {

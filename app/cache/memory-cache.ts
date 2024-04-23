@@ -39,4 +39,4 @@ class MemoryCache {
 	private static readonly cache = {} as Record<string, string>;
 }
 
-export const memorycache = remember('memoryCache', () => MemoryCache);
+export const memoryCache = remember('memoryCache', () => MemoryCache);

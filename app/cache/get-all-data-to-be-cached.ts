@@ -6,7 +6,7 @@ export type TAllDataToBeCached = Prisma.CourseGetPayload<{
 		subscriptions: true;
 		delegateAuthTo: {
 			select: {
-				id: true;
+				slug: true;
 			};
 		};
 		modules: {
@@ -37,7 +37,7 @@ export const allDataToBeCached: TAllDataToBeCached[] = await db.course.findMany(
 		subscriptions: true,
 		delegateAuthTo: {
 			select: {
-				id: true,
+				slug: true,
 			},
 		},
 		modules: {
