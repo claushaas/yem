@@ -20,6 +20,8 @@ export const subscriptionIdentifierToCourseId = {
 	'Anual 497': 'yoga-e-hinduismo',
 	'Anual - boleto': 'yoga-e-hinduismo',
 	beginner: 'yoga-para-iniciantes',
+	Mensal: 'escola-online',
+	Anual: 'yoga-e-hinduismo',
 };
 
 export const convertSubscriptionIdentifierToCourseId = (subscriptionIdentifier: TPlanIdentifier): string => subscriptionIdentifierToCourseId[subscriptionIdentifier];
