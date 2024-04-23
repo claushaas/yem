@@ -4,7 +4,7 @@ import {CustomError} from '../utils/custom-error.js';
 
 const subscriptionSchema = Joi.object({
 	userId: Joi.string().uuid().required(),
-	courseSlug: Joi.string().uuid().required(),
+	courseSlug: Joi.string().required(),
 	expiresAt: Joi.date().required(),
 	provider: Joi.string().valid('hotmart', 'iugu', 'manual').required(),
 	providerSubscriptionId: Joi.string().required(),
