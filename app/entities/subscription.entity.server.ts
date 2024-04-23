@@ -27,7 +27,7 @@ export class Subscription implements TSubscription {
 		}
 
 		this._userId = subscription.userId;
-		this._courseSlug = subscription.courseSlug;
+		this._courseSlug = subscription.courseSlug.toString();
 		this._expiresAt = subscription.expiresAt;
 		this._provider = subscription.provider;
 		this._providerSubscriptionId = subscription.providerSubscriptionId;

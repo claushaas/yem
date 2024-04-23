@@ -42,6 +42,46 @@ const main = async () => {
 		],
 	});
 
+	await prisma.course.update({
+		where: {
+			slug: 'yoga-para-iniciantes',
+		},
+		data: {
+			delegateAuthTo: {
+				connect: [
+					{slug: 'yoga-para-iniciantes'},
+					{slug: 'escola-online'},
+					{slug: 'formacao-em-yoga'},
+				],
+			},
+		},
+	});
+
+	await prisma.course.update({
+		where: {
+			slug: 'escola-online',
+		},
+		data: {
+			delegateAuthTo: {
+				connect: [
+					{slug: 'escola-online'},
+					{slug: 'formacao-em-yoga'},
+				],
+			},
+		},
+	});
+
+	await prisma.course.update({
+		where: {
+			slug: 'formacao-em-yoga',
+		},
+		data: {
+			delegateAuthTo: {
+				connect: {slug: 'formacao-em-yoga'},
+			},
+		},
+	});
+
 	await prisma.module.create({
 		data: {
 			id: '16c63aa1-8122-4327-a990-56ec2e636808',

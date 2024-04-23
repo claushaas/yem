@@ -30,7 +30,7 @@ const getCourseDataForCache = (course: TAllDataToBeCached): TCourseDataForCache 
 		publicationDate: course.publicationDate,
 		isPublished: course.isPublished,
 		isSelling: course.isSelling,
-		delegateAuthTo: course.delegateAuthTo.map(delegateAuthTo => delegateAuthTo.id),
+		delegateAuthTo: course.delegateAuthTo.map(delegateAuthTo => delegateAuthTo.slug),
 		modules,
 	};
 
