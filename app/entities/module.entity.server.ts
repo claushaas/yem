@@ -12,11 +12,11 @@ const moduleSchema = Joi.object({
 	videoSourceUrl: Joi.string().allow(''),
 	marketingVideoUrl: Joi.string().allow(''),
 	thumbnailUrl: Joi.string().required(),
-	publicationDate: Joi.date().required().default(new Date()),
-	isPublished: Joi.boolean().required().default(false),
+	publicationDate: Joi.date().default(new Date()),
+	isPublished: Joi.boolean().default(false),
 	courses: Joi.array().items(Joi.string()).unique(),
 	isLessonsOrderRandom: Joi.boolean().required().default(false),
-	order: Joi.number().integer().required().default(0),
+	order: Joi.number().integer().default(0),
 });
 
 export class Module implements TModule {
@@ -55,7 +55,7 @@ export class Module implements TModule {
 		this._publicationDate = module.publicationDate;
 		this._isPublished = module.isPublished;
 		this._courses = module.courses;
-		this._isLessonsOrderRandom = module.isLessonsOrderRandom;
+		this._isLessonsOrderRandom = module.isLessonsOrderRandom ?? false;
 		this._order = module.order;
 	}
 
