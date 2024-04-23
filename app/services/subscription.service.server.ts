@@ -9,6 +9,7 @@ import {HotmartService} from './hotmart.service.server.js';
 import {IuguService} from './iugu.service.server.js';
 import {CustomError} from '~/utils/custom-error.js';
 import {convertSubscriptionIdentifierToCourseId} from '~/utils/subscription-identifier-to-course-id.js';
+import {memoryCache} from '~/cache/memory-cache.js';
 
 export default class SubscriptionService {
 	private readonly _model: PrismaClient;
@@ -45,6 +46,8 @@ export default class SubscriptionService {
 			},
 		});
 
+		memoryCache.set(`${subscription.courseSlug}:${subscription.userId}`, JSON.stringify(createdOrUpdatedSubscription));
+
 		if (!createdOrUpdatedSubscription) {
 			throw new Error('Subscription not created');
 		}
@@ -57,6 +60,7 @@ export default class SubscriptionService {
 
 	public async createUserInitialSubscriptions(user: TUser): Promise<TServiceReturn<string>> {
 		const {data: actualSubscriptions} = await this.getUserSubscriptions(user);
+		logger.logDebug(`Actual subscriptions: ${JSON.stringify(actualSubscriptions)}`);
 
 		const hasIuguSubscriptions = actualSubscriptions?.some(subscription => subscription.provider === 'iugu');
 		const hasHotmartSchoolSubscriptions = actualSubscriptions?.some(subscription => (subscription.provider === 'hotmart'
@@ -67,10 +71,10 @@ export default class SubscriptionService {
 
 		if (!hasIuguSubscriptions || !hasHotmartSchoolSubscriptions || !hasHotmartFormationSubscriptions || !hasBeginnerSubscription) {
 			await Promise.all([
-				hasIuguSubscriptions && this._createUserIuguSubscriptions(user),
-				hasHotmartSchoolSubscriptions && this._createUserHotmartSchoolSubscriptions(user),
-				hasHotmartFormationSubscriptions && this._createUserHotmartFormationSubscriptions(user),
-				hasBeginnerSubscription && this._createOrUpdateBeginnerSubscription(user),
+				!hasIuguSubscriptions && this._createUserIuguSubscriptions(user),
+				!hasHotmartSchoolSubscriptions && this._createUserHotmartSchoolSubscriptions(user),
+				!hasHotmartFormationSubscriptions && this._createUserHotmartFormationSubscriptions(user),
+				!hasBeginnerSubscription && this._createOrUpdateBeginnerSubscription(user),
 			]);
 		}
 
