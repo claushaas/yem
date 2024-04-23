@@ -13,7 +13,7 @@ const lessonSchema = Joi.object({
 	videoSourceUrl: Joi.string().allow(''),
 	marketingVideoUrl: Joi.string().allow(''),
 	thumbnailUrl: Joi.string().required(),
-	modules: Joi.array().items(Joi.string().uuid()).required().unique(),
+	modules: Joi.array().items(Joi.string()).required().unique(),
 	tags: Joi.array().items(Joi.array().items(Joi.string()).min(2).max(2)).unique(),
 	duration: Joi.number().min(0).max(200),
 	order: Joi.number().integer().required().default(0),

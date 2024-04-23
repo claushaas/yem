@@ -60,7 +60,6 @@ export default class SubscriptionService {
 
 	public async createUserInitialSubscriptions(user: TUser): Promise<TServiceReturn<string>> {
 		const {data: actualSubscriptions} = await this.getUserSubscriptions(user);
-		logger.logDebug(`Actual subscriptions: ${JSON.stringify(actualSubscriptions)}`);
 
 		const hasIuguSubscriptions = actualSubscriptions?.some(subscription => subscription.provider === 'iugu');
 		const hasHotmartSchoolSubscriptions = actualSubscriptions?.some(subscription => (subscription.provider === 'hotmart'

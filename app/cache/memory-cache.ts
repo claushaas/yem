@@ -21,7 +21,6 @@ class MemoryCache {
 		}
 
 		MemoryCache.cache[key] = value;
-		console.log('keys inside cache class', MemoryCache.keys());
 	}
 
 	static del(key: string) {

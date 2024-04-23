@@ -14,7 +14,7 @@ const moduleSchema = Joi.object({
 	thumbnailUrl: Joi.string().required(),
 	publicationDate: Joi.date().required().default(new Date()),
 	isPublished: Joi.boolean().required().default(false),
-	courses: Joi.array().items(Joi.string().uuid()).unique(),
+	courses: Joi.array().items(Joi.string()).unique(),
 	isLessonsOrderRandom: Joi.boolean().required().default(false),
 	order: Joi.number().integer().required().default(0),
 });
