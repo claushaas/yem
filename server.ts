@@ -45,7 +45,7 @@ app.all('*', remixHandler);
 const ONE_DAY = 1000 * 60 * 60 * 24;
 executeAndRepeat(async () => { // eslint-disable-line @typescript-eslint/no-floating-promises
 	logger.logInfo('Populate cache task started');
-	populateCache();
+	await populateCache();
 	logger.logInfo('Populate cache task finished');
 }, ONE_DAY);
 

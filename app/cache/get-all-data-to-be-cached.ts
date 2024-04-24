@@ -29,7 +29,7 @@ export type TAllDataToBeCached = Prisma.CourseGetPayload<{
 	};
 }>;
 
-export const allDataToBeCached: TAllDataToBeCached[] = await db.course.findMany({
+export const allDataToBeCached = async (): Promise<TAllDataToBeCached[]> => db.course.findMany({
 	orderBy: {
 		name: 'asc',
 	},
