@@ -100,6 +100,7 @@ export const action = async ({request, params}: ActionFunctionArgs) => {
 						oldId: formData.get('oldId') as string,
 						name: formData.get('name') as string,
 						description: formData.get('description') as string,
+						order: Number(formData.get('order')),
 						content: formData.get('content') as string,
 						marketingContent: formData.get('marketingContent') as string,
 						videoSourceUrl: formData.get('videoSourceUrl') as string,
@@ -352,6 +353,22 @@ export default function Course() {
 												disabled={isSubmittingAnyForm}
 												type='text'
 												min={8}
+												className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
+											/>
+										</RadixForm.Control>
+									</RadixForm.Field>
+
+									<RadixForm.Field name='order'>
+										<div className='flex items-baseline justify-between'>
+											<RadixForm.Label>
+												<p>Posição do Curso</p>
+											</RadixForm.Label>
+										</div>
+										<RadixForm.Control asChild>
+											<input
+												defaultValue={course.order ?? ''}
+												disabled={isSubmittingAnyForm}
+												type='number'
 												className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
 											/>
 										</RadixForm.Control>
