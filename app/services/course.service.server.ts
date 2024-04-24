@@ -62,9 +62,10 @@ export class CourseService {
 					lte: userRoles.includes('admin') ? undefined : new Date(),
 				},
 			},
-			orderBy: {
-				name: 'asc',
-			},
+			orderBy: [
+				{order: 'asc'},
+				{name: 'asc'},
+			],
 			select: {
 				id: true,
 				name: true,
