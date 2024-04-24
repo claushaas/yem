@@ -89,6 +89,10 @@ export class HooksService {
 					break;
 				}
 
+				case 'subscription.activated': {
+					break;
+				}
+
 				case 'subscription.expired': {
 					break;
 				}
@@ -122,7 +126,7 @@ export class HooksService {
 				}
 
 				default: {
-					await this._slackService.sendMessage(body);
+					await this._slackService.sendMessage({message: 'Iugu webhook not handled', ...body});
 					break;
 				}
 			}

@@ -5,8 +5,8 @@ import {type TTags} from '../types/tag.type.js';
 
 const moduleSchema = Joi.object({
 	oldId: Joi.string().allow(''),
-	name: Joi.string().required().min(3).max(35),
-	description: Joi.string().min(10).max(150).required(),
+	name: Joi.string().required().min(3).max(50),
+	description: Joi.string().min(10).max(154).required(),
 	content: Joi.string().allow(''),
 	marketingContent: Joi.string().allow(''),
 	videoSourceUrl: Joi.string().allow(''),
