@@ -79,6 +79,22 @@ export class CourseService {
 			},
 		});
 
+		courses.sort((a, b) => {
+			if (!a.order && !b.order) {
+				return a.name.localeCompare(b.name);
+			}
+
+			if (!a.order && b.order) {
+				return 1;
+			}
+
+			if (a.order && !b.order) {
+				return -1;
+			}
+
+			return a.order! - b.order!;
+		});
+
 		return {
 			status: 'SUCCESSFUL',
 			data: courses,
