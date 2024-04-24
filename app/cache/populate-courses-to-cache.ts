@@ -19,6 +19,7 @@ const getCourseDataForCache = (course: TAllDataToBeCached): TCourseDataForCache 
 		oldId: course.oldId,
 		slug: course.slug,
 		description: course.description,
+		order: course.order,
 		content: course.content,
 		name: course.name,
 		marketingContent: course.marketingContent,
