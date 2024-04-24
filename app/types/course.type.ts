@@ -4,6 +4,7 @@ export type TCourse = {
 	oldId?: string;
 	name: string;
 	description: string;
+	order?: number;
 	content?: string;
 	marketingContent?: string;
 	videoSourceUrl?: string;
@@ -20,6 +21,7 @@ export type TPrismaPayloadGetAllCourses = Array<Prisma.CourseGetPayload<{
 		id: true;
 		name: true;
 		slug: true;
+		order: true;
 		description: true;
 		thumbnailUrl: true;
 		publicationDate: true;
