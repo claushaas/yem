@@ -35,6 +35,12 @@ class MemoryCache {
 		return Object.keys(MemoryCache.cache);
 	}
 
+	static clear() {
+		for (const key of Object.keys(MemoryCache.cache)) {
+			delete MemoryCache.cache[key];
+		}
+	}
+
 	private static readonly cache = {} as Record<string, string>;
 }
 
