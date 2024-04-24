@@ -13,18 +13,19 @@ model Course {
   name              String              @unique
   slug              String              @unique @default(cuid())
   description       String
+  order             Int?
   content           String?             @db.Text
   marketingContent  String?             @db.Text
   videoSourceUrl    String?
   marketingVideoUrl String?
   thumbnailUrl      String              @default("d9fd2efe-ee41-45d6-25a5-4ec50aad7000")
-  createdAt         DateTime            @default(now())
-  updatedAt         DateTime            @updatedAt
   publicationDate   DateTime
   isPublished       Boolean             @default(false)
+  isSelling         Boolean             @default(false)
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
   comments          Comment[]
   subscriptions     UserSubscriptions[]
-  isSelling         Boolean             @default(false)
   delegateAuthTo    Course[]            @relation("AuthDelegation")
   authDelegatedFrom Course[]            @relation("AuthDelegation")
   modules           ModuleToCourse[]
@@ -55,9 +56,9 @@ model Module {
 
 model ModuleToCourse {
   id              String   @id @default(uuid())
-  module          Module   @relation(fields: [moduleSlug], references: [slug])
+  module          Module   @relation(fields: [moduleSlug], references: [slug], onUpdate: Cascade, onDelete: Cascade)
   moduleSlug      String
-  course          Course   @relation(fields: [courseSlug], references: [slug])
+  course          Course   @relation(fields: [courseSlug], references: [slug], onUpdate: Cascade, onDelete: Cascade)
   courseSlug      String
   order           Int
   isPublished     Boolean  @default(false)
@@ -102,9 +103,9 @@ enum LessonType {
 
 model LessonToModule {
   id              String   @id @default(uuid())
-  lesson          Lesson   @relation(fields: [lessonSlug], references: [slug])
+  lesson          Lesson   @relation(fields: [lessonSlug], references: [slug], onUpdate: Cascade, onDelete: Cascade)
   lessonSlug      String
-  module          Module   @relation(fields: [moduleSlug], references: [slug])
+  module          Module   @relation(fields: [moduleSlug], references: [slug], onUpdate: Cascade, onDelete: Cascade)
   moduleSlug      String
   order           Int
   isPublished     Boolean  @default(false)
@@ -140,8 +141,8 @@ model TagOptionTagValue {
   id            String    @id @default(uuid())
   tagOptionName String
   tagValueName  String
-  tagOption     TagOption @relation(fields: [tagOptionName], references: [name], onDelete: Cascade)
-  tagValue      TagValue  @relation(fields: [tagValueName], references: [name], onDelete: Cascade)
+  tagOption     TagOption @relation(fields: [tagOptionName], references: [name], onDelete: Cascade, onUpdate: Cascade)
+  tagValue      TagValue  @relation(fields: [tagValueName], references: [name], onDelete: Cascade, onUpdate: Cascade)
   lessons       Lesson[]
   published     Boolean   @default(true)
   createdAt     DateTime  @default(now())
@@ -159,14 +160,14 @@ model Comment {
   userId          String
   authorFirstName String
   authorLastName  String
-  lesson          Lesson?   @relation(fields: [lessonSlug], references: [slug], onDelete: Cascade)
-  course          Course?   @relation(fields: [courseSlug], references: [slug], onDelete: Cascade)
-  module          Module?   @relation(fields: [moduleSlug], references: [slug], onDelete: Cascade)
+  lesson          Lesson?   @relation(fields: [lessonSlug], references: [slug], onDelete: Cascade, onUpdate: Cascade)
+  course          Course?   @relation(fields: [courseSlug], references: [slug], onDelete: Cascade, onUpdate: Cascade)
+  module          Module?   @relation(fields: [moduleSlug], references: [slug], onDelete: Cascade, onUpdate: Cascade)
   lessonSlug      String?
   courseSlug      String?
   moduleSlug      String?
   responseToId    String?
-  responseTo      Comment?  @relation("CommentToComment", fields: [responseToId], references: [id], onDelete: Cascade)
+  responseTo      Comment?  @relation("CommentToComment", fields: [responseToId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   responses       Comment[] @relation("CommentToComment")
   published       Boolean   @default(true)
 
@@ -176,7 +177,7 @@ model Comment {
 model CompletedLessons {
   id          String   @id @default(uuid())
   userId      String
-  lesson      Lesson   @relation(fields: [lessonSlug], references: [slug], onDelete: Cascade)
+  lesson      Lesson   @relation(fields: [lessonSlug], references: [slug], onDelete: Cascade, onUpdate: Cascade)
   lessonSlug  String
   isCompleted Boolean  @default(true)
   createdAt   DateTime @default(now())
@@ -189,7 +190,7 @@ model CompletedLessons {
 model FavoritedLessons {
   id          String   @id @default(uuid())
   userId      String
-  lesson      Lesson   @relation(fields: [lessonSlug], references: [slug])
+  lesson      Lesson   @relation(fields: [lessonSlug], references: [slug], onDelete: Cascade, onUpdate: Cascade)
   lessonSlug  String
   isFavorited Boolean  @default(true)
   createdAt   DateTime @default(now())
@@ -202,7 +203,7 @@ model FavoritedLessons {
 model SavedLessons {
   id         String   @id @default(uuid())
   userId     String
-  lesson     Lesson   @relation(fields: [lessonSlug], references: [slug])
+  lesson     Lesson   @relation(fields: [lessonSlug], references: [slug], onDelete: Cascade, onUpdate: Cascade)
   lessonSlug String
   isSaved    Boolean  @default(true)
   createdAt  DateTime @default(now())
@@ -219,7 +220,7 @@ model UserSubscriptions {
   createdAt                  DateTime                 @default(now())
   updatedAt                  DateTime                 @updatedAt
   expiresAt                  DateTime
-  course                     Course                   @relation(fields: [courseSlug], references: [slug])
+  course                     Course                   @relation(fields: [courseSlug], references: [slug], onDelete: Cascade, onUpdate: Cascade)
   provider                   SubscriptionProviderType
   providerSubscriptionId     String                   @unique
   providerSubscriptionStatus String?

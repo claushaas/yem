@@ -71,6 +71,7 @@ export const action = async ({request}: ActionFunctionArgs) => {
 				isPublished: Boolean(formData.get('isPublished')),
 				isSelling: Boolean(formData.get('isSelling')),
 				delegateAuthTo: (formData.get('delegateAuthTo') as string).split(','),
+				order: Number(formData.get('order')),
 			};
 
 			await new CourseService().create(newCourse);

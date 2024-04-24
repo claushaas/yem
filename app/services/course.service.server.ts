@@ -33,6 +33,7 @@ export class CourseService {
 				name: newCourse.name,
 				slug: newCourse.slug,
 				description: newCourse.description,
+				order: newCourse.order,
 				content: newCourse.content,
 				marketingContent: newCourse.marketingContent,
 				videoSourceUrl: newCourse.videoSourceUrl,
@@ -61,13 +62,15 @@ export class CourseService {
 					lte: userRoles.includes('admin') ? undefined : new Date(),
 				},
 			},
-			orderBy: {
-				name: 'asc',
-			},
+			orderBy: [
+				{order: 'asc'},
+				{name: 'asc'},
+			],
 			select: {
 				id: true,
 				name: true,
 				slug: true,
+				order: true,
 				description: true,
 				thumbnailUrl: true,
 				publicationDate: true,
@@ -99,6 +102,22 @@ export class CourseService {
 		});
 
 		const filteredCourses = allCourses.filter(course => isAdmin || course.isPublished);
+
+		filteredCourses.sort((a, b) => {
+			if (!a.order && !b.order) {
+				return a.name.localeCompare(b.name);
+			}
+
+			if (!a.order && b.order) {
+				return 1;
+			}
+
+			if (a.order && !b.order) {
+				return -1;
+			}
+
+			return a.order! - b.order!;
+		});
 
 		return {
 			status: 'SUCCESSFUL',
@@ -264,6 +283,7 @@ export class CourseService {
 				oldId: courseToUpdate.oldId,
 				name: courseToUpdate.name,
 				slug: courseToUpdate.slug,
+				order: courseToUpdate.order,
 				description: courseToUpdate.description,
 				content: courseToUpdate.content,
 				marketingContent: courseToUpdate.marketingContent,
