@@ -1,11 +1,11 @@
 import {type Prisma, type PrismaClient} from '@prisma/client';
-import {db} from '../database/db.js';
+import {database} from '../database/database.server.js';
 import {type TServiceReturn} from '~/types/service-return.type.js';
 
 export class LessonActivityService {
 	private readonly _model: PrismaClient;
 
-	constructor(model: PrismaClient = db) {
+	constructor(model: PrismaClient = database) {
 		this._model = model;
 	}
 

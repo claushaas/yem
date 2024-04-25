@@ -10,13 +10,13 @@ import {Module} from '../entities/module.entity.server.js';
 import {type TUser} from '../types/user.type.js';
 import {CustomError} from '../utils/custom-error.js';
 import {type TServiceReturn} from '../types/service-return.type.js';
-import {db} from '../database/db.js';
+import {database} from '../database/database.server.js';
 import {logger} from '~/utils/logger.util.js';
 
 export class ModuleService {
 	private readonly _model: PrismaClient;
 
-	constructor(model: PrismaClient = db) {
+	constructor(model: PrismaClient = database) {
 		this._model = model;
 	}
 
