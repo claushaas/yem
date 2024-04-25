@@ -9,8 +9,24 @@ export class LessonActivityService {
 		this._model = model;
 	}
 
-	public async getCourseCompletedLessonsForUser(courseSlug: string, userId: string): Promise<TServiceReturn<unknown>> {
-		const completedLessons = await this._model.completedLessons.findMany({
+	public async getCourseProgressForUser(courseSlug: string, userId: string): Promise<TServiceReturn<unknown>> {
+		const totalLessons = await this._model.lesson.count({
+			where: {
+				modules: {
+					some: {
+						module: {
+							courses: {
+								some: {
+									courseSlug,
+								},
+							},
+						},
+					},
+				},
+			},
+		});
+
+		const completedLessons = await this._model.completedLessons.count({
 			where: {
 				userId,
 				lesson: {
@@ -29,9 +45,51 @@ export class LessonActivityService {
 			},
 		});
 
+		const data = {
+			totalLessons,
+			completedLessons,
+			percentage: Math.round((completedLessons / totalLessons) * 100),
+		};
+
 		return {
 			status: 'SUCCESSFUL',
-			data: completedLessons,
+			data,
+		};
+	}
+
+	public async getModuleProgressForUser(moduleSlug: string, userId: string): Promise<TServiceReturn<unknown>> {
+		const totalLessons = await this._model.lesson.count({
+			where: {
+				modules: {
+					some: {
+						moduleSlug,
+					},
+				},
+			},
+		});
+
+		const completedLessons = await this._model.completedLessons.count({
+			where: {
+				userId,
+				lesson: {
+					modules: {
+						some: {
+							moduleSlug,
+						},
+					},
+				},
+			},
+		});
+
+		const data = {
+			totalLessons,
+			completedLessons,
+			percentage: Math.round((completedLessons / totalLessons) * 100),
+		};
+
+		return {
+			status: 'SUCCESSFUL',
+			data,
 		};
 	}
 }
