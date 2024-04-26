@@ -7,7 +7,6 @@ import {remixDevTools} from 'remix-development-tools';
 export default defineConfig({
 	build: {
 		cssMinify: process.env.NODE_ENV === 'production',
-		sourcemap: true,
 	},
 	server: {
 		host: true,
