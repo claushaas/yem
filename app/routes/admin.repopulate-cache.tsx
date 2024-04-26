@@ -1,6 +1,8 @@
 import * as RadixForm from '@radix-ui/react-form';
-import {json, type ActionFunctionArgs} from '@remix-run/node';
-import {Form, useActionData, useNavigation} from '@remix-run/react';
+import {type LoaderFunctionArgs, json, type ActionFunctionArgs} from '@remix-run/node';
+import {
+	Form, type MetaFunction, useActionData, useNavigation,
+} from '@remix-run/react';
 import {populateCache} from '~/cache/initial-cache-population.js';
 import {Button, ButtonPreset, ButtonType} from '~/components/button.js';
 import {type TUser} from '~/types/user.type';
@@ -11,6 +13,17 @@ type TActionData = {
 	error: string | undefined;
 	success: string | undefined;
 };
+
+export const meta: MetaFunction<typeof loader> = ({data}) => [
+	{title: 'Yoga em Movimento - Área Administrativa - Repopular Cache'},
+	{name: 'description', content: 'Área para executar as funções administrativas e pedagógicas do Yoga em Movimento.'},
+	{name: 'robots', content: 'noindex, nofollow'},
+	...data!.meta,
+];
+
+export const loader = ({request}: LoaderFunctionArgs) => json<{meta: Array<{tagName: string; rel: string; href: string}>}>({
+	meta: [{tagName: 'link', rel: 'canonical', href: new URL('/admin/repopulate-cache', request.url).toString()}],
+});
 
 export const action = async ({request}: ActionFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
