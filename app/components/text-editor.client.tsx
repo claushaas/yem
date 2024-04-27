@@ -5,7 +5,6 @@ import Quill from 'quill';
 import 'quill/dist/quill.snow.css';
 import {ClientOnly} from 'remix-utils/client-only';
 import {YemSpinner} from './yem-spinner.js';
-// Import 'quill/dist/quill.core.css';
 
 type EditorProperties = {
 	readonly setQuill: (quill: Quill) => void;
