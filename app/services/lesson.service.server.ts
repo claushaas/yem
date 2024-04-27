@@ -11,13 +11,13 @@ import {
 } from '../types/lesson.type.js';
 import {Lesson} from '../entities/lesson.entity.server.js';
 import {type TServiceReturn} from '../types/service-return.type.js';
-import {db} from '../database/db.js';
+import {database} from '../database/database.server.js';
 import {logger} from '~/utils/logger.util.js';
 
 export class LessonService {
 	private readonly _model: PrismaClient;
 
-	constructor(model: PrismaClient = db) {
+	constructor(model: PrismaClient = database) {
 		this._model = model;
 	}
 

@@ -1,4 +1,3 @@
-/* eslint-disable complexity */
 import {
 	type ActionFunctionArgs, json, type LoaderFunctionArgs, redirect,
 } from '@remix-run/node';
@@ -6,13 +5,9 @@ import {
 	Form, useLoaderData, useNavigation, useParams,
 	type MetaFunction,
 } from '@remix-run/react';
-import {QuillDeltaToHtmlConverter} from 'quill-delta-to-html';
-import {type Delta, type OpIterator} from 'quill/core';
 import * as Dialog from '@radix-ui/react-dialog';
 import * as RadixForm from '@radix-ui/react-form';
-import type Quill from 'quill';
 import {useEffect, useState} from 'react';
-import {ClientOnly} from 'remix-utils/client-only';
 import * as Switch from '@radix-ui/react-switch';
 import {XMarkIcon} from '@heroicons/react/24/outline';
 import Select from 'react-select';
@@ -21,12 +16,15 @@ import {commitUserSession, getUserSession} from '~/utils/session.server';
 import {type TUser} from '~/types/user.type';
 import {logger} from '~/utils/logger.util';
 import {type TCourse, type TPrismaPayloadGetAllCourses, type TPrismaPayloadGetCourseBySlug} from '~/types/course.type';
-import {CourseCard} from '~/components/generic-entity-card.js';
+import {GenericEntityCard} from '~/components/generic-entity-card.js';
 import {Button, ButtonPreset, ButtonType} from '~/components/button.js';
 import {Editor} from '~/components/text-editor.client.js';
 import {YemSpinner} from '~/components/yem-spinner.js';
 import {ModuleService} from '~/services/module.service.server';
 import {type TModule} from '~/types/module.type';
+import {useTextEditor} from '~/hooks/use-text-editor.hook';
+import {ContentConverter} from '~/components/content-converter.js';
+import {SuccessOrErrorMessage} from '~/components/admin-success-or-error-message.js';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => ([
 	{title: data?.course?.name ?? 'Cursos - Yoga em Movimento'},
@@ -194,14 +192,12 @@ export default function Course() {
 	} = useLoaderData<CourseLoaderData>();
 	const {'course-slug': courseSlug} = useParams();
 
-	const [courseEditQuill, setCourseEditQuill] = useState<Quill | null>(null); // eslint-disable-line @typescript-eslint/ban-types
-	const [courseMktEditQuill, setCourseMktEditQuill] = useState<Quill | null>(null); // eslint-disable-line @typescript-eslint/ban-types
-	const [newModuleQuill, setNewModuleQuill] = useState<Quill | null>(null); // eslint-disable-line @typescript-eslint/ban-types
-	const [newModuleMktQuill, setNewModuleMktQuill] = useState<Quill | null>(null); // eslint-disable-line @typescript-eslint/ban-types
-	const [courseEditQuillContent, setCourseEditQuillContent] = useState(course?.content ?? '');
-	const [courseEditMktQuillContent, setCourseEditMktQuillContent] = useState(course?.marketingContent ?? '');
-	const [newModuleQuillContent, setNewModuleQuillContent] = useState('');
-	const [newModuleQuillMktContent, setNewModuleQuillMktContent] = useState('');
+	const [courseContent, setCourseContentEditor] = useTextEditor(course?.content);
+	const [courseMktContent, setCourseMktContentEditor] = useTextEditor(course?.marketingContent);
+
+	const [moduleContent, setModuleContentEditor] = useTextEditor();
+	const [moduleMktContent, setModuleMktContentEditor] = useTextEditor();
+
 	const [courseEditDialogIsOpen, setCourseEditDialogIsOpen] = useState<boolean>(false);
 	const [newModuleDialogIsOpen, setNewModuleDialogIsOpen] = useState<boolean>(false);
 	const [newDelegateAuthDialogIsOpen, setNewDelegateAuthDialogIsOpen] = useState<boolean>(false);
@@ -209,11 +205,6 @@ export default function Course() {
 	const [coursesSlug, setCoursesSlug] = useState<Array<{value: string; label: string}>>(course?.delegateAuthTo?.map(course => ({value: course.slug, label: course.name})) ?? []);
 	const navigation = useNavigation();
 	const isSubmittingAnyForm = navigation.formAction === `/admin/courses/${courseSlug}`;
-
-	const {ops} = course?.content ? JSON.parse(course?.content) as OpIterator : {ops: []};
-	const contentConverter = new QuillDeltaToHtmlConverter(ops, {
-		multiLineParagraph: false,
-	});
 
 	const defaultDate = new Date(course?.publicationDate ?? new Date());
 	defaultDate.setHours(defaultDate.getHours() - 3);
@@ -226,57 +217,10 @@ export default function Course() {
 		}
 	}, [success, error]);
 
-	useEffect(() => {
-		if (courseEditQuill) {
-			courseEditQuill.on('text-change', () => {
-				setCourseEditQuillContent(JSON.stringify(courseEditQuill.getContents()));
-			});
-		}
-	}, [courseEditQuill]);
-
-	useEffect(() => {
-		if (courseMktEditQuill) {
-			courseMktEditQuill.on('text-change', () => {
-				setCourseEditMktQuillContent(JSON.stringify(courseMktEditQuill.getContents()));
-			});
-		}
-	}, [courseMktEditQuill]);
-
-	useEffect(() => {
-		if (newModuleQuill) {
-			newModuleQuill.on('text-change', () => {
-				setNewModuleQuillContent(JSON.stringify(newModuleQuill.getContents()));
-			});
-		}
-	}, [newModuleQuill]);
-
-	useEffect(() => {
-		if (newModuleMktQuill) {
-			newModuleMktQuill.on('text-change', () => {
-				setNewModuleQuillMktContent(JSON.stringify(newModuleMktQuill.getContents()));
-			});
-		}
-	}, [newModuleMktQuill]);
-
-	useEffect(() => {
-		if (course?.content && courseEditQuill) {
-			courseEditQuill.setContents(JSON.parse(course.content) as Delta);
-		}
-	}, [courseEditQuill]); // eslint-disable-line react-hooks/exhaustive-deps
-
-	useEffect(() => {
-		if (course?.marketingContent && courseMktEditQuill) {
-			courseMktEditQuill.setContents(JSON.parse(course.marketingContent) as Delta);
-		}
-	}, [courseMktEditQuill]); // eslint-disable-line react-hooks/exhaustive-deps
-
 	return course && (
 		<>
-			{(success ?? error) && (
-				<p className='mb-4 text-lg'>
-					{success ?? error}
-				</p>
-			)}
+			<SuccessOrErrorMessage success={success} error={error}/>
+
 			<Dialog.Root open={courseEditDialogIsOpen} onOpenChange={setCourseEditDialogIsOpen}>
 				<div className='flex items-center gap-5'>
 					<h1>{course.name}</h1>
@@ -386,14 +330,12 @@ export default function Course() {
 												type='text'
 												min={8}
 												className='hidden'
-												value={courseEditQuillContent}
+												value={courseContent}
 											/>
 										</RadixForm.Control>
 									</RadixForm.Field>
 
-									<ClientOnly fallback={<YemSpinner/>}>
-										{() => <Editor setQuill={setCourseEditQuill} placeholder='Adicione aqui o conteúdo do curso, que só aparece para os alunos...'/>}
-									</ClientOnly>
+									<Editor setQuill={setCourseContentEditor} placeholder='Adicione aqui o conteúdo do curso, que só aparece para os alunos...'/>
 
 									<RadixForm.Field name='marketingContent'>
 										<div className='flex items-baseline justify-between'>
@@ -407,14 +349,12 @@ export default function Course() {
 												type='text'
 												min={8}
 												className='hidden'
-												value={courseEditMktQuillContent}
+												value={courseMktContent}
 											/>
 										</RadixForm.Control>
 									</RadixForm.Field>
 
-									<ClientOnly fallback={<YemSpinner/>}>
-										{() => <Editor setQuill={setCourseMktEditQuill} placeholder='Adicione aqui o conteúdo de divulgação do curso, que aparece para quem não é aluno...'/>}
-									</ClientOnly>
+									<Editor setQuill={setCourseMktContentEditor} placeholder='Adicione aqui o conteúdo de divulgação do curso, que aparece para quem não é aluno...'/>
 
 									<RadixForm.Field name='videoSourceUrl'>
 										<div className='flex items-baseline justify-between'>
@@ -576,8 +516,7 @@ export default function Course() {
 				{course.content && (
 					<>
 						<h2>Conteúdo do curso:</h2>
-						{/* eslint-disable-next-line @typescript-eslint/naming-convention, react/no-danger */}
-						<div dangerouslySetInnerHTML={{__html: contentConverter.convert()}} className='p-4 rounded-lg border-2 border-mauve-6 dark:border-mauvedark-6 max-w-screen-lg'/>
+						<ContentConverter content={course.content} className='p-4 rounded-lg border-2 border-mauve-6 dark:border-mauvedark-6 max-w-screen-lg'/>
 					</>
 				)}
 
@@ -807,14 +746,12 @@ export default function Course() {
 												type='text'
 												min={8}
 												className='hidden'
-												value={newModuleQuillContent}
+												value={moduleContent}
 											/>
 										</RadixForm.Control>
 									</RadixForm.Field>
 
-									<ClientOnly fallback={<YemSpinner/>}>
-										{() => <Editor setQuill={setNewModuleQuill} placeholder='Adicione aqui o conteúdo do módulo, que só aparece para os alunos...'/>}
-									</ClientOnly>
+									<Editor setQuill={setModuleContentEditor} placeholder='Adicione aqui o conteúdo do módulo, que só aparece para os alunos...'/>
 
 									<RadixForm.Field name='marketingContent'>
 										<div className='flex items-baseline justify-between'>
@@ -828,14 +765,12 @@ export default function Course() {
 												type='text'
 												min={8}
 												className='hidden'
-												value={newModuleQuillMktContent}
+												value={moduleMktContent}
 											/>
 										</RadixForm.Control>
 									</RadixForm.Field>
 
-									<ClientOnly fallback={<YemSpinner/>}>
-										{() => <Editor setQuill={setNewModuleMktQuill} placeholder='Adicione aqui o conteúdo de divulgação do módulo, que aparece para quem não é aluno...'/>}
-									</ClientOnly>
+									<Editor setQuill={setModuleMktContentEditor} placeholder='Adicione aqui o conteúdo de divulgação do módulo, que aparece para quem não é aluno...'/>
 
 									<RadixForm.Field name='videoSourceUrl'>
 										<div className='flex items-baseline justify-between'>
@@ -1015,7 +950,7 @@ export default function Course() {
 
 				<div className='flex gap-4 my-4 flex-wrap'>
 					{course.modules.map(module => (
-						<CourseCard key={module.module.id} course={module.module} to={`./${module.module.slug}`}/>
+						<GenericEntityCard key={module.module.id} course={module.module} to={`./${module.module.slug}`}/>
 					))}
 				</div>
 

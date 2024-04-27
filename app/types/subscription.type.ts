@@ -1,5 +1,5 @@
 import {type Prisma} from '@prisma/client';
-import {type subscriptionIdentifierToCourseId} from '~/utils/subscription-identifier-to-course-id.js';
+import {type subscriptionIdentifierToCourseSlug} from '~/utils/subscription-identifier-to-course-id.js';
 
 export type TSubscription = {
 	userId: string;
@@ -61,7 +61,7 @@ export type TIuguSubscription = {
 	expires_at: string;
 };
 
-export type TPlanIdentifier = keyof typeof subscriptionIdentifierToCourseId;
+export type TPlanIdentifier = keyof typeof subscriptionIdentifierToCourseSlug;
 
 export type TIuguSubscriptionResponse = {
 	id: string;

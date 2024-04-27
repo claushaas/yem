@@ -1,14 +1,14 @@
 import {type PrismaClient} from '@prisma/client';
 import {type TServiceReturn} from '../types/service-return.type.js';
 import {logger} from '../utils/logger.util.js';
-import {db} from '../database/db.js';
+import {database} from '../database/database.server.js';
 import {type TPrismaPayloadGetAllTags, type TPrismaPayloadCreateTag, type TTag} from '~/types/tag.type.js';
 import {CustomError} from '~/utils/custom-error.js';
 
 export class TagService {
 	private readonly _model: PrismaClient;
 
-	constructor(model: PrismaClient = db) {
+	constructor(model: PrismaClient = database) {
 		this._model = model;
 	}
 

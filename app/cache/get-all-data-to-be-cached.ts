@@ -1,5 +1,5 @@
 import {type Prisma} from '@prisma/client';
-import {db} from '../database/db.js';
+import {database} from '../database/database.server.js';
 
 export type TAllDataToBeCached = Prisma.CourseGetPayload<{
 	include: {
@@ -29,7 +29,7 @@ export type TAllDataToBeCached = Prisma.CourseGetPayload<{
 	};
 }>;
 
-export const allDataToBeCached = async (): Promise<TAllDataToBeCached[]> => db.course.findMany({
+export const allDataToBeCached = async (): Promise<TAllDataToBeCached[]> => database.course.findMany({
 	orderBy: [
 		{order: 'asc'},
 		{name: 'asc'},

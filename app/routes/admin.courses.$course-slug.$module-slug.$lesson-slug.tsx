@@ -5,8 +5,7 @@ import {
 	Form, type MetaFunction, useLoaderData, useNavigation, useParams,
 } from '@remix-run/react';
 import {useEffect, useState} from 'react';
-import type Quill from 'quill';
-import {type Delta, type OpIterator} from 'quill/core';
+import {type OpIterator} from 'quill/core';
 import {QuillDeltaToHtmlConverter} from 'quill-delta-to-html';
 import * as Dialog from '@radix-ui/react-dialog';
 import * as RadixForm from '@radix-ui/react-form';
@@ -14,7 +13,6 @@ import * as RadixSelect from '@radix-ui/react-select';
 import {
 	XMarkIcon, ChevronDownIcon, ChevronUpIcon, CheckIcon,
 } from '@heroicons/react/24/outline';
-import {ClientOnly} from 'remix-utils/client-only';
 import {LessonService} from '~/services/lesson.service.server';
 import {type TUser} from '~/types/user.type';
 import {logger} from '~/utils/logger.util';
@@ -23,6 +21,8 @@ import {type TLesson, type TLessonType, type TPrismaPayloadGetLessonById} from '
 import {Button, ButtonPreset, ButtonType} from '~/components/button.js';
 import {Editor} from '~/components/text-editor.client.js';
 import {YemSpinner} from '~/components/yem-spinner.js';
+import {useTextEditor} from '~/hooks/use-text-editor.hook';
+import {SuccessOrErrorMessage} from '~/components/admin-success-or-error-message.js';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => ([
 	{title: `Aula ${data!.lesson?.lesson.name} - Yoga em Movimento`},
@@ -140,10 +140,9 @@ export default function Lesson() {
 		'lesson-slug': lessonSlug,
 	} = useParams();
 
-	const [lessonEditQuill, setLessonEditQuill] = useState<Quill | null>(null); // eslint-disable-line @typescript-eslint/ban-types
-	const [lessonEditMktQuill, setLessonEditMktQuill] = useState<Quill | null>(null); // eslint-disable-line @typescript-eslint/ban-types
-	const [lessonEditQuillContent, setLessonEditQuillContent] = useState(lesson?.lesson.content ?? '');
-	const [lessonEditQuillMktContent, setLessonEditQuillMktContent] = useState(lesson?.lesson.content ?? '');
+	const [lessonContent, setLessonContentEditor] = useTextEditor(lesson?.lesson.content);
+	const [lessonMktContent, setLessonMktContentEditor] = useTextEditor(lesson?.lesson.marketingContent);
+
 	const [lessonEditDialogIsOpen, setLessonEditDialogIsOpen] = useState(false);
 	const navigation = useNavigation();
 	const isSubmittingAnyForm = navigation.formAction === `/admin/courses/${courseSlug}/${moduleSlug}/${lessonSlug}`;
@@ -162,41 +161,9 @@ export default function Lesson() {
 		}
 	}, [success]);
 
-	useEffect(() => {
-		if (lessonEditQuill) {
-			lessonEditQuill.on('text-change', () => {
-				setLessonEditQuillContent(JSON.stringify(lessonEditQuill.getContents()));
-			});
-		}
-	}, [lessonEditQuill]);
-
-	useEffect(() => {
-		if (lessonEditMktQuill) {
-			lessonEditMktQuill.on('text-change', () => {
-				setLessonEditQuillMktContent(JSON.stringify(lessonEditMktQuill.getContents()));
-			});
-		}
-	}, [lessonEditMktQuill]);
-
-	useEffect(() => {
-		if (lesson?.lesson.content && lessonEditQuill) {
-			lessonEditQuill.setContents(JSON.parse(lesson.lesson.content) as Delta);
-		}
-	}, [lessonEditQuill]); // eslint-disable-line react-hooks/exhaustive-deps
-
-	useEffect(() => {
-		if (lesson?.lesson.marketingContent && lessonEditMktQuill) {
-			lessonEditMktQuill.setContents(JSON.parse(lesson.lesson.marketingContent) as Delta);
-		}
-	}, [lessonEditMktQuill]); // eslint-disable-line react-hooks/exhaustive-deps
-
 	return lesson && (
 		<>
-			{(success ?? error) && (
-				<p className='mb-4 text-lg'>
-					{success ?? error}
-				</p>
-			)}
+			<SuccessOrErrorMessage success={success} error={error}/>
 
 			<Dialog.Root open={lessonEditDialogIsOpen} onOpenChange={setLessonEditDialogIsOpen}>
 				<div className='flex items-center gap-5'>
@@ -354,14 +321,12 @@ export default function Lesson() {
 											type='text'
 											min={8}
 											className='hidden'
-											value={lessonEditQuillContent}
+											value={lessonContent}
 										/>
 									</RadixForm.Control>
 								</RadixForm.Field>
 
-								<ClientOnly fallback={<YemSpinner/>}>
-									{() => <Editor setQuill={setLessonEditQuill} placeholder='Adicione aqui o conteúdo da aula, que só aparece para os alunos...'/>}
-								</ClientOnly>
+								<Editor setQuill={setLessonContentEditor} placeholder='Adicione aqui o conteúdo da aula, que só aparece para os alunos...'/>
 
 								<RadixForm.Field name='marketingContent'>
 									<div className='flex items-baseline justify-between'>
@@ -375,14 +340,12 @@ export default function Lesson() {
 											type='text'
 											min={8}
 											className='hidden'
-											value={lessonEditQuillMktContent}
+											value={lessonMktContent}
 										/>
 									</RadixForm.Control>
 								</RadixForm.Field>
 
-								<ClientOnly fallback={<YemSpinner/>}>
-									{() => <Editor setQuill={setLessonEditMktQuill} placeholder='Adicione aqui o conteúdo de divulgação da aula, que só aparece para quem não é aluno...'/>}
-								</ClientOnly>
+								<Editor setQuill={setLessonMktContentEditor} placeholder='Adicione aqui o conteúdo de divulgação da aula, que só aparece para quem não é aluno...'/>
 
 								<RadixForm.Field name='videoSourceUrl'>
 									<div className='flex items-baseline justify-between'>

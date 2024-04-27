@@ -16,6 +16,7 @@ import {YemSpinner} from '~/components/yem-spinner.js';
 import {logger} from '~/utils/logger.util';
 import SubscriptionService from '~/services/subscription.service.server';
 import {type TPrismaPayloadGetUserSubscriptions} from '~/types/subscription.type';
+import {SuccessOrErrorMessage} from '~/components/admin-success-or-error-message.js';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => ([
 	{title: `${data!.studentData!.firstName} ${data!.studentData!.lastName} - Yoga em Movimento`},
@@ -186,11 +187,7 @@ export default function Student() {
 
 	return studentData && (
 		<>
-			{(success ?? error) && (
-				<p className='mb-4 text-lg'>
-					{success ?? error}
-				</p>
-			)}
+			<SuccessOrErrorMessage success={success} error={error}/>
 
 			<div>
 				<h1>{`${studentData.firstName} ${studentData.lastName}`}</h1>

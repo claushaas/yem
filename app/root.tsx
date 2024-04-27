@@ -9,7 +9,7 @@ import {
 import {type LoaderFunctionArgs, type LinksFunction, json} from '@remix-run/node';
 import {getUserSession} from './utils/session.server.js';
 import {type TypeUserSession} from './types/user-session.type.js';
-import {useIsBot} from './context/is-bot.context.js';
+import {useIsBot} from './hooks/use-is-bot.hook.js';
 import styles from '~/tailwind.css?url';
 import {NavigateBar} from '~/components/navigation-bar.js';
 import {Footer} from '~/components/footer.js';
