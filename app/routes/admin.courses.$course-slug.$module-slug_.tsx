@@ -28,6 +28,7 @@ import {type TTags, type TPrismaPayloadGetAllTags, type TTag} from '~/types/tag.
 import {TagService} from '~/services/tag.service.server';
 import {useTextEditor} from '~/hooks/use-text-editor.hook.js';
 import {ContentConverter} from '~/components/content-converter.js';
+import {SuccessOrErrorMessage} from '~/components/admin-success-or-error-message.js';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => [
 	{title: `${data?.module?.module.name} - Yoga em Movimento`},
@@ -212,11 +213,7 @@ export default function Module() {
 
 	return module && (
 		<>
-			{(success ?? error) && (
-				<p className='mb-4 text-lg'>
-					{success ?? error}
-				</p>
-			)}
+			<SuccessOrErrorMessage success={success} error={error}/>
 
 			<Dialog.Root open={moduleEditDialogIsOpen} onOpenChange={setModuleEditDialogIsOpen}>
 				<div className='flex items-center gap-5'>

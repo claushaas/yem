@@ -10,6 +10,7 @@ import {type TUserRoles} from '~/types/user.type';
 import {type TCourse, type TPrismaPayloadGetAllCourses} from '~/types/course.type';
 import {type TServiceReturn} from '~/types/service-return.type';
 import {CourseCreateOrEditForm} from '~/components/course-create-or-edit-form.js';
+import {SuccessOrErrorMessage} from '~/components/admin-success-or-error-message.js';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => ([
 	{title: 'Cursos - Yoga em Movimento'},
@@ -111,11 +112,8 @@ export default function Courses() {
 
 	return (
 		<>
-			{(success ?? error) && (
-				<p className='mb-4 text-lg'>
-					{success ?? error}
-				</p>
-			)}
+			<SuccessOrErrorMessage success={success} error={error}/>
+
 			<div className='flex items-center gap-5'>
 				<h1>Cursos</h1>
 				<CourseCreateOrEditForm/>

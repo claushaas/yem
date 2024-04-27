@@ -4,6 +4,7 @@ import {
 	Form, type MetaFunction, useActionData, useNavigation,
 } from '@remix-run/react';
 import {populateCache} from '~/cache/initial-cache-population.js';
+import {SuccessOrErrorMessage} from '~/components/admin-success-or-error-message.js';
 import {Button, ButtonPreset, ButtonType} from '~/components/button.js';
 import {type TUser} from '~/types/user.type';
 import {logger} from '~/utils/logger.util';
@@ -46,15 +47,14 @@ export default function AdminRepopulateCache() {
 	const navigation = useNavigation();
 	const isSubmittingAnyForm = navigation.formAction === '/admin/repopulate-cache';
 
-	const actionData = useActionData<typeof action>();
+	const actionData = useActionData<TActionData>();
+	const success = actionData?.success;
+	const error = actionData?.error;
 
 	return (
 		<>
-			{(actionData?.success ?? actionData?.error) && (
-				<p className='mb-4 text-lg'>
-					{actionData.success ?? actionData.error}
-				</p>
-			)}
+			<SuccessOrErrorMessage success={success} error={error}/>
+
 			<RadixForm.Root asChild>
 				<Form method='post' action='/admin/repopulate-cache'>
 					<RadixForm.Submit asChild>

@@ -15,6 +15,7 @@ import {logger} from '~/utils/logger.util';
 import {commitUserSession, getUserSession} from '~/utils/session.server';
 import {Button, ButtonPreset, ButtonType} from '~/components/button.js';
 import {YemSpinner} from '~/components/yem-spinner.js';
+import {SuccessOrErrorMessage} from '~/components/admin-success-or-error-message.js';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => ([
 	{title: 'Tags - Yoga em Movimento'},
@@ -116,11 +117,7 @@ export default function Tags() {
 
 	return (
 		<>
-			{(success ?? error) && (
-				<p className='mb-4 text-lg'>
-					{success ?? error}
-				</p>
-			)}
+			<SuccessOrErrorMessage success={success} error={error}/>
 
 			<Dialog.Root open={open} onOpenChange={setOpen}>
 				<div className='flex items-center gap-5'>
