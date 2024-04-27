@@ -3,7 +3,7 @@
 
 import {type TPlanIdentifier} from '~/types/subscription.type';
 
-export const subscriptionIdentifierToCourseId = {
+export const subscriptionIdentifierToCourseSlug = {
 	escola_mensal: 'escola-online',
 	escola_online_plano_anual: 'yoga-e-hinduismo',
 	escola_anual_bf: 'yoga-e-hinduismo',
@@ -24,4 +24,4 @@ export const subscriptionIdentifierToCourseId = {
 	Anual: 'yoga-e-hinduismo',
 };
 
-export const convertSubscriptionIdentifierToCourseId = (subscriptionIdentifier: TPlanIdentifier): string => subscriptionIdentifierToCourseId[subscriptionIdentifier];
+export const convertSubscriptionIdentifierToCourseSlug = (subscriptionIdentifier: TPlanIdentifier): string => subscriptionIdentifierToCourseSlug[subscriptionIdentifier];

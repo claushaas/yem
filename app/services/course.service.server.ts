@@ -8,7 +8,7 @@ import {
 } from '../types/course.type.js';
 import {CustomError} from '../utils/custom-error.js';
 import {type TServiceReturn} from '../types/service-return.type.js';
-import {db} from '../database/db.js';
+import {database} from '../database/database.server.js';
 import {logger} from '~/utils/logger.util.js';
 import {memoryCache} from '~/cache/memory-cache.js';
 import {type TCourseDataForCache} from '~/cache/populate-courses-to-cache.js';
@@ -19,7 +19,7 @@ export class CourseService {
 	private static cache: typeof memoryCache;
 	private readonly _model: PrismaClient;
 
-	constructor(model: PrismaClient = db) {
+	constructor(model: PrismaClient = database) {
 		this._model = model;
 		CourseService.cache = memoryCache;
 	}

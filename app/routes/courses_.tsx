@@ -1,7 +1,7 @@
 import {json, type LoaderFunctionArgs} from '@remix-run/node';
 import {useLoaderData, type MetaFunction} from '@remix-run/react';
 import {type TCourseDataForCache} from '~/cache/populate-courses-to-cache.js';
-import {CourseCard} from '~/components/generic-entity-card.js';
+import {GenericEntityCard} from '~/components/generic-entity-card.js';
 import {CourseService} from '~/services/course.service.server';
 import {type TUserRoles} from '~/types/user.type';
 import {logger} from '~/utils/logger.util';
@@ -52,7 +52,7 @@ export default function Courses() {
 			</h1>
 			<div className='max-w-[95%] sm:max-w-[90%] mx-auto flex gap-5 flex-wrap mb-52 justify-center'>
 				{courses.map(course => (
-					<CourseCard key={course.id} course={course} to={`./${course.slug}`}/>
+					<GenericEntityCard key={course.id} course={course} to={`./${course.slug}`}/>
 				))}
 			</div>
 		</main>

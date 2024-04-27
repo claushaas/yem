@@ -9,7 +9,7 @@ import {
 } from '../types/subscription.type.js';
 import {Request} from '../utils/request.js';
 import {logger} from '../utils/logger.util.js';
-import {convertSubscriptionIdentifierToCourseId} from '~/utils/subscription-identifier-to-course-id.js';
+import {convertSubscriptionIdentifierToCourseSlug} from '~/utils/subscription-identifier-to-course-id.js';
 
 export class IuguService {
 	private readonly _request: Request;
@@ -63,7 +63,7 @@ export class IuguService {
 	private _mapSubscriptions(subscriptions: TIuguSubscription[], user: TUser): TSubscription[] {
 		return subscriptions.map(subscription => ({
 			userId: user.id,
-			courseSlug: convertSubscriptionIdentifierToCourseId(subscription.plan_identifier as TPlanIdentifier),
+			courseSlug: convertSubscriptionIdentifierToCourseSlug(subscription.plan_identifier as TPlanIdentifier),
 			expiresAt: new Date(subscription.expires_at),
 			provider: 'iugu',
 			providerSubscriptionId: subscription.id,

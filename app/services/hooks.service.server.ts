@@ -6,7 +6,7 @@ import {SlackService} from './slack.service.server.js';
 import {BotmakerService} from './botmaker.service.server.js';
 import {MailService} from './mail.service.server.js';
 import {type TServiceReturn} from '~/types/service-return.type';
-import {convertSubscriptionIdentifierToCourseId} from '~/utils/subscription-identifier-to-course-id.js';
+import {convertSubscriptionIdentifierToCourseSlug} from '~/utils/subscription-identifier-to-course-id.js';
 import {logger} from '~/utils/logger.util';
 import {CustomError} from '~/utils/custom-error.js';
 import {type TPlanIdentifier, type TIncommingHotmartWebhook} from '~/types/subscription.type.js';
@@ -155,7 +155,7 @@ export class HooksService {
 					await Promise.all([
 						this._subscriptionService.createOrUpdate({
 							userId: user.id,
-							courseSlug: convertSubscriptionIdentifierToCourseId(subscription.plan_identifier),
+							courseSlug: convertSubscriptionIdentifierToCourseSlug(subscription.plan_identifier),
 							expiresAt: new Date(subscription.expires_at),
 							provider: 'iugu',
 							providerSubscriptionId: subscription.id,
@@ -254,7 +254,7 @@ export class HooksService {
 						this._userService.addRolesToUser(userData!, rolesToAdd), // Should be deleted when old site stops being suported
 						this._subscriptionService.createOrUpdate({
 							userId: userData!.id,
-							courseSlug: convertSubscriptionIdentifierToCourseId(data.product.id.toString() as TPlanIdentifier),
+							courseSlug: convertSubscriptionIdentifierToCourseSlug(data.product.id.toString() as TPlanIdentifier),
 							expiresAt,
 							provider: 'hotmart',
 							providerSubscriptionId: data.subscription?.subscriber.code ?? data.purchase.transaction,
@@ -295,7 +295,7 @@ export class HooksService {
 						this._userService.addRolesToUser(userData!, rolesToAdd), // Should be deleted when old site stops being suported
 						this._subscriptionService.createOrUpdate({
 							userId: userData!.id,
-							courseSlug: convertSubscriptionIdentifierToCourseId(data.subscription?.plan?.name as TPlanIdentifier) ?? convertSubscriptionIdentifierToCourseId(data.product.id.toString() as TPlanIdentifier),
+							courseSlug: convertSubscriptionIdentifierToCourseSlug(data.subscription?.plan?.name as TPlanIdentifier) ?? convertSubscriptionIdentifierToCourseSlug(data.product.id.toString() as TPlanIdentifier),
 							expiresAt: new Date(data.purchase.date_next_charge!),
 							provider: 'hotmart',
 							providerSubscriptionId: data.subscription?.subscriber.code ?? data.purchase.transaction,

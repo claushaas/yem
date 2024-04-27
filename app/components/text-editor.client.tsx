@@ -3,7 +3,8 @@ import {
 } from 'react';
 import Quill from 'quill';
 import 'quill/dist/quill.snow.css';
-// Import 'quill/dist/quill.core.css';
+import {ClientOnly} from 'remix-utils/client-only';
+import {YemSpinner} from './yem-spinner.js';
 
 type EditorProperties = {
 	readonly setQuill: (quill: Quill) => void;
@@ -11,9 +12,10 @@ type EditorProperties = {
 };
 
 export const Editor = ({setQuill, placeholder = 'Escreva aqui o seu comentário'}: EditorProperties) => { // eslint-disable-line react/function-component-definition
-	const quillTextBox = useRef(null);
+	const quillTextBoxReference = useRef<HTMLDivElement>(null);
 
 	useEffect(() => {
+		const quillTextBox = quillTextBoxReference;
 		if (quillTextBox.current) {
 			const quillInstance = new Quill(quillTextBox.current, {
 				placeholder,
@@ -40,11 +42,19 @@ export const Editor = ({setQuill, placeholder = 'Escreva aqui o seu comentário'
 
 			setQuill(quillInstance);
 		}
+
+		return () => {
+			if (quillTextBox.current) {
+				quillTextBox.current.innerHTML = '';
+			}
+		};
 	}, [setQuill]); // eslint-disable-line react-hooks/exhaustive-deps
 
 	return (
 		<div>
-			<div ref={quillTextBox} id='editor'/>
+			<ClientOnly fallback={<YemSpinner/>}>
+				{() => <div ref={quillTextBoxReference} id='editor'/>}
+			</ClientOnly>
 		</div>
 	);
 };

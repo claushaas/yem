@@ -4,6 +4,7 @@ import {
 	type MetaFunction,
 	Form as RemixForm, json, redirect, useLoaderData, useNavigation,
 } from '@remix-run/react';
+import {SuccessOrErrorMessage} from '~/components/admin-success-or-error-message.js';
 import {Button, ButtonPreset, ButtonType} from '~/components/button.js';
 import {YemSpinner} from '~/components/yem-spinner.js';
 import {UserService} from '~/services/user.service.server';
@@ -78,12 +79,10 @@ export default function Students() {
 
 	return (
 		<>
+			<SuccessOrErrorMessage success={success} error={error}/>
+
 			<h1>Alunos</h1>
-			{(success ?? error) && (
-				<p className='mb-4 text-lg'>
-					{success ?? error}
-				</p>
-			)}
+
 			<Form.Root>
 				<RemixForm method='post' action='/admin/students'>
 

@@ -4,11 +4,10 @@ import {
 	Form, useLoaderData, useNavigation,
 } from '@remix-run/react';
 import * as RadixForm from '@radix-ui/react-form';
-import type Quill from 'quill';
 import {useEffect, useState} from 'react';
-import {ClientOnly} from 'remix-utils/client-only';
 import * as Switch from '@radix-ui/react-switch';
 import Select from 'react-select';
+import {useTextEditor} from '../hooks/use-text-editor.hook.js';
 import {Button, ButtonPreset, ButtonType} from '~/components/button.js';
 import {Editor} from '~/components/text-editor.client.js';
 import {YemSpinner} from '~/components/yem-spinner.js';
@@ -19,10 +18,8 @@ export function CourseCreateOrEditForm() {
 		courses,
 		success,
 	} = useLoaderData<TCoursesLoaderData>();
-	const [quill, setQuill] = useState<Quill | null>(null); // eslint-disable-line @typescript-eslint/ban-types
-	const [content, setContent] = useState<string>('');
-	const [mktQuill, setMktQuill] = useState<Quill | null>(null); // eslint-disable-line @typescript-eslint/ban-types
-	const [mktContent, setMktContent] = useState<string>('');
+	const [content, setContetQuill] = useTextEditor();
+	const [mktContent, setMktQuill] = useTextEditor();
 	const [open, setOpen] = useState<boolean>(false);
 	const [coursesSlug, setCoursesSlug] = useState<Array<{value: string; label: string}>>([]);
 	const navigation = useNavigation();
@@ -33,22 +30,6 @@ export function CourseCreateOrEditForm() {
 			setOpen(false);
 		}
 	}, [success]);
-
-	useEffect(() => {
-		if (mktQuill) {
-			mktQuill.on('text-change', () => {
-				setMktContent(JSON.stringify(mktQuill.getContents()));
-			});
-		}
-	}, [mktQuill]);
-
-	useEffect(() => {
-		if (quill) {
-			quill.on('text-change', () => {
-				setContent(JSON.stringify(quill.getContents()));
-			});
-		}
-	}, [quill]);
 
 	return (
 		<Dialog.Root open={open} onOpenChange={setOpen}>
@@ -151,9 +132,7 @@ export function CourseCreateOrEditForm() {
 								</RadixForm.Control>
 							</RadixForm.Field>
 
-							<ClientOnly fallback={<YemSpinner/>}>
-								{() => <Editor setQuill={setQuill} placeholder='Adicione aqui o conteúdo do curso, que só aparece para os alunos...'/>}
-							</ClientOnly>
+							<Editor setQuill={setContetQuill} placeholder='Adicione aqui o conteúdo do curso, que só aparece para os alunos...'/>
 
 							<RadixForm.Field name='marketingContent'>
 								<div className='flex items-baseline justify-between'>
@@ -172,9 +151,7 @@ export function CourseCreateOrEditForm() {
 								</RadixForm.Control>
 							</RadixForm.Field>
 
-							<ClientOnly fallback={<YemSpinner/>}>
-								{() => <Editor setQuill={setMktQuill} placeholder='Adicione aqui o conteúdo de divulgação do curso, que aparece para quem não é aluno...'/>}
-							</ClientOnly>
+							<Editor setQuill={setMktQuill} placeholder='Adicione aqui o conteúdo de divulgação do curso, que aparece para quem não é aluno...'/>
 
 							<RadixForm.Field name='videoSourceUrl'>
 								<div className='flex items-baseline justify-between'>

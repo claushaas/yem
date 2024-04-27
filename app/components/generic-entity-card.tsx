@@ -8,7 +8,7 @@ type ClassCardPropierties = {
 	readonly to: string;
 };
 
-export function CourseCard({course, to}: ClassCardPropierties) {
+export function GenericEntityCard({course, to}: ClassCardPropierties) {
 	return (
 		<motion.div
 			whileHover={{

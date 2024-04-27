@@ -5,7 +5,7 @@ import {QuillDeltaToHtmlConverter} from 'quill-delta-to-html';
 import {type OpIterator} from 'quill/core';
 import {type TCourseDataForCache} from '~/cache/populate-courses-to-cache.js';
 import {type TModuleDataForCache} from '~/cache/populate-modules-to-cache.js';
-import {CourseCard} from '~/components/generic-entity-card.js';
+import {GenericEntityCard} from '~/components/generic-entity-card.js';
 import {CourseService} from '~/services/course.service.server';
 import {type TUser} from '~/types/user.type';
 import {logger} from '~/utils/logger.util';
@@ -77,7 +77,7 @@ export default function Course() {
 					{course.modules && (
 						<section id='modules' className='flex flex-wrap gap-4 my-4'>
 							{(course.modules as unknown as TModuleDataForCache[]).map(module => (
-								<CourseCard key={module.module.id} course={module.module} to={`./${module.module.slug}`}/>
+								<GenericEntityCard key={module.module.id} course={module.module} to={`./${module.module.slug}`}/>
 							))}
 						</section>
 					)}

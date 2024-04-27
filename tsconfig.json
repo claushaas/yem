@@ -6,8 +6,6 @@
     "**/.server/**/*.tsx",
     "**/.client/**/*.ts",
     "**/.client/**/*.tsx",
-    "**/api/**/*.ts",
-    "**/api/**/*.tsx",
     "/remix-handler.js",
   ],
   "compilerOptions": {
@@ -29,6 +27,7 @@
     "resolveJsonModule": true,
     "target": "ESNext",
     "strict": true,
+    "noImplicitAny": true,
     "allowJs": true,
     "skipLibCheck": true,
     "outDir": "build",
@@ -38,9 +37,6 @@
       "~/*": [
         "./app/*"
       ],
-      "#/*": [
-        "./api/*"
-      ]
     },
   }
 }

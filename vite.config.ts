@@ -5,6 +5,9 @@ import svgr from 'vite-plugin-svgr';
 import {remixDevTools} from 'remix-development-tools';
 
 export default defineConfig({
+	build: {
+		cssMinify: process.env.NODE_ENV === 'production',
+	},
 	server: {
 		host: true,
 		port: Number(process.env.APP_PORT) || 3001,
