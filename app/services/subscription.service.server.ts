@@ -8,7 +8,7 @@ import {database} from '../database/database.server.js';
 import {HotmartService} from './hotmart.service.server.js';
 import {IuguService} from './iugu.service.server.js';
 import {CustomError} from '~/utils/custom-error.js';
-import {convertSubscriptionIdentifierToCourseId} from '~/utils/subscription-identifier-to-course-id.js';
+import {convertSubscriptionIdentifierToCourseSlug} from '~/utils/subscription-identifier-to-course-id.js';
 import {memoryCache} from '~/cache/memory-cache.js';
 
 export default class SubscriptionService {
@@ -130,7 +130,7 @@ export default class SubscriptionService {
 			} else if (iuguSubscriptions.length === 0) {
 				await this.createOrUpdate({
 					userId: user.id,
-					courseSlug: convertSubscriptionIdentifierToCourseId('escola_mensal'),
+					courseSlug: convertSubscriptionIdentifierToCourseSlug('escola_mensal'),
 					provider: 'iugu',
 					providerSubscriptionId: `no-iugu-${user.id}`,
 					expiresAt: new Date(946_684_800),
@@ -154,7 +154,7 @@ export default class SubscriptionService {
 			} else if (hotmartSubscriptions.length === 0) {
 				await this.createOrUpdate({
 					userId: user.id,
-					courseSlug: convertSubscriptionIdentifierToCourseId('escola_mensal'),
+					courseSlug: convertSubscriptionIdentifierToCourseSlug('escola_mensal'),
 					provider: 'hotmart',
 					providerSubscriptionId: `no-hotmart-school-${user.id}`,
 					expiresAt: new Date(946_684_800),
@@ -178,7 +178,7 @@ export default class SubscriptionService {
 			} else if (hotmartSubscriptions.length === 0) {
 				await this.createOrUpdate({
 					userId: user.id,
-					courseSlug: convertSubscriptionIdentifierToCourseId('1392822'),
+					courseSlug: convertSubscriptionIdentifierToCourseSlug('1392822'),
 					provider: 'hotmart',
 					providerSubscriptionId: `no-hotmart-formation-${user.id}`,
 					expiresAt: new Date(946_684_800),
@@ -192,7 +192,7 @@ export default class SubscriptionService {
 	private async _createOrUpdateBeginnerSubscription(user: TUser): Promise<void> {
 		await this.createOrUpdate({
 			userId: user.id,
-			courseSlug: convertSubscriptionIdentifierToCourseId('beginner'),
+			courseSlug: convertSubscriptionIdentifierToCourseSlug('beginner'),
 			provider: 'manual',
 			providerSubscriptionId: `begginner-${user.id}`,
 			expiresAt: new Date(2_556_113_460_000),

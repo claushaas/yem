@@ -11,7 +11,7 @@ import {
 } from '../types/subscription.type.js';
 import {logger} from '../utils/logger.util.js';
 import {SecretService} from './secret.service.server.js';
-import {convertSubscriptionIdentifierToCourseId} from '~/utils/subscription-identifier-to-course-id.js';
+import {convertSubscriptionIdentifierToCourseSlug} from '~/utils/subscription-identifier-to-course-id.js';
 
 const baseUrl = process.env.HOTMART_API_URL ?? 'https://sandbox.hotmart.com/';
 
@@ -129,7 +129,7 @@ export class HotmartService {
 	private _mapFormationSubscriptions(subscriptions: THotmartFormationPurchase[], user: TUser): TSubscription[] {
 		return subscriptions.map(subscription => ({
 			userId: user.id,
-			courseSlug: convertSubscriptionIdentifierToCourseId(subscription.product.id.toString() as TPlanIdentifier),
+			courseSlug: convertSubscriptionIdentifierToCourseSlug(subscription.product.id.toString() as TPlanIdentifier),
 			expiresAt: this._getFormationSubscriptionExpiresAt(subscription),
 			provider: 'hotmart',
 			providerSubscriptionId: subscription.purchase.transaction,
@@ -154,7 +154,7 @@ export class HotmartService {
 	private _mapSchoolSubscriptions(subscriptions: THotmartSubscription[], user: TUser): TSubscription[] {
 		return subscriptions.map(subscription => ({
 			userId: user.id,
-			courseSlug: convertSubscriptionIdentifierToCourseId(subscription.plan.name as TPlanIdentifier),
+			courseSlug: convertSubscriptionIdentifierToCourseSlug(subscription.plan.name as TPlanIdentifier),
 			expiresAt: subscription.date_next_charge ? new Date(subscription.date_next_charge) : new Date(subscription.accession_date),
 			provider: 'hotmart',
 			providerSubscriptionId: subscription.subscriber_code,
