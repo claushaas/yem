@@ -5,7 +5,7 @@ import {useLoaderData, type MetaFunction} from '@remix-run/react';
 import {CourseService} from '~/services/course.service.server';
 import {commitUserSession, getUserSession} from '~/utils/session.server.js';
 import {logger} from '~/utils/logger.util.js';
-import {CourseCard} from '~/components/generic-entity-card.js';
+import {GenericEntityCard} from '~/components/generic-entity-card.js';
 import {type TUserRoles} from '~/types/user.type';
 import {type TCourse, type TPrismaPayloadGetAllCourses} from '~/types/course.type';
 import {type TServiceReturn} from '~/types/service-return.type';
@@ -121,7 +121,7 @@ export default function Courses() {
 
 			<div className='flex gap-4 my-4 flex-wrap'>
 				{courses?.data?.map(course => (
-					<CourseCard key={course?.id} course={course ?? {}} to={`./${course?.slug}`}/>
+					<GenericEntityCard key={course?.id} course={course ?? {}} to={`./${course?.slug}`}/>
 				))}
 			</div>
 		</>

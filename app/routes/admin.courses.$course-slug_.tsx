@@ -16,7 +16,7 @@ import {commitUserSession, getUserSession} from '~/utils/session.server';
 import {type TUser} from '~/types/user.type';
 import {logger} from '~/utils/logger.util';
 import {type TCourse, type TPrismaPayloadGetAllCourses, type TPrismaPayloadGetCourseBySlug} from '~/types/course.type';
-import {CourseCard} from '~/components/generic-entity-card.js';
+import {GenericEntityCard} from '~/components/generic-entity-card.js';
 import {Button, ButtonPreset, ButtonType} from '~/components/button.js';
 import {Editor} from '~/components/text-editor.client.js';
 import {YemSpinner} from '~/components/yem-spinner.js';
@@ -950,7 +950,7 @@ export default function Course() {
 
 				<div className='flex gap-4 my-4 flex-wrap'>
 					{course.modules.map(module => (
-						<CourseCard key={module.module.id} course={module.module} to={`./${module.module.slug}`}/>
+						<GenericEntityCard key={module.module.id} course={module.module} to={`./${module.module.slug}`}/>
 					))}
 				</div>
 

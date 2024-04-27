@@ -19,7 +19,7 @@ import {ModuleService} from '~/services/module.service.server';
 import {LessonService} from '~/services/lesson.service.server';
 import {type TUser} from '~/types/user.type';
 import {type TPrismaPayloadGetModulesList, type TModule, type TPrismaPayloadGetModuleBySlug} from '~/types/module.type';
-import {CourseCard} from '~/components/generic-entity-card.js';
+import {GenericEntityCard} from '~/components/generic-entity-card.js';
 import {Button, ButtonPreset, ButtonType} from '~/components/button.js';
 import {Editor} from '~/components/text-editor.client.js';
 import {YemSpinner} from '~/components/yem-spinner.js';
@@ -835,7 +835,7 @@ export default function Module() {
 
 				<div className='flex gap-4 my-4 flex-wrap'>
 					{module.module.lessons.map(lesson => (
-						<CourseCard key={lesson.lesson.id} course={lesson.lesson} to={`./${lesson.lesson.slug}`}/>
+						<GenericEntityCard key={lesson.lesson.id} course={lesson.lesson} to={`./${lesson.lesson.slug}`}/>
 					))}
 				</div>
 			</div>
