@@ -4,9 +4,14 @@ import {
 	Outlet,
 	Scripts,
 	ScrollRestoration,
+	useFetchers,
 	useLoaderData,
+	useNavigation,
 } from '@remix-run/react';
 import {type LoaderFunctionArgs, type LinksFunction, json} from '@remix-run/node';
+import NProgress from 'nprogress';
+import nProgressStyles from 'nprogress/nprogress.css?url';
+import {useEffect, useMemo} from 'react';
 import {getUserSession} from './utils/session.server.js';
 import {type TypeUserSession} from './types/user-session.type.js';
 import {useIsBot} from './hooks/use-is-bot.hook.js';
@@ -16,6 +21,7 @@ import {Footer} from '~/components/footer.js';
 
 export const links: LinksFunction = () => [
 	{rel: 'stylesheet', href: styles},
+	{rel: 'stylesheet', href: nProgressStyles},
 ];
 
 export const loader = async ({request}: LoaderFunctionArgs) => {
@@ -40,6 +46,37 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
 function App() {
 	const data = useLoaderData() as {userData: TypeUserSession | undefined} ?? {};
 	const userData = data?.userData;
+
+	const transition = useNavigation();
+	const fetchers = useFetchers();
+
+	const state = useMemo<'idle' | 'loading'>(
+		() => {
+			const states = [
+				transition.state,
+				...fetchers.map(fetcher => fetcher.state),
+			];
+			if (states.every(state => state === 'idle')) {
+				return 'idle';
+			}
+
+			return 'loading';
+		},
+		[transition.state, fetchers],
+	);
+
+	useEffect(() => {
+		// And when it's something else it means it's either submitting a form or
+		// waiting for the loaders of the next location so we start it
+		if (state === 'loading') {
+			NProgress.start();
+		}
+
+		// When the state is idle then we can to complete the progress bar
+		if (state === 'idle') {
+			NProgress.done();
+		}
+	}, [state]);
 
 	const isBot = useIsBot();
 
