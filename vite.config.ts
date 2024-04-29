@@ -1,3 +1,4 @@
+import {expressDevServer, expressPreset} from 'remix-express-vite-plugin/vite';
 import {vitePlugin as remix} from '@remix-run/dev';
 import {defineConfig} from 'vite';
 import tsconfigPaths from 'vite-tsconfig-paths';
@@ -19,8 +20,10 @@ export default defineConfig({
 		exclude: ['newrelic', '@newrelic'],
 	},
 	plugins: [
+		expressDevServer(),
 		remixDevTools(),
 		remix({
+			presets: [expressPreset()],
 			future: {
 				v3_relativeSplatPath: true, // eslint-disable-line @typescript-eslint/naming-convention
 			},
