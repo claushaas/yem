@@ -21,7 +21,6 @@ services:
     container_name: app
     working_dir: /app
     volumes:
-      - ./api:/app/api
       - ./app:/app/app
     ports:
       - "3001:3001"

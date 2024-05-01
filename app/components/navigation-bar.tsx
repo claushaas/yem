@@ -2,10 +2,46 @@ import {Bars4Icon} from '@heroicons/react/24/outline';
 import * as NavigationMenu from '@radix-ui/react-navigation-menu';
 import * as Separator from '@radix-ui/react-separator';
 import {Link, useLocation} from '@remix-run/react';
-import {NavigateLink} from '~/components/navigation-link.js';
+import {Button, ButtonPreset, ButtonType} from './button.js';
 import {type TypeUserSession} from '~/types/user-session.type';
 
-export function NavigateBar({userData}: {readonly userData: TypeUserSession | undefined}) {
+type NavigateLinkProprierties = {
+	readonly to: string;
+	readonly children?: React.ReactNode;
+};
+
+function NavigateLink({to, children, ...properties}: NavigateLinkProprierties) {
+	const location = useLocation();
+	const isActive = location.pathname === to;
+
+	return (
+		<NavigationMenu.Link asChild active={isActive}>
+			<Link to={to} {...properties}>
+				<li className='text-mauve-11 dark:text-mauvedark-11 bg-mauve-4 dark:bg-mauvedark-4 hover:bg-mauve-5 hover:dark:bg-mauvedark-5 rounded-lg p-3 shadow-sm shadow-mauve-11 dark:shadow-mauvedark-3'>
+					{children}
+				</li>
+			</Link>
+		</NavigationMenu.Link>
+	);
+}
+
+function MarketingNavigationBar({userData}: {readonly userData: TypeUserSession | undefined}) {
+	return (
+		<header className='max-xs:max-w-[95%] max-w-[90%] mx-auto my-4 flex justify-between items-center w-[-webkit-fill-available]'>
+			<div className='w-72'>
+				<div aria-label='Página inicial do Yoga em Movimento' className='inline before:bg-[url("./assets/logo/logo-reduzido-colorido.svg")] sm:before:bg-[url("./assets/logo/logo-retangular-colorido.svg")] max-xs:before:h-14 before:h-20 before:block before:bg-no-repeat'/>
+			</div>
+			<div className='flex gap-4 flex-wrap justify-end'>
+				<Link to='/login' aria-label='Entrar na plataforma do Yoga em Movimento'>
+					<Button type={ButtonType.Button} preset={ButtonPreset.Secondary} text='Entrar'/>
+				</Link>
+				<Button type={ButtonType.Button} preset={ButtonPreset.Primary} text='Começar Agora'/>
+			</div>
+		</header>
+	);
+}
+
+function NonMarketingNavigateBar({userData}: {readonly userData: TypeUserSession | undefined}) {
 	const {pathname} = useLocation();
 
 	return (
@@ -63,5 +99,17 @@ export function NavigateBar({userData}: {readonly userData: TypeUserSession | un
 				</div>
 			</NavigationMenu.Root>
 		</header>
+	);
+}
+
+export function NavigateBar({userData}: {readonly userData: TypeUserSession | undefined}) {
+	const {pathname} = useLocation();
+
+	if (pathname === '/escola-online') {
+		return <MarketingNavigationBar userData={userData}/>;
+	}
+
+	return (
+		<NonMarketingNavigateBar userData={userData}/>
 	);
 }
