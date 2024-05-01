@@ -23,10 +23,10 @@ export default function Index() {
 		<main>
 			<section id='welcome' className='flex max-w-[90%] mx-auto my-20 sm:my-32 py-12 items-start gap-14 justify-center'>
 				<div className='sm:max-w-[50%]'>
-					<h1 className='text-3xl xs:text-5xl xl:text-7xl text-left mb-4 text-purple-12 dark:text-purpledark-12'>
+					<h1 className='text-3xl xs:text-5xl xl:text-7xl text-left mb-4 text-purple-11'>
 						Transforme sua vida com a prática do Yoga, onde quer que esteja.
 					</h1>
-					<h2 className='text-xl xs:text-2xl md:text-3xl lg:text-4xl text-purple-11 dark:text-purpledark-11'>
+					<h2 className='text-xl xs:text-2xl md:text-3xl lg:text-4xl text-purple-8'>
 						Bem-vindo ao Yoga em Movimento.
 					</h2>
 				</div>
