@@ -25,17 +25,16 @@ export const loader = ({request}: LoaderFunctionArgs) => json<{meta: Array<{tagN
 export default function EscolaOnline() {
 	return (
 		<main>
-			<section id='welcome'>
-				<div>
-					<h1>A Maior Escola de Yoga do Brasil</h1>
-					<h2>Na Hora Você Quiser</h2>
-					<h2>Onde Você Estiver</h2>
+			<section id='welcome' className='max-w-[95%] sm:max-w-[90%] lg:max-w-screen-lg mx-auto my-16'>
+				<div className='w-full mb-4'>
+					<h1 className='xs:text-5xl lg:text-7xl'><span className='text-tomato-11'>A Maior Escola de Yoga do Brasil.</span> <span className='text-pink-11'>Na Hora Você Quiser.</span> <span className='text-purple-11'>Onde Você Estiver.</span></h1>
 				</div>
-				<div>
-					<h3>Viva os benefícios do Yoga para o seu Corpo, Mente e Emoções, e se transforme na Sua Melhor Versão</h3>
+				<div className='mb-6'>
+					<h3 className='text-purple-12'>Viva os benefícios do Yoga para o seu Corpo, Mente e Emoções, e se transforme na Sua Melhor Versão</h3>
 				</div>
-				<div>
+				<div className='w-fit mx-auto'>
 					<Button type={ButtonType.Button} preset={ButtonPreset.Primary} text='Praticar 7 Dias Grátis'/>
+					<p className='text-center text-sm'>cancele quando quiser</p>
 				</div>
 			</section>
 			<Testimonies/>
