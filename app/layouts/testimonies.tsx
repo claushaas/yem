@@ -3,7 +3,7 @@ import {Testimony} from '~/components/testimony-card.js';
 export function Testimonies() {
 	return (
 		<section id='testimonies' className='mx-auto max-w-max my-20 sm:my-32'>
-			<div className='px-6 pb-4 flex gap-4 overflow-x-scroll'>
+			<div className='px-4 pb-4 flex gap-4 overflow-x-scroll'>
 				<Testimony
 					name='Mylene Castro'
 					description='Professora de Yoga formada pelo Yoga em Movimento'

@@ -1,6 +1,6 @@
 export function History() {
 	return (
-		<section id='history' className='my-20 sm:my-32 max-w-[90%] mx-auto flex justify-center'>
+		<section id='history' className='my-20 sm:my-32 max-w-[95%] sm:max-w-[90%] mx-auto flex justify-center'>
 			<div className='max-w-screen-lg w-full'>
 				<h1 className='text-purple-11 dark:text-purpledark-11 text-3xl xs:text-5xl xl:text-7xl text-left mb-5'>Yoga é para Todas Pessoas!</h1>
 				<h2 className='text-xl xs:text-2xl md:text-3xl lg:text-4xl text-purple-12 dark:text-purpledark-12 mb-4'>É nisso que acreditamos. É por isso que existimos.</h2>
