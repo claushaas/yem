@@ -14,6 +14,7 @@ import {type TUser} from '~/types/user.type.js';
 import {convertStringToStartCase} from '~/utils/convert-string-to-start-case.js';
 import {schoolWelcomeEmailTemplate} from '~/assets/email/school-welcome.email.template.server.js';
 import {formationWelcomeEmailTemplate} from '~/assets/email/formation-welcome.email.template.server.js';
+import {getLrMessage} from '~/utils/get-lr-message.js';
 
 export class HooksService {
 	private readonly _userService: UserService;
@@ -91,6 +92,11 @@ export class HooksService {
 			switch (event) {
 				case 'invoice.status_changed': {
 					await this._handleIuguInvoiceStatusChanged(body);
+					break;
+				}
+
+				case 'invoice.payment_failed': {
+					await this._handleIuguInvoicePaymentFailedWebhook(body);
 					break;
 				}
 
@@ -188,6 +194,39 @@ export class HooksService {
 		} catch (error) {
 			logger.logError(`Error handling iugu invoice status changed webhook: ${(error as Error).message}`);
 			throw new CustomError('INVALID_DATA', `Error handling iugu invoice status changed webhook: ${(error as Error).message}`);
+		}
+	}
+
+	private async _handleIuguInvoicePaymentFailedWebhook(body: {
+		event: string;
+		data: Record<string, any>;
+	}): Promise<TServiceReturn<string>> {
+		const {data} = body;
+
+		try {
+			const {data: invoice} = await this._iuguService.getInvoiceById(data.id as string);
+			const {data: user} = await this._userService.getUserData(invoice.payer_email);
+
+			const lrMessage = getLrMessage(data.lr as string);
+
+			await this._botMakerService.sendWhatsappTemplateMessate(
+				user.phoneNumber,
+				'falha_de_pagamento',
+				{
+					primeiroNome: user.firstName,
+					codigoDoErro: data.lr as string,
+					descricaoDoErro: lrMessage,
+					linkDaFatura: invoice.secure_url,
+				},
+			);
+
+			return {
+				status: 'SUCCESSFUL',
+				data: 'Iugu invoice payment failed handled',
+			};
+		} catch (error) {
+			logger.logError(`Error handling iugu invoice payment failed webhook: ${(error as Error).message}`);
+			throw new CustomError('INVALID_DATA', `Error handling iugu invoice payment failed webhook: ${(error as Error).message}`);
 		}
 	}
 

@@ -6,6 +6,7 @@ import {
 	type TIuguSubscription,
 	type TSubscription,
 	type TPlanIdentifier,
+	type TIuguInvoiceResponse,
 } from '../types/subscription.type.js';
 import {Request} from '../utils/request.js';
 import {logger} from '../utils/logger.util.js';
@@ -50,6 +51,19 @@ export class IuguService {
 	public async getSubscriptionById(subscriptionId: string): Promise<TServiceReturn<TIuguSubscriptionResponse>> {
 		try {
 			const {data} = await this._request.get(`/subscriptions/${subscriptionId}`) as {data: TIuguSubscriptionResponse};
+
+			return {
+				status: 'SUCCESSFUL',
+				data,
+			};
+		} catch (error) {
+			throw new CustomError('INVALID_DATA', (error as Error).message);
+		}
+	}
+
+	public async getInvoiceById(invoiceId: string): Promise<TServiceReturn<TIuguInvoiceResponse>> {
+		try {
+			const {data} = await this._request.get(`/invoices/${invoiceId}`) as {data: TIuguInvoiceResponse};
 
 			return {
 				status: 'SUCCESSFUL',
