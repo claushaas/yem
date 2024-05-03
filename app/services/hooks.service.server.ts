@@ -57,6 +57,11 @@ export class HooksService {
 					break;
 				}
 
+				case 'PURCHASE_REFUNDED': {
+					await this._handleHotmartPurchaseRefundedWebhook(body);
+					break;
+				}
+
 				case 'PURCHASE_COMPLETE': {
 					break;
 				}
@@ -515,5 +520,55 @@ export class HooksService {
 		}
 
 		await this._slackService.sendMessage({message: 'Não conseguiu lidar com a compra atrasada da hotmart', ...body});
+	}
+
+	private async _handleHotmartPurchaseRefundedWebhook(body: TIncommingHotmartWebhook) {
+		const {data} = body;
+
+		const isSchool = 135_340;
+		const isFormation = 1_392_822;
+
+		const {data: user} = await this._userService.getUserData(data.buyer.email);
+
+		try {
+			switch (data.product.id) {
+				case isSchool: {
+					const rolesToRemove = ['escolaOnline', 'escolaAnual'];
+					await Promise.all([
+						this._userService.removeRolesFromUser(user, rolesToRemove),
+						this._subscriptionService.createOrUpdate({
+							userId: user.id,
+							courseSlug: convertSubscriptionIdentifierToCourseSlug(data.subscription?.plan?.name as TPlanIdentifier) ?? convertSubscriptionIdentifierToCourseSlug(data.product.id.toString() as TPlanIdentifier),
+							expiresAt: new Date(),
+							provider: 'hotmart',
+							providerSubscriptionId: data.subscription?.subscriber.code ?? data.purchase.transaction,
+						}),
+					]);
+					break;
+				}
+
+				case isFormation: {
+					const rolesToRemove = ['escolaOnline', 'escolaAnual', 'novaFormacao'];
+					await Promise.all([
+						this._userService.removeRolesFromUser(user, rolesToRemove),
+						this._subscriptionService.createOrUpdate({
+							userId: user.id,
+							courseSlug: convertSubscriptionIdentifierToCourseSlug(data.product.id.toString() as TPlanIdentifier),
+							expiresAt: new Date(),
+							provider: 'hotmart',
+							providerSubscriptionId: data.subscription?.subscriber.code ?? data.purchase.transaction,
+						}),
+					]);
+					break;
+				}
+
+				default: {
+					break;
+				}
+			}
+		} catch (error) {
+			await this._slackService.sendMessage({...body, message: `Error handling hotmart purchase refunded webhook: ${(error as Error).message}`});
+			logger.logError(`Error handling hotmart purchase refunded webhook: ${(error as Error).message}`);
+		}
 	}
 }
