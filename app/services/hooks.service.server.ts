@@ -181,6 +181,10 @@ export class HooksService {
 					break;
 				}
 
+				case 'expired': {
+					break;
+				}
+
 				case 'pending': {
 					await this._slackService.sendMessage({message: 'Iugu invoice status changed not handled', ...body});
 					break;
