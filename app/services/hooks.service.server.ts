@@ -112,6 +112,11 @@ export class HooksService {
 					break;
 				}
 
+				case 'subscription.suspended': {
+					await this._handleIuguSubscriptionSuspendedWebhook(body);
+					break;
+				}
+
 				case 'invoice.created': {
 					break;
 				}
@@ -227,6 +232,24 @@ export class HooksService {
 		} catch (error) {
 			logger.logError(`Error handling iugu invoice payment failed webhook: ${(error as Error).message}`);
 			throw new CustomError('INVALID_DATA', `Error handling iugu invoice payment failed webhook: ${(error as Error).message}`);
+		}
+	}
+
+	private async _handleIuguSubscriptionSuspendedWebhook(body: {
+		event: string;
+		data: Record<string, any>;
+	}) {
+		try {
+			const {data} = body;
+			const {data: subscription} = await this._iuguService.getSubscriptionById(data.id as string);
+			const {data: user} = await this._userService.getUserData(subscription.customer_email);
+
+			const rolesToRemove = ['escolaOnline', 'escolaAnual'];
+
+			await this._userService.removeRolesFromUser(user, rolesToRemove);
+		} catch (error) {
+			logger.logError(`Error handling iugu subscription suspended webhook: ${(error as Error).message}`);
+			throw new CustomError('INVALID_DATA', `Error handling iugu subscription suspended webhook: ${(error as Error).message}`);
 		}
 	}
 
