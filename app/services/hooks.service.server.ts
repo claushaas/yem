@@ -100,6 +100,27 @@ export class HooksService {
 					break;
 				}
 
+				case 'invoice.dunning_action': {
+					await this._handleIuguInvoiceDunningActionWebhook(body);
+					break;
+				}
+
+				case 'invoice.due': {
+					break;
+				}
+
+				case 'invoice.created': {
+					break;
+				}
+
+				case 'invoice.released': {
+					break;
+				}
+
+				case 'invoice.installment_released': {
+					break;
+				}
+
 				case 'subscription.activated': {
 					break;
 				}
@@ -114,18 +135,6 @@ export class HooksService {
 
 				case 'subscription.suspended': {
 					await this._handleIuguSubscriptionSuspendedWebhook(body);
-					break;
-				}
-
-				case 'invoice.created': {
-					break;
-				}
-
-				case 'invoice.released': {
-					break;
-				}
-
-				case 'invoice.installment_released': {
 					break;
 				}
 
@@ -236,6 +245,43 @@ export class HooksService {
 		} catch (error) {
 			logger.logError(`Error handling iugu invoice payment failed webhook: ${(error as Error).message}`);
 			throw new CustomError('INVALID_DATA', `Error handling iugu invoice payment failed webhook: ${(error as Error).message}`);
+		}
+	}
+
+	private async _handleIuguInvoiceDunningActionWebhook(body: {
+		event: string;
+		data: Record<string, any>;
+	}): Promise<TServiceReturn<string>> {
+		const {data} = body;
+
+		try {
+			const {data: invoice} = await this._iuguService.getInvoiceById(data.id as string);
+			const {data: user} = await this._userService.getUserData(invoice.payer_email);
+
+			if (this._iuguService.hasCreditCardPaymentMethod(invoice)) {
+				return {
+					status: 'SUCCESSFUL',
+					data: 'Iugu invoice dunning action handled',
+				};
+			}
+
+			await this._botMakerService.sendWhatsappTemplateMessate(
+				user.phoneNumber,
+				'acao_de_cobranca',
+				{
+					nome: user.firstName,
+					dataDeVencimento: new Date(invoice.due_date).toLocaleDateString(),
+					linkDaFatura: invoice.secure_url,
+				},
+			);
+
+			return {
+				status: 'SUCCESSFUL',
+				data: 'Iugu invoice dunning action handled',
+			};
+		} catch (error) {
+			logger.logError(`Error handling iugu invoice dunning action webhook: ${(error as Error).message}`);
+			throw new CustomError('INVALID_DATA', `Error handling iugu invoice dunning action webhook: ${(error as Error).message}`);
 		}
 	}
 
