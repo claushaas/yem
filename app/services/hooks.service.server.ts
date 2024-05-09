@@ -59,7 +59,16 @@ export class HooksService {
 				}
 
 				case 'PURCHASE_REFUNDED': {
-					await this._handleHotmartPurchaseRefundedWebhook(body);
+					await this._handleHotmartPurchaseRefundedOrChargebackWebhook(body);
+					break;
+				}
+
+				case 'PURCHASE_CHARGEBACK': {
+					await this._handleHotmartPurchaseRefundedOrChargebackWebhook(body);
+					break;
+				}
+
+				case 'PURCHASE_PROTEST': {
 					break;
 				}
 
@@ -118,6 +127,10 @@ export class HooksService {
 				}
 
 				case 'invoice.installment_released': {
+					break;
+				}
+
+				case 'invoice.bank_slip_status': {
 					break;
 				}
 
@@ -634,7 +647,7 @@ export class HooksService {
 		await this._slackService.sendMessage({message: 'Não conseguiu lidar com a compra atrasada da hotmart', ...body});
 	}
 
-	private async _handleHotmartPurchaseRefundedWebhook(body: TIncommingHotmartWebhook) {
+	private async _handleHotmartPurchaseRefundedOrChargebackWebhook(body: TIncommingHotmartWebhook) {
 		const {data} = body;
 
 		const isSchool = 135_340;
