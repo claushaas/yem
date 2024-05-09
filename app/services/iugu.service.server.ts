@@ -74,6 +74,13 @@ export class IuguService {
 		}
 	}
 
+	public hasCreditCardPaymentMethod(invoice: TIuguInvoiceResponse): boolean {
+		const paymentMethod = invoice.payment_method || '';
+		const payableWith = invoice.payable_with || '';
+
+		return paymentMethod.includes('credit_card') || payableWith.includes('credit_card');
+	}
+
 	private _mapSubscriptions(subscriptions: TIuguSubscription[], user: TUser): TSubscription[] {
 		return subscriptions.map(subscription => ({
 			userId: user.id,
