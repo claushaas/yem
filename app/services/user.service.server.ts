@@ -336,6 +336,31 @@ export class UserService {
 		}
 	}
 
+	public async removeRolesFromUser(user: TUser, roles: string[]) {
+		const actualUserRoles = user.roles ?? ['iniciantes'];
+		const newRoles = actualUserRoles.filter(role => !roles.includes(role));
+
+		const parameters = {
+			UserAttributes: [
+				{
+					Name: 'custom:roles',
+					Value: newRoles.length > 1 ? newRoles.join('-') : newRoles[0],
+				},
+			],
+			UserPoolId: process.env.COGNITO_USER_POOL_ID,
+			Username: user.id,
+		};
+
+		const command = new AdminUpdateUserAttributesCommand(parameters);
+
+		try {
+			await	this._awsClient.send(command);
+		} catch (error) {
+			logger.logError(`Error removing roles from user ${(error as Error).message}`);
+			throw new CustomError('UNKNOWN', `Error removing roles from user ${(error as Error).message}`);
+		}
+	}
+
 	private async _create(userData: TUserCreationAttributes): Promise<TServiceReturn<{userId: string}>> {
 		logger.logDebug(`Creating user ${userData.email}`);
 		const newUser = new UserForCreation(userData);

@@ -6,6 +6,7 @@ import {
 	type TIuguSubscription,
 	type TSubscription,
 	type TPlanIdentifier,
+	type TIuguInvoiceResponse,
 } from '../types/subscription.type.js';
 import {Request} from '../utils/request.js';
 import {logger} from '../utils/logger.util.js';
@@ -58,6 +59,26 @@ export class IuguService {
 		} catch (error) {
 			throw new CustomError('INVALID_DATA', (error as Error).message);
 		}
+	}
+
+	public async getInvoiceById(invoiceId: string): Promise<TServiceReturn<TIuguInvoiceResponse>> {
+		try {
+			const {data} = await this._request.get(`/invoices/${invoiceId}`) as {data: TIuguInvoiceResponse};
+
+			return {
+				status: 'SUCCESSFUL',
+				data,
+			};
+		} catch (error) {
+			throw new CustomError('INVALID_DATA', (error as Error).message);
+		}
+	}
+
+	public hasCreditCardPaymentMethod(invoice: TIuguInvoiceResponse): boolean {
+		const paymentMethod = invoice.payment_method || '';
+		const payableWith = invoice.payable_with || '';
+
+		return paymentMethod.includes('credit_card') || payableWith.includes('credit_card');
 	}
 
 	private _mapSubscriptions(subscriptions: TIuguSubscription[], user: TUser): TSubscription[] {

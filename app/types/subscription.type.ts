@@ -74,6 +74,18 @@ export type TIuguSubscriptionResponse = {
 	active: boolean;
 };
 
+export type TIuguInvoiceResponse = {
+	id: string;
+	due_date: string;
+	email: string;
+	status: string;
+	payer_email: string;
+	subscription_id: string;
+	secure_url: string;
+	payable_with: string;
+	payment_method: string;
+};
+
 export type TPrismaPayloadGetUserSubscriptions = Prisma.UserSubscriptionsGetPayload<{
 	include: {
 		course: {
