@@ -14,6 +14,7 @@ import {type TUser} from '~/types/user.type.js';
 import {convertStringToStartCase} from '~/utils/convert-string-to-start-case.js';
 import {schoolWelcomeEmailTemplate} from '~/assets/email/school-welcome.email.template.server.js';
 import {formationWelcomeEmailTemplate} from '~/assets/email/formation-welcome.email.template.server.js';
+import {getLrMessage} from '~/utils/get-lr-message.js';
 
 export class HooksService {
 	private readonly _userService: UserService;
@@ -57,6 +58,11 @@ export class HooksService {
 					break;
 				}
 
+				case 'PURCHASE_REFUNDED': {
+					await this._handleHotmartPurchaseRefundedWebhook(body);
+					break;
+				}
+
 				case 'PURCHASE_COMPLETE': {
 					break;
 				}
@@ -89,6 +95,11 @@ export class HooksService {
 					break;
 				}
 
+				case 'invoice.payment_failed': {
+					await this._handleIuguInvoicePaymentFailedWebhook(body);
+					break;
+				}
+
 				case 'subscription.activated': {
 					break;
 				}
@@ -98,6 +109,11 @@ export class HooksService {
 				}
 
 				case 'subscription.renewed': {
+					break;
+				}
+
+				case 'subscription.suspended': {
+					await this._handleIuguSubscriptionSuspendedWebhook(body);
 					break;
 				}
 
@@ -165,6 +181,10 @@ export class HooksService {
 					break;
 				}
 
+				case 'expired': {
+					break;
+				}
+
 				case 'pending': {
 					await this._slackService.sendMessage({message: 'Iugu invoice status changed not handled', ...body});
 					break;
@@ -183,6 +203,57 @@ export class HooksService {
 		} catch (error) {
 			logger.logError(`Error handling iugu invoice status changed webhook: ${(error as Error).message}`);
 			throw new CustomError('INVALID_DATA', `Error handling iugu invoice status changed webhook: ${(error as Error).message}`);
+		}
+	}
+
+	private async _handleIuguInvoicePaymentFailedWebhook(body: {
+		event: string;
+		data: Record<string, any>;
+	}): Promise<TServiceReturn<string>> {
+		const {data} = body;
+
+		try {
+			const {data: invoice} = await this._iuguService.getInvoiceById(data.id as string);
+			const {data: user} = await this._userService.getUserData(invoice.payer_email);
+
+			const lrMessage = getLrMessage(data.lr as string);
+
+			await this._botMakerService.sendWhatsappTemplateMessate(
+				user.phoneNumber,
+				'falha_de_pagamento',
+				{
+					primeiroNome: user.firstName,
+					codigoDoErro: data.lr as string,
+					descricaoDoErro: lrMessage,
+					linkDaFatura: invoice.secure_url,
+				},
+			);
+
+			return {
+				status: 'SUCCESSFUL',
+				data: 'Iugu invoice payment failed handled',
+			};
+		} catch (error) {
+			logger.logError(`Error handling iugu invoice payment failed webhook: ${(error as Error).message}`);
+			throw new CustomError('INVALID_DATA', `Error handling iugu invoice payment failed webhook: ${(error as Error).message}`);
+		}
+	}
+
+	private async _handleIuguSubscriptionSuspendedWebhook(body: {
+		event: string;
+		data: Record<string, any>;
+	}) {
+		try {
+			const {data} = body;
+			const {data: subscription} = await this._iuguService.getSubscriptionById(data.id as string);
+			const {data: user} = await this._userService.getUserData(subscription.customer_email);
+
+			const rolesToRemove = ['escolaOnline', 'escolaAnual'];
+
+			await this._userService.removeRolesFromUser(user, rolesToRemove);
+		} catch (error) {
+			logger.logError(`Error handling iugu subscription suspended webhook: ${(error as Error).message}`);
+			throw new CustomError('INVALID_DATA', `Error handling iugu subscription suspended webhook: ${(error as Error).message}`);
 		}
 	}
 
@@ -515,5 +586,55 @@ export class HooksService {
 		}
 
 		await this._slackService.sendMessage({message: 'Não conseguiu lidar com a compra atrasada da hotmart', ...body});
+	}
+
+	private async _handleHotmartPurchaseRefundedWebhook(body: TIncommingHotmartWebhook) {
+		const {data} = body;
+
+		const isSchool = 135_340;
+		const isFormation = 1_392_822;
+
+		const {data: user} = await this._userService.getUserData(data.buyer.email);
+
+		try {
+			switch (data.product.id) {
+				case isSchool: {
+					const rolesToRemove = ['escolaOnline', 'escolaAnual'];
+					await Promise.all([
+						this._userService.removeRolesFromUser(user, rolesToRemove),
+						this._subscriptionService.createOrUpdate({
+							userId: user.id,
+							courseSlug: convertSubscriptionIdentifierToCourseSlug(data.subscription?.plan?.name as TPlanIdentifier) ?? convertSubscriptionIdentifierToCourseSlug(data.product.id.toString() as TPlanIdentifier),
+							expiresAt: new Date(),
+							provider: 'hotmart',
+							providerSubscriptionId: data.subscription?.subscriber.code ?? data.purchase.transaction,
+						}),
+					]);
+					break;
+				}
+
+				case isFormation: {
+					const rolesToRemove = ['escolaOnline', 'escolaAnual', 'novaFormacao'];
+					await Promise.all([
+						this._userService.removeRolesFromUser(user, rolesToRemove),
+						this._subscriptionService.createOrUpdate({
+							userId: user.id,
+							courseSlug: convertSubscriptionIdentifierToCourseSlug(data.product.id.toString() as TPlanIdentifier),
+							expiresAt: new Date(),
+							provider: 'hotmart',
+							providerSubscriptionId: data.subscription?.subscriber.code ?? data.purchase.transaction,
+						}),
+					]);
+					break;
+				}
+
+				default: {
+					break;
+				}
+			}
+		} catch (error) {
+			await this._slackService.sendMessage({...body, message: `Error handling hotmart purchase refunded webhook: ${(error as Error).message}`});
+			logger.logError(`Error handling hotmart purchase refunded webhook: ${(error as Error).message}`);
+		}
 	}
 }
