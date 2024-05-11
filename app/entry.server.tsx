@@ -156,7 +156,11 @@ async function handleBrowserRequest(
 export const app = createExpressApp({
 	createServer(app) {
 		if (process.env.NODE_ENV === 'production') {
-			return spdy.createServer({}, app);
+			return spdy.createServer({
+				spdy: {
+					plain: true,
+				},
+			}, app);
 		}
 
 		return HTTP.createServer(app);
