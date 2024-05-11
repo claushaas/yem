@@ -57,6 +57,7 @@
     "framer-motion": "^11.1.9",
     "fuse.js": "^7.0.0",
     "helmet": "^7.1.0",
+    "http2-express-bridge": "^1.0.7",
     "isbot": "^5.1.6",
     "joi": "^17.13.1",
     "morgan": "^1.10.0",
@@ -72,7 +73,6 @@
     "react-select": "^5.8.0",
     "remix-create-express-app": "^0.3.7",
     "remix-utils": "^7.6.0",
-    "spdy": "^4.0.2",
     "winston": "^3.13.0"
   },
   "devDependencies": {
