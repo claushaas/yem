@@ -1,4 +1,4 @@
-import {expressDevServer, expressPreset} from 'remix-express-vite-plugin/vite';
+import {expressDevServer} from 'remix-express-dev-server';
 import {vitePlugin as remix} from '@remix-run/dev';
 import {defineConfig} from 'vite';
 import tsconfigPaths from 'vite-tsconfig-paths';
@@ -8,6 +8,7 @@ import {remixDevTools} from 'remix-development-tools';
 export default defineConfig({
 	build: {
 		cssMinify: process.env.NODE_ENV === 'production',
+		target: 'esnext',
 	},
 	server: {
 		host: true,
@@ -23,7 +24,6 @@ export default defineConfig({
 		expressDevServer(),
 		remixDevTools(),
 		remix({
-			presets: [expressPreset()],
 			future: {
 				v3_relativeSplatPath: true, // eslint-disable-line @typescript-eslint/naming-convention
 			},
