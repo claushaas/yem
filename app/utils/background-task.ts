@@ -1,4 +1,6 @@
-export async function executeAndRepeat(targetPromise: () => Promise<any>, milliseconds: number) {
+import {remember} from '@epic-web/remember';
+
+const executeAndRepeatFunction = async (targetPromise: () => Promise<any>, milliseconds: number) => {
 	if (process.env.NODE_ENV === 'test') {
 		return targetPromise();
 	}
@@ -13,4 +15,6 @@ export async function executeAndRepeat(targetPromise: () => Promise<any>, millis
 		scheduleNextExecution();
 		throw error;
 	}
-}
+};
+
+export const executeAndRepeat = remember('executeAndRepeat', () => executeAndRepeatFunction);

@@ -3,7 +3,14 @@ import {createReadableStreamFromReadable, type EntryContext} from '@remix-run/no
 import {RemixServer} from '@remix-run/react';
 import {isbot} from 'isbot';
 import {renderToPipeableStream} from 'react-dom/server';
+import {createExpressApp} from 'remix-create-express-app';
+import compression from 'compression';
+import helmet from 'helmet';
+import morgan from 'morgan';
 import {IsBotProvider} from './hooks/use-is-bot.hook.js';
+import {executeAndRepeat} from './utils/background-task.js';
+import {logger} from './utils/logger.util.js';
+import {populateCache} from './cache/initial-cache-population.js';
 
 const ABORT_DELAY = 5000;
 
@@ -66,8 +73,11 @@ async function handleBotRequest(
 					pipe(body);
 				},
 				onShellError(error: unknown) {
-					// eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
-					reject(error);
+					if (error instanceof Error) {
+						reject(error);
+					} else {
+						reject(new Error(String(error)));
+					}
 				},
 				onError(error: unknown) {
 					responseStatusCode = 500;
@@ -119,8 +129,11 @@ async function handleBrowserRequest(
 					pipe(body);
 				},
 				onShellError(error: unknown) {
-					// eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
-					reject(error);
+					if (error instanceof Error) {
+						reject(error);
+					} else {
+						reject(new Error(String(error)));
+					}
 				},
 				onError(error: unknown) {
 					responseStatusCode = 500;
@@ -137,3 +150,27 @@ async function handleBrowserRequest(
 		setTimeout(abort, ABORT_DELAY);
 	});
 }
+
+export const app = createExpressApp({
+	configure(app) {
+		// Setup additional express middleware here
+		app.use(compression());
+		app.use(
+			helmet({
+				xPoweredBy: false,
+				referrerPolicy: {policy: 'same-origin'},
+				crossOriginEmbedderPolicy: false,
+				contentSecurityPolicy: false,
+			}),
+		);
+		app.use(morgan('tiny'));
+	},
+});
+
+const ONE_DAY = 1000 * 60 * 60 * 24;
+// eslint-disable-next-line @typescript-eslint/no-floating-promises
+executeAndRepeat(async () => {
+	logger.logInfo('Populate cache task started');
+	await populateCache();
+	logger.logInfo('Populate cache task finished');
+}, ONE_DAY);
