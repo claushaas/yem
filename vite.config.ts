@@ -7,7 +7,7 @@ import {remixDevTools} from 'remix-development-tools';
 
 export default defineConfig({
 	build: {
-		cssMinify: process.env.NODE_ENV === 'production',
+		cssMinify: process.env.NODE_ENV === 'production' ? 'lightningcss' : false,
 		target: 'esnext',
 	},
 	server: {

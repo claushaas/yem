@@ -4,7 +4,6 @@ import {RemixServer} from '@remix-run/react';
 import {isbot} from 'isbot';
 import {renderToPipeableStream} from 'react-dom/server';
 import {createExpressApp} from 'remix-create-express-app';
-import compression from 'compression';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import {IsBotProvider} from './hooks/use-is-bot.hook.js';
@@ -153,8 +152,6 @@ async function handleBrowserRequest(
 
 export const app = createExpressApp({
 	configure(app) {
-		// Setup additional express middleware here
-		app.use(compression());
 		app.use(
 			helmet({
 				xPoweredBy: false,
