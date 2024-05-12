@@ -15,5 +15,9 @@ primary_region = 'gru'
   [http_service.http_options]
     h2_backend = true
 
+  [http_service.tls_options]
+    alpn = ["h2", "http/1.1"]
+    versions = ["TLSv1.2", "TLSv1.3"]
+
 [[vm]]
   size = 'shared-cpu-1x'
