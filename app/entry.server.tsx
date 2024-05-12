@@ -1,5 +1,4 @@
 import {PassThrough} from 'node:stream';
-import http2 from 'node:http2';
 import {createReadableStreamFromReadable, type EntryContext} from '@remix-run/node';
 import {RemixServer} from '@remix-run/react';
 import {isbot} from 'isbot';
@@ -7,8 +6,6 @@ import {renderToPipeableStream} from 'react-dom/server';
 import {createExpressApp} from 'remix-create-express-app';
 import helmet from 'helmet';
 import morgan from 'morgan';
-import express from 'express';
-import http2Express from 'http2-express-bridge';
 import {IsBotProvider} from './hooks/use-is-bot.hook.js';
 import {executeAndRepeat} from './utils/background-task.js';
 import {logger} from './utils/logger.util.js';
@@ -154,12 +151,6 @@ async function handleBrowserRequest(
 }
 
 export const app = createExpressApp({
-	getExpress() {
-		return http2Express(express);
-	},
-	createServer(app) {
-		return http2.createSecureServer({}, app);
-	},
 	configure(app) {
 		app.use(
 			helmet({
