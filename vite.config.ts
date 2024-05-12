@@ -4,11 +4,10 @@ import {defineConfig} from 'vite';
 import tsconfigPaths from 'vite-tsconfig-paths';
 import svgr from 'vite-plugin-svgr';
 import {remixDevTools} from 'remix-development-tools';
-import basicSsl from '@vitejs/plugin-basic-ssl';
 
 export default defineConfig({
 	build: {
-		cssMinify: process.env.NODE_ENV === 'production',
+		cssMinify: process.env.NODE_ENV === 'production' ? 'lightningcss' : false,
 		target: 'esnext',
 	},
 	server: {
@@ -22,7 +21,6 @@ export default defineConfig({
 		exclude: ['newrelic', '@newrelic'],
 	},
 	plugins: [
-		basicSsl(),
 		expressDevServer(),
 		remixDevTools(),
 		remix({
