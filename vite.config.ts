@@ -4,6 +4,7 @@ import {defineConfig} from 'vite';
 import tsconfigPaths from 'vite-tsconfig-paths';
 import svgr from 'vite-plugin-svgr';
 import {remixDevTools} from 'remix-development-tools';
+import basicSsl from '@vitejs/plugin-basic-ssl';
 
 export default defineConfig({
 	build: {
@@ -21,6 +22,7 @@ export default defineConfig({
 		exclude: ['newrelic', '@newrelic'],
 	},
 	plugins: [
+		basicSsl(),
 		expressDevServer(),
 		remixDevTools(),
 		remix({
