@@ -87,6 +87,7 @@
     "eslint-config-xo-react": "^0.27.0",
     "eslint-plugin-react": "^7.34.1",
     "eslint-plugin-react-hooks": "^4.6.2",
+    "lightningcss": "^1.24.1",
     "postcss": "^8.4.38",
     "remix-development-tools": "^4.1.6",
     "remix-express-dev-server": "^0.2.4",
