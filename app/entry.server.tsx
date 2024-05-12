@@ -1,4 +1,5 @@
 import {PassThrough} from 'node:stream';
+import http2 from 'node:http2';
 import {createReadableStreamFromReadable, type EntryContext} from '@remix-run/node';
 import {RemixServer} from '@remix-run/react';
 import {isbot} from 'isbot';
@@ -7,7 +8,6 @@ import {createExpressApp} from 'remix-create-express-app';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import express from 'express';
-import spdy from 'spdy';
 import http2Express from 'http2-express-bridge';
 import {IsBotProvider} from './hooks/use-is-bot.hook.js';
 import {executeAndRepeat} from './utils/background-task.js';
@@ -158,11 +158,7 @@ export const app = createExpressApp({
 		return http2Express(express);
 	},
 	createServer(app) {
-		return spdy.createServer({
-			spdy: {
-				plain: true,
-			},
-		}, app);
+		return http2.createSecureServer({}, app);
 	},
 	configure(app) {
 		app.use(
