@@ -158,7 +158,11 @@ export const app = createExpressApp({
 		return http2Express(express);
 	},
 	createServer(app) {
-		return spdy.createServer({}, app);
+		return spdy.createServer({
+			spdy: {
+				plain: true,
+			},
+		}, app);
 	},
 	configure(app) {
 		app.use(
