@@ -188,7 +188,7 @@ export class HooksService {
 			switch (data.status) {
 				case 'paid': {
 					const {data: subscription} = await this._iuguService.getSubscriptionById(data.subscription_id as string);
-					const {data: user} = await this._userService.getUserData(subscription.customer_email);
+					const {data: user} = await this._userService.getUserData(subscription.customer_email.toLowerCase());
 
 					await Promise.all([
 						this._subscriptionService.createOrUpdate({
@@ -236,7 +236,7 @@ export class HooksService {
 
 		try {
 			const {data: invoice} = await this._iuguService.getInvoiceById(data.id as string);
-			const {data: user} = await this._userService.getUserData(invoice.payer_email);
+			const {data: user} = await this._userService.getUserData(invoice.payer_email.toLowerCase());
 
 			const lrMessage = getLrMessage(data.lr as string);
 
@@ -269,7 +269,7 @@ export class HooksService {
 
 		try {
 			const {data: invoice} = await this._iuguService.getInvoiceById(data.id as string);
-			const {data: user} = await this._userService.getUserData(invoice.payer_email);
+			const {data: user} = await this._userService.getUserData(invoice.payer_email.toLowerCase());
 
 			if (this._iuguService.hasCreditCardPaymentMethod(invoice)) {
 				return {
@@ -305,7 +305,7 @@ export class HooksService {
 		try {
 			const {data} = body;
 			const {data: subscription} = await this._iuguService.getSubscriptionById(data.id as string);
-			const {data: user} = await this._userService.getUserData(subscription.customer_email);
+			const {data: user} = await this._userService.getUserData(subscription.customer_email.toLowerCase());
 
 			const rolesToRemove = ['escolaOnline', 'escolaAnual'];
 
@@ -322,7 +322,7 @@ export class HooksService {
 		let userData: TUser;
 
 		try {
-			const {data: user} = await this._userService.getUserData(data.buyer.email);
+			const {data: user} = await this._userService.getUserData(data.buyer.email.toLowerCase());
 
 			userData = user;
 		} catch (error) {
@@ -330,7 +330,7 @@ export class HooksService {
 
 			if ((error as Error).message.includes('User does not exist')) {
 				const {data: {userId}} = await this._userService.createOrFail({
-					email: data.buyer.email,
+					email: data.buyer.email.toLowerCase(),
 					firstName: convertStringToStartCase(data.buyer.name.split(' ')[0]),
 					lastName: convertStringToStartCase(data.buyer.name.split(' ').slice(1).join(' ')),
 					document: data.buyer.document,
@@ -460,13 +460,13 @@ export class HooksService {
 		let user: TUser;
 
 		try {
-			const {data: userData} = await this._userService.getUserData(data.buyer.email);
+			const {data: userData} = await this._userService.getUserData(data.buyer.email.toLowerCase());
 
 			user = userData;
 		} catch (error) {
 			if ((error as Error).message.includes('User does not exist')) {
 				const {data: {userId}} = await this._userService.createOrFail({
-					email: data.buyer.email,
+					email: data.buyer.email.toLowerCase(),
 					firstName: convertStringToStartCase(data.buyer.name.split(' ')[0]),
 					lastName: convertStringToStartCase(data.buyer.name.split(' ').slice(1).join(' ')),
 					document: data.buyer.document,
@@ -555,7 +555,7 @@ export class HooksService {
 		const isPix = data.purchase.payment.type === 'PIX';
 		const isCreditCard = data.purchase.payment.type === 'CREDIT_CARD';
 
-		const {data: user} = await this._userService.getUserData(data.buyer.email);
+		const {data: user} = await this._userService.getUserData(data.buyer.email.toLowerCase());
 
 		if (isSchool && isBillet) {
 			await Promise.all([
@@ -653,7 +653,7 @@ export class HooksService {
 		const isSchool = 135_340;
 		const isFormation = 1_392_822;
 
-		const {data: user} = await this._userService.getUserData(data.buyer.email);
+		const {data: user} = await this._userService.getUserData(data.buyer.email.toLowerCase());
 
 		try {
 			switch (data.product.id) {
