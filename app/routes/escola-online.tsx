@@ -25,7 +25,7 @@ export const loader = ({request}: LoaderFunctionArgs) => json<{meta: Array<{tagN
 export default function EscolaOnline() {
 	return (
 		<main>
-			<section id='welcome' className='max-w-[95%] sm:max-w-[90%] lg:max-w-screen-lg mx-auto my-16'>
+			<section id='welcome' className='max-w-[95%] sm:max-w-[90%] lg:max-w-screen-lg mx-auto my-20 sm:my-32'>
 				<div className='w-full mb-4'>
 					<h1 className='xs:text-5xl lg:text-7xl'><span className='text-tomato-11'>A Maior Escola de Yoga do Brasil.</span> <span className='text-pink-11'>Na Hora Você Quiser.</span> <span className='text-purple-11'>Onde Você Estiver.</span></h1>
 				</div>
@@ -39,48 +39,46 @@ export default function EscolaOnline() {
 			</section>
 			<Testimonies/>
 			<History/>
-			<section id='platform'>
-				<h1>A Plataforma da Yoga em Movimento evoluiu e foi repensada especialmente para a prática do Yoga</h1>
-				<div className='flex justify-center gap-4'>
-					<div className='flex flex-col items-center'>
-						<CheckCircleIcon className='size-32'/>
+			<section id='platform' className='max-w-[95%] sm:max-w-[90%] lg:max-w-screen-lg mx-auto my-20 sm:my-40'>
+				<h1 className='text-amber-11 mb-24 text-3xl xs:text-5xl md:text-6xl lg:text-7xl'>A Plataforma da Yoga em Movimento evoluiu e foi repensada especialmente para a prática do Yoga</h1>
+				<div className='flex justify-center gap-4 flex-wrap'>
+					<div className='flex flex-col items-center max-w-80'>
+						<CheckCircleIcon className='size-20 stroke-amber-10'/>
 						<h2 className='text-center'>Acompanhe suas aulas assistidas</h2>
 					</div>
-					<div className='flex flex-col items-center'>
-						<HeartIcon className='size-32'/>
+					<div className='flex flex-col items-center max-w-80'>
+						<HeartIcon className='size-20 stroke-amber-10'/>
 						<h2 className='text-center'>Guarde suas aulas favoritas</h2>
 					</div>
-					<div className='flex flex-col items-center'>
-						<BookmarkIcon className='size-32'/>
+					<div className='flex flex-col items-center max-w-80'>
+						<BookmarkIcon className='size-20 stroke-amber-10'/>
 						<h2 className='text-center'>Salve aulas para assistir mais tarde</h2>
 					</div>
-				</div>
-				<div className='flex justify-center gap-4'>
-					<div className='flex flex-col items-center'>
-						<VideoCameraIcon className='size-32'/>
+					<div className='flex flex-col items-center max-w-80'>
+						<VideoCameraIcon className='size-20 stroke-amber-10'/>
 						<h2 className='text-center'>Mais de 1650 aulas práticas</h2>
 					</div>
-					<div className='flex flex-col items-center'>
-						<PlayIcon className='size-32'/>
+					<div className='flex flex-col items-center max-w-80'>
+						<PlayIcon className='size-20 stroke-amber-10'/>
 						<h2 className='text-center'>Mais de 610.000 reproduções</h2>
 					</div>
-					<div className='flex flex-col items-center'>
-						<UserGroupIcon className='size-32'/>
+					<div className='flex flex-col items-center max-w-80'>
+						<UserGroupIcon className='size-20 stroke-amber-10'/>
 						<h2 className='text-center'>Mais de 15.000 alunos</h2>
 					</div>
 				</div>
 			</section>
-			<section id='support'>
-				<h1>Você sempre terá acompanhamento!</h1>
-				<h2>Você pode conversar diretamente com nossos professores pelo whatsapp ou telegram para tirar suas dúvidas</h2>
+			<section id='support' className='max-w-[95%] sm:max-w-[90%] lg:max-w-screen-lg mx-auto my-20 sm:my-40'>
+				<h1 className='text-sky-12 dark:text-sky-10 mb-5 text-3xl xs:text-5xl md:text-6xl lg:text-7xl'>Você sempre terá acompanhamento!</h1>
+				<h2 className='text-sky-11 text-2xl xs:text-4xl md:text-5xl lg:text-6xl'>Você pode conversar diretamente com nossos professores pelo whatsapp ou telegram para tirar suas dúvidas</h2>
 			</section>
-			<section id='duration'>
-				<h1>Fica fácil inserir o Yoga na sua rotina diária</h1>
+			<section id='duration' className='max-w-[95%] sm:max-w-[90%] lg:max-w-screen-lg mx-auto my-20 sm:my-40'>
+				<h1 className='text-amber-11 mb-24 text-3xl xs:text-5xl md:text-6xl lg:text-7xl'>Fica fácil inserir o Yoga na sua rotina diária</h1>
 				<h2>Pratique em qualquer horário e escolha aula de acordo com o tempo disponível</h2>
 				<h2>Aulas de 15 até 90 minutos</h2>
 			</section>
-			<section id='objectives'>
-				<h1>Alcance seus objetivos no Yoga</h1>
+			<section id='objectives' className='max-w-[95%] sm:max-w-[90%] lg:max-w-screen-lg mx-auto my-20 sm:my-40'>
+				<h1 className='text-amber-11 mb-24 text-3xl xs:text-5xl md:text-6xl lg:text-7xl'>Alcance seus objetivos no Yoga</h1>
 				<h2>Playlist de aulas prontas e voltadas para objetivos específicos</h2>
 				<h3>Sequência de aulas fáceis</h3>
 				<h3>Ampliação da capacidade pulmonar</h3>
@@ -118,8 +116,8 @@ export default function EscolaOnline() {
 				<h3>Pújá</h3>
 				<h3>Súrya Namaskar</h3>
 			</section>
-			<section id='training'>
-				<h1>Avance em técnicas específicas</h1>
+			<section id='training' className='max-w-[95%] sm:max-w-[90%] lg:max-w-screen-lg mx-auto my-20 sm:my-40'>
+				<h1 className='text-amber-11 mb-24 text-3xl xs:text-5xl md:text-6xl lg:text-7xl'>Avance em técnicas específicas</h1>
 				<h2>Oferecemos diversos treinamentos em técnicas específicas da prática do Yoga.</h2>
 				<h2>Ideal para aprofundar e melhorar a execução das técnicas que você tem mais dificuldade ou quer aperfeiçoar</h2>
 				<h3>Meditação</h3>
@@ -130,12 +128,12 @@ export default function EscolaOnline() {
 				<h3>Mudrás</h3>
 				<h3>Kriyás</h3>
 			</section>
-			<section id='theoretical classes'>
-				<h1>Vivencia o Yoga de forma intensa</h1>
+			<section id='theoretical classes' className='max-w-[95%] sm:max-w-[90%] lg:max-w-screen-lg mx-auto my-20 sm:my-40'>
+				<h1 className='text-amber-11 mb-24 text-3xl xs:text-5xl md:text-6xl lg:text-7xl'>Vivencia o Yoga de forma intensa</h1>
 				<h2>Assista as aulas teóricas para entender como funciona a prática do Yoga. Nada como entender o que você está fazendo para vivenciar as técnicas do Yoga de forma mais intensa e profunda, acelerando seu desenvolvimento no Yoga.</h2>
 			</section>
-			<section id='courses'>
-				<h1>Cursos de Aprofundamento</h1>
+			<section id='courses' className='max-w-[95%] sm:max-w-[90%] lg:max-w-screen-lg mx-auto my-20 sm:my-40'>
+				<h1 className='text-amber-11 mb-24 text-3xl xs:text-5xl md:text-6xl lg:text-7xl'>Cursos de Aprofundamento</h1>
 				<p>Exclusivo para alunos do plano anual</p>
 				<h2>Diversos cursos para se aprofundar em temas específicos do Yoga e também outros assuntos que estão relacionados a prática</h2>
 				<h3>Alimentação Vegetariana</h3>
@@ -149,8 +147,8 @@ export default function EscolaOnline() {
 				<h3>Yoga e Hinduismo</h3>
 				<h3>Yoga Sútra de Patáñjali</h3>
 			</section>
-			<section id='faq'>
-				<h1>Perguntas Frequentes</h1>
+			<section id='faq' className='max-w-[95%] sm:max-w-[90%] lg:max-w-screen-lg mx-auto my-20 sm:my-40'>
+				<h1 className='text-amber-11 mb-24 text-3xl xs:text-5xl md:text-6xl lg:text-7xl'>Perguntas Frequentes</h1>
 			</section>
 		</main>
 	);

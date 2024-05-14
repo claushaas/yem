@@ -2,7 +2,7 @@ import {Testimony} from '~/components/testimony-card.js';
 
 export function Testimonies() {
 	return (
-		<section id='testimonies' className='mx-auto max-w-max my-20 sm:my-32'>
+		<section id='testimonies' className='mx-auto max-w-max my-20 sm:my-40'>
 			<div className='px-4 pb-4 flex gap-4 overflow-x-scroll'>
 				<Testimony
 					name='Mylene Castro'
