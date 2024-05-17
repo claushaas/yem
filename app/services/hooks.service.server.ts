@@ -76,6 +76,10 @@ export class HooksService {
 					break;
 				}
 
+				case 'PURCHASE_CANCELED': {
+					break;
+				}
+
 				default: {
 					await this._slackService.sendMessage(body);
 					break;
