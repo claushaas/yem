@@ -185,8 +185,6 @@ export class UserService {
 			document:	user.UserAttributes?.find(attribute => attribute.Name === 'custom:CPF')?.Value ?? '',
 		};
 
-		logger.logInfo(`User ${cleanUser.id} data retrieved successfully`);
-
 		if (!cleanUser.id) {
 			logger.logError(
 				`Error getting user data: user id ${cleanUsername} not found`,
