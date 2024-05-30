@@ -66,6 +66,42 @@ export class UserService {
 		return newUserData;
 	}
 
+	public async createOrUpdate(userData: TUserCreationAttributes): Promise<TServiceReturn<{userData: TUser}>> {
+		const {data: userExists} = await this.verifyUserExists(userData.email);
+
+		if (userExists) {
+			const {data: userFromDB} = await this.getUserData(userData.email);
+
+			if (userData.phoneNumber !== userFromDB.phoneNumber) {
+				await this.updateUserPhoneNumber(userFromDB.id, userData.phoneNumber);
+			}
+
+			if ((userData.document !== userFromDB.document) && userData.document) {
+				await this.updateUserDocument(userFromDB.id, userData.document);
+			}
+
+			const updatedUser = await this.getUserData(userData.email);
+
+			return {
+				status: 'SUCCESSFUL',
+				data: {
+					userData: updatedUser.data,
+				},
+			};
+		}
+
+		await this._create(userData);
+
+		const {data: newUser} = await this.getUserData(userData.email);
+
+		return {
+			status: 'SUCCESSFUL',
+			data: {
+				userData: newUser,
+			},
+		};
+	}
+
 	public async login(username: string, password: string): Promise<TServiceReturn<{userData: TUser}>> {
 		const cleanUsername = username.trim().toLowerCase();
 
