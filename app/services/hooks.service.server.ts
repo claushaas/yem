@@ -1,4 +1,3 @@
-/* eslint-disable complexity */
 import {UserService} from './user.service.server.js';
 import SubscriptionService from './subscription.service.server.js';
 import {IuguService} from './iugu.service.server.js';
@@ -10,7 +9,6 @@ import {convertSubscriptionIdentifierToCourseSlug} from '~/utils/subscription-id
 import {logger} from '~/utils/logger.util';
 import {CustomError} from '~/utils/custom-error.js';
 import {type TPlanIdentifier, type TIncommingHotmartWebhook} from '~/types/subscription.type.js';
-import {type TUser} from '~/types/user.type.js';
 import {convertStringToStartCase} from '~/utils/convert-string-to-start-case.js';
 import {schoolWelcomeEmailTemplate} from '~/assets/email/school-welcome.email.template.server.js';
 import {formationWelcomeEmailTemplate} from '~/assets/email/formation-welcome.email.template.server.js';
@@ -323,30 +321,14 @@ export class HooksService {
 	private async _handleHotmartPurchaseAprovedWebhook(body: TIncommingHotmartWebhook) {
 		const {data} = body;
 
-		let userData: TUser;
-
-		try {
-			const {data: user} = await this._userService.getUserData(data.buyer.email.toLowerCase());
-
-			userData = user;
-		} catch (error) {
-			logger.logError(`Error getting user data on handleHotmartPurchaseAprovedWebhook: ${(error as Error).message}`);
-
-			if ((error as Error).message.includes('User does not exist')) {
-				const {data: {userId}} = await this._userService.createOrFail({
-					email: data.buyer.email.toLowerCase(),
-					firstName: convertStringToStartCase(data.buyer.name.split(' ')[0]),
-					lastName: convertStringToStartCase(data.buyer.name.split(' ').slice(1).join(' ')),
-					document: data.buyer.document,
-					phoneNumber: data.buyer.checkout_phone,
-					roles: ['iniciantes'],
-				});
-
-				const {data: user} = await this._userService.getUserData(userId);
-
-				userData = user;
-			}
-		}
+		const {data: {userData}} = await this._userService.createOrUpdate({
+			email: data.buyer.email.toLowerCase(),
+			firstName: convertStringToStartCase(data.buyer.name.split(' ')[0]),
+			lastName: convertStringToStartCase(data.buyer.name.split(' ').slice(1).join(' ')),
+			document: data.buyer.document,
+			phoneNumber: data.buyer.checkout_phone,
+			roles: ['iniciantes'],
+		});
 
 		try {
 			switch (data.product.id) {
@@ -354,23 +336,23 @@ export class HooksService {
 					if (data.purchase.recurrence_number === 1 || (!data.purchase.recurrence_number && !data.subscription)) {
 						await Promise.all([
 							this._botMakerService.sendWhatsappTemplateMessate(
-								userData!.phoneNumber,
+								userData.phoneNumber,
 								'boas_vindas_formacao2',
 								{
-									nome: userData!.firstName,
+									nome: userData.firstName,
 									linkCanalRecadosFormacao: 'https://t.me/joinchat/_2UwTcWJ5to3MTAx',
 									linkGrupoFormacao: 'https://t.me/joinchat/gxazJsQTmwI5YzYx',
 									linkSuporte: 'https://t.me/yogaemmovimento_bot',
 									linkManualDoAlunoFormacao: 'https://img.amo.yoga/MANUAL_DO_ALUNO.pdf',
 								},
 							),
-							this._mailService.sendEmail(formationWelcomeEmailTemplate(userData!.firstName, userData!.email)),
+							this._mailService.sendEmail(formationWelcomeEmailTemplate(userData.firstName, userData.email)),
 							fetch(process.env.SLACK_WEBHOOK_URL_FORMATION!, {
 								method: 'POST',
 								headers: {
 									'Content-Type': 'application/json', // eslint-disable-line @typescript-eslint/naming-convention
 								},
-								body: JSON.stringify({text: `Novo Aluno na Formação\nNome: ${userData!.firstName} ${userData!.lastName}\nEmail: ${userData!.email}\nTelefone: ${userData!.phoneNumber}`}),
+								body: JSON.stringify({text: `Novo Aluno na Formação\nNome: ${userData.firstName} ${userData.lastName}\nEmail: ${userData.email}\nTelefone: ${userData.phoneNumber}`}),
 							}),
 						]);
 					}
@@ -385,15 +367,15 @@ export class HooksService {
 					}
 
 					await Promise.all([
-						this._userService.addRolesToUser(userData!, rolesToAdd), // Should be deleted when old site stops being suported
+						this._userService.addRolesToUser(userData, rolesToAdd), // Should be deleted when old site stops being suported
 						this._subscriptionService.createOrUpdate({
-							userId: userData!.id,
+							userId: userData.id,
 							courseSlug: convertSubscriptionIdentifierToCourseSlug(data.product.id.toString() as TPlanIdentifier),
 							expiresAt,
 							provider: 'hotmart',
 							providerSubscriptionId: data.subscription?.subscriber.code ?? data.purchase.transaction,
 						}),
-						this._slackService.sendMessage({message: `Assinatura hotmart da formação atualizada\nNome: ${userData!.firstName} ${userData!.lastName}\nEmail: ${userData!.email}\nTelefone: ${userData!.phoneNumber}`}),
+						this._slackService.sendMessage({message: `Assinatura hotmart da formação atualizada\nNome: ${userData.firstName} ${userData.lastName}\nEmail: ${userData.email}\nTelefone: ${userData.phoneNumber}`}),
 					]);
 
 					break;
@@ -402,12 +384,12 @@ export class HooksService {
 				case 135_340: { // School
 					if (data.purchase.recurrence_number === 1) {
 						await Promise.all([
-							this._mailService.sendEmail(schoolWelcomeEmailTemplate(userData!.firstName, userData!.email)),
+							this._mailService.sendEmail(schoolWelcomeEmailTemplate(userData.firstName, userData.email)),
 							this._botMakerService.sendWhatsappTemplateMessate(
-								userData!.phoneNumber,
+								userData.phoneNumber,
 								'boas_vindas_escola',
 								{
-									nome: userData!.firstName,
+									nome: userData.firstName,
 									linkDaAreaDosAlunos: 'https://escola.yogaemmovimento.com',
 									linkDaAulaAoVivo: 'https://escola.yogaemmovimento.com/aluno/DfLC8966upYGytkrW',
 								},
@@ -426,16 +408,16 @@ export class HooksService {
 					}
 
 					await Promise.all([
-						this._userService.addRolesToUser(userData!, rolesToAdd), // Should be deleted when old site stops being suported
+						this._userService.addRolesToUser(userData, rolesToAdd), // Should be deleted when old site stops being suported
 						this._subscriptionService.createOrUpdate({
-							userId: userData!.id,
+							userId: userData.id,
 							courseSlug: convertSubscriptionIdentifierToCourseSlug(data.subscription?.plan?.name as TPlanIdentifier) ?? convertSubscriptionIdentifierToCourseSlug(data.product.id.toString() as TPlanIdentifier),
 							expiresAt: new Date(data.purchase.date_next_charge!),
 							provider: 'hotmart',
 							providerSubscriptionId: data.subscription?.subscriber.code ?? data.purchase.transaction,
 						}),
 
-						this._slackService.sendMessage({message: `Assinatura hotmart da escola atualizada\nNome: ${userData!.firstName} ${userData!.lastName}\nEmail: ${userData!.email}\nTelefone: ${userData!.phoneNumber}`}),
+						this._slackService.sendMessage({message: `Assinatura hotmart da escola atualizada\nNome: ${userData.firstName} ${userData.lastName}\nEmail: ${userData.email}\nTelefone: ${userData.phoneNumber}`}),
 					]);
 
 					break;
@@ -461,37 +443,23 @@ export class HooksService {
 		const isBillet = data.purchase.payment.type === 'BILLET';
 		const isPix = data.purchase.payment.type === 'PIX';
 
-		let user: TUser;
-
-		try {
-			const {data: userData} = await this._userService.getUserData(data.buyer.email.toLowerCase());
-
-			user = userData;
-		} catch (error) {
-			if ((error as Error).message.includes('User does not exist')) {
-				const {data: {userId}} = await this._userService.createOrFail({
-					email: data.buyer.email.toLowerCase(),
-					firstName: convertStringToStartCase(data.buyer.name.split(' ')[0]),
-					lastName: convertStringToStartCase(data.buyer.name.split(' ').slice(1).join(' ')),
-					document: data.buyer.document,
-					phoneNumber: data.buyer.checkout_phone,
-					roles: ['iniciantes'],
-				});
-
-				const {data: userData} = await this._userService.getUserData(userId);
-
-				user = userData;
-			}
-		}
+		const {data: {userData: user}} = await this._userService.createOrUpdate({
+			email: data.buyer.email.toLowerCase(),
+			firstName: convertStringToStartCase(data.buyer.name.split(' ')[0]),
+			lastName: convertStringToStartCase(data.buyer.name.split(' ').slice(1).join(' ')),
+			document: data.buyer.document,
+			phoneNumber: data.buyer.checkout_phone,
+			roles: ['iniciantes'],
+		});
 
 		if (isSchool && isBillet) {
 			await Promise.all([
 				// This._mailService.sendEmail(schoolWelcomeEmailTemplate(data.buyer.name, data.buyer.email)),
 				this._botMakerService.sendWhatsappTemplateMessate(
-					user!.phoneNumber,
+					user.phoneNumber,
 					'boleto_emitido_escola',
 					{
-						nome: user!.firstName,
+						nome: user.firstName,
 						linkBoleto: data.purchase.payment.billet_url!,
 						codigoDoBoleto: data.purchase.payment.billet_barcode!,
 					},
@@ -504,10 +472,10 @@ export class HooksService {
 			await Promise.all([
 				// This._mailService.sendEmail(schoolWelcomeEmailTemplate(data.buyer.name, data.buyer.email)),
 				this._botMakerService.sendWhatsappTemplateMessate(
-					user!.phoneNumber,
+					user.phoneNumber,
 					'pix_emitido_escola',
 					{
-						nome: user!.firstName,
+						nome: user.firstName,
 						linkDoPix: data.purchase.payment.pix_qrcode!,
 					},
 				),
@@ -519,10 +487,10 @@ export class HooksService {
 			await Promise.all([
 				// This._mailService.sendEmail(formationWelcomeEmailTemplate(data.buyer.name, data.buyer.email)),
 				this._botMakerService.sendWhatsappTemplateMessate(
-					user!.phoneNumber,
+					user.phoneNumber,
 					'boleto_emitido_formacao',
 					{
-						nome: user!.firstName,
+						nome: user.firstName,
 						linkBoleto: data.purchase.payment.billet_url!,
 						codigoDoBoleto: data.purchase.payment.billet_barcode!,
 					},
@@ -535,10 +503,10 @@ export class HooksService {
 			await Promise.all([
 				// This._mailService.sendEmail(formationWelcomeEmailTemplate(data.buyer.name, data.buyer.email)),
 				this._botMakerService.sendWhatsappTemplateMessate(
-					user!.phoneNumber,
+					user.phoneNumber,
 					'pix_emitido_formacao',
 					{
-						nome: user!.firstName,
+						nome: user.firstName,
 						linkDoPix: data.purchase.payment.pix_qrcode!,
 					},
 				),
@@ -559,7 +527,14 @@ export class HooksService {
 		const isPix = data.purchase.payment.type === 'PIX';
 		const isCreditCard = data.purchase.payment.type === 'CREDIT_CARD';
 
-		const {data: user} = await this._userService.getUserData(data.buyer.email.toLowerCase());
+		const {data: {userData: user}} = await this._userService.createOrUpdate({
+			email: data.buyer.email.toLowerCase(),
+			firstName: convertStringToStartCase(data.buyer.name.split(' ')[0]),
+			lastName: convertStringToStartCase(data.buyer.name.split(' ').slice(1).join(' ')),
+			document: data.buyer.document,
+			phoneNumber: data.buyer.checkout_phone,
+			roles: ['iniciantes'],
+		});
 
 		if (isSchool && isBillet) {
 			await Promise.all([
@@ -657,7 +632,14 @@ export class HooksService {
 		const isSchool = 135_340;
 		const isFormation = 1_392_822;
 
-		const {data: user} = await this._userService.getUserData(data.buyer.email.toLowerCase());
+		const {data: {userData: user}} = await this._userService.createOrUpdate({
+			email: data.buyer.email.toLowerCase(),
+			firstName: convertStringToStartCase(data.buyer.name.split(' ')[0]),
+			lastName: convertStringToStartCase(data.buyer.name.split(' ').slice(1).join(' ')),
+			document: data.buyer.document,
+			phoneNumber: data.buyer.checkout_phone,
+			roles: ['iniciantes'],
+		});
 
 		try {
 			switch (data.product.id) {
