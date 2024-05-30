@@ -37,9 +37,12 @@ export default function EscolaOnline() {
 					<p className='text-center text-sm'>cancele quando quiser</p>
 				</div>
 			</section>
+
 			<Testimonies/>
+
 			<History/>
-			<section id='platform' className='max-w-[95%] sm:max-w-[90%] lg:max-w-screen-lg mx-auto my-20 sm:my-40'>
+
+			<section id='platform' className='max-w-[95%] sm:max-w-[90%] lg:max-w-screen-lg mx-auto my-20 sm:my-56'>
 				<h1 className='text-amber-11 mb-24 text-3xl xs:text-5xl md:text-6xl lg:text-7xl'>A Plataforma da Yoga em Movimento evoluiu e foi repensada especialmente para a prática do Yoga</h1>
 				<div className='flex justify-center gap-4 flex-wrap'>
 					<div className='flex flex-col items-center max-w-80'>
@@ -68,29 +71,21 @@ export default function EscolaOnline() {
 					</div>
 				</div>
 			</section>
-			<section id='support' className='max-w-[95%] sm:max-w-[90%] lg:max-w-screen-lg mx-auto my-20 sm:my-40'>
+
+			<section id='support' className='max-w-[95%] sm:max-w-[90%] lg:max-w-screen-lg mx-auto my-20 sm:my-56'>
 				<h1 className='text-sky-12 dark:text-sky-10 mb-5 text-3xl xs:text-5xl md:text-6xl lg:text-7xl'>Você sempre terá acompanhamento!</h1>
 				<h2 className='text-sky-11 text-2xl xs:text-4xl md:text-5xl lg:text-6xl'>Você pode conversar diretamente com nossos professores pelo whatsapp ou telegram para tirar suas dúvidas</h2>
 			</section>
-			<section id='duration' className='max-w-[95%] sm:max-w-[90%] lg:max-w-screen-lg mx-auto my-20 sm:my-40'>
-				<h1 className='text-amber-11 mb-24 text-3xl xs:text-5xl md:text-6xl lg:text-7xl'>Fica fácil inserir o Yoga na sua rotina diária</h1>
-				<h2>Pratique em qualquer horário e escolha aula de acordo com o tempo disponível</h2>
-				<h2>Aulas de 15 até 90 minutos</h2>
+
+			<section id='duration' className='max-w-[95%] sm:max-w-[90%] lg:max-w-screen-lg mx-auto my-20 sm:my-56'>
+				<h1 className='text-grass-12 dark:text-grass-11 mb-5 text-3xl xs:text-5xl md:text-6xl lg:text-7xl'>Fica fácil inserir o Yoga na sua rotina diária</h1>
+				<h2 className='text-grass-9 text-2xl xs:text-4xl md:text-5xl lg:text-6xl'>Pratique em qualquer horário e escolha aula de acordo com o tempo disponível</h2>
+				<h2 className='text-grass-9 text-2xl xs:text-4xl md:text-5xl lg:text-6xl'>Aulas de 15 até 90 minutos</h2>
 			</section>
-			<section id='objectives' className='max-w-[95%] sm:max-w-[90%] lg:max-w-screen-lg mx-auto my-20 sm:my-40'>
+
+			<section id='objectives' className='max-w-[95%] sm:max-w-[90%] lg:max-w-screen-lg mx-auto my-20 sm:my-56'>
 				<h1 className='text-amber-11 mb-24 text-3xl xs:text-5xl md:text-6xl lg:text-7xl'>Alcance seus objetivos no Yoga</h1>
-				<h2>Playlist de aulas prontas e voltadas para objetivos específicos</h2>
-				<h3>Sequência de aulas fáceis</h3>
-				<h3>Ampliação da capacidade pulmonar</h3>
-				<h3>Conquistando o kakásana</h3>
-				<h3>Aumentar a flexidade</h3>
-				<h3>Benefícios para a coluna vertebral</h3>
-				<h3>Yoga para Gestantes</h3>
-				<h3>Conquistando a Invertida sobre a Cabeça</h3>
-				<h3>Força para os membros inferiores</h3>
-				<h3>Súrya Namaskar, a Saudação ao Sol</h3>
-				<h3>Dinamização dos Chakras</h3>
-				<h3>Aulas sem ásanas</h3>
+
 				<h2>Filtre as aulas de acordo com sua meta</h2>
 				<h3>Força</h3>
 				<h3>Flexibilidade</h3>
@@ -104,6 +99,20 @@ export default function EscolaOnline() {
 				<h3>Vinyasa</h3>
 				<h3>Sem Ásanas</h3>
 				<h3>Yoga na Cadeira</h3>
+
+				<h2>Playlist de aulas prontas e voltadas para objetivos específicos</h2>
+				<h3>Sequência de aulas fáceis</h3>
+				<h3>Ampliação da capacidade pulmonar</h3>
+				<h3>Conquistando o kakásana</h3>
+				<h3>Aumentar a flexidade</h3>
+				<h3>Benefícios para a coluna vertebral</h3>
+				<h3>Yoga para Gestantes</h3>
+				<h3>Conquistando a Invertida sobre a Cabeça</h3>
+				<h3>Força para os membros inferiores</h3>
+				<h3>Súrya Namaskar, a Saudação ao Sol</h3>
+				<h3>Dinamização dos Chakras</h3>
+				<h3>Aulas sem ásanas</h3>
+
 				<h2>Filtre as aulas de acordo com as técnicas que você quer executar</h2>
 				<h3>Pránáyáma</h3>
 				<h3>Ásana</h3>
@@ -115,8 +124,9 @@ export default function EscolaOnline() {
 				<h3>Mudrá</h3>
 				<h3>Pújá</h3>
 				<h3>Súrya Namaskar</h3>
+
 			</section>
-			<section id='training' className='max-w-[95%] sm:max-w-[90%] lg:max-w-screen-lg mx-auto my-20 sm:my-40'>
+			<section id='training' className='max-w-[95%] sm:max-w-[90%] lg:max-w-screen-lg mx-auto my-20 sm:my-56'>
 				<h1 className='text-amber-11 mb-24 text-3xl xs:text-5xl md:text-6xl lg:text-7xl'>Avance em técnicas específicas</h1>
 				<h2>Oferecemos diversos treinamentos em técnicas específicas da prática do Yoga.</h2>
 				<h2>Ideal para aprofundar e melhorar a execução das técnicas que você tem mais dificuldade ou quer aperfeiçoar</h2>
@@ -128,11 +138,12 @@ export default function EscolaOnline() {
 				<h3>Mudrás</h3>
 				<h3>Kriyás</h3>
 			</section>
-			<section id='theoretical classes' className='max-w-[95%] sm:max-w-[90%] lg:max-w-screen-lg mx-auto my-20 sm:my-40'>
+
+			<section id='theoretical classes' className='max-w-[95%] sm:max-w-[90%] lg:max-w-screen-lg mx-auto my-20 sm:my-56'>
 				<h1 className='text-amber-11 mb-24 text-3xl xs:text-5xl md:text-6xl lg:text-7xl'>Vivencia o Yoga de forma intensa</h1>
 				<h2>Assista as aulas teóricas para entender como funciona a prática do Yoga. Nada como entender o que você está fazendo para vivenciar as técnicas do Yoga de forma mais intensa e profunda, acelerando seu desenvolvimento no Yoga.</h2>
 			</section>
-			<section id='courses' className='max-w-[95%] sm:max-w-[90%] lg:max-w-screen-lg mx-auto my-20 sm:my-40'>
+			<section id='courses' className='max-w-[95%] sm:max-w-[90%] lg:max-w-screen-lg mx-auto my-20 sm:my-56'>
 				<h1 className='text-amber-11 mb-24 text-3xl xs:text-5xl md:text-6xl lg:text-7xl'>Cursos de Aprofundamento</h1>
 				<p>Exclusivo para alunos do plano anual</p>
 				<h2>Diversos cursos para se aprofundar em temas específicos do Yoga e também outros assuntos que estão relacionados a prática</h2>
@@ -147,7 +158,8 @@ export default function EscolaOnline() {
 				<h3>Yoga e Hinduismo</h3>
 				<h3>Yoga Sútra de Patáñjali</h3>
 			</section>
-			<section id='faq' className='max-w-[95%] sm:max-w-[90%] lg:max-w-screen-lg mx-auto my-20 sm:my-40'>
+
+			<section id='faq' className='max-w-[95%] sm:max-w-[90%] lg:max-w-screen-lg mx-auto my-20 sm:my-56'>
 				<h1 className='text-amber-11 mb-24 text-3xl xs:text-5xl md:text-6xl lg:text-7xl'>Perguntas Frequentes</h1>
 			</section>
 		</main>
