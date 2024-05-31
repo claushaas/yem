@@ -2,6 +2,7 @@ import type {Config} from 'tailwindcss';
 import tailwindcssRadix from 'tailwindcss-radix';
 import tailwindcssRadixColors from 'tailwindcss-radix-colors';
 import tailwindForms from '@tailwindcss/forms';
+import tailwindContainerQueries from '@tailwindcss/container-queries';
 import defaultTheme from 'tailwindcss/defaultTheme';
 import type {PluginAPI} from 'tailwindcss/types/config';
 
@@ -69,6 +70,7 @@ export default {
 	plugins: [
 		tailwindcssRadix,
 		tailwindcssRadixColors,
+		tailwindContainerQueries,
 		tailwindForms,
 		({matchUtilities}: {matchUtilities: PluginAPI['matchUtilities']}) => {
 			matchUtilities({
