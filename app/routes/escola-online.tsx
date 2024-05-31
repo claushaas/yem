@@ -8,9 +8,11 @@ import {
 	PlayIcon,
 	UserGroupIcon,
 } from '@heroicons/react/24/outline';
+import {Image} from '@unpic/react';
 import {Button, ButtonPreset, ButtonType} from '~/components/button.js';
 import {Testimonies} from '~/layouts/testimonies.js';
 import {History} from '~/layouts/yem-history.js';
+import {buildImgSource} from '~/utils/build-cloudflare-image-source.js';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => [
 	{title: 'Escola Online - Yoga em Movimento'},
@@ -84,21 +86,162 @@ export default function EscolaOnline() {
 			</section>
 
 			<section id='objectives' className='max-w-[95%] sm:max-w-[90%] lg:max-w-screen-lg mx-auto my-20 sm:my-56'>
-				<h1 className='text-amber-11 mb-24 text-3xl xs:text-5xl md:text-6xl lg:text-7xl'>Alcance seus objetivos no Yoga</h1>
+				<h1 className='text-orange-9 mb-5 text-3xl xs:text-5xl md:text-6xl lg:text-7xl'>Alcance seus objetivos no Yoga</h1>
 
-				<h2>Filtre as aulas de acordo com sua meta</h2>
-				<h3>Força</h3>
-				<h3>Flexibilidade</h3>
-				<h3>Introspecção</h3>
-				<h3>Restaurativa</h3>
-				<h3>Purificação</h3>
-				<h3>Respiração</h3>
-				<h3>Meditação</h3>
-				<h3>Relaxamento</h3>
-				<h3>Equilíbrio</h3>
-				<h3>Vinyasa</h3>
-				<h3>Sem Ásanas</h3>
-				<h3>Yoga na Cadeira</h3>
+				<div className='my-32'>
+					<h2 className='text-orange-11 text-2xl xs:text-4xl'>Filtre as aulas de acordo com sua meta</h2>
+
+					<div className='flex flex-wrap gap-3'>
+						<div className='grid grid-rows-[3fr_1fr_1fr_2fr_2fr_3fr] grid-cols-[3fr_1fr_2fr] gap-3 flex-grow basis-80 h-[500px]'>
+							<div className='bg-mauve-10 rounded-3xl px-1 py-3 w-full h-full row-span-2 col-span-full -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center'>
+								<Image
+									className='absolute top-0 left-0 w-full h-full rounded-3xl mix-blend-multiply -z-10'
+									src={buildImgSource('dd4a873b-972a-48b7-4c4f-666353046c00')}
+									cdn='cloudflare_images'
+									layout='constrained'
+									width={660}
+									height={310}
+									alt='Flexibilidade'
+								/>
+								<h3 className='text-white text-[60cqb] @sm:text-[75cqb] @md:text-[100cqb] leading-none break-words w-full'>Força</h3>
+							</div>
+							<div className='bg-mauve-8 rounded-3xl px-1 py-3 w-full h-full row-span-2 -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center'>
+								<Image
+									className='absolute top-0 left-0 w-full h-full rounded-3xl mix-blend-multiply -z-10'
+									src={buildImgSource('68646074-356d-4ce7-5eba-de3afd57af00')}
+									cdn='cloudflare_images'
+									layout='constrained'
+									width={660}
+									height={310}
+									alt='Flexibilidade'
+								/>
+								<h3 className='text-white text-[40cqmin] leading-none break-words w-full'>Equilíbrio</h3>
+							</div>
+							<div className='bg-mauve-8 rounded-3xl px-1 py-3 w-full h-full row-span-2 col-span-2 -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center'>
+								<Image
+									className='absolute top-0 left-0 w-full h-full rounded-3xl mix-blend-multiply -z-10'
+									src={buildImgSource('91094bcd-1439-4b8b-d762-4ff5b6db0900')}
+									cdn='cloudflare_images'
+									layout='constrained'
+									width={660}
+									height={310}
+									alt='Flexibilidade'
+								/>
+								<h3 className='text-white text-[40cqmin] leading-none break-words w-full'>Introspecção</h3>
+							</div>
+							<div className='bg-mauve-8 rounded-3xl px-1 py-3 w-full h-full col-span-full -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center'>
+								<Image
+									className='absolute top-0 left-0 w-full h-full rounded-3xl mix-blend-multiply -z-10'
+									src={buildImgSource('f77a1f17-1aa4-4966-de10-732db9f2b900')}
+									cdn='cloudflare_images'
+									layout='constrained'
+									width={660}
+									height={310}
+									alt='Purificação'
+								/>
+								<h3 className='text-white text-[80cqb] @md:text-[100cqb] leading-none break-words w-full'>Restaurativa</h3>
+							</div>
+							<div className='bg-mauve-8 rounded-3xl px-1 py-3 w-full h-full col-span-2 -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center'>
+								<Image
+									className='absolute top-0 left-0 w-full h-full rounded-3xl mix-blend-multiply -z-10'
+									src={buildImgSource('4dc99a7c-d456-45d9-d787-ef744aea6c00')}
+									cdn='cloudflare_images'
+									layout='constrained'
+									width={660}
+									height={310}
+									alt='Purificação'
+								/>
+								<h3 className='text-white text-[50cqb] @[15rem]:text-[60cqb] leading-none break-words w-full'>Purificação</h3>
+							</div>
+							<div className='bg-mauve-8 rounded-3xl px-1 py-3 w-full h-full -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center'>
+								<Image
+									className='absolute top-0 left-0 w-full h-full rounded-3xl mix-blend-multiply -z-10'
+									src={buildImgSource('1f6021aa-333c-4f2b-470f-4349252e2600')}
+									cdn='cloudflare_images'
+									layout='constrained'
+									width={660}
+									height={310}
+									alt='Purificação'
+								/>
+								<h3 className='text-white text-[30cqb] leading-none break-words w-full'>Respiração</h3>
+							</div>
+						</div>
+						<div className='grid grid-rows-[3fr_1fr_1fr_2fr_2fr_3fr] grid-cols-[2fr_3fr_1fr_2fr] gap-3 flex-grow basis-80 h-[500px]'>
+							<div className='bg-mauve-8 rounded-3xl px-1 py-3 w-full h-full col-span-2 -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center'>
+								<Image
+									className='absolute top-0 left-0 w-full h-full rounded-3xl mix-blend-multiply -z-10'
+									src={buildImgSource('71e20f1e-2f19-48dc-d1c3-bab403dc4300')}
+									cdn='cloudflare_images'
+									layout='constrained'
+									width={660}
+									height={310}
+									alt='Flexibilidade'
+								/>
+								<h3 className='text-white text-[50cqb] @[15rem]:text-[60cqb] leading-none break-words w-full'>Meditação</h3>
+							</div>
+							<div className='bg-mauve-8 rounded-3xl px-1 py-3 w-full h-full col-span-2 -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center'>
+								<Image
+									className='absolute top-0 left-0 w-full h-full rounded-3xl mix-blend-multiply -z-10'
+									src={buildImgSource('289f609f-5233-41f7-445c-838d4c5c0600')}
+									cdn='cloudflare_images'
+									layout='constrained'
+									width={660}
+									height={310}
+									alt='Relaxamento'
+								/>
+								<h3 className='text-white text-[35cqb] @[10rem]:text-[50cqb] leading-none break-words w-full'>Relaxamento</h3>
+							</div>
+							<div className='bg-mauve-10 rounded-3xl px-1 py-3 w-full h-full row-span-4 col-span-full -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center'>
+								<Image
+									className='absolute top-0 left-0 w-full h-full rounded-3xl mix-blend-multiply -z-10'
+									src={buildImgSource('a78cfa8f-da25-4b3c-5bfa-1204f404c800')}
+									cdn='cloudflare_images'
+									layout='constrained'
+									width={660}
+									height={310}
+									alt='Flexibilidade'
+								/>
+								<h3 className='text-white text-[30cqmin] @md:text-[50cqmin] leading-none break-words w-full'>Flexibilidade</h3>
+							</div>
+							<div className='bg-mauve-8 rounded-3xl px-1 py-3 w-full h-full -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center'>
+								<Image
+									className='absolute top-0 left-0 w-full h-full rounded-3xl mix-blend-multiply -z-10'
+									src={buildImgSource('d95f2201-7e07-4a0b-02b2-b23f8c6ee300')}
+									cdn='cloudflare_images'
+									layout='constrained'
+									width={660}
+									height={310}
+									alt='Vinyasa'
+								/>
+								<h3 className='text-white text-[45cqmin] leading-none break-words w-full'>Vinyasa</h3>
+							</div>
+							<div className='bg-mauve-8 rounded-3xl px-1 py-3 w-full h-full col-span-2 -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center'>
+								<Image
+									className='absolute top-0 left-0 w-full h-full rounded-3xl mix-blend-multiply -z-10'
+									src={buildImgSource('dfcb9015-a642-4699-095b-53fabdf84e00')}
+									cdn='cloudflare_images'
+									layout='constrained'
+									width={660}
+									height={310}
+									alt='Vinyasa'
+								/>
+								<h3 className='text-white text-[45cqmin] leading-none break-words w-full'>Sem Ásanas</h3>
+							</div>
+							<div className='bg-mauve-8 rounded-3xl px-1 py-3 w-full h-full -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center'>
+								<Image
+									className='absolute top-0 left-0 w-full h-full rounded-3xl mix-blend-multiply -z-10'
+									src={buildImgSource('d9d57548-85b0-4362-e6b7-6dc6adbc8e00')}
+									cdn='cloudflare_images'
+									layout='constrained'
+									width={180}
+									height={180}
+									alt='Vinyasa'
+								/>
+								<h3 className='text-white text-[30cqmin] leading-none break-words w-full'>Yoga na Cadeira</h3>
+							</div>
+						</div>
+					</div>
+				</div>
 
 				<h2>Playlist de aulas prontas e voltadas para objetivos específicos</h2>
 				<h3>Sequência de aulas fáceis</h3>
