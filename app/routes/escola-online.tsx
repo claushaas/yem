@@ -105,7 +105,7 @@ export default function EscolaOnline() {
 								/>
 								<h3 className='text-white text-[60cqb] @sm:text-[75cqb] @md:text-[100cqb] leading-none break-words w-full'>Força</h3>
 							</div>
-							<div className='bg-mauve-8 rounded-3xl px-1 py-3 w-full h-full row-span-2 -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center'>
+							<div className='bg-mauve-10 rounded-3xl px-1 py-3 w-full h-full row-span-2 -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center'>
 								<Image
 									className='absolute top-0 left-0 w-full h-full rounded-3xl mix-blend-multiply -z-10'
 									src={buildImgSource('68646074-356d-4ce7-5eba-de3afd57af00')}
@@ -117,7 +117,7 @@ export default function EscolaOnline() {
 								/>
 								<h3 className='text-white text-[40cqmin] leading-none break-words w-full'>Equilíbrio</h3>
 							</div>
-							<div className='bg-mauve-8 rounded-3xl px-1 py-3 w-full h-full row-span-2 col-span-2 -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center'>
+							<div className='bg-mauve-10 rounded-3xl px-1 py-3 w-full h-full row-span-2 col-span-2 -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center'>
 								<Image
 									className='absolute top-0 left-0 w-full h-full rounded-3xl mix-blend-multiply -z-10'
 									src={buildImgSource('91094bcd-1439-4b8b-d762-4ff5b6db0900')}
@@ -129,7 +129,7 @@ export default function EscolaOnline() {
 								/>
 								<h3 className='text-white text-[40cqmin] leading-none break-words w-full'>Introspecção</h3>
 							</div>
-							<div className='bg-mauve-8 rounded-3xl px-1 py-3 w-full h-full col-span-full -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center'>
+							<div className='bg-mauve-10 rounded-3xl px-1 py-3 w-full h-full col-span-full -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center'>
 								<Image
 									className='absolute top-0 left-0 w-full h-full rounded-3xl mix-blend-multiply -z-10'
 									src={buildImgSource('f77a1f17-1aa4-4966-de10-732db9f2b900')}
@@ -141,7 +141,7 @@ export default function EscolaOnline() {
 								/>
 								<h3 className='text-white text-[80cqb] @md:text-[100cqb] leading-none break-words w-full'>Restaurativa</h3>
 							</div>
-							<div className='bg-mauve-8 rounded-3xl px-1 py-3 w-full h-full col-span-2 -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center'>
+							<div className='bg-mauve-10 rounded-3xl px-1 py-3 w-full h-full col-span-2 -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center'>
 								<Image
 									className='absolute top-0 left-0 w-full h-full rounded-3xl mix-blend-multiply -z-10'
 									src={buildImgSource('4dc99a7c-d456-45d9-d787-ef744aea6c00')}
@@ -153,7 +153,7 @@ export default function EscolaOnline() {
 								/>
 								<h3 className='text-white text-[50cqb] @[15rem]:text-[60cqb] leading-none break-words w-full'>Purificação</h3>
 							</div>
-							<div className='bg-mauve-8 rounded-3xl px-1 py-3 w-full h-full -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center'>
+							<div className='bg-mauve-10 rounded-3xl px-1 py-3 w-full h-full -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center'>
 								<Image
 									className='absolute top-0 left-0 w-full h-full rounded-3xl mix-blend-multiply -z-10'
 									src={buildImgSource('1f6021aa-333c-4f2b-470f-4349252e2600')}
@@ -167,7 +167,7 @@ export default function EscolaOnline() {
 							</div>
 						</div>
 						<div className='grid grid-rows-[3fr_1fr_1fr_2fr_2fr_3fr] grid-cols-[2fr_3fr_1fr_2fr] gap-3 flex-grow basis-80 h-[500px]'>
-							<div className='bg-mauve-8 rounded-3xl px-1 py-3 w-full h-full col-span-2 -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center'>
+							<div className='bg-mauve-10 rounded-3xl px-1 py-3 w-full h-full col-span-2 -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center'>
 								<Image
 									className='absolute top-0 left-0 w-full h-full rounded-3xl mix-blend-multiply -z-10'
 									src={buildImgSource('71e20f1e-2f19-48dc-d1c3-bab403dc4300')}
@@ -179,7 +179,7 @@ export default function EscolaOnline() {
 								/>
 								<h3 className='text-white text-[50cqb] @[15rem]:text-[60cqb] leading-none break-words w-full'>Meditação</h3>
 							</div>
-							<div className='bg-mauve-8 rounded-3xl px-1 py-3 w-full h-full col-span-2 -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center'>
+							<div className='bg-mauve-10 rounded-3xl px-1 py-3 w-full h-full col-span-2 -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center'>
 								<Image
 									className='absolute top-0 left-0 w-full h-full rounded-3xl mix-blend-multiply -z-10'
 									src={buildImgSource('289f609f-5233-41f7-445c-838d4c5c0600')}
@@ -203,7 +203,7 @@ export default function EscolaOnline() {
 								/>
 								<h3 className='text-white text-[30cqmin] @md:text-[50cqmin] leading-none break-words w-full'>Flexibilidade</h3>
 							</div>
-							<div className='bg-mauve-8 rounded-3xl px-1 py-3 w-full h-full -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center'>
+							<div className='bg-mauve-10 rounded-3xl px-1 py-3 w-full h-full -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center'>
 								<Image
 									className='absolute top-0 left-0 w-full h-full rounded-3xl mix-blend-multiply -z-10'
 									src={buildImgSource('d95f2201-7e07-4a0b-02b2-b23f8c6ee300')}
@@ -215,7 +215,7 @@ export default function EscolaOnline() {
 								/>
 								<h3 className='text-white text-[45cqmin] leading-none break-words w-full'>Vinyasa</h3>
 							</div>
-							<div className='bg-mauve-8 rounded-3xl px-1 py-3 w-full h-full col-span-2 -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center'>
+							<div className='bg-mauve-10 rounded-3xl px-1 py-3 w-full h-full col-span-2 -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center'>
 								<Image
 									className='absolute top-0 left-0 w-full h-full rounded-3xl mix-blend-multiply -z-10'
 									src={buildImgSource('dfcb9015-a642-4699-095b-53fabdf84e00')}
@@ -227,7 +227,7 @@ export default function EscolaOnline() {
 								/>
 								<h3 className='text-white text-[45cqmin] leading-none break-words w-full'>Sem Ásanas</h3>
 							</div>
-							<div className='bg-mauve-8 rounded-3xl px-1 py-3 w-full h-full -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center'>
+							<div className='bg-mauve-10 rounded-3xl px-1 py-3 w-full h-full -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center'>
 								<Image
 									className='absolute top-0 left-0 w-full h-full rounded-3xl mix-blend-multiply -z-10'
 									src={buildImgSource('d9d57548-85b0-4362-e6b7-6dc6adbc8e00')}
