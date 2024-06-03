@@ -18,7 +18,7 @@ import {commitUserSession, getUserSession} from '~/utils/session.server';
 import {ModuleService} from '~/services/module.service.server';
 import {LessonService} from '~/services/lesson.service.server';
 import {type TUser} from '~/types/user.type';
-import {type TPrismaPayloadGetModulesList, type TModule, type TPrismaPayloadGetModuleBySlug} from '~/types/module.type';
+import {type TModule, type TPrismaPayloadGetModuleBySlug} from '~/types/module.type';
 import {GenericEntityCard} from '~/components/generic-entity-card.js';
 import {Button, ButtonPreset, ButtonType} from '~/components/button.js';
 import {Editor} from '~/components/text-editor.client.js';
@@ -41,7 +41,6 @@ type ModuleLoaderData = {
 	error: string | undefined;
 	success: string | undefined;
 	module: TPrismaPayloadGetModuleBySlug | undefined;
-	modules: TPrismaPayloadGetModulesList | undefined;
 	tags: TPrismaPayloadGetAllTags | undefined;
 	meta: Array<{tagName: string; rel: string; href: string}>;
 };
@@ -61,12 +60,10 @@ export const loader = async ({request, params}: LoaderFunctionArgs) => {
 
 	try {
 		const {data: module} = await moduleService.getBySlug(courseSlug!, moduleSlug!, userSession.data as TUser);
-		const {data: modules} = await moduleService.getAllForAdmin(userSession.data as TUser);
 		const {data: tags} = await new TagService().getAll();
 
 		return json<ModuleLoaderData>({
 			module,
-			modules,
 			tags,
 			error: userSession.get('error') as string | undefined,
 			success: userSession.get('success') as string | undefined,
@@ -80,7 +77,6 @@ export const loader = async ({request, params}: LoaderFunctionArgs) => {
 		logger.logError(`Error getting module: ${(error as Error).message}`);
 		return json<ModuleLoaderData>({
 			module: undefined,
-			modules: undefined,
 			tags: undefined,
 			error: (error as Error).message,
 			success: undefined,
@@ -148,6 +144,19 @@ export const action = async ({request, params}: ActionFunctionArgs) => {
 					break;
 				}
 
+				case 'existingLesson': {
+					const lessonSlug = formData.get('lessonSlug') as string;
+					const moduleSlug = formData.get('moduleSlug') as string;
+					const publicationDate = new Date(formData.get('publicationDate') as string);
+					const isPublished = Boolean(formData.get('isPublished'));
+					const order = Number(formData.get('order'));
+
+					await new LessonService().associateLessonWithModule(lessonSlug, moduleSlug, publicationDate, isPublished, order);
+
+					userSession.flash('success', 'Aula associada com sucesso');
+					break;
+				}
+
 				default: {
 					userSession.flash('error', 'Formulário inválido');
 					break;
@@ -176,7 +185,6 @@ export const action = async ({request, params}: ActionFunctionArgs) => {
 export default function Module() {
 	const {
 		module,
-		modules,
 		tags: rawTags,
 		error,
 		success,
@@ -196,7 +204,8 @@ export default function Module() {
 
 	const [moduleEditDialogIsOpen, setModuleEditDialogIsOpen] = useState(false);
 	const [newLessonDialogIsOpen, setNewLessonDialogIsOpen] = useState(false);
-	const [modulesValue, setModulesValue] = useState<Array<{value: string; label: string}>>(module ? [{value: module.module.id, label: module.module.name}] : []);
+	const [existingLessonDialogIsOpen, setExistingLessonDialogIsOpen] = useState(false);
+
 	const [tagsValue, setTagsValue] = useState<Array<{value: TTag; label: string}>>([]);
 	const navigation = useNavigation();
 	const isSubmittingAnyForm = navigation.formAction === `/admin/courses/${courseSlug}/${moduleSlug}`;
@@ -208,6 +217,7 @@ export default function Module() {
 		if (success) {
 			setModuleEditDialogIsOpen(false);
 			setNewLessonDialogIsOpen(false);
+			setExistingLessonDialogIsOpen(false);
 		}
 	}, [success]);
 
@@ -457,10 +467,12 @@ export default function Module() {
 					</>
 				)}
 			</div>
+
 			<div>
-				<Dialog.Root open={newLessonDialogIsOpen} onOpenChange={setNewLessonDialogIsOpen}>
-					<div className='flex items-center gap-5'>
-						<h2>Aulas</h2>
+				<div className='flex items-center gap-5'>
+					<h2>Aulas</h2>
+
+					<Dialog.Root open={newLessonDialogIsOpen} onOpenChange={setNewLessonDialogIsOpen}>
 						<Dialog.Trigger asChild>
 							<div className='w-fit'>
 								<Button
@@ -469,369 +481,487 @@ export default function Module() {
 									type={ButtonType.Button}
 								/>
 							</div>
-
 						</Dialog.Trigger>
-					</div>
 
-					<Dialog.Portal>
-						<Dialog.Overlay className='bg-mauvea-12 fixed inset-0'/>
+						<Dialog.Portal>
+							<Dialog.Overlay className='bg-mauvea-12 fixed inset-0'/>
 
-						<Dialog.Content className='fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] p-4 max-w-screen-lg w-[90%] bg-mauve-2 dark:bg-mauvedark-2 rounded-xl overflow-y-auto max-h-[90%]'>
-							<Dialog.Title asChild>
-								<h1 className='mb-4'>
-									Adicionar Nova Aula
-								</h1>
-							</Dialog.Title>
+							<Dialog.Content className='fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] p-4 max-w-screen-lg w-[90%] bg-mauve-2 dark:bg-mauvedark-2 rounded-xl overflow-y-auto max-h-[90%]'>
+								<Dialog.Title asChild>
+									<h1 className='mb-4'>
+										Adicionar Nova Aula
+									</h1>
+								</Dialog.Title>
 
-							<RadixForm.Root asChild>
-								<Form method='post' action={`/admin/courses/${courseSlug}/${moduleSlug}`} className='flex flex-col gap-3'>
+								<RadixForm.Root asChild>
+									<Form method='post' action={`/admin/courses/${courseSlug}/${moduleSlug}`} className='flex flex-col gap-3'>
 
-									<RadixForm.Field name='oldId'>
-										<div className='flex items-baseline justify-between'>
-											<RadixForm.Label>
-												<p>ID da Antiga Plataforma</p>
-											</RadixForm.Label>
-										</div>
-										<RadixForm.Control asChild>
-											<input
-												disabled={isSubmittingAnyForm}
-												type='text'
-												min={8}
-												className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
-											/>
-										</RadixForm.Control>
-									</RadixForm.Field>
-
-									<RadixForm.Field name='name'>
-										<div className='flex items-baseline justify-between'>
-											<RadixForm.Label>
-												<p>Nome</p>
-											</RadixForm.Label>
-										</div>
-										<RadixForm.Control asChild>
-											<input
-												required
-												disabled={isSubmittingAnyForm}
-												type='text'
-												min={8}
-												className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
-											/>
-										</RadixForm.Control>
-									</RadixForm.Field>
-
-									<RadixForm.Field name='description'>
-										<div className='flex items-baseline justify-between'>
-											<RadixForm.Label>
-												<p>Descrição</p>
-											</RadixForm.Label>
-										</div>
-										<RadixForm.Control asChild>
-											<input
-												required
-												disabled={isSubmittingAnyForm}
-												type='text'
-												min={8}
-												className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
-											/>
-										</RadixForm.Control>
-									</RadixForm.Field>
-
-									<RadixForm.Field name='type'>
-										<div className='flex items-baseline justify-between'>
-											<RadixForm.Label>
-												<p>Tipo da aula</p>
-											</RadixForm.Label>
-										</div>
-										<RadixSelect.Root name='type'>
-											<RadixSelect.Trigger
-												className='inline-flex items-center justify-center rounded px-[15px] text-[13px] leading-none h-[35px] gap-[5px] bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 shadow-[0_2px_10px] shadow-black/10 hover:bg-mauve3 focus:shadow-[0_0_0_2px] focus:shadow-black data-[placeholder]:text-violet9 outline-none'
-												aria-label='Tipo da aula'
-											>
-												<RadixSelect.Value placeholder='Escolha o tipo da aula'/>
-												<RadixSelect.Icon>
-													<ChevronDownIcon className='size-4'/>
-												</RadixSelect.Icon>
-											</RadixSelect.Trigger>
-
-											<RadixSelect.Portal>
-												<RadixSelect.Content className='overflow-hidden bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 rounded-md shadow-[0px_10px_38px_-10px_rgba(22,_23,_24,_0.35),0px_10px_20px_-15px_rgba(22,_23,_24,_0.2)]'>
-													<RadixSelect.ScrollUpButton>
-														<ChevronUpIcon className='size-4'/>
-													</RadixSelect.ScrollUpButton>
-
-													<RadixSelect.Viewport className='p-[5px]'>
-														<RadixSelect.Group>
-
-															<RadixSelect.SelectItem value='video' className='text-[13px] leading-none text-violet11 rounded-[3px] flex items-center h-[25px] pr-[35px] pl-[25px] relative select-none data-[disabled]:text-mauve8 data-[disabled]:pointer-events-none data-[highlighted]:outline-none data-[highlighted]:bg-violet9 data-[highlighted]:text-violet1'>
-																<RadixSelect.SelectItemText>
-																	<p>Vídeo</p>
-																</RadixSelect.SelectItemText>
-																<RadixSelect.ItemIndicator className='absolute left-0 w-[25px] inline-flex items-center justify-center'>
-																	<CheckIcon/>
-																</RadixSelect.ItemIndicator>
-															</RadixSelect.SelectItem>
-
-															<RadixSelect.SelectItem value='text' className='text-[13px] leading-none text-violet11 rounded-[3px] flex items-center h-[25px] pr-[35px] pl-[25px] relative select-none data-[disabled]:text-mauve8 data-[disabled]:pointer-events-none data-[highlighted]:outline-none data-[highlighted]:bg-violet9 data-[highlighted]:text-violet1'>
-																<RadixSelect.SelectItemText>
-																	<p>Texto</p>
-																</RadixSelect.SelectItemText>
-																<RadixSelect.ItemIndicator className='absolute left-0 w-[25px] inline-flex items-center justify-center'>
-																	<CheckIcon/>
-																</RadixSelect.ItemIndicator>
-															</RadixSelect.SelectItem>
-
-															<RadixSelect.SelectItem value='courseWare' className='text-[13px] leading-none text-violet11 rounded-[3px] flex items-center h-[25px] pr-[35px] pl-[25px] relative select-none data-[disabled]:text-mauve8 data-[disabled]:pointer-events-none data-[highlighted]:outline-none data-[highlighted]:bg-violet9 data-[highlighted]:text-violet1'>
-																<RadixSelect.SelectItemText>
-																	<p>Material Didático</p>
-																</RadixSelect.SelectItemText>
-																<RadixSelect.ItemIndicator className='absolute left-0 w-[25px] inline-flex items-center justify-center'>
-																	<CheckIcon/>
-																</RadixSelect.ItemIndicator>
-															</RadixSelect.SelectItem>
-
-														</RadixSelect.Group>
-													</RadixSelect.Viewport>
-
-													<RadixSelect.ScrollDownButton>
-														<ChevronDownIcon className='size-4'/>
-													</RadixSelect.ScrollDownButton>
-												</RadixSelect.Content>
-											</RadixSelect.Portal>
-										</RadixSelect.Root>
-									</RadixForm.Field>
-
-									<RadixForm.Field name='content'>
-										<div className='flex items-baseline justify-between'>
-											<RadixForm.Label>
-												<p>Conteúdo</p>
-											</RadixForm.Label>
-										</div>
-										<RadixForm.Control asChild>
-											<input
-												disabled={isSubmittingAnyForm}
-												type='text'
-												min={8}
-												className='hidden'
-												value={lessonContent}
-											/>
-										</RadixForm.Control>
-									</RadixForm.Field>
-
-									<Editor setQuill={setLessonContentEditor} placeholder='Adicione aqui o conteúdo da aula, que só aparece para os alunos...'/>
-
-									<RadixForm.Field name='marketingContent'>
-										<div className='flex items-baseline justify-between'>
-											<RadixForm.Label>
-												<p>Conteúdo de Divulgação</p>
-											</RadixForm.Label>
-										</div>
-										<RadixForm.Control asChild>
-											<input
-												disabled={isSubmittingAnyForm}
-												type='text'
-												min={8}
-												className='hidden'
-												value={lessonMktContent}
-											/>
-										</RadixForm.Control>
-									</RadixForm.Field>
-
-									<Editor setQuill={setLessonMktContentEditor} placeholder='Adicione aqui o conteúdo de divulgação da aula, que aparece para quem não é aluno...'/>
-
-									<RadixForm.Field name='videoSourceUrl'>
-										<div className='flex items-baseline justify-between'>
-											<RadixForm.Label>
-												<p>Vídeo</p>
-											</RadixForm.Label>
-										</div>
-										<RadixForm.Control asChild>
-											<input
-												disabled={isSubmittingAnyForm}
-												type='text'
-												min={3}
-												className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
-											/>
-										</RadixForm.Control>
-									</RadixForm.Field>
-
-									<RadixForm.Field name='marketingVideoUrl'>
-										<div className='flex items-baseline justify-between'>
-											<RadixForm.Label>
-												<p>Vídeo de Divulgação</p>
-											</RadixForm.Label>
-										</div>
-										<RadixForm.Control asChild>
-											<input
-												disabled={isSubmittingAnyForm}
-												type='text'
-												min={3}
-												className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
-											/>
-										</RadixForm.Control>
-									</RadixForm.Field>
-
-									<RadixForm.Field name='duration'>
-										<div className='flex items-baseline justify-between'>
-											<RadixForm.Label>
-												<p>Duração do vídeo (em minutos)</p>
-											</RadixForm.Label>
-										</div>
-										<RadixForm.Control asChild>
-											<input
-												disabled={isSubmittingAnyForm}
-												type='number'
-												className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
-											/>
-										</RadixForm.Control>
-									</RadixForm.Field>
-
-									<RadixForm.Field name='thumbnailUrl'>
-										<div className='flex items-baseline justify-between'>
-											<RadixForm.Label>
-												<p>Imagem de capa</p>
-											</RadixForm.Label>
-										</div>
-										<RadixForm.Control asChild>
-											<input
-												required
-												disabled={isSubmittingAnyForm}
-												type='text'
-												min={3}
-												className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
-											/>
-										</RadixForm.Control>
-									</RadixForm.Field>
-
-									<RadixForm.Field name='modules'>
-										<div className='flex items-baseline justify-between'>
-											<RadixForm.Label>
-												<p>Módulos</p>
-											</RadixForm.Label>
-										</div>
-										<RadixForm.Control asChild>
-											<input
-												disabled={isSubmittingAnyForm}
-												type='text'
-												className='hidden'
-												value={modulesValue.map(course => course.value).join(',')}
-											/>
-										</RadixForm.Control>
-										<Select
-											isMulti
-											value={modulesValue}
-											options={modules?.map(module => ({value: module.slug, label: module.name}))}
-											onChange={selectedOption => {
-												setModulesValue(selectedOption as Array<{value: string; label: string}>);
-											}}
-										/>
-									</RadixForm.Field>
-
-									<RadixForm.Field name='tags'>
-										<div className='flex items-baseline justify-between'>
-											<RadixForm.Label>
-												<p>Tags</p>
-											</RadixForm.Label>
-										</div>
-										<RadixForm.Control asChild>
-											<input
-												disabled={isSubmittingAnyForm}
-												type='text'
-												className='hidden'
-												value={JSON.stringify(tagsValue.map(tag => tag.value))}
-											/>
-										</RadixForm.Control>
-										<Select
-											isMulti
-											value={tagsValue}
-											options={tags}
-											onChange={selectedOption => {
-												setTagsValue(selectedOption as Array<{value: TTag; label: string}>);
-											}}
-										/>
-									</RadixForm.Field>
-
-									<RadixForm.Field name='formType' className='hidden'>
-										<RadixForm.Control asChild>
-											<input
-												disabled={isSubmittingAnyForm}
-												type='text'
-												value='newLesson'
-											/>
-										</RadixForm.Control>
-									</RadixForm.Field>
-
-									<RadixForm.Field name='publicationDate'>
-										<div className='flex items-baseline justify-between'>
-											<RadixForm.Label>
-												<p>Data de publicação</p>
-											</RadixForm.Label>
-										</div>
-										<RadixForm.Control asChild>
-											<input
-												defaultValue={defaultDate.toISOString().slice(0, 16)}
-												disabled={isSubmittingAnyForm}
-												type='datetime-local'
-												min={3}
-												className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
-											/>
-										</RadixForm.Control>
-									</RadixForm.Field>
-
-									<RadixForm.Field name='isPublished'>
-										<div className='flex items-baseline justify-between'>
-											<RadixForm.Label>
-												<p>Está publicada</p>
-											</RadixForm.Label>
-										</div>
-										<RadixForm.Control asChild>
-											<Switch.Root
-												disabled={isSubmittingAnyForm}
-												className='w-[42px] h-[25px] bg-blacka-6 rounded-full relative shadow-[0_2px_10px] shadow-blacka-4 focus:shadow-[0_0_0_2px] focus:shadow-black data-[state=checked]:bg-black outline-none cursor-default'
-											>
-												<Switch.Thumb
-													className='block w-[21px] h-[21px] bg-white rounded-full shadow-[0_2px_2px] shadow-blackA4 transition-transform duration-100 translate-x-0.5 will-change-transform data-[state=checked]:translate-x-[19px]'
+										<RadixForm.Field name='oldId'>
+											<div className='flex items-baseline justify-between'>
+												<RadixForm.Label>
+													<p>ID da Antiga Plataforma</p>
+												</RadixForm.Label>
+											</div>
+											<RadixForm.Control asChild>
+												<input
+													disabled={isSubmittingAnyForm}
+													type='text'
+													min={8}
+													className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
 												/>
-											</Switch.Root>
-										</RadixForm.Control>
-									</RadixForm.Field>
+											</RadixForm.Control>
+										</RadixForm.Field>
 
-									<RadixForm.Field name='order'>
-										<div className='flex items-baseline justify-between'>
-											<RadixForm.Label>
-												<p>Posição da aula dentro do módulo</p>
-											</RadixForm.Label>
-										</div>
-										<RadixForm.Control asChild>
-											<input
-												required
-												disabled={isSubmittingAnyForm}
-												type='text'
-												className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
+										<RadixForm.Field name='name'>
+											<div className='flex items-baseline justify-between'>
+												<RadixForm.Label>
+													<p>Nome</p>
+												</RadixForm.Label>
+											</div>
+											<RadixForm.Control asChild>
+												<input
+													required
+													disabled={isSubmittingAnyForm}
+													type='text'
+													min={8}
+													className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
+												/>
+											</RadixForm.Control>
+										</RadixForm.Field>
+
+										<RadixForm.Field name='description'>
+											<div className='flex items-baseline justify-between'>
+												<RadixForm.Label>
+													<p>Descrição</p>
+												</RadixForm.Label>
+											</div>
+											<RadixForm.Control asChild>
+												<input
+													required
+													disabled={isSubmittingAnyForm}
+													type='text'
+													min={8}
+													className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
+												/>
+											</RadixForm.Control>
+										</RadixForm.Field>
+
+										<RadixForm.Field name='type'>
+											<div className='flex items-baseline justify-between'>
+												<RadixForm.Label>
+													<p>Tipo da aula</p>
+												</RadixForm.Label>
+											</div>
+											<RadixSelect.Root name='type'>
+												<RadixSelect.Trigger
+													className='inline-flex items-center justify-center rounded px-[15px] text-[13px] leading-none h-[35px] gap-[5px] bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 shadow-[0_2px_10px] shadow-black/10 hover:bg-mauve3 focus:shadow-[0_0_0_2px] focus:shadow-black data-[placeholder]:text-violet9 outline-none'
+													aria-label='Tipo da aula'
+												>
+													<RadixSelect.Value placeholder='Escolha o tipo da aula'/>
+													<RadixSelect.Icon>
+														<ChevronDownIcon className='size-4'/>
+													</RadixSelect.Icon>
+												</RadixSelect.Trigger>
+
+												<RadixSelect.Portal>
+													<RadixSelect.Content className='overflow-hidden bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 rounded-md shadow-[0px_10px_38px_-10px_rgba(22,_23,_24,_0.35),0px_10px_20px_-15px_rgba(22,_23,_24,_0.2)]'>
+														<RadixSelect.ScrollUpButton>
+															<ChevronUpIcon className='size-4'/>
+														</RadixSelect.ScrollUpButton>
+
+														<RadixSelect.Viewport className='p-[5px]'>
+															<RadixSelect.Group>
+
+																<RadixSelect.SelectItem value='video' className='text-[13px] leading-none text-violet11 rounded-[3px] flex items-center h-[25px] pr-[35px] pl-[25px] relative select-none data-[disabled]:text-mauve8 data-[disabled]:pointer-events-none data-[highlighted]:outline-none data-[highlighted]:bg-violet9 data-[highlighted]:text-violet1'>
+																	<RadixSelect.SelectItemText>
+																		<p>Vídeo</p>
+																	</RadixSelect.SelectItemText>
+																	<RadixSelect.ItemIndicator className='absolute left-0 w-[25px] inline-flex items-center justify-center'>
+																		<CheckIcon/>
+																	</RadixSelect.ItemIndicator>
+																</RadixSelect.SelectItem>
+
+																<RadixSelect.SelectItem value='text' className='text-[13px] leading-none text-violet11 rounded-[3px] flex items-center h-[25px] pr-[35px] pl-[25px] relative select-none data-[disabled]:text-mauve8 data-[disabled]:pointer-events-none data-[highlighted]:outline-none data-[highlighted]:bg-violet9 data-[highlighted]:text-violet1'>
+																	<RadixSelect.SelectItemText>
+																		<p>Texto</p>
+																	</RadixSelect.SelectItemText>
+																	<RadixSelect.ItemIndicator className='absolute left-0 w-[25px] inline-flex items-center justify-center'>
+																		<CheckIcon/>
+																	</RadixSelect.ItemIndicator>
+																</RadixSelect.SelectItem>
+
+																<RadixSelect.SelectItem value='courseWare' className='text-[13px] leading-none text-violet11 rounded-[3px] flex items-center h-[25px] pr-[35px] pl-[25px] relative select-none data-[disabled]:text-mauve8 data-[disabled]:pointer-events-none data-[highlighted]:outline-none data-[highlighted]:bg-violet9 data-[highlighted]:text-violet1'>
+																	<RadixSelect.SelectItemText>
+																		<p>Material Didático</p>
+																	</RadixSelect.SelectItemText>
+																	<RadixSelect.ItemIndicator className='absolute left-0 w-[25px] inline-flex items-center justify-center'>
+																		<CheckIcon/>
+																	</RadixSelect.ItemIndicator>
+																</RadixSelect.SelectItem>
+
+															</RadixSelect.Group>
+														</RadixSelect.Viewport>
+
+														<RadixSelect.ScrollDownButton>
+															<ChevronDownIcon className='size-4'/>
+														</RadixSelect.ScrollDownButton>
+													</RadixSelect.Content>
+												</RadixSelect.Portal>
+											</RadixSelect.Root>
+										</RadixForm.Field>
+
+										<RadixForm.Field name='content'>
+											<div className='flex items-baseline justify-between'>
+												<RadixForm.Label>
+													<p>Conteúdo</p>
+												</RadixForm.Label>
+											</div>
+											<RadixForm.Control asChild>
+												<input
+													disabled={isSubmittingAnyForm}
+													type='text'
+													min={8}
+													className='hidden'
+													value={lessonContent}
+												/>
+											</RadixForm.Control>
+										</RadixForm.Field>
+
+										<Editor setQuill={setLessonContentEditor} placeholder='Adicione aqui o conteúdo da aula, que só aparece para os alunos...'/>
+
+										<RadixForm.Field name='marketingContent'>
+											<div className='flex items-baseline justify-between'>
+												<RadixForm.Label>
+													<p>Conteúdo de Divulgação</p>
+												</RadixForm.Label>
+											</div>
+											<RadixForm.Control asChild>
+												<input
+													disabled={isSubmittingAnyForm}
+													type='text'
+													min={8}
+													className='hidden'
+													value={lessonMktContent}
+												/>
+											</RadixForm.Control>
+										</RadixForm.Field>
+
+										<Editor setQuill={setLessonMktContentEditor} placeholder='Adicione aqui o conteúdo de divulgação da aula, que aparece para quem não é aluno...'/>
+
+										<RadixForm.Field name='videoSourceUrl'>
+											<div className='flex items-baseline justify-between'>
+												<RadixForm.Label>
+													<p>Vídeo</p>
+												</RadixForm.Label>
+											</div>
+											<RadixForm.Control asChild>
+												<input
+													disabled={isSubmittingAnyForm}
+													type='text'
+													min={3}
+													className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
+												/>
+											</RadixForm.Control>
+										</RadixForm.Field>
+
+										<RadixForm.Field name='marketingVideoUrl'>
+											<div className='flex items-baseline justify-between'>
+												<RadixForm.Label>
+													<p>Vídeo de Divulgação</p>
+												</RadixForm.Label>
+											</div>
+											<RadixForm.Control asChild>
+												<input
+													disabled={isSubmittingAnyForm}
+													type='text'
+													min={3}
+													className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
+												/>
+											</RadixForm.Control>
+										</RadixForm.Field>
+
+										<RadixForm.Field name='duration'>
+											<div className='flex items-baseline justify-between'>
+												<RadixForm.Label>
+													<p>Duração do vídeo (em minutos)</p>
+												</RadixForm.Label>
+											</div>
+											<RadixForm.Control asChild>
+												<input
+													disabled={isSubmittingAnyForm}
+													type='number'
+													className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
+												/>
+											</RadixForm.Control>
+										</RadixForm.Field>
+
+										<RadixForm.Field name='thumbnailUrl'>
+											<div className='flex items-baseline justify-between'>
+												<RadixForm.Label>
+													<p>Imagem de capa</p>
+												</RadixForm.Label>
+											</div>
+											<RadixForm.Control asChild>
+												<input
+													required
+													disabled={isSubmittingAnyForm}
+													type='text'
+													min={3}
+													className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
+												/>
+											</RadixForm.Control>
+										</RadixForm.Field>
+
+										<RadixForm.Field name='modules'>
+											<RadixForm.Control asChild>
+												<input
+													disabled={isSubmittingAnyForm}
+													type='text'
+													className='hidden'
+													value={module.module.slug}
+												/>
+											</RadixForm.Control>
+										</RadixForm.Field>
+
+										<RadixForm.Field name='tags'>
+											<div className='flex items-baseline justify-between'>
+												<RadixForm.Label>
+													<p>Tags</p>
+												</RadixForm.Label>
+											</div>
+											<RadixForm.Control asChild>
+												<input
+													disabled={isSubmittingAnyForm}
+													type='text'
+													className='hidden'
+													value={JSON.stringify(tagsValue.map(tag => tag.value))}
+												/>
+											</RadixForm.Control>
+											<Select
+												isMulti
+												value={tagsValue}
+												options={tags}
+												onChange={selectedOption => {
+													setTagsValue(selectedOption as Array<{value: TTag; label: string}>);
+												}}
 											/>
-										</RadixForm.Control>
-									</RadixForm.Field>
+										</RadixForm.Field>
 
-									<RadixForm.Submit asChild>
-										<Button isDisabled={isSubmittingAnyForm} className='m-auto mt-2' text='Criar Nova Aula' preset={ButtonPreset.Primary} type={ButtonType.Submit}/>
-									</RadixForm.Submit>
+										<RadixForm.Field name='formType' className='hidden'>
+											<RadixForm.Control asChild>
+												<input
+													disabled={isSubmittingAnyForm}
+													type='text'
+													value='newLesson'
+												/>
+											</RadixForm.Control>
+										</RadixForm.Field>
 
-									{isSubmittingAnyForm && <YemSpinner/>}
+										<RadixForm.Field name='publicationDate'>
+											<div className='flex items-baseline justify-between'>
+												<RadixForm.Label>
+													<p>Data de publicação</p>
+												</RadixForm.Label>
+											</div>
+											<RadixForm.Control asChild>
+												<input
+													defaultValue={defaultDate.toISOString().slice(0, 16)}
+													disabled={isSubmittingAnyForm}
+													type='datetime-local'
+													min={3}
+													className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
+												/>
+											</RadixForm.Control>
+										</RadixForm.Field>
 
-								</Form>
-							</RadixForm.Root>
+										<RadixForm.Field name='isPublished'>
+											<div className='flex items-baseline justify-between'>
+												<RadixForm.Label>
+													<p>Está publicada</p>
+												</RadixForm.Label>
+											</div>
+											<RadixForm.Control asChild>
+												<Switch.Root
+													disabled={isSubmittingAnyForm}
+													className='w-[42px] h-[25px] bg-blacka-6 rounded-full relative shadow-[0_2px_10px] shadow-blacka-4 focus:shadow-[0_0_0_2px] focus:shadow-black data-[state=checked]:bg-black outline-none cursor-default'
+												>
+													<Switch.Thumb
+														className='block w-[21px] h-[21px] bg-white rounded-full shadow-[0_2px_2px] shadow-blackA4 transition-transform duration-100 translate-x-0.5 will-change-transform data-[state=checked]:translate-x-[19px]'
+													/>
+												</Switch.Root>
+											</RadixForm.Control>
+										</RadixForm.Field>
 
-							<Dialog.Close asChild>
-								<button
-									type='button'
-									className='absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center outline-none'
-									aria-label='Close'
-								>
-									<XMarkIcon aria-label='Close' className='hover:pointer absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px]'/>
-								</button>
-							</Dialog.Close>
-						</Dialog.Content>
-					</Dialog.Portal>
-				</Dialog.Root>
+										<RadixForm.Field name='order'>
+											<div className='flex items-baseline justify-between'>
+												<RadixForm.Label>
+													<p>Posição da aula dentro do módulo</p>
+												</RadixForm.Label>
+											</div>
+											<RadixForm.Control asChild>
+												<input
+													required
+													disabled={isSubmittingAnyForm}
+													type='text'
+													className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
+												/>
+											</RadixForm.Control>
+										</RadixForm.Field>
+
+										<RadixForm.Submit asChild>
+											<Button isDisabled={isSubmittingAnyForm} className='m-auto mt-2' text='Criar Nova Aula' preset={ButtonPreset.Primary} type={ButtonType.Submit}/>
+										</RadixForm.Submit>
+
+										{isSubmittingAnyForm && <YemSpinner/>}
+
+									</Form>
+								</RadixForm.Root>
+
+								<Dialog.Close asChild>
+									<button
+										type='button'
+										className='absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center outline-none'
+										aria-label='Close'
+									>
+										<XMarkIcon aria-label='Close' className='hover:pointer absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px]'/>
+									</button>
+								</Dialog.Close>
+							</Dialog.Content>
+						</Dialog.Portal>
+					</Dialog.Root>
+
+					<Dialog.Root open={existingLessonDialogIsOpen} onOpenChange={setExistingLessonDialogIsOpen}>
+						<Dialog.Trigger asChild>
+							<div className='w-fit'>
+								<Button
+									preset={ButtonPreset.Primary}
+									text='Adicionar Aula Existente'
+									type={ButtonType.Button}
+								/>
+							</div>
+						</Dialog.Trigger>
+
+						<Dialog.Portal>
+							<Dialog.Overlay className='bg-mauvea-12 fixed inset-0'/>
+
+							<Dialog.Content className='fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] p-4 max-w-screen-lg w-[90%] bg-mauve-2 dark:bg-mauvedark-2 rounded-xl overflow-y-auto max-h-[90%]'>
+								<Dialog.Title asChild>
+									<h1 className='mb-4'>
+										Adicionar Aula Existente
+									</h1>
+								</Dialog.Title>
+
+								<RadixForm.Root asChild>
+									<Form method='post' action={`/admin/courses/${courseSlug}/${moduleSlug}`} className='flex flex-col gap-3'>
+										<RadixForm.Field name='lessonSlug'>
+											<div className='flex items-baseline justify-between'>
+												<RadixForm.Label>
+													<p>Slug da Aula Existente</p>
+												</RadixForm.Label>
+											</div>
+											<RadixForm.Control asChild>
+												<input
+													disabled={isSubmittingAnyForm}
+													type='text'
+													min={8}
+													className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
+												/>
+											</RadixForm.Control>
+										</RadixForm.Field>
+
+										<RadixForm.Field name='publicationDate'>
+											<div className='flex items-baseline justify-between'>
+												<RadixForm.Label>
+													<p>Data de publicação</p>
+												</RadixForm.Label>
+											</div>
+											<RadixForm.Control asChild>
+												<input
+													defaultValue={defaultDate.toISOString().slice(0, 16)}
+													disabled={isSubmittingAnyForm}
+													type='datetime-local'
+													min={3}
+													className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
+												/>
+											</RadixForm.Control>
+										</RadixForm.Field>
+
+										<RadixForm.Field name='isPublished'>
+											<div className='flex items-baseline justify-between'>
+												<RadixForm.Label>
+													<p>Está publicada</p>
+												</RadixForm.Label>
+											</div>
+											<RadixForm.Control asChild>
+												<Switch.Root
+													disabled={isSubmittingAnyForm}
+													className='w-[42px] h-[25px] bg-blacka-6 rounded-full relative shadow-[0_2px_10px] shadow-blacka-4 focus:shadow-[0_0_0_2px] focus:shadow-black data-[state=checked]:bg-black outline-none cursor-default'
+												>
+													<Switch.Thumb
+														className='block w-[21px] h-[21px] bg-white rounded-full shadow-[0_2px_2px] shadow-blackA4 transition-transform duration-100 translate-x-0.5 will-change-transform data-[state=checked]:translate-x-[19px]'
+													/>
+												</Switch.Root>
+											</RadixForm.Control>
+										</RadixForm.Field>
+
+										<RadixForm.Field name='order'>
+											<div className='flex items-baseline justify-between'>
+												<RadixForm.Label>
+													<p>Posição da aula dentro do módulo</p>
+												</RadixForm.Label>
+											</div>
+											<RadixForm.Control asChild>
+												<input
+													required
+													disabled={isSubmittingAnyForm}
+													type='text'
+													className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
+												/>
+											</RadixForm.Control>
+										</RadixForm.Field>
+
+										<RadixForm.Field name='moduleSlug'>
+											<RadixForm.Control asChild>
+												<input
+													disabled={isSubmittingAnyForm}
+													type='text'
+													className='hidden'
+													value={module.module.slug}
+												/>
+											</RadixForm.Control>
+										</RadixForm.Field>
+
+										<RadixForm.Field name='formType' className='hidden'>
+											<RadixForm.Control asChild>
+												<input
+													disabled={isSubmittingAnyForm}
+													type='text'
+													value='existingLesson'
+												/>
+											</RadixForm.Control>
+										</RadixForm.Field>
+
+										<RadixForm.Submit asChild>
+											<Button isDisabled={isSubmittingAnyForm} className='m-auto mt-2' text='Adicionar Aula Existente' preset={ButtonPreset.Primary} type={ButtonType.Submit}/>
+										</RadixForm.Submit>
+
+										{isSubmittingAnyForm && <YemSpinner/>}
+									</Form>
+								</RadixForm.Root>
+
+								<Dialog.Close asChild>
+									<button
+										type='button'
+										className='absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center outline-none'
+										aria-label='Close'
+									>
+										<XMarkIcon aria-label='Close' className='hover:pointer absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px]'/>
+									</button>
+								</Dialog.Close>
+							</Dialog.Content>
+						</Dialog.Portal>
+					</Dialog.Root>
+				</div>
 
 				<div className='flex gap-4 my-4 flex-wrap'>
 					{module.module.lessons.map(lesson => (
