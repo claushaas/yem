@@ -3,6 +3,7 @@ import {json, type LoaderFunctionArgs} from '@remix-run/node';
 import {useLoaderData, type MetaFunction} from '@remix-run/react';
 import {QuillDeltaToHtmlConverter} from 'quill-delta-to-html';
 import {type OpIterator} from 'quill/core';
+import {VideoPlayer} from '~/components/video-player.js';
 import {LessonService} from '~/services/lesson.service.server';
 import {type TPrismaPayloadGetLessonById} from '~/types/lesson.type';
 import {type TUser} from '~/types/user.type';
@@ -67,13 +68,22 @@ export default function Lesson() {
 					<section dangerouslySetInnerHTML={{__html: contentConverter.convert()}} id='content'/>
 					{lesson.lesson.videoSourceUrl && (
 						<section id='video' className='h-fit'>
-							<Stream
-								controls
-								preload='auto'
-								className='pt-[56.25%] relative *:absolute *:w-full *:h-full *:top-0 *:left-0 *:inset-0'
-								src={lesson.lesson.videoSourceUrl}
-								responsive={false}
-							/>
+							{!lesson.lesson.videoSourceUrl.startsWith('https://') && (
+								<Stream
+									controls
+									preload='auto'
+									className='pt-[56.25%] relative *:absolute *:w-full *:h-full *:top-0 *:left-0 *:inset-0'
+									src={lesson.lesson.videoSourceUrl}
+									responsive={false}
+								/>
+							)}
+							{lesson.lesson.videoSourceUrl.startsWith('https://') && (
+								<VideoPlayer
+									title={lesson.lesson.name}
+									src={lesson.lesson.videoSourceUrl}
+									alt={lesson.lesson.name}
+								/>
+							)}
 						</section>
 					)}
 				</div>
