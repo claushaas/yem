@@ -324,6 +324,28 @@ export class LessonService {
 		}
 	}
 
+	// eslint-disable-next-line max-params
+	public async associateLessonWithModule(lessonSlug: string, moduleSlug: string, publicationDate: Date, isPublished: boolean, order: number): Promise<TServiceReturn<string>> {
+		try {
+			await this._model.lessonToModule.create({
+				data: {
+					lessonSlug,
+					moduleSlug,
+					publicationDate,
+					isPublished,
+					order,
+				},
+			});
+
+			return {
+				status: 'SUCCESSFUL',
+				data: 'Lesson associated with module',
+			};
+		} catch (error) {
+			throw new CustomError('UNKNOWN', `Error associating lesson with module: ${(error as Error).message}`);
+		}
+	}
+
 	private _hasActiveSubscription(user: TUser | undefined, lessonToModule: TPrismaPayloadGetLessonById): boolean {
 		const isAdmin = user?.roles?.includes('admin');
 		const hasActiveSubscription = lessonToModule.module.courses.some(
