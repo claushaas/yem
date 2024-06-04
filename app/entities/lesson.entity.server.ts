@@ -5,7 +5,7 @@ import {type TTags} from '../types/tag.type.js';
 
 const lessonSchema = Joi.object({
 	oldId: Joi.string().allow(''),
-	name: Joi.string().required().min(3).max(50),
+	name: Joi.string().required().min(3).max(100),
 	type: Joi.string().required().valid('video', 'text', 'courseWare'),
 	description: Joi.string().min(10).max(154).required(),
 	content: Joi.string().allow(''),
@@ -48,7 +48,7 @@ export class Lesson implements TLesson {
 
 		this._oldId = lesson.oldId;
 		this._name = lesson.name;
-		this._slug = this._name.toLowerCase().normalize('NFD').replaceAll(/[\u0300-\u036F]/g, '').replaceAll(' ', '-');
+		this._slug = this._name.toLowerCase().normalize('NFD').replaceAll(/[\u0300-\u036F]/g, '').replaceAll(/[^a-zA-Z\d\s]/g, '').replaceAll(' ', '-');
 		this._type = lesson.type;
 		this._description = lesson.description;
 		this._content = lesson.content;

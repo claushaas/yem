@@ -32,7 +32,7 @@ export default function EscolaOnline() {
 					<h1 className='xs:text-5xl lg:text-7xl'><span className='text-tomato-11'>A Maior Escola de Yoga do Brasil.</span> <span className='text-pink-11'>Na Hora Você Quiser.</span> <span className='text-purple-11'>Onde Você Estiver.</span></h1>
 				</div>
 				<div className='mb-6'>
-					<h3 className='text-purple-12 dark:text-purple-4'>Viva os benefícios do Yoga para o seu Corpo, Mente e Emoções, e se transforme na Sua Melhor Versão</h3>
+					<h3 className='text-purple-12 dark:text-purple-4'>Viva os benefícios do Yoga para o seu Corpo, Mente e Emoções, e transforme-se na Sua Melhor Versão</h3>
 				</div>
 				<div className='w-fit mx-auto'>
 					<Button type={ButtonType.Button} preset={ButtonPreset.Primary} text='Praticar 7 Dias Grátis'/>
