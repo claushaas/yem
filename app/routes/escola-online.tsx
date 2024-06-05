@@ -422,10 +422,22 @@ export default function EscolaOnline() {
 				<h3>Kriyás</h3>
 			</section>
 
-			<section id='theoretical classes' className='max-w-[95%] sm:max-w-[90%] lg:max-w-screen-lg mx-auto my-20 sm:my-56'>
-				<h1 className='text-amber-11 mb-24 text-3xl xs:text-5xl md:text-6xl lg:text-7xl'>Vivencia o Yoga de forma intensa</h1>
-				<h2>Assista as aulas teóricas para entender como funciona a prática do Yoga. Nada como entender o que você está fazendo para vivenciar as técnicas do Yoga de forma mais intensa e profunda, acelerando seu desenvolvimento no Yoga.</h2>
+			<section id='theoretical classes' className='my-20 sm:my-56 flex flex-col sm:flex-row'>
+				<div className='sm:basis-5/12'>
+					<Image
+						className='sm:rounded-e-xl shadow-sm shadow-mauve-11 max-h-96 sm:max-h-[800px]'
+						src={buildImgSource('c74dc1e1-0609-45b4-025f-9dc083ead200')}
+						cdn='cloudflare_images'
+						layout='fullWidth'
+						alt='Sequência de aulas fáceis'
+					/>
+				</div>
+				<div className='sm:basis-7/12 p-5 flex flex-col justify-center'>
+					<h1 className='text-indigo-12 dark:text-indigodark-11 text-3xl md:text-5xl lg:text-6xl xl:text-8xl'>Vivencie o Yoga intensamente</h1>
+					<h2 className='text-indigo-9 text-xl md:text-2xl lg:text-4xl xl:text-5xl'>Assista as aulas teóricas para entender como funciona a prática do Yoga. Nada como entender o que você está fazendo para vivenciar as técnicas do Yoga de forma mais intensa e profunda, acelerando seu desenvolvimento no Yoga.</h2>
+				</div>
 			</section>
+
 			<section id='courses' className='max-w-[95%] sm:max-w-[90%] lg:max-w-screen-lg mx-auto my-20 sm:my-56'>
 				<h1 className='text-amber-11 mb-24 text-3xl xs:text-5xl md:text-6xl lg:text-7xl'>Cursos de Aprofundamento</h1>
 				<p>Exclusivo para alunos do plano anual</p>
