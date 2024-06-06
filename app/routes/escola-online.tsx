@@ -32,12 +32,12 @@ export default function EscolaOnline() {
 				<div className='w-full mb-4'>
 					<h1 className='xs:text-5xl lg:text-7xl'><span className='text-tomato-11'>A Maior Escola de Yoga do Brasil.</span> <span className='text-pink-11'>Na Hora Você Quiser.</span> <span className='text-purple-11'>Onde Você Estiver.</span></h1>
 				</div>
-				<div className='mb-6'>
-					<h3 className='text-purple-12 dark:text-purple-4'>Viva os benefícios do Yoga para o seu Corpo, Mente e Emoções<br/>Transforme-se na Sua Melhor Versão</h3>
+				<div className='mb-16'>
+					<h3 className='text-purple-12 dark:text-purple-4'>Viva os benefícios do Yoga para o seu Corpo, Mente e Emoções.<br/>Transforme-se na Sua Melhor Versão.</h3>
 				</div>
 				<div className='w-fit mx-auto'>
 					<Button type={ButtonType.Button} preset={ButtonPreset.Primary} text='Praticar 7 Dias Grátis'/>
-					<p className='text-center text-sm'>cancele quando quiser</p>
+					<p className='text-center text-sm mt-1.5'>cancele quando quiser</p>
 				</div>
 			</section>
 
@@ -83,14 +83,14 @@ export default function EscolaOnline() {
 			<section id='duration' className='max-w-[95%] sm:max-w-[90%] lg:max-w-screen-lg mx-auto my-20 sm:my-56'>
 				<h1 className='text-grass-12 dark:text-grass-11 mb-5 text-3xl xs:text-5xl md:text-6xl lg:text-7xl'>Fica fácil inserir o Yoga na sua rotina diária</h1>
 				<h2 className='text-grass-9 text-2xl xs:text-4xl md:text-5xl lg:text-6xl'>Pratique em qualquer horário e escolha aula de acordo com o tempo disponível</h2>
-				<h2 className='text-grass-9 text-2xl xs:text-4xl md:text-5xl lg:text-6xl'>Aulas de 15 até 90 minutos</h2>
+				<h2 className='text-grass-11 text-2xl xs:text-4xl md:text-5xl lg:text-6xl'>Aulas de 15 até 90 minutos</h2>
 			</section>
 
-			<section id='objectives' className='max-w-[95%] sm:max-w-[90%] lg:max-w-screen-lg mx-auto mt-20 sm:mt-56 mb-20'>
-				<h1 className='text-orange-9 mb-5 text-3xl xs:text-5xl md:text-6xl lg:text-7xl'>Alcance seus objetivos no Yoga</h1>
+			<section id='objectives' className='max-w-[95%] sm:max-w-[90%] lg:max-w-screen-lg mx-auto mt-20 sm:mt-56 mb-10'>
+				<h1 className='text-orange-9 text-3xl xs:text-5xl md:text-6xl lg:text-7xl'>Alcance seus objetivos no Yoga</h1>
 			</section>
 
-			<section id='filters' className='max-w-[95%] sm:max-w-[90%] lg:max-w-screen-lg mx-auto mb-20'>
+			<section id='filters' className='max-w-[95%] sm:max-w-[90%] lg:max-w-screen-lg mx-auto mb-32'>
 				<h2 className='text-orange-11 text-2xl xs:text-4xl'>Filtre as aulas de acordo com sua meta</h2>
 
 				<div className='flex flex-wrap gap-3'>
@@ -245,7 +245,7 @@ export default function EscolaOnline() {
 				</div>
 			</section>
 
-			<section id='playlists'>
+			<section id='playlists' className='mb-32'>
 				<h2 className='text-orange-11 max-w-[95%] sm:max-w-[90%] lg:max-w-screen-lg mx-auto'>Playlist de aulas prontas e voltadas para objetivos específicos</h2>
 
 				<div className='mx-auto max-w-max'>
@@ -298,7 +298,7 @@ export default function EscolaOnline() {
 				</div>
 			</section>
 
-			<section id='tecnics' className='max-w-[95%] sm:max-w-[90%] lg:max-w-screen-lg mx-auto my-20'>
+			<section id='tecnics' className='max-w-[95%] sm:max-w-[90%] lg:max-w-screen-lg mx-auto mb-20'>
 				<h2 className='text-orange-11'>Filtre as aulas de acordo com as técnicas que você quer executar</h2>
 				<h3>Pránáyáma</h3>
 				<h3>Ásana</h3>
