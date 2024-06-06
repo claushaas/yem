@@ -13,6 +13,7 @@ import {Button, ButtonPreset, ButtonType} from '~/components/button.js';
 import {Testimonies} from '~/layouts/testimonies.js';
 import {History} from '~/layouts/yem-history.js';
 import {buildImgSource} from '~/utils/build-cloudflare-image-source.js';
+import {PlaylistCard} from '~/components/playlist-card.js';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => [
 	{title: 'Escola Online - Yoga em Movimento'},
@@ -85,11 +86,11 @@ export default function EscolaOnline() {
 				<h2 className='text-grass-9 text-2xl xs:text-4xl md:text-5xl lg:text-6xl'>Aulas de 15 até 90 minutos</h2>
 			</section>
 
-			<section id='objectives' className='max-w-[95%] sm:max-w-[90%] lg:max-w-screen-lg mx-auto my-20 sm:my-56'>
+			<section id='objectives' className='max-w-[95%] sm:max-w-[90%] lg:max-w-screen-lg mx-auto mt-20 sm:mt-56 mb-20'>
 				<h1 className='text-orange-9 mb-5 text-3xl xs:text-5xl md:text-6xl lg:text-7xl'>Alcance seus objetivos no Yoga</h1>
 			</section>
 
-			<section id='objectives' className='max-w-[95%] sm:max-w-[90%] lg:max-w-screen-lg mx-auto my-20'>
+			<section id='objectives' className='max-w-[95%] sm:max-w-[90%] lg:max-w-screen-lg mx-auto mb-20'>
 				<h2 className='text-orange-11 text-2xl xs:text-4xl'>Filtre as aulas de acordo com sua meta</h2>
 
 				<div className='flex flex-wrap gap-3'>
@@ -245,158 +246,60 @@ export default function EscolaOnline() {
 			</section>
 
 			<section id='playlists'>
-				<h2 className='max-w-[95%] sm:max-w-[90%] lg:max-w-screen-lg mx-auto'>Playlist de aulas prontas e voltadas para objetivos específicos</h2>
+				<h2 className='text-orange-11 max-w-[95%] sm:max-w-[90%] lg:max-w-screen-lg mx-auto'>Playlist de aulas prontas e voltadas para objetivos específicos</h2>
 
 				<div className='mx-auto max-w-max'>
 					<div className='flex gap-4 overflow-x-scroll p-4'>
-						<div className='flex-shrink-0 bg-mauve-10 rounded-3xl px-2 py-5 -z-20 w-64 h-80 relative flex items-center shadow-sm shadow-mauve-11'>
-							<Image
-								className='absolute top-0 left-0 w-full h-full rounded-3xl mix-blend-multiply -z-10'
-								src={buildImgSource('84974a1a-42e3-4baf-c6a2-dca51ddf8c00')}
-								cdn='cloudflare_images'
-								layout='constrained'
-								width={256}
-								height={320}
-								alt='Sequência de aulas fáceis'
-							/>
-							<h3 className='text-white text-4xl'>Sequência de aulas fáceis</h3>
-						</div>
-
-						<div className='flex-shrink-0 bg-mauve-10 rounded-3xl px-2 py-5 -z-20 w-64 h-80 relative flex items-center shadow-sm shadow-mauve-11'>
-							<Image
-								className='absolute top-0 left-0 w-full h-full rounded-3xl mix-blend-multiply -z-10'
-								src={buildImgSource('8163eb7b-89b6-4c34-626e-951a4a5b2100')}
-								cdn='cloudflare_images'
-								layout='constrained'
-								width={256}
-								height={320}
-								alt='Ampliação da capacidade pulmonar'
-							/>
-							<h3 className='text-white text-4xl'>Ampliação da capacidade pulmonar</h3>
-						</div>
-
-						<div className='flex-shrink-0 bg-mauve-10 rounded-3xl px-2 py-5 -z-20 w-64 h-80 relative flex items-center shadow-sm shadow-mauve-11'>
-							<Image
-								className='absolute top-0 left-0 w-full h-full rounded-3xl mix-blend-multiply -z-10'
-								src={buildImgSource('74ca08ab-cb39-4070-c31f-c7e15b2f0100')}
-								cdn='cloudflare_images'
-								layout='constrained'
-								width={256}
-								height={320}
-								alt='Conquistar o kakásana'
-							/>
-							<h3 className='text-white text-4xl'>Conquistar o kakásana</h3>
-						</div>
-
-						<div className='flex-shrink-0 bg-mauve-10 rounded-3xl px-2 py-5 -z-20 w-64 h-80 relative flex items-center shadow-sm shadow-mauve-11'>
-							<Image
-								className='absolute top-0 left-0 w-full h-full rounded-3xl mix-blend-multiply -z-10'
-								src={buildImgSource('50d4c33f-7b24-4666-5db7-1978a46ea600')}
-								cdn='cloudflare_images'
-								layout='constrained'
-								width={256}
-								height={320}
-								alt='Aumentar a flexidade'
-							/>
-							<h3 className='text-white text-4xl'>Aumentar a flexidade</h3>
-						</div>
-
-						<div className='flex-shrink-0 bg-mauve-10 rounded-3xl px-2 py-5 -z-20 w-64 h-80 relative flex items-center shadow-sm shadow-mauve-11'>
-							<Image
-								className='absolute top-0 left-0 w-full h-full rounded-3xl mix-blend-multiply -z-10'
-								src={buildImgSource('9bb9a29b-ab84-4b93-6d6f-c86c6a610200')}
-								cdn='cloudflare_images'
-								layout='constrained'
-								width={256}
-								height={320}
-								alt='Benefícios para a coluna vertebral'
-							/>
-							<h3 className='text-white text-4xl'>Benefícios para a coluna vertebral</h3>
-						</div>
-
-						<div className='flex-shrink-0 bg-mauve-10 rounded-3xl px-2 py-5 -z-20 w-64 h-80 relative flex items-center shadow-sm shadow-mauve-11'>
-							<Image
-								className='absolute top-0 left-0 w-full h-full rounded-3xl mix-blend-multiply -z-10'
-								src={buildImgSource('16373cdf-04bf-4c49-7737-9ad641abbb00')}
-								cdn='cloudflare_images'
-								layout='constrained'
-								width={256}
-								height={320}
-								alt='Yoga para Gestantes'
-							/>
-							<h3 className='text-white text-4xl'>Yoga para Gestantes</h3>
-						</div>
-
-						<div className='flex-shrink-0 bg-mauve-10 rounded-3xl px-2 py-5 -z-20 w-64 h-80 relative flex items-center shadow-sm shadow-mauve-11'>
-							<Image
-								className='absolute top-0 left-0 w-full h-full rounded-3xl mix-blend-multiply -z-10'
-								src={buildImgSource('b3c32bba-94e8-472d-5e4d-df42be060900')}
-								cdn='cloudflare_images'
-								layout='constrained'
-								width={256}
-								height={320}
-								alt='Conquistar a Invertida sobre a Cabeça'
-							/>
-							<h3 className='text-white text-4xl'>Conquistar a Invertida sobre a Cabeça</h3>
-						</div>
-
-						<div className='flex-shrink-0 bg-mauve-10 rounded-3xl px-2 py-5 -z-20 w-64 h-80 relative flex items-center shadow-sm shadow-mauve-11'>
-							<Image
-								className='absolute top-0 left-0 w-full h-full rounded-3xl mix-blend-multiply -z-10'
-								src={buildImgSource('2c5b2e14-7acd-4ceb-6961-3c46ccb16800')}
-								cdn='cloudflare_images'
-								layout='constrained'
-								width={256}
-								height={320}
-								alt='Força para os membros inferiores'
-							/>
-							<h3 className='text-white text-4xl'>Força para os membros inferiores</h3>
-						</div>
-
-						<div className='flex-shrink-0 bg-mauve-10 rounded-3xl px-2 py-5 -z-20 w-64 h-80 relative flex items-center shadow-sm shadow-mauve-11'>
-							<Image
-								className='absolute top-0 left-0 w-full h-full rounded-3xl mix-blend-multiply -z-10'
-								src={buildImgSource('b0fdcff6-7302-4a79-2b8a-0ff537cd7800')}
-								cdn='cloudflare_images'
-								layout='constrained'
-								width={256}
-								height={320}
-								alt='Súrya Namaskar, a Saudação ao Sol'
-							/>
-							<h3 className='text-white text-4xl'>Súrya Namaskar, a Saudação ao Sol</h3>
-						</div>
-
-						<div className='flex-shrink-0 bg-mauve-10 rounded-3xl px-2 py-5 -z-20 w-64 h-80 relative flex items-center shadow-sm shadow-mauve-11'>
-							<Image
-								className='absolute top-0 left-0 w-full h-full rounded-3xl mix-blend-multiply -z-10'
-								src={buildImgSource('b58903d4-699c-4df4-0103-299f4ed70c00')}
-								cdn='cloudflare_images'
-								layout='constrained'
-								width={256}
-								height={320}
-								alt='Dinamização dos Chakras'
-							/>
-							<h3 className='text-white text-4xl'>Dinamização dos Chakras</h3>
-						</div>
-
-						<div className='flex-shrink-0 bg-mauve-10 rounded-3xl px-2 py-5 -z-20 w-64 h-80 relative flex items-center shadow-sm shadow-mauve-11'>
-							<Image
-								className='absolute top-0 left-0 w-full h-full rounded-3xl mix-blend-multiply -z-10'
-								src={buildImgSource('d9d57548-85b0-4362-e6b7-6dc6adbc8e00')}
-								cdn='cloudflare_images'
-								layout='constrained'
-								width={256}
-								height={320}
-								alt='Aulas sem ásanas'
-							/>
-							<h3 className='text-white text-4xl'>Aulas sem ásanas</h3>
-						</div>
+						<PlaylistCard
+							title='Sequência de aulas fáceis'
+							image='84974a1a-42e3-4baf-c6a2-dca51ddf8c00'
+						/>
+						<PlaylistCard
+							title='Ampliação da capacidade pulmonar'
+							image='8163eb7b-89b6-4c34-626e-951a4a5b2100'
+						/>
+						<PlaylistCard
+							title='Conquistar o kakásana'
+							image='74ca08ab-cb39-4070-c31f-c7e15b2f0100'
+						/>
+						<PlaylistCard
+							title='Aumentar a flexidade'
+							image='50d4c33f-7b24-4666-5db7-1978a46ea600'
+						/>
+						<PlaylistCard
+							title='Benefícios para a coluna vertebral'
+							image='9bb9a29b-ab84-4b93-6d6f-c86c6a610200'
+						/>
+						<PlaylistCard
+							title='Yoga para Gestantes'
+							image='16373cdf-04bf-4c49-7737-9ad641abbb00'
+						/>
+						<PlaylistCard
+							title='Conquistar a Invertida sobre a Cabeça'
+							image='b3c32bba-94e8-472d-5e4d-df42be060900'
+						/>
+						<PlaylistCard
+							title='Força para os membros inferiores'
+							image='2c5b2e14-7acd-4ceb-6961-3c46ccb16800'
+						/>
+						<PlaylistCard
+							title='Súrya Namaskar, a Saudação ao Sol'
+							image='b0fdcff6-7302-4a79-2b8a-0ff537cd7800'
+						/>
+						<PlaylistCard
+							title='Dinamização dos Chakras'
+							image='b58903d4-699c-4df4-0103-299f4ed70c00'
+						/>
+						<PlaylistCard
+							title='Aulas sem ásanas'
+							image='d9d57548-85b0-4362-e6b7-6dc6adbc8e00'
+						/>
 					</div>
 				</div>
 			</section>
 
 			<section id='tecnics' className='max-w-[95%] sm:max-w-[90%] lg:max-w-screen-lg mx-auto my-20'>
-				<h2>Filtre as aulas de acordo com as técnicas que você quer executar</h2>
+				<h2 className='text-orange-11'>Filtre as aulas de acordo com as técnicas que você quer executar</h2>
 				<h3>Pránáyáma</h3>
 				<h3>Ásana</h3>
 				<h3>Yoganidrá</h3>
