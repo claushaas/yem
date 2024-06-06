@@ -46,7 +46,7 @@ export default function EscolaOnline() {
 			<History/>
 
 			<section id='platform' className='max-w-[95%] sm:max-w-[90%] lg:max-w-screen-lg mx-auto my-20 sm:my-56'>
-				<h1 className='text-amber-11 mb-24 text-3xl xs:text-5xl md:text-6xl lg:text-7xl'>A Plataforma da Yoga em Movimento evoluiu e foi repensada especialmente para a prática do Yoga</h1>
+				<h1 className='text-center text-amber-11 text-3xl xs:text-5xl'>A Plataforma da Yoga em Movimento evoluiu e foi repensada especialmente para a prática do Yoga</h1>
 				<div className='flex justify-center gap-4 flex-wrap'>
 					<div className='flex flex-col items-center max-w-80'>
 						<CheckCircleIcon className='size-20 stroke-amber-10'/>
@@ -90,7 +90,7 @@ export default function EscolaOnline() {
 				<h1 className='text-orange-9 mb-5 text-3xl xs:text-5xl md:text-6xl lg:text-7xl'>Alcance seus objetivos no Yoga</h1>
 			</section>
 
-			<section id='objectives' className='max-w-[95%] sm:max-w-[90%] lg:max-w-screen-lg mx-auto mb-20'>
+			<section id='filters' className='max-w-[95%] sm:max-w-[90%] lg:max-w-screen-lg mx-auto mb-20'>
 				<h2 className='text-orange-11 text-2xl xs:text-4xl'>Filtre as aulas de acordo com sua meta</h2>
 
 				<div className='flex flex-wrap gap-3'>
@@ -341,20 +341,163 @@ export default function EscolaOnline() {
 				</div>
 			</section>
 
-			<section id='courses' className='max-w-[95%] sm:max-w-[90%] lg:max-w-screen-lg mx-auto my-20 sm:my-56'>
-				<h1 className='text-amber-11 mb-24 text-3xl xs:text-5xl md:text-6xl lg:text-7xl'>Cursos de Aprofundamento</h1>
-				<p>Exclusivo para alunos do plano anual</p>
-				<h2>Diversos cursos para se aprofundar em temas específicos do Yoga e também outros assuntos que estão relacionados a prática</h2>
-				<h3>Alimentação Vegetariana</h3>
-				<h3>Anatomia Aplicada ao Yoga</h3>
-				<h3>Congresso Semana Sem Carnes</h3>
-				<h3>Culinária Vegetariana</h3>
-				<h3>Jejum Intermitente</h3>
-				<h3>Pránáyáma - A Respiração do Yoga</h3>
-				<h3>Saúde e Longevidade</h3>
-				<h3>Semana Saúde Através do Yoga</h3>
-				<h3>Yoga e Hinduismo</h3>
-				<h3>Yoga Sútra de Patáñjali</h3>
+			<section id='courses' className='my-20 sm:my-56 flex flex-col md:flex-row'>
+				<div className='sm:basis-1/2 lg:basis-7/12 p-5'>
+					<h1 className='text-ruby-11 mb-1 text-3xl xs:text-5xl md:text-4xl lg:text-6xl xl:text-7xl'>Cursos de Aprofundamento</h1>
+					<p className='text-ruby-12 dark:text-rubydark-11 mb-7'>Exclusivo para alunos do plano anual</p>
+					<h2 className='text-ruby-9 md:text-5xl lg:text-7xl'>Diversos cursos para se aprofundar em temas específicos do Yoga e também outros assuntos que estão relacionados a prática</h2>
+				</div>
+
+				<div className='flex flex-wrap flex-col gap-3 sm:basis-1/2 lg:basis-5/12'>
+					<div className='grid grid-rows-[1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] grid-cols-[1fr_1fr_1fr_1fr_1fr_1fr] gap-3 flex-grow h-[450px]'>
+						<div className='bg-mauve-10 md:rounded-3xl rounded-e-3xl px-1 py-3 w-full h-full row-span-3 col-span-3 -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center'>
+							<Image
+								className='absolute top-0 left-0 w-full h-full md:rounded-3xl rounded-e-3xl mix-blend-multiply -z-10'
+								src={buildImgSource('dd4a873b-972a-48b7-4c4f-666353046c00')}
+								cdn='cloudflare_images'
+								layout='constrained'
+								width={660}
+								height={310}
+								alt='Alimentação Vegetariana'
+							/>
+							<h3 className='text-white text-[20cqb] leading-none break-words w-full'>Alimentação Vegetariana</h3>
+						</div>
+						<div className='bg-mauve-10 rounded-s-3xl px-1 py-3 w-full h-full row-span-3 col-span-3 -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center'>
+							<Image
+								className='absolute top-0 left-0 w-full h-full rounded-s-3xl mix-blend-multiply -z-10'
+								src={buildImgSource('dd4a873b-972a-48b7-4c4f-666353046c00')}
+								cdn='cloudflare_images'
+								layout='constrained'
+								width={660}
+								height={310}
+								alt='Anatomia Aplicada ao Yoga'
+							/>
+							<h3 className='text-white text-[20cqb] leading-none break-words w-full'>Anatomia Aplicada ao Yoga</h3>
+						</div>
+						<div className='bg-mauve-10 md:rounded-s-3xl px-1 py-3 w-full h-full row-span-2 col-span-6 -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center'>
+							<Image
+								className='absolute top-0 left-0 w-full h-full md:rounded-s-3xl mix-blend-multiply -z-10'
+								src={buildImgSource('dd4a873b-972a-48b7-4c4f-666353046c00')}
+								cdn='cloudflare_images'
+								layout='constrained'
+								width={660}
+								height={310}
+								alt='Caminhos para o Orgasmo e a Feminilidade'
+							/>
+							<h3 className='text-white text-[35cqb] leading-none break-words w-full'>Caminhos para o Orgasmo e a Feminilidade</h3>
+						</div>
+						<div className='bg-mauve-10 md:rounded-3xl rounded-e-3xl px-1 py-3 w-full h-full row-span-4 col-span-2 -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center'>
+							<Image
+								className='absolute top-0 left-0 w-full h-full md:rounded-3xl rounded-e-3xl mix-blend-multiply -z-10'
+								src={buildImgSource('dd4a873b-972a-48b7-4c4f-666353046c00')}
+								cdn='cloudflare_images'
+								layout='constrained'
+								width={660}
+								height={310}
+								alt='Congresso Semana Sem Carnes'
+							/>
+							<h3 className='text-white text-[11cqb] leading-none break-words w-full'>Congresso Semana Sem Carnes</h3>
+						</div>
+						<div className='bg-mauve-10 md:rounded-3xl rounded-e-3xl px-1 py-3 w-full h-full row-span-4 col-span-2 -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center'>
+							<Image
+								className='absolute top-0 left-0 w-full h-full md:rounded-3xl rounded-e-3xl mix-blend-multiply -z-10'
+								src={buildImgSource('dd4a873b-972a-48b7-4c4f-666353046c00')}
+								cdn='cloudflare_images'
+								layout='constrained'
+								width={660}
+								height={310}
+								alt='Culinária Vegetariana'
+							/>
+							<h3 className='text-white text-[9cqb] leading-none break-words w-full'>Culinária Vegetariana</h3>
+						</div>
+						<div className='bg-mauve-10 rounded-s-3xl px-1 py-3 w-full h-full row-span-4 col-span-2 -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center'>
+							<Image
+								className='absolute top-0 left-0 w-full h-full rounded-s-3xl mix-blend-multiply -z-10'
+								src={buildImgSource('dd4a873b-972a-48b7-4c4f-666353046c00')}
+								cdn='cloudflare_images'
+								layout='constrained'
+								width={660}
+								height={310}
+								alt='Jejum Intermitente'
+							/>
+							<h3 className='text-white text-[9cqb] leading-none break-words w-full'>Jejum Intermitente</h3>
+						</div>
+					</div>
+					<div className='grid grid-rows-[1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] grid-cols-[1fr_1fr_1fr_1fr_1fr_1fr] gap-3 flex-grow h-[450px]'>
+						<div className='bg-mauve-10 md:rounded-s-3xl px-1 py-3 w-full h-full row-span-2 col-span-6 -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center'>
+							<Image
+								className='absolute top-0 left-0 w-full h-full md:rounded-s-3xl mix-blend-multiply -z-10'
+								src={buildImgSource('dd4a873b-972a-48b7-4c4f-666353046c00')}
+								cdn='cloudflare_images'
+								layout='constrained'
+								width={660}
+								height={310}
+								alt='Pránáyáma - A Respiração do Yoga'
+							/>
+							<h3 className='text-white text-[40cqb] leading-none break-words w-full'>Pránáyáma - A Respiração do Yoga</h3>
+						</div>
+						<div className='bg-mauve-10 md:rounded-3xl rounded-e-3xl px-1 py-3 w-full h-full row-span-4 col-span-2 -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center'>
+							<Image
+								className='absolute top-0 left-0 w-full h-full md:rounded-3xl rounded-e-3xl mix-blend-multiply -z-10'
+								src={buildImgSource('dd4a873b-972a-48b7-4c4f-666353046c00')}
+								cdn='cloudflare_images'
+								layout='constrained'
+								width={660}
+								height={310}
+								alt='Saúde e Longevidade'
+							/>
+							<h3 className='text-white text-[8cqb] leading-none break-words w-full'>Saúde e Longevidade</h3>
+						</div>
+						<div className='bg-mauve-10 rounded-3xl px-1 py-3 w-full h-full row-span-4 col-span-2 -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center'>
+							<Image
+								className='absolute top-0 left-0 w-full h-full rounded-3xl mix-blend-multiply -z-10'
+								src={buildImgSource('dd4a873b-972a-48b7-4c4f-666353046c00')}
+								cdn='cloudflare_images'
+								layout='constrained'
+								width={660}
+								height={310}
+								alt='Sámkhya'
+							/>
+							<h3 className='text-white text-[12cqb] leading-none break-words w-full'>Sámkhya</h3>
+						</div>
+						<div className='bg-mauve-10 rounded-s-3xl px-1 py-3 w-full h-full row-span-4 col-span-2 -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center'>
+							<Image
+								className='absolute top-0 left-0 w-full h-full rounded-s-3xl mix-blend-multiply -z-10'
+								src={buildImgSource('dd4a873b-972a-48b7-4c4f-666353046c00')}
+								cdn='cloudflare_images'
+								layout='constrained'
+								width={660}
+								height={310}
+								alt='Yoga Sútra de Patáñjali'
+							/>
+							<h3 className='text-white text-[13cqb] leading-none break-words w-full'>Yoga Sútra de Patáñjali</h3>
+						</div>
+						<div className='bg-mauve-10 md:rounded-3xl rounded-e-3xl px-1 py-3 w-full h-full row-span-3 col-span-3 -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center'>
+							<Image
+								className='absolute top-0 left-0 w-full h-full md:rounded-3xl mix-blend-multiply -z-10'
+								src={buildImgSource('dd4a873b-972a-48b7-4c4f-666353046c00')}
+								cdn='cloudflare_images'
+								layout='constrained'
+								width={660}
+								height={310}
+								alt='Yoga e Hinduismo'
+							/>
+							<h3 className='text-white text-[23cqb] leading-none break-words w-full'>Yoga e Hinduismo</h3>
+						</div>
+						<div className='bg-mauve-10 rounded-s-3xl px-1 py-3 w-full h-full row-span-3 col-span-3 -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center'>
+							<Image
+								className='absolute top-0 left-0 w-full h-full rounded-s-3xl mix-blend-multiply -z-10'
+								src={buildImgSource('dd4a873b-972a-48b7-4c4f-666353046c00')}
+								cdn='cloudflare_images'
+								layout='constrained'
+								width={660}
+								height={310}
+								alt='Semana Saúde Através do Yoga'
+							/>
+							<h3 className='text-white text-[25cqb] leading-none break-words w-full'>Semana Saúde Através do Yoga</h3>
+						</div>
+					</div>
+				</div>
 			</section>
 
 			<section id='faq' className='max-w-[95%] sm:max-w-[90%] lg:max-w-screen-lg mx-auto my-20 sm:my-56'>
