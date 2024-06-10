@@ -393,6 +393,8 @@ export class HooksService {
 									nome: userData.firstName,
 									linkDaAreaDosAlunos: 'https://escola.yogaemmovimento.com',
 									linkDaAulaAoVivo: 'https://escola.yogaemmovimento.com/aluno/DfLC8966upYGytkrW',
+									linkDoGrupoDeRecados: 'https://t.me/+_-lrXmqVqD1mMDk5',
+									linkDaFichaMedica: 'https://img.amo.yoga/ficha-medica.pdf',
 								},
 							),
 						]);
