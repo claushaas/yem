@@ -246,7 +246,7 @@ export default function EscolaOnline() {
 			</section>
 
 			<section id='playlists' className='mb-32'>
-				<h2 className='text-orange-11 max-w-[95%] sm:max-w-[90%] lg:max-w-screen-lg mx-auto'>Playlist de aulas prontas e voltadas para objetivos específicos</h2>
+				<h2 className='pl-4 text-orange-11 max-w-[95%] sm:max-w-[90%] lg:max-w-screen-lg mx-auto'>Playlist de aulas prontas e voltadas para objetivos específicos</h2>
 
 				<div className='mx-auto max-w-max'>
 					<div className='flex gap-4 overflow-x-scroll p-4'>
@@ -312,17 +312,43 @@ export default function EscolaOnline() {
 				<h3>Súrya Namaskar</h3>
 			</section>
 
-			<section id='training' className='max-w-[95%] sm:max-w-[90%] lg:max-w-screen-lg mx-auto my-20 sm:my-56'>
-				<h1 className='text-amber-11 mb-24 text-3xl xs:text-5xl md:text-6xl lg:text-7xl'>Avance em técnicas específicas</h1>
-				<h2>Oferecemos diversos treinamentos em técnicas específicas da prática do Yoga.</h2>
-				<h2>Ideal para aprofundar e melhorar a execução das técnicas que você tem mais dificuldade ou quer aperfeiçoar</h2>
-				<h3>Meditação</h3>
-				<h3>Respiratórios</h3>
-				<h3>Relaxamento</h3>
-				<h3>Técnicas Corporais</h3>
-				<h3>Mantras</h3>
-				<h3>Mudrás</h3>
-				<h3>Kriyás</h3>
+			<section id='training' className='my-20 sm:my-56 flex flex-col-reverse sm:flex-row'>
+				<div className='sm:basis-7/12 p-5 flex flex-col justify-center'>
+					<h1 className='pl-10 text-indigo-12 dark:text-indigodark-11 text-3xl md:text-5xl lg:text-7xl'>Avance em técnicas específicas</h1>
+					<h2 className='pl-10 text-indigo-9 text-lg xl:text-2xl'>Oferecemos diversos treinamentos em técnicas específicas da prática do Yoga.<br/>Ideal para aprofundar e melhorar a execução das técnicas que você tem mais dificuldade ou quer aperfeiçoar:</h2>
+					<ul className='pl-10'>
+						<li>
+							<h3 className='text-sm xl:text-lg'>Meditação</h3>
+						</li>
+						<li>
+							<h3 className='text-sm xl:text-lg'>Respiratórios</h3>
+						</li>
+						<li>
+							<h3 className='text-sm xl:text-lg'>Relaxamento</h3>
+						</li>
+						<li>
+							<h3 className='text-sm xl:text-lg'>Técnicas Corporais</h3>
+						</li>
+						<li>
+							<h3 className='text-sm xl:text-lg'>Mantras</h3>
+						</li>
+						<li>
+							<h3 className='text-sm xl:text-lg'>Mudrás</h3>
+						</li>
+						<li>
+							<h3 className='text-sm xl:text-lg'>Kriyás</h3>
+						</li>
+					</ul>
+				</div>
+				<div className='sm:basis-5/12'>
+					<Image
+						className='sm:rounded-s-xl shadow-sm shadow-mauve-11 max-h-96 sm:max-h-[800px]'
+						src={buildImgSource('4e9069b2-0a43-45f8-4e62-09d6899c9600')}
+						cdn='cloudflare_images'
+						layout='fullWidth'
+						alt='Sequência de aulas fáceis'
+					/>
+				</div>
 			</section>
 
 			<section id='theoretical classes' className='my-20 sm:my-56 flex flex-col sm:flex-row'>
@@ -336,16 +362,16 @@ export default function EscolaOnline() {
 					/>
 				</div>
 				<div className='sm:basis-7/12 p-5 flex flex-col justify-center'>
-					<h1 className='text-indigo-12 dark:text-indigodark-11 text-3xl md:text-5xl lg:text-6xl xl:text-8xl'>Vivencie o Yoga intensamente</h1>
-					<h2 className='text-indigo-9 text-xl md:text-2xl lg:text-4xl xl:text-5xl'>Assista as aulas teóricas para entender como funciona a prática do Yoga. Nada como entender o que você está fazendo para vivenciar as técnicas do Yoga de forma mais intensa e profunda, acelerando seu desenvolvimento no Yoga.</h2>
+					<h1 className='text-indigo-12 dark:text-indigodark-11 text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-8xl'>Vivencie o Yoga intensamente</h1>
+					<h2 className='text-indigo-9 text-xl sm:text-2xl xl:text-5xl'>Assista as aulas teóricas para entender como funciona a prática do Yoga. Nada como entender o que você está fazendo para vivenciar as técnicas do Yoga de forma mais intensa e profunda, acelerando seu desenvolvimento no Yoga.</h2>
 				</div>
 			</section>
 
-			<section id='courses' className='my-20 sm:my-56 flex flex-col md:flex-row'>
+			<section id='courses' className='my-20 sm:my-56 flex flex-col md:flex-row items-center'>
 				<div className='sm:basis-1/2 lg:basis-7/12 p-5'>
-					<h1 className='text-ruby-11 mb-1 text-3xl xs:text-5xl md:text-4xl lg:text-6xl xl:text-7xl'>Cursos de Aprofundamento</h1>
+					<h1 className='text-ruby-11 mb-1 text-4xl xs:text-5xl md:text-5xl lg:text-6xl xl:text-7xl'>Cursos de Aprofundamento</h1>
 					<p className='text-ruby-12 dark:text-rubydark-11 mb-7'>Exclusivo para alunos do plano anual</p>
-					<h2 className='text-ruby-9 md:text-5xl lg:text-7xl'>Diversos cursos para se aprofundar em temas específicos do Yoga e também outros assuntos que estão relacionados a prática</h2>
+					<h2 className='text-ruby-9 md:text-5xl lg:text-6xl'>Diversos cursos para se aprofundar em temas específicos do Yoga e também outros assuntos que estão relacionados a prática</h2>
 				</div>
 
 				<div className='flex flex-wrap flex-col gap-3 sm:basis-1/2 lg:basis-5/12'>
