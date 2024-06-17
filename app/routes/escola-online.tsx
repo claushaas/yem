@@ -30,7 +30,7 @@ export default function EscolaOnline() {
 		<main>
 			<section id='welcome' className='max-w-[95%] sm:max-w-[90%] lg:max-w-screen-lg mx-auto my-20 sm:my-32'>
 				<div className='w-full mb-4'>
-					<h1 className='xs:text-5xl lg:text-7xl'><span className='text-tomato-11'>A Maior Escola de Yoga do Brasil.</span> <span className='text-pink-11'>Na Hora Você Quiser.</span> <span className='text-purple-11'>Onde Você Estiver.</span></h1>
+					<h1 className='xs:text-5xl lg:text-7xl'><span className='text-tomato-11'>A Maior Escola de Yoga do Brasil.</span> <span className='text-pink-11'>Na Hora Que Você Quiser.</span> <span className='text-purple-11'>Onde Você Estiver.</span></h1>
 				</div>
 				<div className='mb-16'>
 					<h3 className='text-purple-12 dark:text-purple-4'>Viva os benefícios do Yoga para o seu Corpo, Mente e Emoções.<br/>Transforme-se na Sua Melhor Versão.</h3>
@@ -103,7 +103,7 @@ export default function EscolaOnline() {
 								layout='constrained'
 								width={660}
 								height={310}
-								alt='Flexibilidade'
+								alt='Força'
 							/>
 							<h3 className='text-white text-[60cqb] @sm:text-[75cqb] @md:text-[100cqb] leading-none break-words w-full'>Força</h3>
 						</div>
@@ -115,7 +115,7 @@ export default function EscolaOnline() {
 								layout='constrained'
 								width={660}
 								height={310}
-								alt='Flexibilidade'
+								alt='Equilíbrio'
 							/>
 							<h3 className='text-white text-[40cqmin] leading-none break-words w-full'>Equilíbrio</h3>
 						</div>
@@ -127,7 +127,7 @@ export default function EscolaOnline() {
 								layout='constrained'
 								width={660}
 								height={310}
-								alt='Flexibilidade'
+								alt='Introspecção'
 							/>
 							<h3 className='text-white text-[40cqmin] leading-none break-words w-full'>Introspecção</h3>
 						</div>
@@ -139,7 +139,7 @@ export default function EscolaOnline() {
 								layout='constrained'
 								width={660}
 								height={310}
-								alt='Purificação'
+								alt='Restaurativa'
 							/>
 							<h3 className='text-white text-[80cqb] @md:text-[100cqb] leading-none break-words w-full'>Restaurativa</h3>
 						</div>
@@ -163,7 +163,7 @@ export default function EscolaOnline() {
 								layout='constrained'
 								width={660}
 								height={310}
-								alt='Purificação'
+								alt='Respiração'
 							/>
 							<h3 className='text-white text-[30cqb] leading-none break-words w-full'>Respiração</h3>
 						</div>
@@ -177,7 +177,7 @@ export default function EscolaOnline() {
 								layout='constrained'
 								width={660}
 								height={310}
-								alt='Flexibilidade'
+								alt='Meditação'
 							/>
 							<h3 className='text-white text-[50cqb] @[15rem]:text-[60cqb] leading-none break-words w-full'>Meditação</h3>
 						</div>
@@ -225,7 +225,7 @@ export default function EscolaOnline() {
 								layout='constrained'
 								width={660}
 								height={310}
-								alt='Vinyasa'
+								alt='Sem Ásanas'
 							/>
 							<h3 className='text-white text-[45cqmin] leading-none break-words w-full'>Sem Ásanas</h3>
 						</div>
@@ -237,7 +237,7 @@ export default function EscolaOnline() {
 								layout='constrained'
 								width={180}
 								height={180}
-								alt='Vinyasa'
+								alt='Yoga na Cadeira'
 							/>
 							<h3 className='text-white text-[30cqmin] leading-none break-words w-full'>Yoga na Cadeira</h3>
 						</div>
@@ -300,16 +300,129 @@ export default function EscolaOnline() {
 
 			<section id='tecnics' className='max-w-[95%] sm:max-w-[90%] lg:max-w-screen-lg mx-auto mb-20'>
 				<h2 className='text-orange-11'>Filtre as aulas de acordo com as técnicas que você quer executar</h2>
-				<h3>Pránáyáma</h3>
-				<h3>Ásana</h3>
-				<h3>Yoganidrá</h3>
-				<h3>Meditação</h3>
-				<h3>Kriyá</h3>
-				<h3>Japa Mantra</h3>
-				<h3>Kirtan Mantra</h3>
-				<h3>Mudrá</h3>
-				<h3>Pújá</h3>
-				<h3>Súrya Namaskar</h3>
+
+				<div className='grid grid-rows-[1fr_1fr_1fr_1fr] grid-cols-[1fr_1fr_1fr_1fr_1fr_1fr] gap-3 flex-grow basis-80 h-[350px]'>
+					<div className='bg-mauve-10 rounded-3xl px-1 py-3 w-full h-full -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center col-span-3'>
+						<Image
+							className='absolute top-0 left-0 w-full h-full rounded-3xl mix-blend-multiply -z-10'
+							src={buildImgSource('1f6021aa-333c-4f2b-470f-4349252e2600')}
+							cdn='cloudflare_images'
+							layout='constrained'
+							width={660}
+							height={310}
+							alt='Pránáyáma'
+						/>
+						<h3 className='text-white text-[30cqb] leading-none break-words w-full text-center'>Pránáyáma</h3>
+					</div>
+					<div className='bg-mauve-10 rounded-3xl px-1 py-3 w-full h-full -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center col-span-3'>
+						<Image
+							className='absolute top-0 left-0 w-full h-full rounded-3xl mix-blend-multiply -z-10'
+							src={buildImgSource('862763a1-6025-444f-51e5-efe126137600')}
+							cdn='cloudflare_images'
+							layout='constrained'
+							width={660}
+							height={310}
+							alt='Ásana'
+						/>
+						<h3 className='text-white text-[30cqb] leading-none break-words w-full text-center'>Ásana</h3>
+					</div>
+					<div className='bg-mauve-10 rounded-3xl px-1 py-3 w-full h-full -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center col-span-2'>
+						<Image
+							className='absolute top-0 left-0 w-full h-full rounded-3xl mix-blend-multiply -z-10'
+							src={buildImgSource('5aca9649-da6c-496c-7478-1dc1476a2f00')}
+							cdn='cloudflare_images'
+							layout='constrained'
+							width={660}
+							height={310}
+							alt='Yoganidrá'
+						/>
+						<h3 className='text-white text-[30cqb] leading-none break-words w-full text-center'>Yoganidrá</h3>
+					</div>
+					<div className='bg-mauve-10 rounded-3xl px-1 py-3 w-full h-full -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center col-span-2'>
+						<Image
+							className='absolute top-0 left-0 w-full h-full rounded-3xl mix-blend-multiply -z-10'
+							src={buildImgSource('3c5abf6b-d446-4075-d589-b310357d2600')}
+							cdn='cloudflare_images'
+							layout='constrained'
+							width={660}
+							height={310}
+							alt='Meditação'
+						/>
+						<h3 className='text-white text-[30cqb] leading-none break-words w-full text-center'>Meditação</h3>
+					</div>
+					<div className='bg-mauve-10 rounded-3xl px-1 py-3 w-full h-full -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center col-span-2'>
+						<Image
+							className='absolute top-0 left-0 w-full h-full rounded-3xl mix-blend-multiply -z-10'
+							src={buildImgSource('aaa856b4-aa6e-4e62-3124-852e36192200')}
+							cdn='cloudflare_images'
+							layout='constrained'
+							width={660}
+							height={310}
+							alt='Kriyá'
+						/>
+						<h3 className='text-white text-[30cqb] leading-none break-words w-full text-center'>Kriyá</h3>
+					</div>
+					<div className='bg-mauve-10 rounded-3xl px-1 py-3 w-full h-full -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center col-span-3'>
+						<Image
+							className='absolute top-0 left-0 w-full h-full rounded-3xl mix-blend-multiply -z-10'
+							src={buildImgSource('f88fe433-0f60-499a-51a6-1ed0bf2c4000')}
+							cdn='cloudflare_images'
+							layout='constrained'
+							width={660}
+							height={310}
+							alt='Japa Mantra'
+						/>
+						<h3 className='text-white text-[30cqb] leading-none break-words w-full text-center'>Japa Mantra</h3>
+					</div>
+					<div className='bg-mauve-10 rounded-3xl px-1 py-3 w-full h-full -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center col-span-3'>
+						<Image
+							className='absolute top-0 left-0 w-full h-full rounded-3xl mix-blend-multiply -z-10'
+							src={buildImgSource('8e99bdf5-5efb-49bf-8259-4617dc754600')}
+							cdn='cloudflare_images'
+							layout='constrained'
+							width={660}
+							height={310}
+							alt='Kirtan Mantra'
+						/>
+						<h3 className='text-white text-[30cqb] leading-none break-words w-full text-center'>Kirtan Mantra</h3>
+					</div>
+					<div className='bg-mauve-10 rounded-3xl px-1 py-3 w-full h-full -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center col-span-2'>
+						<Image
+							className='absolute top-0 left-0 w-full h-full rounded-3xl mix-blend-multiply -z-10'
+							src={buildImgSource('bf16acad-239a-4d9d-b99b-ab6e18865900')}
+							cdn='cloudflare_images'
+							layout='constrained'
+							width={660}
+							height={310}
+							alt='Mudrá'
+						/>
+						<h3 className='text-white text-[30cqb] leading-none break-words w-full text-center'>Mudrá</h3>
+					</div>
+					<div className='bg-mauve-10 rounded-3xl px-1 py-3 w-full h-full -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center col-span-2'>
+						<Image
+							className='absolute top-0 left-0 w-full h-full rounded-3xl mix-blend-multiply -z-10'
+							src={buildImgSource('b011e480-1a94-4815-e535-4388ea7ea900')}
+							cdn='cloudflare_images'
+							layout='constrained'
+							width={660}
+							height={310}
+							alt='Pújá'
+						/>
+						<h3 className='text-white text-[30cqb] leading-none break-words w-full text-center'>Pújá</h3>
+					</div>
+					<div className='bg-mauve-10 rounded-3xl px-1 py-3 w-full h-full -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center col-span-2'>
+						<Image
+							className='absolute top-0 left-0 w-full h-full rounded-3xl mix-blend-multiply -z-10'
+							src={buildImgSource('2f0bda40-8d0e-448c-a5d8-f73d73728c00')}
+							cdn='cloudflare_images'
+							layout='constrained'
+							width={660}
+							height={310}
+							alt='Súrya Namaskar'
+						/>
+						<h3 className='text-white text-[30cqb] leading-none break-words w-full text-center'>Súrya Namaskar</h3>
+					</div>
+				</div>
 			</section>
 
 			<section id='training' className='my-20 sm:my-56 flex flex-col-reverse sm:flex-row'>
