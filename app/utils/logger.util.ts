@@ -1,7 +1,4 @@
 import winston from 'winston';
-import newrelicFormatter from '@newrelic/winston-enricher';
-
-const newrelicWinstonFormatter = newrelicFormatter(winston);
 
 const timezoned = () => new Date().toLocaleString('pt-BR', {
 	timeZone: 'America/Sao_Paulo',
@@ -16,7 +13,6 @@ class Logger {
 			format: winston.format.combine(
 				winston.format.timestamp({format: timezoned}),
 				winston.format.json(),
-				newrelicWinstonFormatter(),
 			),
 			transports: [
 				new winston.transports.Console({
