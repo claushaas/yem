@@ -12,12 +12,18 @@ import {CustomError} from '../utils/custom-error.js';
 import {type TServiceReturn} from '../types/service-return.type.js';
 import {database} from '../database/database.server.js';
 import {logger} from '~/utils/logger.util.js';
+import {type TModuleDataForCache} from '~/cache/populate-modules-to-cache.js';
+import {memoryCache} from '~/cache/memory-cache.js';
+import {type TSubscription} from '~/types/subscription.type.js';
+import {type TLessonDataForCache} from '~/cache/populate-lessons-to-cache.js';
 
 export class ModuleService {
+	private static cache: typeof memoryCache;
 	private readonly _model: PrismaClient;
 
 	constructor(model: PrismaClient = database) {
 		this._model = model;
+		ModuleService.cache = memoryCache;
 	}
 
 	public async create(moduleData: TModule): Promise<TServiceReturn<TPrismaPayloadCreateOrUpdateModule>> {
@@ -222,6 +228,54 @@ export class ModuleService {
 			};
 		} catch (error) {
 			logger.logError(`Error getting module by slug: ${(error as Error).message}`);
+			return {
+				status: 'UNKNOWN',
+				data: undefined,
+			};
+		}
+	}
+
+	public getBySlugFromCache(courseSlug: string, moduleSlug: string, user: TUser): TServiceReturn<TModuleDataForCache | undefined> {
+		try {
+			const module = JSON.parse(ModuleService.cache.get(`${courseSlug}:${moduleSlug}`) ?? '{}') as TModuleDataForCache;
+
+			if (!module) {
+				logger.logError(`Module ${moduleSlug} for ${courseSlug} not found in cache`);
+				throw new CustomError('NOT_FOUND', 'Module not found');
+			}
+
+			const isAdmin = user.roles?.includes('admin');
+
+			const hasActiveSubscription = isAdmin || module.delegateAuthTo.some(courseSlug => {
+				const subscription = ModuleService.cache.get(`${courseSlug}:${user.id}`);
+
+				if (!subscription) {
+					return false;
+				}
+
+				const {expiresAt} = JSON.parse(subscription) as TSubscription;
+				return expiresAt >= new Date();
+			});
+
+			const lessons = module.lessons.map(lessonSlug => {
+				const lessonData = JSON.parse(ModuleService.cache.get(`${moduleSlug}:${lessonSlug as string}`) ?? '{}') as TLessonDataForCache;
+
+				lessonData.lesson.content = hasActiveSubscription ? lessonData.lesson.content : lessonData.lesson.marketingContent;
+				lessonData.lesson.videoSourceUrl = hasActiveSubscription ? lessonData.lesson.videoSourceUrl : lessonData.lesson.marketingVideoUrl;
+
+				return lessonData;
+			});
+
+			module.lessons = lessons;
+			module.module.content = hasActiveSubscription ? module.module.content : module.module.marketingContent;
+			module.module.videoSourceUrl = hasActiveSubscription ? module.module.videoSourceUrl : module.module.marketingVideoUrl;
+
+			return {
+				status: 'SUCCESSFUL',
+				data: module,
+			};
+		} catch (error) {
+			logger.logError(`Error getting module by slug from cache: ${(error as Error).message}`);
 			return {
 				status: 'UNKNOWN',
 				data: undefined,
