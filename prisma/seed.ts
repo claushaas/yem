@@ -139,6 +139,348 @@ const main = async () => {
 			},
 		},
 	});
+
+	await prisma.lesson.create({
+		data: {
+			name: 'Aula 2',
+			slug: 'aula-2',
+			description: 'Aula de Yoga',
+			videoSourceUrl: 'd4d143774ac00547befe64063fc8f7e2',
+			thumbnailUrl: '78c0c3ab-7da6-46e8-742e-fd0e4b08b900',
+			modules: {
+				create: {
+					moduleSlug: 'aulas-praticas',
+					isPublished: true,
+					publicationDate: new Date('2024-03-25 17:40:00'),
+					order: 1,
+				},
+			},
+		},
+	});
+
+	await prisma.lesson.create({
+		data: {
+			name: 'Aula 3',
+			slug: 'aula-3',
+			description: 'Aula de Yoga',
+			videoSourceUrl: 'd4d143774ac00547befe64063fc8f7e2',
+			thumbnailUrl: '78c0c3ab-7da6-46e8-742e-fd0e4b08b900',
+			modules: {
+				create: {
+					moduleSlug: 'aulas-praticas',
+					isPublished: true,
+					publicationDate: new Date('2024-03-25 17:30:00'),
+					order: 1,
+				},
+			},
+		},
+	});
+
+	await prisma.lesson.create({
+		data: {
+			name: 'Aula 4',
+			slug: 'aula-4',
+			description: 'Aula de Yoga',
+			videoSourceUrl: 'd4d143774ac00547befe64063fc8f7e2',
+			thumbnailUrl: '78c0c3ab-7da6-46e8-742e-fd0e4b08b900',
+			modules: {
+				create: {
+					moduleSlug: 'aulas-praticas',
+					isPublished: true,
+					publicationDate: new Date('2024-03-25 17:30:00'),
+					order: 1,
+				},
+			},
+		},
+	});
+
+	await prisma.lesson.create({
+		data: {
+			name: 'Aula 5',
+			slug: 'aula-5',
+			description: 'Aula de Yoga',
+			videoSourceUrl: 'd4d143774ac00547befe64063fc8f7e2',
+			thumbnailUrl: '78c0c3ab-7da6-46e8-742e-fd0e4b08b900',
+			modules: {
+				create: {
+					moduleSlug: 'aulas-praticas',
+					isPublished: true,
+					publicationDate: new Date('2024-03-25 17:30:00'),
+					order: 1,
+				},
+			},
+		},
+	});
+
+	await prisma.lesson.create({
+		data: {
+			name: 'Aula 6',
+			slug: 'aula-6',
+			description: 'Aula de Yoga',
+			videoSourceUrl: 'd4d143774ac00547befe64063fc8f7e2',
+			thumbnailUrl: '78c0c3ab-7da6-46e8-742e-fd0e4b08b900',
+			modules: {
+				create: {
+					moduleSlug: 'aulas-praticas',
+					isPublished: true,
+					publicationDate: new Date('2024-03-25 17:30:00'),
+					order: 1,
+				},
+			},
+		},
+	});
+
+	await prisma.lesson.create({
+		data: {
+			name: 'Aula 7',
+			slug: 'aula-7',
+			description: 'Aula de Yoga',
+			videoSourceUrl: 'd4d143774ac00547befe64063fc8f7e2',
+			thumbnailUrl: '78c0c3ab-7da6-46e8-742e-fd0e4b08b900',
+			modules: {
+				create: {
+					moduleSlug: 'aulas-praticas',
+					isPublished: true,
+					publicationDate: new Date('2024-03-25 17:30:00'),
+					order: 1,
+				},
+			},
+		},
+	});
+
+	await prisma.lesson.create({
+		data: {
+			name: 'Aula 8',
+			slug: 'aula-8',
+			description: 'Aula de Yoga',
+			videoSourceUrl: 'd4d143774ac00547befe64063fc8f7e2',
+			thumbnailUrl: '78c0c3ab-7da6-46e8-742e-fd0e4b08b900',
+			modules: {
+				create: {
+					moduleSlug: 'aulas-praticas',
+					isPublished: true,
+					publicationDate: new Date('2024-03-25 17:30:00'),
+					order: 1,
+				},
+			},
+		},
+	});
+
+	await prisma.lesson.create({
+		data: {
+			name: 'Aula 9',
+			slug: 'aula-9',
+			description: 'Aula de Yoga',
+			videoSourceUrl: 'd4d143774ac00547befe64063fc8f7e2',
+			thumbnailUrl: '78c0c3ab-7da6-46e8-742e-fd0e4b08b900',
+			modules: {
+				create: {
+					moduleSlug: 'aulas-praticas',
+					isPublished: true,
+					publicationDate: new Date('2024-03-25 17:30:00'),
+					order: 1,
+				},
+			},
+		},
+	});
+
+	await prisma.lesson.create({
+		data: {
+			name: 'Aula 10',
+			slug: 'aula-10',
+			description: 'Aula de Yoga',
+			videoSourceUrl: 'd4d143774ac00547befe64063fc8f7e2',
+			thumbnailUrl: '78c0c3ab-7da6-46e8-742e-fd0e4b08b900',
+			modules: {
+				create: {
+					moduleSlug: 'aulas-praticas',
+					isPublished: true,
+					publicationDate: new Date('2024-03-25 17:30:00'),
+					order: 1,
+				},
+			},
+		},
+	});
+
+	await prisma.lesson.create({
+		data: {
+			name: 'Aula 11',
+			slug: 'aula-11',
+			description: 'Aula de Yoga',
+			videoSourceUrl: 'd4d143774ac00547befe64063fc8f7e2',
+			thumbnailUrl: '78c0c3ab-7da6-46e8-742e-fd0e4b08b900',
+			modules: {
+				create: {
+					moduleSlug: 'aulas-praticas',
+					isPublished: true,
+					publicationDate: new Date('2024-03-25 17:30:00'),
+					order: 1,
+				},
+			},
+		},
+	});
+
+	await prisma.lesson.create({
+		data: {
+			name: 'Aula 12',
+			slug: 'aula-12',
+			description: 'Aula de Yoga',
+			videoSourceUrl: 'd4d143774ac00547befe64063fc8f7e2',
+			thumbnailUrl: '78c0c3ab-7da6-46e8-742e-fd0e4b08b900',
+			modules: {
+				create: {
+					moduleSlug: 'aulas-praticas',
+					isPublished: true,
+					publicationDate: new Date('2024-03-25 17:30:00'),
+					order: 1,
+				},
+			},
+		},
+	});
+
+	await prisma.lesson.create({
+		data: {
+			name: 'Aula 13',
+			slug: 'aula-13',
+			description: 'Aula de Yoga',
+			videoSourceUrl: 'd4d143774ac00547befe64063fc8f7e2',
+			thumbnailUrl: '78c0c3ab-7da6-46e8-742e-fd0e4b08b900',
+			modules: {
+				create: {
+					moduleSlug: 'aulas-praticas',
+					isPublished: true,
+					publicationDate: new Date('2024-03-25 17:30:00'),
+					order: 1,
+				},
+			},
+		},
+	});
+
+	await prisma.lesson.create({
+		data: {
+			name: 'Aula 14',
+			slug: 'aula-14',
+			description: 'Aula de Yoga',
+			videoSourceUrl: 'd4d143774ac00547befe64063fc8f7e2',
+			thumbnailUrl: '78c0c3ab-7da6-46e8-742e-fd0e4b08b900',
+			modules: {
+				create: {
+					moduleSlug: 'aulas-praticas',
+					isPublished: true,
+					publicationDate: new Date('2024-03-25 17:30:00'),
+					order: 1,
+				},
+			},
+		},
+	});
+
+	await prisma.lesson.create({
+		data: {
+			name: 'Aula 15',
+			slug: 'aula-15',
+			description: 'Aula de Yoga',
+			videoSourceUrl: 'd4d143774ac00547befe64063fc8f7e2',
+			thumbnailUrl: '78c0c3ab-7da6-46e8-742e-fd0e4b08b900',
+			modules: {
+				create: {
+					moduleSlug: 'aulas-praticas',
+					isPublished: true,
+					publicationDate: new Date('2024-03-25 17:30:00'),
+					order: 1,
+				},
+			},
+		},
+	});
+
+	await prisma.lesson.create({
+		data: {
+			name: 'Aula 16',
+			slug: 'aula-16',
+			description: 'Aula de Yoga',
+			videoSourceUrl: 'd4d143774ac00547befe64063fc8f7e2',
+			thumbnailUrl: '78c0c3ab-7da6-46e8-742e-fd0e4b08b900',
+			modules: {
+				create: {
+					moduleSlug: 'aulas-praticas',
+					isPublished: true,
+					publicationDate: new Date('2024-03-25 17:30:00'),
+					order: 1,
+				},
+			},
+		},
+	});
+
+	await prisma.lesson.create({
+		data: {
+			name: 'Aula 17',
+			slug: 'aula-17',
+			description: 'Aula de Yoga',
+			videoSourceUrl: 'd4d143774ac00547befe64063fc8f7e2',
+			thumbnailUrl: '78c0c3ab-7da6-46e8-742e-fd0e4b08b900',
+			modules: {
+				create: {
+					moduleSlug: 'aulas-praticas',
+					isPublished: true,
+					publicationDate: new Date('2024-03-25 17:30:00'),
+					order: 1,
+				},
+			},
+		},
+	});
+
+	await prisma.lesson.create({
+		data: {
+			name: 'Aula 18',
+			slug: 'aula-18',
+			description: 'Aula de Yoga',
+			videoSourceUrl: 'd4d143774ac00547befe64063fc8f7e2',
+			thumbnailUrl: '78c0c3ab-7da6-46e8-742e-fd0e4b08b900',
+			modules: {
+				create: {
+					moduleSlug: 'aulas-praticas',
+					isPublished: true,
+					publicationDate: new Date('2024-03-25 17:30:00'),
+					order: 1,
+				},
+			},
+		},
+	});
+
+	await prisma.lesson.create({
+		data: {
+			name: 'Aula 19',
+			slug: 'aula-19',
+			description: 'Aula de Yoga',
+			videoSourceUrl: 'd4d143774ac00547befe64063fc8f7e2',
+			thumbnailUrl: '78c0c3ab-7da6-46e8-742e-fd0e4b08b900',
+			modules: {
+				create: {
+					moduleSlug: 'aulas-praticas',
+					isPublished: true,
+					publicationDate: new Date('2024-03-25 17:30:00'),
+					order: 1,
+				},
+			},
+		},
+	});
+
+	await prisma.lesson.create({
+		data: {
+			name: 'Aula 20',
+			slug: 'aula-20',
+			description: 'Aula de Yoga',
+			videoSourceUrl: 'd4d143774ac00547befe64063fc8f7e2',
+			thumbnailUrl: '78c0c3ab-7da6-46e8-742e-fd0e4b08b900',
+			modules: {
+				create: {
+					moduleSlug: 'aulas-praticas',
+					isPublished: true,
+					publicationDate: new Date('2024-03-25 17:30:00'),
+					order: 1,
+				},
+			},
+		},
+	});
 };
 
 try {
