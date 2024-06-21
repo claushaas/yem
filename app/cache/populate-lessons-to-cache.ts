@@ -54,6 +54,6 @@ export const populateLessonsToCache = (lessonsToModule: TAllDataToBeCached['modu
 	for (const lessonToModule of lessonsToModule) {
 		const lessonDataForCache = getLessonDataForCache(lessonToModule, delegateAuthTo);
 
-		memoryCache.set(`${lessonToModule.lesson.slug}:${lessonToModule.lesson.slug}`, JSON.stringify(lessonDataForCache));
+		memoryCache.set(`${lessonToModule.moduleSlug}:${lessonToModule.lessonSlug}`, JSON.stringify(lessonDataForCache));
 	}
 };
