@@ -13,12 +13,16 @@ import {Lesson} from '../entities/lesson.entity.server.js';
 import {type TServiceReturn} from '../types/service-return.type.js';
 import {database} from '../database/database.server.js';
 import {logger} from '~/utils/logger.util.js';
+import {type TLessonDataForCache} from '~/cache/populate-lessons-to-cache.js';
+import {memoryCache} from '~/cache/memory-cache.js';
 
 export class LessonService {
+	private static cache: typeof memoryCache;
 	private readonly _model: PrismaClient;
 
 	constructor(model: PrismaClient = database) {
 		this._model = model;
+		LessonService.cache = memoryCache;
 	}
 
 	public async create(lessonData: TLesson): Promise<TServiceReturn<TPrismaPayloadCreateOrUpdateLesson>> {
@@ -321,6 +325,40 @@ export class LessonService {
 				status: 'UNKNOWN',
 				data: undefined,
 			};
+		}
+	}
+
+	public getBySlugFromCache(moduleSlug: string, lessonSlug: string, user: TUser | undefined): TServiceReturn<TLessonDataForCache | undefined> {
+		try {
+			const lesson = JSON.parse(LessonService.cache.get(`${moduleSlug}:${lessonSlug}`) ?? '{}') as TLessonDataForCache;
+
+			if (!lesson) {
+				logger.logError(`Lesson ${lessonSlug} for ${moduleSlug} not found in cache`);
+				throw new CustomError('NOT_FOUND', 'Lesson not found');
+			}
+
+			const isAdmin = user?.roles?.includes('admin');
+
+			const hasActiveSubscription = isAdmin || lesson.delegateAuthTo.some(courseSlug => {
+				const subscription = LessonService.cache.get(`${courseSlug}:${user?.id}`);
+
+				if (!subscription) {
+					return false;
+				}
+
+				return new Date(subscription) >= new Date();
+			});
+
+			lesson.lesson.content = hasActiveSubscription ? lesson.lesson.content : lesson.lesson.marketingContent;
+			lesson.lesson.videoSourceUrl = hasActiveSubscription ? lesson.lesson.videoSourceUrl : lesson.lesson.marketingVideoUrl;
+
+			return {
+				status: 'SUCCESSFUL',
+				data: lesson,
+			};
+		} catch (error) {
+			logger.logError(`Error getting lesson by id: ${(error as Error).message}`);
+			throw new CustomError('UNKNOWN', `Error getting lesson by id: ${(error as Error).message}`);
 		}
 	}
 
