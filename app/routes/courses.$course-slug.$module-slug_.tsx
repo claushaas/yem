@@ -24,17 +24,22 @@ type ModuleLoaderData = {
 
 export const loader = async ({request, params}: LoaderFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
+
 	const {
 		'course-slug': courseSlug,
 		'module-slug': moduleSlug,
 	} = params;
+
+	const url = new URL(request.url);
+	const pageString = url.searchParams.get('page');
+	const page = (pageString && !Number.isNaN(pageString)) ? Number(pageString) : 1;
 
 	const meta = [
 		{tagName: 'link', rel: 'canonical', href: new URL(`/courses/${courseSlug}/${moduleSlug}`, request.url).toString()},
 	];
 
 	try {
-		const {data: module} = new ModuleService().getBySlugFromCache(courseSlug!, moduleSlug!, userSession.data as TUser);
+		const {data: module} = new ModuleService().getBySlugFromCache(courseSlug!, moduleSlug!, userSession.data as TUser, page);
 
 		return json<ModuleLoaderData>({
 			module,

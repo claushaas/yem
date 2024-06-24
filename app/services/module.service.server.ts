@@ -5,6 +5,7 @@ import {
 	type TModule,
 	type TPrismaPayloadGetModulesList,
 	type TPrismaPayloadGetModuleBySlug,
+	type TModuleDataFromCache,
 } from '../types/module.type.js';
 import {Module} from '../entities/module.entity.server.js';
 import {type TUser} from '../types/user.type.js';
@@ -235,9 +236,9 @@ export class ModuleService {
 		}
 	}
 
-	public getBySlugFromCache(courseSlug: string, moduleSlug: string, user: TUser): TServiceReturn<TModuleDataForCache | undefined> {
+	public getBySlugFromCache(courseSlug: string, moduleSlug: string, user: TUser, page?: number): TServiceReturn<TModuleDataFromCache | undefined> {
 		try {
-			const module = JSON.parse(ModuleService.cache.get(`${courseSlug}:${moduleSlug}`) ?? '{}') as TModuleDataForCache;
+			const module = JSON.parse(ModuleService.cache.get(`${courseSlug}:${moduleSlug}`) ?? '{}') as TModuleDataFromCache;
 
 			if (!module) {
 				logger.logError(`Module ${moduleSlug} for ${courseSlug} not found in cache`);
@@ -257,14 +258,19 @@ export class ModuleService {
 				return expiresAt >= new Date();
 			});
 
-			const lessons = module.lessons.map(lessonSlug => {
-				const lessonData = JSON.parse(ModuleService.cache.get(`${moduleSlug}:${lessonSlug as string}`) ?? '{}') as TLessonDataForCache;
+			const actualPage = page ?? 1;
+			module.pages = Math.ceil(module.lessons.length / 16);
 
-				lessonData.lesson.content = hasActiveSubscription ? lessonData.lesson.content : lessonData.lesson.marketingContent;
-				lessonData.lesson.videoSourceUrl = hasActiveSubscription ? lessonData.lesson.videoSourceUrl : lessonData.lesson.marketingVideoUrl;
+			const lessons = module.lessons
+				.slice((actualPage - 1) * 16, actualPage * 16)
+				.map(lessonSlug => {
+					const lessonData = JSON.parse(ModuleService.cache.get(`${moduleSlug}:${lessonSlug as string}`) ?? '{}') as TLessonDataForCache;
 
-				return lessonData;
-			});
+					lessonData.lesson.content = hasActiveSubscription ? lessonData.lesson.content : lessonData.lesson.marketingContent;
+					lessonData.lesson.videoSourceUrl = hasActiveSubscription ? lessonData.lesson.videoSourceUrl : lessonData.lesson.marketingVideoUrl;
+
+					return lessonData;
+				});
 
 			module.lessons = lessons;
 			module.module.content = hasActiveSubscription ? module.module.content : module.module.marketingContent;
