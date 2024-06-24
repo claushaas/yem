@@ -41,7 +41,9 @@ export function Pagination({pages = 1, actualPage = 1}: PaginationProperties) {
 			)}
 			{limitedArrayFirstPage !== 1 && (
 				<>
-					<Link to={`${pathname}?page=1`}/>
+					<Link to={`${pathname}?page=1`}>
+						<p>1</p>
+					</Link>
 					<p>...</p>
 				</>
 			)}
@@ -61,7 +63,9 @@ export function Pagination({pages = 1, actualPage = 1}: PaginationProperties) {
 			{limitedPagesArray.at(-1) !== lastPage && (
 				<>
 					<p>...</p>
-					<Link to={`${pathname}?page=${lastPage}`}/>
+					<Link to={`${pathname}?page=${lastPage}`}>
+						{lastPage}
+					</Link>
 				</>
 			)}
 			{actualPage < pages && (
