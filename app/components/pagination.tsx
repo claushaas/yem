@@ -40,7 +40,10 @@ export function Pagination({pages = 1, actualPage = 1}: PaginationProperties) {
 				</Link>
 			)}
 			{firstPage !== 1 && (
-				<p>...</p>
+				<>
+					<Link to={`${pathname}?page=1`}/>
+					<p>...</p>
+				</>
 			)}
 			{limitedPagesArray.map(page => {
 				const isActualPage = page === actualPage;
@@ -56,7 +59,10 @@ export function Pagination({pages = 1, actualPage = 1}: PaginationProperties) {
 				);
 			})}
 			{limitedPagesArray.at(-1) !== lastPage && (
-				<p>...</p>
+				<>
+					<p>...</p>
+					<Link to={`${pathname}?page=${lastPage}`}/>
+				</>
 			)}
 			{actualPage < pages && (
 				<Link to={`${pathname}?page=${actualPage + 1}`}>
