@@ -4,12 +4,13 @@ import {useLoaderData, type MetaFunction} from '@remix-run/react';
 import {QuillDeltaToHtmlConverter} from 'quill-delta-to-html';
 import {type OpIterator} from 'quill/core';
 import {type TLessonDataForCache} from '~/cache/populate-lessons-to-cache.js';
-import {type TModuleDataForCache} from '~/cache/populate-modules-to-cache.js';
 import {GenericEntityCard} from '~/components/generic-entity-card.js';
 import {ModuleService} from '~/services/module.service.server';
 import {type TUser} from '~/types/user.type';
 import {logger} from '~/utils/logger.util';
 import {getUserSession} from '~/utils/session.server';
+import {type TModuleDataFromCache} from '~/types/module.type';
+import {Pagination} from '~/components/pagination.js';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => [
 	{title: data!.module?.module.name ?? 'Módulo do Curso do Yoga em Movimento'},
@@ -18,8 +19,9 @@ export const meta: MetaFunction<typeof loader> = ({data}) => [
 ];
 
 type ModuleLoaderData = {
-	module: TModuleDataForCache | undefined;
+	module: TModuleDataFromCache | undefined;
 	meta: Array<{tagName: string; rel: string; href: string}>;
+	actualPage: number;
 };
 
 export const loader = async ({request, params}: LoaderFunctionArgs) => {
@@ -44,18 +46,20 @@ export const loader = async ({request, params}: LoaderFunctionArgs) => {
 		return json<ModuleLoaderData>({
 			module,
 			meta,
+			actualPage: page,
 		});
 	} catch (error) {
 		logger.logError(`Error loading module: ${(error as Error).message}`);
 		return json<ModuleLoaderData>({
 			module: undefined,
 			meta,
+			actualPage: page,
 		});
 	}
 };
 
 export default function Module() {
-	const {module} = useLoaderData<ModuleLoaderData>();
+	const {module, actualPage} = useLoaderData<ModuleLoaderData>();
 
 	const {ops} = module?.module.content ? JSON.parse(module?.module.content) as OpIterator : {ops: []};
 	const contentConverter = new QuillDeltaToHtmlConverter(ops, {
@@ -83,12 +87,13 @@ export default function Module() {
 						</section>
 					)}
 					{module.lessons && (
-						<section id='modules' className='flex flex-wrap gap-4 my-4'>
+						<section id='modules' className='flex flex-wrap justify-center gap-4 my-4'>
 							{(module.lessons as unknown as TLessonDataForCache[]).map(lesson => (
 								<GenericEntityCard key={lesson.lesson.id} course={lesson.lesson} to={`./${lesson.lesson.slug}`}/>
 							))}
 						</section>
 					)}
+					{module.pages > 1 && <Pagination pages={module.pages} actualPage={actualPage}/>}
 				</div>
 			</div>
 		</main>
