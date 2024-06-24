@@ -23,6 +23,7 @@ import {Editor} from '~/components/text-editor.client.js';
 import {YemSpinner} from '~/components/yem-spinner.js';
 import {useTextEditor} from '~/hooks/use-text-editor.hook';
 import {SuccessOrErrorMessage} from '~/components/admin-success-or-error-message.js';
+import {type TLessonDataForCache} from '~/cache/populate-lessons-to-cache.js';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => ([
 	{title: `Aula ${data!.lesson?.lesson.name} - Yoga em Movimento`},
@@ -34,7 +35,7 @@ export const meta: MetaFunction<typeof loader> = ({data}) => ([
 type LessonLoaderData = {
 	error: string | undefined;
 	success: string | undefined;
-	lesson: TPrismaPayloadGetLessonById | undefined;
+	lesson: TLessonDataForCache | undefined;
 	meta: Array<{tagName: string; rel: string; href: string}>;
 };
 
@@ -51,7 +52,7 @@ export const loader = async ({request, params}: LoaderFunctionArgs) => {
 	];
 
 	try {
-		const {data: lesson} = await new LessonService().getBySlug(courseSlug!, moduleSlug!, lessonSlug!, userSession.data as TUser);
+		const {data: lesson} = new LessonService().getBySlugFromCache(moduleSlug!, lessonSlug!, userSession.data as TUser);
 
 		return json<LessonLoaderData>({
 			lesson,

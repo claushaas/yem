@@ -4,7 +4,7 @@ import {type TAllDataToBeCached} from './get-all-data-to-be-cached.js';
 import {type TLessonDataForCache, populateLessonsToCache} from './populate-lessons-to-cache.js';
 import {type TCourseDataForCache} from './populate-courses-to-cache.js';
 
-type TModuleToCourse = Prisma.ModuleToCourseGetPayload<{include: {module: true}}>;
+export type TModuleToCourse = Prisma.ModuleToCourseGetPayload<{include: {module: true}}>;
 
 export type TModuleDataForCache = {
 	lessons: string[] | TLessonDataForCache[];
