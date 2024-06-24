@@ -64,7 +64,7 @@ export function Pagination({pages = 1, actualPage = 1}: PaginationProperties) {
 				<>
 					<p>...</p>
 					<Link to={`${pathname}?page=${lastPage}`}>
-						{lastPage}
+						<p>{lastPage}</p>
 					</Link>
 				</>
 			)}
