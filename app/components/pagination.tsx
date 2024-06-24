@@ -29,7 +29,7 @@ export function Pagination({pages = 1, actualPage = 1}: PaginationProperties) {
 	const pagesArray = Array.from({length: pages}, (_, index) => index + 1);
 	const limitedPagesArray = limitArraySize(pagesArray, actualPage);
 
-	const firstPage = limitedPagesArray[0];
+	const limitedArrayFirstPage = limitedPagesArray[0];
 	const lastPage = pagesArray.at(-1);
 
 	return (
@@ -39,7 +39,7 @@ export function Pagination({pages = 1, actualPage = 1}: PaginationProperties) {
 					<ChevronLeftIcon className='size-4'/>
 				</Link>
 			)}
-			{firstPage !== 1 && (
+			{limitedArrayFirstPage !== 1 && (
 				<>
 					<Link to={`${pathname}?page=1`}/>
 					<p>...</p>
