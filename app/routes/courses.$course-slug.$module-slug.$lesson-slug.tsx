@@ -1,11 +1,15 @@
 import {Stream} from '@cloudflare/stream-react';
+import {ChevronRightIcon} from '@heroicons/react/24/outline';
 import {json, type LoaderFunctionArgs} from '@remix-run/node';
-import {useLoaderData, type MetaFunction} from '@remix-run/react';
+import {Link, useLoaderData, type MetaFunction} from '@remix-run/react';
 import {QuillDeltaToHtmlConverter} from 'quill-delta-to-html';
 import {type OpIterator} from 'quill/core';
+import {type TLessonDataForCache} from '~/cache/populate-lessons-to-cache.js';
+import {Breadcrumbs} from '~/components/breadcrumbs.js';
 import {VideoPlayer} from '~/components/video-player.js';
+import {CourseService} from '~/services/course.service.server';
 import {LessonService} from '~/services/lesson.service.server';
-import {type TPrismaPayloadGetLessonById} from '~/types/lesson.type';
+import {ModuleService} from '~/services/module.service.server';
 import {type TUser} from '~/types/user.type';
 import {logger} from '~/utils/logger.util';
 import {getUserSession} from '~/utils/session.server';
@@ -17,8 +21,10 @@ export const meta: MetaFunction<typeof loader> = ({data}) => [
 ];
 
 type LessonLoaderData = {
-	lesson: TPrismaPayloadGetLessonById | undefined;
+	lesson: TLessonDataForCache | undefined;
 	meta: Array<{tagName: string; rel: string; href: string}>;
+	course: {slug: string; name: string} | undefined;
+	module: {slug: string; name: string} | undefined;
 };
 
 export const loader = async ({request, params}: LoaderFunctionArgs) => {
@@ -34,10 +40,20 @@ export const loader = async ({request, params}: LoaderFunctionArgs) => {
 	];
 
 	try {
-		const {data: lesson} = await new LessonService().getBySlug(courseSlug!, moduleSlug!, lessonSlug!, userSession.data as TUser);
+		const {data: lesson} = new LessonService().getBySlugFromCache(moduleSlug!, lessonSlug!, userSession.data as TUser);
+		const {data: module} = new ModuleService().getBySlugFromCache(courseSlug!, moduleSlug!, userSession.data as TUser);
+		const {data: course} = new CourseService().getBySlugFromCache(courseSlug!, userSession.data as TUser);
 
 		return json<LessonLoaderData>({
 			lesson,
+			module: {
+				slug: module?.moduleSlug ?? '',
+				name: module?.module.name ?? '',
+			},
+			course: {
+				slug: course?.slug ?? '',
+				name: course?.name ?? '',
+			},
 			meta,
 		});
 	} catch (error) {
@@ -45,12 +61,15 @@ export const loader = async ({request, params}: LoaderFunctionArgs) => {
 		return json<LessonLoaderData>({
 			lesson: undefined,
 			meta,
+			module: undefined,
+			course: undefined,
 		});
 	}
 };
 
 export default function Lesson() {
-	const {lesson} = useLoaderData<LessonLoaderData>();
+	const data = useLoaderData<LessonLoaderData>();
+	const {lesson, module, course} = data;
 
 	const {ops} = lesson?.lesson.content ? JSON.parse(lesson?.lesson.content) as OpIterator : {ops: []};
 	const contentConverter = new QuillDeltaToHtmlConverter(ops, {
@@ -59,6 +78,11 @@ export default function Lesson() {
 
 	return lesson && (
 		<main className='w-full max-w-[95%] sm:max-w-[90%] mx-auto'>
+			<Breadcrumbs data={[
+				[`/courses/${course!.slug}`, course!.name], // Course
+				[`/courses/${course!.slug}/${module!.slug}`, module!.name], // Module
+				[`/courses/${course!.slug}/${module!.slug}/${lesson.lessonSlug}`, lesson.lesson.name], // Lesson
+			]}/>
 			<div className='w-full max-w-screen-md mx-auto'>
 				<section id={lesson.lesson.name}>
 					<h1 className='text-center'>{lesson.lesson.name}</h1>

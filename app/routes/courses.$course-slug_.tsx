@@ -1,10 +1,11 @@
 import {Stream} from '@cloudflare/stream-react';
 import {json, type LoaderFunctionArgs} from '@remix-run/node';
-import {type MetaFunction, useLoaderData} from '@remix-run/react';
+import {type MetaFunction, useLoaderData, Link} from '@remix-run/react';
 import {QuillDeltaToHtmlConverter} from 'quill-delta-to-html';
 import {type OpIterator} from 'quill/core';
 import {type TCourseDataForCache} from '~/cache/populate-courses-to-cache.js';
 import {type TModuleDataForCache} from '~/cache/populate-modules-to-cache.js';
+import {Breadcrumbs} from '~/components/breadcrumbs.js';
 import {GenericEntityCard} from '~/components/generic-entity-card.js';
 import {CourseService} from '~/services/course.service.server';
 import {type TUser} from '~/types/user.type';
@@ -56,6 +57,7 @@ export default function Course() {
 
 	return course && (
 		<main className='w-full max-w-[95%] sm:max-w-[90%] mx-auto'>
+			<Breadcrumbs data={[[`/${course.slug}`, course.name]]}/>
 			<div className='w-full max-w-screen-md mx-auto'>
 				<section id={course.name}>
 					<h1 className='text-center'>{course.name}</h1>
