@@ -1,9 +1,8 @@
 import {Stream} from '@cloudflare/stream-react';
 import {json, type LoaderFunctionArgs} from '@remix-run/node';
-import {Link, useLoaderData, type MetaFunction} from '@remix-run/react';
+import {useLoaderData, type MetaFunction} from '@remix-run/react';
 import {QuillDeltaToHtmlConverter} from 'quill-delta-to-html';
 import {type OpIterator} from 'quill/core';
-import {ChevronRightIcon} from '@heroicons/react/24/outline';
 import {type TLessonDataForCache} from '~/cache/populate-lessons-to-cache.js';
 import {GenericEntityCard} from '~/components/generic-entity-card.js';
 import {ModuleService} from '~/services/module.service.server';
@@ -14,6 +13,7 @@ import {type TModuleDataFromCache} from '~/types/module.type';
 import {Pagination} from '~/components/pagination.js';
 import {Breadcrumbs} from '~/components/breadcrumbs.js';
 import {CourseService} from '~/services/course.service.server';
+import {VideoPlayer} from '~/components/video-player.js';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => [
 	{title: data!.module?.module.name ?? 'Módulo do Curso do Yoga em Movimento'},
@@ -92,13 +92,22 @@ export default function Module() {
 					<section dangerouslySetInnerHTML={{__html: contentConverter.convert()}} id='content'/>
 					{module.module.videoSourceUrl && (
 						<section id='video' className='h-fit'>
-							<Stream
-								controls
-								preload='auto'
-								className='pt-[56.25%] relative *:absolute *:w-full *:h-full *:top-0 *:left-0 *:inset-0'
-								src={module.module.videoSourceUrl}
-								responsive={false}
-							/>
+							{!module.module.videoSourceUrl.startsWith('https://') && (
+								<Stream
+									controls
+									preload='auto'
+									className='pt-[56.25%] relative *:absolute *:w-full *:h-full *:top-0 *:left-0 *:inset-0'
+									src={module.module.videoSourceUrl}
+									responsive={false}
+								/>
+							)}
+							{module.module.videoSourceUrl.startsWith('https://') && (
+								<VideoPlayer
+									title={module.module.name}
+									src={module.module.videoSourceUrl}
+									alt={module.module.name}
+								/>
+							)}
 						</section>
 					)}
 					{module.lessons && (
