@@ -1,8 +1,9 @@
 import {Stream} from '@cloudflare/stream-react';
 import {json, type LoaderFunctionArgs} from '@remix-run/node';
-import {useLoaderData, type MetaFunction} from '@remix-run/react';
+import {Link, useLoaderData, type MetaFunction} from '@remix-run/react';
 import {QuillDeltaToHtmlConverter} from 'quill-delta-to-html';
 import {type OpIterator} from 'quill/core';
+import {ChevronRightIcon} from '@heroicons/react/24/outline';
 import {type TLessonDataForCache} from '~/cache/populate-lessons-to-cache.js';
 import {GenericEntityCard} from '~/components/generic-entity-card.js';
 import {ModuleService} from '~/services/module.service.server';
@@ -11,6 +12,8 @@ import {logger} from '~/utils/logger.util';
 import {getUserSession} from '~/utils/session.server';
 import {type TModuleDataFromCache} from '~/types/module.type';
 import {Pagination} from '~/components/pagination.js';
+import {Breadcrumbs} from '~/components/breadcrumbs.js';
+import {CourseService} from '~/services/course.service.server';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => [
 	{title: data!.module?.module.name ?? 'Módulo do Curso do Yoga em Movimento'},
@@ -22,6 +25,7 @@ type ModuleLoaderData = {
 	module: TModuleDataFromCache | undefined;
 	meta: Array<{tagName: string; rel: string; href: string}>;
 	actualPage: number;
+	course: {slug: string; name: string} | undefined;
 };
 
 export const loader = async ({request, params}: LoaderFunctionArgs) => {
@@ -42,11 +46,16 @@ export const loader = async ({request, params}: LoaderFunctionArgs) => {
 
 	try {
 		const {data: module} = new ModuleService().getBySlugFromCache(courseSlug!, moduleSlug!, userSession.data as TUser, page);
+		const {data: course} = new CourseService().getBySlugFromCache(courseSlug!, userSession.data as TUser);
 
 		return json<ModuleLoaderData>({
 			module,
 			meta,
 			actualPage: page,
+			course: {
+				slug: course?.slug ?? '',
+				name: course?.name ?? '',
+			},
 		});
 	} catch (error) {
 		logger.logError(`Error loading module: ${(error as Error).message}`);
@@ -54,12 +63,14 @@ export const loader = async ({request, params}: LoaderFunctionArgs) => {
 			module: undefined,
 			meta,
 			actualPage: page,
+			course: undefined,
 		});
 	}
 };
 
 export default function Module() {
-	const {module, actualPage} = useLoaderData<ModuleLoaderData>();
+	const data = useLoaderData<ModuleLoaderData>();
+	const {module, actualPage, course} = data;
 
 	const {ops} = module?.module.content ? JSON.parse(module?.module.content) as OpIterator : {ops: []};
 	const contentConverter = new QuillDeltaToHtmlConverter(ops, {
@@ -68,6 +79,10 @@ export default function Module() {
 
 	return module && (
 		<main className='w-full max-w-[95%] sm:max-w-[90%] mx-auto'>
+			<Breadcrumbs data={[
+				[`/courses/${course!.slug}`, course!.name], // Course
+				[`/courses/${course!.slug}/${module.moduleSlug}`, module.module.name], // Module
+			]}/>
 			<div className='w-full max-w-screen-md mx-auto'>
 				<section id={module.module.name}>
 					<h1 className='text-center'>{module.module.name}</h1>
