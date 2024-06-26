@@ -9,7 +9,7 @@ type BreadcrumbsData = {
 export function Breadcrumbs({data}: BreadcrumbsData) {
 	return (
 		<div className='flex justify-center'>
-			<div className='bg-mauvea-2 dark:bg-mauvedarka-2 rounded-full py-3 px-5 flex justify-center items-center gap-1'>
+			<div className='bg-mauvea-2 dark:bg-mauvedarka-2 rounded-full py-3 px-5 flex justify-center items-center gap-1 max-w-full flex-wrap'>
 				<Link to='/courses'>Cursos</Link>
 				{data.map(([url, label], index) => {
 					if (index + 1 === data.length) {
