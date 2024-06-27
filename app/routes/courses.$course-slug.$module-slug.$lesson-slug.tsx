@@ -1,7 +1,6 @@
 import {Stream} from '@cloudflare/stream-react';
-import {ChevronRightIcon} from '@heroicons/react/24/outline';
 import {json, type LoaderFunctionArgs} from '@remix-run/node';
-import {Link, useLoaderData, type MetaFunction} from '@remix-run/react';
+import {useLoaderData, type MetaFunction} from '@remix-run/react';
 import {QuillDeltaToHtmlConverter} from 'quill-delta-to-html';
 import {type OpIterator} from 'quill/core';
 import {type TLessonDataForCache} from '~/cache/populate-lessons-to-cache.js';

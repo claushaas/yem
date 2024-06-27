@@ -1,12 +1,13 @@
 import {Stream} from '@cloudflare/stream-react';
 import {json, type LoaderFunctionArgs} from '@remix-run/node';
-import {type MetaFunction, useLoaderData, Link} from '@remix-run/react';
+import {type MetaFunction, useLoaderData} from '@remix-run/react';
 import {QuillDeltaToHtmlConverter} from 'quill-delta-to-html';
 import {type OpIterator} from 'quill/core';
 import {type TCourseDataForCache} from '~/cache/populate-courses-to-cache.js';
 import {type TModuleDataForCache} from '~/cache/populate-modules-to-cache.js';
 import {Breadcrumbs} from '~/components/breadcrumbs.js';
 import {GenericEntityCard} from '~/components/generic-entity-card.js';
+import {VideoPlayer} from '~/components/video-player.js';
 import {CourseService} from '~/services/course.service.server';
 import {type TUser} from '~/types/user.type';
 import {logger} from '~/utils/logger.util';
@@ -74,6 +75,22 @@ export default function Course() {
 								src={course.videoSourceUrl}
 								responsive={false}
 							/>
+							{!course.videoSourceUrl.startsWith('https://') && (
+								<Stream
+									controls
+									preload='auto'
+									className='pt-[56.25%] relative *:absolute *:w-full *:h-full *:top-0 *:left-0 *:inset-0'
+									src={course.videoSourceUrl}
+									responsive={false}
+								/>
+							)}
+							{course.videoSourceUrl.startsWith('https://') && (
+								<VideoPlayer
+									title={course.name}
+									src={course.videoSourceUrl}
+									alt={course.name}
+								/>
+							)}
 						</section>
 					)}
 					{course.modules && (
