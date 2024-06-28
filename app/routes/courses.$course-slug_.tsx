@@ -68,13 +68,6 @@ export default function Course() {
 					<section dangerouslySetInnerHTML={{__html: contentConverter.convert()}} id='content'/>
 					{course.videoSourceUrl && (
 						<section id='video' className='h-fit'>
-							<Stream
-								controls
-								preload='auto'
-								className='pt-[56.25%] relative *:absolute *:w-full *:h-full *:top-0 *:left-0 *:inset-0'
-								src={course.videoSourceUrl}
-								responsive={false}
-							/>
 							{!course.videoSourceUrl.startsWith('https://') && (
 								<Stream
 									controls
