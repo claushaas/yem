@@ -82,34 +82,36 @@ export default function Lesson() {
 				[`/courses/${course!.slug}/${module!.slug}`, module!.name], // Module
 				[`/courses/${course!.slug}/${module!.slug}/${lesson.lessonSlug}`, lesson.lesson.name], // Lesson
 			]}/>
-			<div className='w-full max-w-screen-md mx-auto'>
-				<section id={lesson.lesson.name}>
+			<div className='w-full max-w-screen-lg mx-auto'>
+				<section id='title'>
 					<h1 className='text-center'>{lesson.lesson.name}</h1>
 				</section>
-				<div className='p-1 sm:p-5 bg-mauvea-2 dark:bg-mauvedarka-2 rounded-xl flex flex-col gap-6'>
-					{/* eslint-disable-next-line react/no-danger, @typescript-eslint/naming-convention */}
-					<section dangerouslySetInnerHTML={{__html: contentConverter.convert()}} id='content'/>
-					{lesson.lesson.videoSourceUrl && (
-						<section id='video' className='h-fit'>
-							{!lesson.lesson.videoSourceUrl.startsWith('https://') && (
-								<Stream
-									controls
-									preload='auto'
-									className='pt-[56.25%] relative *:absolute *:w-full *:h-full *:top-0 *:left-0 *:inset-0'
-									src={lesson.lesson.videoSourceUrl}
-									responsive={false}
-								/>
-							)}
-							{lesson.lesson.videoSourceUrl.startsWith('https://') && (
-								<VideoPlayer
-									title={lesson.lesson.name}
-									src={lesson.lesson.videoSourceUrl}
-									alt={lesson.lesson.name}
-								/>
-							)}
-						</section>
-					)}
-				</div>
+
+				{lesson.lesson.videoSourceUrl && (
+					<section id='video' className='h-fit mb-10 rounded-2xl'>
+						{!lesson.lesson.videoSourceUrl.startsWith('https://') && (
+							<Stream
+								controls
+								preload='auto'
+								className='pt-[56.25%] relative *:absolute *:w-full *:h-full *:top-0 *:left-0 *:inset-0'
+								src={lesson.lesson.videoSourceUrl}
+								responsive={false}
+							/>
+						)}
+						{lesson.lesson.videoSourceUrl.startsWith('https://') && (
+							<VideoPlayer
+								title={lesson.lesson.name}
+								src={lesson.lesson.videoSourceUrl}
+								alt={lesson.lesson.name}
+							/>
+						)}
+					</section>
+				)}
+
+				{lesson.lesson.content && (
+					/* eslint-disable-next-line react/no-danger, @typescript-eslint/naming-convention */
+					<section dangerouslySetInnerHTML={{__html: contentConverter.convert()}} id='content' className='p-1 sm:p-5 bg-mauvea-2 dark:bg-mauvedarka-2 rounded-2xl flex flex-col gap-6'/>
+				)}
 			</div>
 		</main>
 	);
