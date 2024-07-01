@@ -83,42 +83,48 @@ export default function Module() {
 				[`/courses/${course!.slug}`, course!.name], // Course
 				[`/courses/${course!.slug}/${module.moduleSlug}`, module.module.name], // Module
 			]}/>
-			<div className='w-full max-w-screen-md mx-auto'>
-				<section id={module.module.name}>
+			<div className='w-full max-w-screen-lg mx-auto'>
+				<section id='title' className='mb-10'>
 					<h1 className='text-center'>{module.module.name}</h1>
 				</section>
-				<div className='p-1 sm:p-5 bg-mauvea-2 dark:bg-mauvedarka-2 rounded-xl flex flex-col gap-6'>
-					{/* eslint-disable-next-line react/no-danger, @typescript-eslint/naming-convention */}
-					<section dangerouslySetInnerHTML={{__html: contentConverter.convert()}} id='content'/>
-					{module.module.videoSourceUrl && (
-						<section id='video' className='h-fit'>
-							{!module.module.videoSourceUrl.startsWith('https://') && (
-								<Stream
-									controls
-									preload='auto'
-									className='pt-[56.25%] relative *:absolute *:w-full *:h-full *:top-0 *:left-0 *:inset-0'
-									src={module.module.videoSourceUrl}
-									responsive={false}
-								/>
-							)}
-							{module.module.videoSourceUrl.startsWith('https://') && (
-								<VideoPlayer
-									title={module.module.name}
-									src={module.module.videoSourceUrl}
-									alt={module.module.name}
-								/>
-							)}
-						</section>
-					)}
-					{module.lessons && (
-						<section id='modules' className='flex flex-wrap justify-center gap-4 my-4'>
+				{module.module.videoSourceUrl && (
+					<section id='video' className='h-fit rounded-2xl mb-10'>
+						{!module.module.videoSourceUrl.startsWith('https://') && (
+							<Stream
+								controls
+								preload='auto'
+								className='pt-[56.25%] relative *:absolute *:w-full *:h-full *:top-0 *:left-0 *:inset-0'
+								src={module.module.videoSourceUrl}
+								responsive={false}
+							/>
+						)}
+						{module.module.videoSourceUrl.startsWith('https://') && (
+							<VideoPlayer
+								title={module.module.name}
+								src={module.module.videoSourceUrl}
+								alt={module.module.name}
+							/>
+						)}
+					</section>
+				)}
+
+				{module.module.content && (
+				/* eslint-disable-next-line react/no-danger, @typescript-eslint/naming-convention */
+					<section dangerouslySetInnerHTML={{__html: contentConverter.convert()}} id='content' className='p-1 sm:p-5 bg-mauvea-2 dark:bg-mauvedarka-2 rounded-2xl flex flex-col gap-6 mb-10'/>
+				)}
+
+				{module.lessons && (
+					<section id='lessons' className='p-1 sm:p-5 bg-mauvea-2 dark:bg-mauvedarka-2 rounded-2xl flex flex-col gap-6'>
+						<h2 className='text-center'>Aulas</h2>
+						<div className='flex flex-wrap justify-center gap-4 my-4'>
 							{(module.lessons as unknown as TLessonDataForCache[]).map(lesson => (
 								<GenericEntityCard key={lesson.lesson.id} course={lesson.lesson} to={`./${lesson.lesson.slug}`}/>
 							))}
-						</section>
-					)}
-					{module.pages > 1 && <Pagination pages={module.pages} actualPage={actualPage}/>}
-				</div>
+						</div>
+						{module.pages > 1 && <Pagination pages={module.pages} actualPage={actualPage}/>}
+					</section>
+				)}
+
 			</div>
 		</main>
 	);

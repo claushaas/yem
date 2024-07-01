@@ -10,7 +10,7 @@ export function Breadcrumbs({data}: BreadcrumbsData) {
 	return (
 		<div className='flex justify-center mb-7'>
 			<div className='bg-mauvea-2 dark:bg-mauvedarka-2 rounded-full py-3 px-5 flex justify-center items-center gap-1 max-w-full flex-wrap'>
-				<Link to='/courses'>Cursos</Link>
+				<p><Link to='/courses'>Cursos</Link></p>
 				{data.map(([url, label], index) => {
 					if (index + 1 === data.length) {
 						return (
@@ -24,7 +24,7 @@ export function Breadcrumbs({data}: BreadcrumbsData) {
 					return (
 						<Fragment key={url}>
 							<p><ChevronRightIcon className='size-4'/></p>
-							<Link to={url}>{label}</Link>
+							<p><Link to={url}>{label}</Link></p>
 						</Fragment>
 					);
 				})}
