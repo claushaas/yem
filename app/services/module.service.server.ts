@@ -13,7 +13,6 @@ import {CustomError} from '../utils/custom-error.js';
 import {type TServiceReturn} from '../types/service-return.type.js';
 import {database} from '../database/database.server.js';
 import {logger} from '~/utils/logger.util.js';
-import {type TModuleDataForCache} from '~/cache/populate-modules-to-cache.js';
 import {memoryCache} from '~/cache/memory-cache.js';
 import {type TSubscription} from '~/types/subscription.type.js';
 import {type TLessonDataForCache} from '~/cache/populate-lessons-to-cache.js';

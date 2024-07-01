@@ -15,7 +15,7 @@ export function GenericEntityCard({course, to}: ClassCardPropierties) {
 				scale: 1.05,
 				transition: {duration: 0.5},
 			}}
-			className='portrait:w-48 w-80 portrait:h-80 h-48 relative rounded-xl shadow-sm shadow-mauve-11 dark:shadow-mauvedark-3 flex-shrink-0'
+			className='portrait:w-48 w-72 portrait:h-80 h-48 relative rounded-xl shadow-sm shadow-mauve-11 dark:shadow-mauvedark-3 flex-shrink-0'
 		>
 			<Image
 				className='absolute top-0 left-0 w-full h-full rounded-xl -z-10'
