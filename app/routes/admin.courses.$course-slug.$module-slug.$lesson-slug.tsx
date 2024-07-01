@@ -17,7 +17,7 @@ import {LessonService} from '~/services/lesson.service.server';
 import {type TUser} from '~/types/user.type';
 import {logger} from '~/utils/logger.util';
 import {commitUserSession, getUserSession} from '~/utils/session.server';
-import {type TLesson, type TLessonType, type TPrismaPayloadGetLessonById} from '~/types/lesson.type';
+import {type TLesson, type TLessonType} from '~/types/lesson.type';
 import {Button, ButtonPreset, ButtonType} from '~/components/button.js';
 import {Editor} from '~/components/text-editor.client.js';
 import {YemSpinner} from '~/components/yem-spinner.js';
