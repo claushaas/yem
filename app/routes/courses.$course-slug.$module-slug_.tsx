@@ -87,6 +87,7 @@ export default function Module() {
 				<section id='title' className='mb-10'>
 					<h1 className='text-center'>{module.module.name}</h1>
 				</section>
+
 				{module.module.videoSourceUrl && (
 					<section id='video' className='h-fit rounded-2xl mb-10'>
 						{!module.module.videoSourceUrl.startsWith('https://') && (

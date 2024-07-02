@@ -89,8 +89,8 @@ model Lesson {
   comments          Comment[]
   completedBy       CompletedLessons[]
   duration          Int?
-  FavoritedBy       FavoritedLessons[]
-  SavedBy           SavedLessons[]
+  favoritedBy       FavoritedLessons[]
+  savedBy           SavedLessons[]
 
   @@map("lessons")
 }
