@@ -4,6 +4,9 @@ import {defineConfig} from 'vite';
 import tsconfigPaths from 'vite-tsconfig-paths';
 import svgr from 'vite-plugin-svgr';
 import {remixDevTools} from 'remix-development-tools';
+import {installGlobals} from '@remix-run/node';
+
+installGlobals({nativeFetch: true});
 
 export default defineConfig({
 	build: {
@@ -26,6 +29,7 @@ export default defineConfig({
 		remix({
 			future: {
 				v3_relativeSplatPath: true, // eslint-disable-line @typescript-eslint/naming-convention
+				unstable_singleFetch: true, // eslint-disable-line @typescript-eslint/naming-convention
 			},
 		}),
 		tsconfigPaths(),
