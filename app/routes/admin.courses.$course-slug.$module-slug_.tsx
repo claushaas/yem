@@ -19,7 +19,6 @@ import {ModuleService} from '~/services/module.service.server';
 import {LessonService} from '~/services/lesson.service.server';
 import {type TUser} from '~/types/user.type';
 import {type TModule, type TPrismaPayloadGetModuleBySlug} from '~/types/module.type';
-import {GenericEntityCard} from '~/components/generic-entity-card.js';
 import {Button, ButtonPreset, ButtonType} from '~/components/button.js';
 import {Editor} from '~/components/text-editor.client.js';
 import {YemSpinner} from '~/components/yem-spinner.js';
@@ -29,6 +28,7 @@ import {TagService} from '~/services/tag.service.server';
 import {useTextEditor} from '~/hooks/use-text-editor.hook.js';
 import {ContentConverter} from '~/components/content-converter.js';
 import {SuccessOrErrorMessage} from '~/components/admin-success-or-error-message.js';
+import {LessonEntityCard} from '~/components/entities-cards.js';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => [
 	{title: `${data?.module?.module.name} - Yoga em Movimento`},
@@ -965,7 +965,7 @@ export default function Module() {
 
 				<div className='flex gap-4 my-4 flex-wrap'>
 					{module.module.lessons.map(lesson => (
-						<GenericEntityCard key={lesson.lesson.id} course={lesson.lesson} to={`./${lesson.lesson.slug}`}/>
+						<LessonEntityCard key={lesson.lesson.id} course={lesson.lesson} to={`./${lesson.lesson.slug}`}/>
 					))}
 				</div>
 			</div>

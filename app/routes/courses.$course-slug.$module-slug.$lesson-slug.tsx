@@ -1,5 +1,10 @@
 import {Stream} from '@cloudflare/stream-react';
-import {type LoaderFunctionArgs, unstable_defineLoader as defineLoader, type ActionFunctionArgs} from '@remix-run/node';
+import {
+	type LoaderFunctionArgs,
+	unstable_defineLoader as defineLoader,
+	type ActionFunctionArgs,
+	unstable_defineAction as defineAction,
+} from '@remix-run/node';
 import {
 	Await, Form, useLoaderData, type MetaFunction,
 } from '@remix-run/react';
@@ -17,23 +22,12 @@ import {ModuleService} from '~/services/module.service.server';
 import {type TUser} from '~/types/user.type';
 import {getUserSession} from '~/utils/session.server';
 import {YemSpinner} from '~/components/yem-spinner.js';
-import {type TLessonDataForCache} from '~/cache/populate-lessons-to-cache.js';
-import {type TGetLessonActivityForUser} from '~/types/lesson-activity.type';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => [
 	{title: data!.lesson?.lesson.name ?? 'Aula do Curso do Yoga em Movimento'},
 	{name: 'description', content: data!.lesson?.lesson.description ?? 'Conheça a aula do curso oferecido pela Yoga em Movimento'},
 	...data!.meta,
 ];
-
-type LessonLoaderData = {
-	lesson: TLessonDataForCache | undefined;
-	meta: Array<{tagName: string; rel: string; href: string}>;
-	course: {slug: string; name: string} | undefined;
-	module: {slug: string; name: string} | undefined;
-	userLessonActivity: Promise<TGetLessonActivityForUser>;
-	userId: string;
-};
 
 export const loader = defineLoader(async ({request, params}: LoaderFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
@@ -69,7 +63,7 @@ export const loader = defineLoader(async ({request, params}: LoaderFunctionArgs)
 	};
 });
 
-export const action = async ({request, params, response}: ActionFunctionArgs) => {
+export const action = defineAction(async ({request, params, response}: ActionFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 	const {
 		'course-slug': courseSlug,
@@ -113,7 +107,7 @@ export const action = async ({request, params, response}: ActionFunctionArgs) =>
 	response!.status = 200;
 
 	return null;
-};
+});
 
 export default function Lesson() {
 	const data = useLoaderData<typeof loader>();
@@ -133,7 +127,6 @@ export default function Lesson() {
 			]}/>
 			<div className='w-full max-w-screen-lg mx-auto'>
 				<section id='title' className='flex justify-center gap-5 items-center mb-10'>
-					<h1 className='text-center'>{lesson.lesson.name}</h1>
 					<Suspense fallback={<YemSpinner/>}>
 						<Await resolve={userLessonActivity}>
 							{userLessonActivity => (
