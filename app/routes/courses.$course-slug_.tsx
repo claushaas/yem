@@ -33,7 +33,7 @@ export const loader = defineLoader(async ({request, params}: LoaderFunctionArgs)
 		const lessonActivityService = new LessonActivityService();
 
 		const {data: course} = new CourseService().getBySlugFromCache(courseSlug!, userSession.data as TUser);
-		console.log(course.modules);
+
 		const courseActivity = lessonActivityService.getCourseProgressForUser(courseSlug!, (userSession.data as TUser).id);
 		const modulesActivity = course.modules.map(module => ({
 			[(module as TModuleDataForCache).module.slug]: lessonActivityService.getModuleProgressForUser((module as TModuleDataForCache).module.slug, (userSession.data as TUser).id),
