@@ -5,12 +5,12 @@ import {useLoaderData, type MetaFunction} from '@remix-run/react';
 import {CourseService} from '~/services/course.service.server';
 import {commitUserSession, getUserSession} from '~/utils/session.server.js';
 import {logger} from '~/utils/logger.util.js';
-import {GenericEntityCard} from '~/components/generic-entity-card.js';
 import {type TUserRoles} from '~/types/user.type';
 import {type TCourse, type TPrismaPayloadGetAllCourses} from '~/types/course.type';
 import {type TServiceReturn} from '~/types/service-return.type';
 import {CourseCreateOrEditForm} from '~/components/course-create-or-edit-form.js';
 import {SuccessOrErrorMessage} from '~/components/admin-success-or-error-message.js';
+import {LessonEntityCard} from '~/components/entities-cards.js';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => ([
 	{title: 'Cursos - Yoga em Movimento'},
@@ -121,7 +121,7 @@ export default function Courses() {
 
 			<div className='flex gap-4 my-4 flex-wrap'>
 				{courses?.data?.map(course => (
-					<GenericEntityCard key={course?.id} course={course ?? {}} to={`./${course?.slug}`}/>
+					<LessonEntityCard key={course?.id} course={course ?? {}} to={`./${course?.slug}`}/>
 				))}
 			</div>
 		</>
