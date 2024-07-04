@@ -1,34 +1,29 @@
 import {Stream} from '@cloudflare/stream-react';
-import {json, type LoaderFunctionArgs} from '@remix-run/node';
-import {useLoaderData, type MetaFunction} from '@remix-run/react';
+import {type LoaderFunctionArgs, unstable_defineLoader as defineLoader} from '@remix-run/node';
+import {type MetaArgs_SingleFetch, useLoaderData, Await} from '@remix-run/react';
 import {QuillDeltaToHtmlConverter} from 'quill-delta-to-html';
 import {type OpIterator} from 'quill/core';
+import {Suspense} from 'react';
 import {type TLessonDataForCache} from '~/cache/populate-lessons-to-cache.js';
 import {GenericEntityCard} from '~/components/generic-entity-card.js';
 import {ModuleService} from '~/services/module.service.server';
 import {type TUser} from '~/types/user.type';
 import {logger} from '~/utils/logger.util';
 import {getUserSession} from '~/utils/session.server';
-import {type TModuleDataFromCache} from '~/types/module.type';
 import {Pagination} from '~/components/pagination.js';
 import {Breadcrumbs} from '~/components/breadcrumbs.js';
 import {CourseService} from '~/services/course.service.server';
 import {VideoPlayer} from '~/components/video-player.js';
+import {LessonActivityService} from '~/services/lesson-activity.service.server';
+import {YemSpinner} from '~/components/yem-spinner.js';
 
-export const meta: MetaFunction<typeof loader> = ({data}) => [
+export const meta = ({data}: MetaArgs_SingleFetch<typeof loader>) => [
 	{title: data!.module?.module.name ?? 'Módulo do Curso do Yoga em Movimento'},
 	{name: 'description', content: data!.module?.module.description ?? 'Conheça o módulo do curso oferecido pela Yoga em Movimento'},
 	...data!.meta,
 ];
 
-type ModuleLoaderData = {
-	module: TModuleDataFromCache | undefined;
-	meta: Array<{tagName: string; rel: string; href: string}>;
-	actualPage: number;
-	course: {slug: string; name: string} | undefined;
-};
-
-export const loader = async ({request, params}: LoaderFunctionArgs) => {
+export const loader = defineLoader(async ({request, params}: LoaderFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 
 	const {
@@ -47,30 +42,33 @@ export const loader = async ({request, params}: LoaderFunctionArgs) => {
 	try {
 		const {data: module} = new ModuleService().getBySlugFromCache(courseSlug!, moduleSlug!, userSession.data as TUser, page);
 		const {data: course} = new CourseService().getBySlugFromCache(courseSlug!, userSession.data as TUser);
+		const moduleActivity = new LessonActivityService().getModuleProgressForUser(moduleSlug!, (userSession.data as TUser).id);
 
-		return json<ModuleLoaderData>({
+		return {
 			module,
+			moduleActivity,
 			meta,
 			actualPage: page,
 			course: {
 				slug: course?.slug ?? '',
 				name: course?.name ?? '',
 			},
-		});
+		};
 	} catch (error) {
 		logger.logError(`Error loading module: ${(error as Error).message}`);
-		return json<ModuleLoaderData>({
+		return {
 			module: undefined,
+			moduleActivity: undefined,
 			meta,
 			actualPage: page,
 			course: undefined,
-		});
+		};
 	}
-};
+});
 
 export default function Module() {
-	const data = useLoaderData<ModuleLoaderData>();
-	const {module, actualPage, course} = data;
+	const data = useLoaderData<typeof loader>();
+	const {module, actualPage, course, moduleActivity} = data;
 
 	const {ops} = module?.module.content ? JSON.parse(module?.module.content) as OpIterator : {ops: []};
 	const contentConverter = new QuillDeltaToHtmlConverter(ops, {
@@ -80,8 +78,8 @@ export default function Module() {
 	return module && (
 		<main className='w-full max-w-[95%] sm:max-w-[90%] mx-auto'>
 			<Breadcrumbs data={[
-				[`/courses/${course!.slug}`, course!.name], // Course
-				[`/courses/${course!.slug}/${module.moduleSlug}`, module.module.name], // Module
+				[`/courses/${course.slug}`, course.name], // Course
+				[`/courses/${course.slug}/${module.moduleSlug}`, module.module.name], // Module
 			]}/>
 			<div className='w-full max-w-screen-lg mx-auto'>
 
@@ -106,10 +104,19 @@ export default function Module() {
 					</section>
 				)}
 
-				{module.module.content && (
-				/* eslint-disable-next-line react/no-danger, @typescript-eslint/naming-convention */
-					<section dangerouslySetInnerHTML={{__html: contentConverter.convert()}} id='content' className='p-1 sm:p-5 bg-mauvea-2 dark:bg-mauvedarka-2 rounded-2xl flex flex-col gap-6 mb-10'/>
-				)}
+				<section id='content' className='p-1 sm:p-5 bg-mauvea-2 dark:bg-mauvedarka-2 rounded-2xl flex flex-col gap-6 mb-10'>
+					{module.module.content && (
+						// eslint-disable-next-line react/no-danger, @typescript-eslint/naming-convention
+						<section dangerouslySetInnerHTML={{__html: contentConverter.convert()}}/>
+					)}
+					<Suspense fallback={<YemSpinner/>}>
+						<Await resolve={moduleActivity}>
+							{({data: {percentage}}) => (
+								<p className='text-sm'>Progresso do módulo: {percentage}% concluído</p>
+							)}
+						</Await>
+					</Suspense>
+				</section>
 
 				{module.lessons.length > 1 && (
 					<section id='lessons' className='p-1 sm:p-5 bg-mauvea-2 dark:bg-mauvedarka-2 rounded-2xl flex flex-col gap-6'>

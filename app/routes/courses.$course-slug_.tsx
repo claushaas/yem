@@ -1,30 +1,27 @@
 import {Stream} from '@cloudflare/stream-react';
-import {json, type LoaderFunctionArgs} from '@remix-run/node';
-import {type MetaFunction, useLoaderData} from '@remix-run/react';
+import {type LoaderFunctionArgs, unstable_defineLoader as defineLoader} from '@remix-run/node';
+import {Await, type MetaArgs_SingleFetch, useLoaderData} from '@remix-run/react';
 import {QuillDeltaToHtmlConverter} from 'quill-delta-to-html';
 import {type OpIterator} from 'quill/core';
-import {type TCourseDataForCache} from '~/cache/populate-courses-to-cache.js';
+import {Suspense} from 'react';
 import {type TModuleDataForCache} from '~/cache/populate-modules-to-cache.js';
 import {Breadcrumbs} from '~/components/breadcrumbs.js';
 import {GenericEntityCard} from '~/components/generic-entity-card.js';
 import {VideoPlayer} from '~/components/video-player.js';
+import {YemSpinner} from '~/components/yem-spinner.js';
 import {CourseService} from '~/services/course.service.server';
+import {LessonActivityService} from '~/services/lesson-activity.service.server';
 import {type TUser} from '~/types/user.type';
 import {logger} from '~/utils/logger.util';
 import {getUserSession} from '~/utils/session.server';
 
-export const meta: MetaFunction<typeof loader> = ({data}) => [
+export const meta = ({data}: MetaArgs_SingleFetch<typeof loader>) => [
 	{title: data!.course?.name ?? 'Curso da Yoga em Movimento'},
 	{name: 'description', content: data!.course?.description ?? 'Conheça o curso oferecido pela Yoga em Movimento'},
 	...data!.meta,
 ];
 
-type CourseLoaderData = {
-	course: TCourseDataForCache | undefined;
-	meta: Array<{tagName: string; rel: string; href: string}>;
-};
-
-export const loader = async ({request, params}: LoaderFunctionArgs) => {
+export const loader = defineLoader(async ({request, params}: LoaderFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 	const {'course-slug': courseSlug} = params;
 
@@ -34,22 +31,25 @@ export const loader = async ({request, params}: LoaderFunctionArgs) => {
 
 	try {
 		const {data: course} = new CourseService().getBySlugFromCache(courseSlug!, userSession.data as TUser);
+		const courseActivity = new LessonActivityService().getCourseProgressForUser(courseSlug!, (userSession.data as TUser).id);
 
-		return json<CourseLoaderData>({
+		return {
 			course,
+			courseActivity,
 			meta,
-		});
+		};
 	} catch (error) {
 		logger.logError(`Error loading course: ${(error as Error).message}`);
-		return json<CourseLoaderData>({
+		return {
 			course: undefined,
+			courseActivity: undefined,
 			meta,
-		});
+		};
 	}
-};
+});
 
 export default function Course() {
-	const {course} = useLoaderData<CourseLoaderData>();
+	const {course, courseActivity} = useLoaderData<typeof loader>();
 
 	const {ops} = course?.content ? JSON.parse(course?.content) as OpIterator : {ops: []};
 	const contentConverter = new QuillDeltaToHtmlConverter(ops, {
@@ -81,10 +81,20 @@ export default function Course() {
 					</section>
 				)}
 
-				{course.content && (
-					// eslint-disable-next-line react/no-danger, @typescript-eslint/naming-convention
-					<section dangerouslySetInnerHTML={{__html: contentConverter.convert()}} id='content' className='p-1 sm:p-5 bg-mauvea-2 dark:bg-mauvedarka-2 rounded-3xl flex flex-col gap-6 mb-10'/>
-				)}
+				<section id='content' className='p-1 sm:p-5 bg-mauvea-2 dark:bg-mauvedarka-2 rounded-3xl flex flex-col gap-6 mb-10'>
+					{course.content && (
+						// eslint-disable-next-line react/no-danger, @typescript-eslint/naming-convention
+						<div dangerouslySetInnerHTML={{__html: contentConverter.convert()}}/>
+					)}
+					<Suspense fallback={<YemSpinner/>}>
+						<Await resolve={courseActivity}>
+							{({data: {percentage}}) => (
+								<p className='text-sm'>Progresso do curso: {percentage}% concluído</p>
+							)}
+						</Await>
+					</Suspense>
+
+				</section>
 
 				{course.modules.length > 0 && (
 					<section id='modules' className='p-1 sm:p-5 bg-mauvea-2 dark:bg-mauvedarka-2 rounded-3xl flex flex-col gap-6'>

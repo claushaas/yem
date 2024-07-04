@@ -1,5 +1,10 @@
 import {Stream} from '@cloudflare/stream-react';
-import {type LoaderFunctionArgs, unstable_defineLoader as defineLoader, type ActionFunctionArgs} from '@remix-run/node';
+import {
+	type LoaderFunctionArgs,
+	unstable_defineLoader as defineLoader,
+	type ActionFunctionArgs,
+	unstable_defineAction as defineAction,
+} from '@remix-run/node';
 import {
 	Await, Form, useLoaderData, type MetaFunction,
 } from '@remix-run/react';
@@ -58,7 +63,7 @@ export const loader = defineLoader(async ({request, params}: LoaderFunctionArgs)
 	};
 });
 
-export const action = async ({request, params, response}: ActionFunctionArgs) => {
+export const action = defineAction(async ({request, params, response}: ActionFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 	const {
 		'course-slug': courseSlug,
@@ -102,7 +107,7 @@ export const action = async ({request, params, response}: ActionFunctionArgs) =>
 	response!.status = 200;
 
 	return null;
-};
+});
 
 export default function Lesson() {
 	const data = useLoaderData<typeof loader>();

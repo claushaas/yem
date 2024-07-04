@@ -11,7 +11,11 @@ export class LessonActivityService {
 		this._model = model;
 	}
 
-	public async getCourseProgressForUser(courseSlug: string, userId: string): Promise<TServiceReturn<unknown>> {
+	public async getCourseProgressForUser(courseSlug: string, userId: string): Promise<TServiceReturn<{
+		totalLessons: number;
+		completedLessons: number;
+		percentage: number;
+	}>> {
 		const totalLessons = await this._model.lesson.count({
 			where: {
 				modules: {
@@ -59,7 +63,11 @@ export class LessonActivityService {
 		};
 	}
 
-	public async getModuleProgressForUser(moduleSlug: string, userId: string): Promise<TServiceReturn<unknown>> {
+	public async getModuleProgressForUser(moduleSlug: string, userId: string): Promise<TServiceReturn<{
+		totalLessons: number;
+		completedLessons: number;
+		percentage: number;
+	}>> {
 		const totalLessons = await this._model.lesson.count({
 			where: {
 				modules: {

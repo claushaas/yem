@@ -1,9 +1,15 @@
 import {
-	type ActionFunctionArgs, json, type LoaderFunctionArgs, redirect,
+	type ActionFunctionArgs,
+	type LoaderFunctionArgs,
+	unstable_defineLoader as defineLoader,
+	unstable_defineAction as defineAction,
 } from '@remix-run/node';
 import {
-	Form, useLoaderData, useNavigation, useParams,
-	type MetaFunction,
+	Form,
+	type MetaArgs_SingleFetch,
+	useLoaderData,
+	useNavigation,
+	useParams,
 } from '@remix-run/react';
 import * as Dialog from '@radix-ui/react-dialog';
 import * as RadixForm from '@radix-ui/react-form';
@@ -15,7 +21,7 @@ import {CourseService} from '~/services/course.service.server';
 import {commitUserSession, getUserSession} from '~/utils/session.server';
 import {type TUser} from '~/types/user.type';
 import {logger} from '~/utils/logger.util';
-import {type TCourse, type TPrismaPayloadGetAllCourses, type TPrismaPayloadGetCourseBySlug} from '~/types/course.type';
+import {type TCourse} from '~/types/course.type';
 import {GenericEntityCard} from '~/components/generic-entity-card.js';
 import {Button, ButtonPreset, ButtonType} from '~/components/button.js';
 import {Editor} from '~/components/text-editor.client.js';
@@ -26,22 +32,14 @@ import {useTextEditor} from '~/hooks/use-text-editor.hook';
 import {ContentConverter} from '~/components/content-converter.js';
 import {SuccessOrErrorMessage} from '~/components/admin-success-or-error-message.js';
 
-export const meta: MetaFunction<typeof loader> = ({data}) => ([
+export const meta = ({data}: MetaArgs_SingleFetch<typeof loader>) => ([
 	{title: data?.course?.name ?? 'Cursos - Yoga em Movimento'},
 	{name: 'description', content: data?.course?.description ?? 'Conheça os cursos oferecidos pela Yoga em Movimento'},
 	{name: 'robots', content: 'noindex, nofollow'},
 	...data!.meta,
 ]);
 
-type CourseLoaderData = {
-	error: string | undefined;
-	success: string | undefined;
-	course: TPrismaPayloadGetCourseBySlug | undefined;
-	courses: TPrismaPayloadGetAllCourses | undefined;
-	meta: Array<{tagName: string; rel: string; href: string}>;
-};
-
-export const loader = async ({request, params}: LoaderFunctionArgs) => {
+export const loader = defineLoader(async ({request, params, response}: LoaderFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 	const {'course-slug': courseSlug} = params;
 
@@ -54,34 +52,28 @@ export const loader = async ({request, params}: LoaderFunctionArgs) => {
 		const {data: course} = await courseService.getBySlug(courseSlug!, userSession.data as TUser);
 		const {data: courses} = await courseService.getAll(userSession.get('roles') as string[]);
 
-		return json<CourseLoaderData>({
+		response?.headers.set('Set-Cookie', await commitUserSession(userSession));
+
+		return {
 			course,
 			courses,
 			error: userSession.get('error') as string | undefined,
 			success: userSession.get('success') as string | undefined,
 			meta,
-		}, {
-			headers: {
-				'Set-Cookie': await commitUserSession(userSession), // eslint-disable-line @typescript-eslint/naming-convention
-			},
-		});
+		};
 	} catch (error) {
 		logger.logError(`Error getting course: ${(error as Error).message}`);
-		return json<CourseLoaderData>({
+		return {
 			course: undefined,
 			courses: undefined,
 			error: 'Erro ao buscar curso',
 			success: undefined,
 			meta,
-		}, {
-			headers: {
-				'Set-Cookie': await commitUserSession(userSession), // eslint-disable-line @typescript-eslint/naming-convention
-			},
-		});
+		};
 	}
-};
+});
 
-export const action = async ({request, params}: ActionFunctionArgs) => {
+export const action = defineAction(async ({request, params, response}: ActionFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 	const {'course-slug': courseSlug} = params;
 
@@ -169,19 +161,13 @@ export const action = async ({request, params}: ActionFunctionArgs) => {
 	} catch (error) {
 		logger.logError(`Error creating course: ${(error as Error).message}`);
 		userSession.flash('error', `Error creating course: ${(error as Error).message}`);
-		return redirect(`/admin/courses/${courseSlug}`, {
-			headers: {
-				'Set-Cookie': await commitUserSession(userSession), // eslint-disable-line @typescript-eslint/naming-convention
-			},
-		});
+	} finally {
+		response?.headers.set('Set-Cookie', await commitUserSession(userSession));
+		response?.headers.set('Location', `/admin/courses/${courseSlug}`);
 	}
 
-	return redirect(`/admin/courses/${courseSlug}`, {
-		headers: {
-			'Set-Cookie': await commitUserSession(userSession), // eslint-disable-line @typescript-eslint/naming-convention
-		},
-	});
-};
+	return null;
+});
 
 export default function Course() {
 	const {
@@ -189,7 +175,7 @@ export default function Course() {
 		courses,
 		error,
 		success,
-	} = useLoaderData<CourseLoaderData>();
+	} = useLoaderData<typeof loader>();
 	const {'course-slug': courseSlug} = useParams();
 
 	const [courseContent, setCourseContentEditor] = useTextEditor(course?.content);
