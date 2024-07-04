@@ -5,7 +5,7 @@ import {QuillDeltaToHtmlConverter} from 'quill-delta-to-html';
 import {type OpIterator} from 'quill/core';
 import {Suspense} from 'react';
 import {type TLessonDataForCache} from '~/cache/populate-lessons-to-cache.js';
-import {GenericEntityCard} from '~/components/generic-entity-card.js';
+import {LessonEntityCard} from '~/components/entities-cards.js';
 import {ModuleService} from '~/services/module.service.server';
 import {type TUser} from '~/types/user.type';
 import {logger} from '~/utils/logger.util';
@@ -123,7 +123,7 @@ export default function Module() {
 						<h2 className='text-center'>Aulas</h2>
 						<div className='flex flex-wrap justify-center gap-4 my-4'>
 							{(module.lessons as unknown as TLessonDataForCache[]).map(lesson => (
-								<GenericEntityCard key={lesson.lesson.id} course={lesson.lesson} to={`./${lesson.lesson.slug}`}/>
+								<LessonEntityCard key={lesson.lesson.id} course={lesson.lesson} to={`./${lesson.lesson.slug}`}/>
 							))}
 						</div>
 						{module.pages > 1 && <Pagination pages={module.pages} actualPage={actualPage}/>}

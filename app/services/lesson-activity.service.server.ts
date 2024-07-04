@@ -54,7 +54,7 @@ export class LessonActivityService {
 		const data = {
 			totalLessons,
 			completedLessons,
-			percentage: Math.round((completedLessons / totalLessons) * 100),
+			percentage: completedLessons === 0 ? 0 : Math.round((completedLessons / totalLessons) * 100),
 		};
 
 		return {
@@ -94,7 +94,7 @@ export class LessonActivityService {
 		const data = {
 			totalLessons,
 			completedLessons,
-			percentage: Math.round((completedLessons / totalLessons) * 100),
+			percentage: completedLessons === 0 ? 0 : Math.round((completedLessons / totalLessons) * 100),
 		};
 
 		return {

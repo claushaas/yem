@@ -6,7 +6,7 @@ import {type OpIterator} from 'quill/core';
 import {Suspense} from 'react';
 import {type TModuleDataForCache} from '~/cache/populate-modules-to-cache.js';
 import {Breadcrumbs} from '~/components/breadcrumbs.js';
-import {GenericEntityCard} from '~/components/generic-entity-card.js';
+import {GenericEntityCard} from '~/components/entities-cards.js';
 import {VideoPlayer} from '~/components/video-player.js';
 import {YemSpinner} from '~/components/yem-spinner.js';
 import {CourseService} from '~/services/course.service.server';
@@ -30,12 +30,19 @@ export const loader = defineLoader(async ({request, params}: LoaderFunctionArgs)
 	];
 
 	try {
+		const lessonActivityService = new LessonActivityService();
+
 		const {data: course} = new CourseService().getBySlugFromCache(courseSlug!, userSession.data as TUser);
-		const courseActivity = new LessonActivityService().getCourseProgressForUser(courseSlug!, (userSession.data as TUser).id);
+		console.log(course.modules);
+		const courseActivity = lessonActivityService.getCourseProgressForUser(courseSlug!, (userSession.data as TUser).id);
+		const modulesActivity = course.modules.map(module => ({
+			[(module as TModuleDataForCache).module.slug]: lessonActivityService.getModuleProgressForUser((module as TModuleDataForCache).module.slug, (userSession.data as TUser).id),
+		}));
 
 		return {
 			course,
 			courseActivity,
+			modulesActivity,
 			meta,
 		};
 	} catch (error) {
@@ -43,13 +50,14 @@ export const loader = defineLoader(async ({request, params}: LoaderFunctionArgs)
 		return {
 			course: undefined,
 			courseActivity: undefined,
+			modulesActivity: undefined,
 			meta,
 		};
 	}
 });
 
 export default function Course() {
-	const {course, courseActivity} = useLoaderData<typeof loader>();
+	const {course, courseActivity, modulesActivity} = useLoaderData<typeof loader>();
 
 	const {ops} = course?.content ? JSON.parse(course?.content) as OpIterator : {ops: []};
 	const contentConverter = new QuillDeltaToHtmlConverter(ops, {
@@ -101,7 +109,13 @@ export default function Course() {
 						<h2 className='text-center'>Módulos</h2>
 						<div className='flex flex-wrap gap-4 my-4 justify-center'>
 							{(course.modules as unknown as TModuleDataForCache[]).map(module => (
-								<GenericEntityCard key={module.module.id} course={module.module} to={`./${module.module.slug}`}/>
+								<GenericEntityCard
+									key={module.module.id}
+									course={module.module}
+									to={`./${module.module.slug}`}
+									// eslint-disable-next-line unicorn/no-array-reduce
+									activity={modulesActivity.reduce((accumulator, activity) => ({...accumulator, ...activity}), {})[module.module.slug]}
+								/>
 							))}
 						</div>
 					</section>
