@@ -140,19 +140,12 @@ export class LessonActivityService {
 				},
 			});
 
-			if (!lesson) {
-				return {
-					status: 'NOT_FOUND',
-					data: undefined,
-				};
-			}
-
 			return {
 				status: 'SUCCESSFUL',
 				data: {
-					saved: lesson.savedBy.length > 0 && lesson.savedBy[0].isSaved,
-					completed: lesson.completedBy.length > 0 && lesson.completedBy[0].isCompleted,
-					favorited: lesson.favoritedBy.length > 0 && lesson.favoritedBy[0].isFavorited,
+					saved: (lesson?.savedBy && lesson.savedBy.length > 0 && lesson.savedBy[0].isSaved) ?? false,
+					completed: (lesson?.completedBy && lesson.completedBy.length > 0 && lesson.completedBy[0].isCompleted) ?? false,
+					favorited: (lesson?.favoritedBy && lesson.favoritedBy.length > 0 && lesson.favoritedBy[0].isFavorited) ?? false,
 				},
 			};
 		} catch (error) {

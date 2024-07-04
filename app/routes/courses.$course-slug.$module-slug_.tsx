@@ -40,13 +40,19 @@ export const loader = defineLoader(async ({request, params}: LoaderFunctionArgs)
 	];
 
 	try {
+		const lessonActivityService = new LessonActivityService();
 		const {data: module} = new ModuleService().getBySlugFromCache(courseSlug!, moduleSlug!, userSession.data as TUser, page);
 		const {data: course} = new CourseService().getBySlugFromCache(courseSlug!, userSession.data as TUser);
-		const moduleActivity = new LessonActivityService().getModuleProgressForUser(moduleSlug!, (userSession.data as TUser).id);
+
+		const moduleActivity = lessonActivityService.getModuleProgressForUser(moduleSlug!, (userSession.data as TUser).id);
+		const lessonsActivity = module?.lessons.map(lesson => ({
+			[(lesson as TLessonDataForCache).lesson.slug]: lessonActivityService.getLessonActivityForUser((lesson as TLessonDataForCache).lesson.slug, (userSession.data as TUser).id),
+		}));
 
 		return {
 			module,
 			moduleActivity,
+			lessonsActivity,
 			meta,
 			actualPage: page,
 			course: {
@@ -59,6 +65,7 @@ export const loader = defineLoader(async ({request, params}: LoaderFunctionArgs)
 		return {
 			module: undefined,
 			moduleActivity: undefined,
+			lessonsActivity: undefined,
 			meta,
 			actualPage: page,
 			course: undefined,
@@ -68,7 +75,7 @@ export const loader = defineLoader(async ({request, params}: LoaderFunctionArgs)
 
 export default function Module() {
 	const data = useLoaderData<typeof loader>();
-	const {module, actualPage, course, moduleActivity} = data;
+	const {module, actualPage, course, moduleActivity, lessonsActivity} = data;
 
 	const {ops} = module?.module.content ? JSON.parse(module?.module.content) as OpIterator : {ops: []};
 	const contentConverter = new QuillDeltaToHtmlConverter(ops, {
@@ -123,7 +130,13 @@ export default function Module() {
 						<h2 className='text-center'>Aulas</h2>
 						<div className='flex flex-wrap justify-center gap-4 my-4'>
 							{(module.lessons as unknown as TLessonDataForCache[]).map(lesson => (
-								<LessonEntityCard key={lesson.lesson.id} course={lesson.lesson} to={`./${lesson.lesson.slug}`}/>
+								<LessonEntityCard
+									key={lesson.lesson.id}
+									course={lesson.lesson}
+									to={`./${lesson.lesson.slug}`}
+									// eslint-disable-next-line unicorn/no-array-reduce
+									activity={lessonsActivity!.reduce((accumulator, activity) => ({...accumulator, ...activity}), {})[lesson.lesson.slug]}
+								/>
 							))}
 						</div>
 						{module.pages > 1 && <Pagination pages={module.pages} actualPage={actualPage}/>}
