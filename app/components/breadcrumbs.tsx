@@ -16,7 +16,7 @@ export function Breadcrumbs({data}: BreadcrumbsData) {
 						return (
 							<Fragment key={url}>
 								<p><ChevronRightIcon className='size-4'/></p>
-								<p>{label}</p>
+								<p className='font-gothamBold'>{label}</p>
 							</Fragment>
 						);
 					}

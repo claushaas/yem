@@ -60,9 +60,6 @@ export default function Course() {
 		<main className='w-full max-w-[95%] sm:max-w-[90%] mx-auto'>
 			<Breadcrumbs data={[[`/${course.slug}`, course.name]]}/>
 			<div className='w-full max-w-screen-lg mx-auto'>
-				<section id='title' className='mb-10'>
-					<h1 className='text-center'>{course.name}</h1>
-				</section>
 				{course.videoSourceUrl && (
 					<section id='video' className='h-fit rounded-2xl mb-10'>
 						{!course.videoSourceUrl.startsWith('https://') && (
@@ -89,7 +86,7 @@ export default function Course() {
 					<section dangerouslySetInnerHTML={{__html: contentConverter.convert()}} id='content' className='p-1 sm:p-5 bg-mauvea-2 dark:bg-mauvedarka-2 rounded-3xl flex flex-col gap-6 mb-10'/>
 				)}
 
-				{course.modules && (
+				{course.modules.length > 0 && (
 					<section id='modules' className='p-1 sm:p-5 bg-mauvea-2 dark:bg-mauvedarka-2 rounded-3xl flex flex-col gap-6'>
 						<h2 className='text-center'>Módulos</h2>
 						<div className='flex flex-wrap gap-4 my-4 justify-center'>

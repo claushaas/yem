@@ -84,9 +84,6 @@ export default function Module() {
 				[`/courses/${course!.slug}/${module.moduleSlug}`, module.module.name], // Module
 			]}/>
 			<div className='w-full max-w-screen-lg mx-auto'>
-				<section id='title' className='mb-10'>
-					<h1 className='text-center'>{module.module.name}</h1>
-				</section>
 
 				{module.module.videoSourceUrl && (
 					<section id='video' className='h-fit rounded-2xl mb-10'>
@@ -114,7 +111,7 @@ export default function Module() {
 					<section dangerouslySetInnerHTML={{__html: contentConverter.convert()}} id='content' className='p-1 sm:p-5 bg-mauvea-2 dark:bg-mauvedarka-2 rounded-2xl flex flex-col gap-6 mb-10'/>
 				)}
 
-				{module.lessons && (
+				{module.lessons.length > 1 && (
 					<section id='lessons' className='p-1 sm:p-5 bg-mauvea-2 dark:bg-mauvedarka-2 rounded-2xl flex flex-col gap-6'>
 						<h2 className='text-center'>Aulas</h2>
 						<div className='flex flex-wrap justify-center gap-4 my-4'>
