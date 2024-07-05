@@ -28,7 +28,7 @@ import {TagService} from '~/services/tag.service.server';
 import {useTextEditor} from '~/hooks/use-text-editor.hook.js';
 import {ContentConverter} from '~/components/content-converter.js';
 import {SuccessOrErrorMessage} from '~/components/admin-success-or-error-message.js';
-import {LessonEntityCard} from '~/components/entities-cards.js';
+import {AdminEntityCard} from '~/components/entities-cards.js';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => [
 	{title: `${data?.module?.module.name} - Yoga em Movimento`},
@@ -965,7 +965,7 @@ export default function Module() {
 
 				<div className='flex gap-4 my-4 flex-wrap'>
 					{module.module.lessons.map(lesson => (
-						<LessonEntityCard key={lesson.lesson.id} course={lesson.lesson} to={`./${lesson.lesson.slug}`}/>
+						<AdminEntityCard key={lesson.lesson.id} course={lesson.lesson} to={`./${lesson.lesson.slug}`}/>
 					))}
 				</div>
 			</div>
