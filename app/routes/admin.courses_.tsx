@@ -10,7 +10,7 @@ import {type TCourse, type TPrismaPayloadGetAllCourses} from '~/types/course.typ
 import {type TServiceReturn} from '~/types/service-return.type';
 import {CourseCreateOrEditForm} from '~/components/course-create-or-edit-form.js';
 import {SuccessOrErrorMessage} from '~/components/admin-success-or-error-message.js';
-import {LessonEntityCard} from '~/components/entities-cards.js';
+import {AdminEntityCard} from '~/components/entities-cards.js';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => ([
 	{title: 'Cursos - Yoga em Movimento'},
@@ -121,7 +121,7 @@ export default function Courses() {
 
 			<div className='flex gap-4 my-4 flex-wrap'>
 				{courses?.data?.map(course => (
-					<LessonEntityCard key={course?.id} course={course ?? {}} to={`./${course?.slug}`}/>
+					<AdminEntityCard key={course?.id} course={course ?? {}} to={`./${course?.slug}`}/>
 				))}
 			</div>
 		</>

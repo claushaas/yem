@@ -22,7 +22,7 @@ import {commitUserSession, getUserSession} from '~/utils/session.server';
 import {type TUser} from '~/types/user.type';
 import {logger} from '~/utils/logger.util';
 import {type TCourse} from '~/types/course.type';
-import {LessonEntityCard} from '~/components/entities-cards.js';
+import {AdminEntityCard} from '~/components/entities-cards.js';
 import {Button, ButtonPreset, ButtonType} from '~/components/button.js';
 import {Editor} from '~/components/text-editor.client.js';
 import {YemSpinner} from '~/components/yem-spinner.js';
@@ -936,7 +936,7 @@ export default function Course() {
 
 				<div className='flex gap-4 my-4 flex-wrap'>
 					{course.modules.map(module => (
-						<LessonEntityCard key={module.module.id} course={module.module} to={`./${module.module.slug}`}/>
+						<AdminEntityCard key={module.module.id} course={module.module} to={`./${module.module.slug}`}/>
 					))}
 				</div>
 
