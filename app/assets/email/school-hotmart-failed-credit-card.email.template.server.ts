@@ -1,8 +1,8 @@
 import {type TEmailTemplate} from '../../types/email-template.type.js';
 
-export const newPassWordEmailTemplate = (firstName: string, to: string, password: string): TEmailTemplate => ({
+export const schoolHotmartFailedCreditCardEmailTemplate = (firstName: string, to: string, descricaoDoErro: string): TEmailTemplate => ({
 	to,
-	subject: `${firstName}, seu acesso chegou!`,
+	subject: 'Houve um problema com seu pagamento',
 	html: `
   <!DOCTYPE html>
 <html xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office" lang="en">
@@ -90,7 +90,7 @@ export const newPassWordEmailTemplate = (firstName: string, to: string, password
 	</style>
 </head>
 
-<body style="background-color: #ffffff; margin: 0; padding: 0; -webkit-text-size-adjust: none; text-size-adjust: none;">
+<body class="body" style="background-color: #ffffff; margin: 0; padding: 0; -webkit-text-size-adjust: none; text-size-adjust: none;">
 	<table class="nl-container" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #ffffff;">
 		<tbody>
 			<tr>
@@ -107,7 +107,7 @@ export const newPassWordEmailTemplate = (firstName: string, to: string, password
 														<tr>
 															<td class="pad" style="width:100%;">
 																<div class="alignment" align="center" style="line-height:10px">
-																	<div style="max-width: 219px;"><a href="https://yogaemmovimento.com" target="_blank" style="outline:none" tabindex="-1"><img src="https://img.amo.yoga/logo_yem.png" style="display: block; height: auto; border: 0; width: 100%;" width="219" alt="Yoga em Movimento" title="Yoga em Movimento"></a></div>
+																	<div style="max-width: 219px;"><a href="https://yogaemmovimento.com" target="_blank" style="outline:none" tabindex="-1"><img src="https://img.amo.yoga/logo_yem.png" style="display: block; height: auto; border: 0; width: 100%;" width="219" alt="Yoga em Movimento" title="Yoga em Movimento" height="auto"></a></div>
 																</div>
 															</td>
 														</tr>
@@ -118,31 +118,22 @@ export const newPassWordEmailTemplate = (firstName: string, to: string, password
 																<div class="alignment" align="center">
 																	<table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
 																		<tr>
-																			<td class="divider_inner" style="font-size: 1px; line-height: 1px; border-top: 1px solid #dddddd;"><span>&#8202;</span></td>
+																			<td class="divider_inner" style="font-size: 1px; line-height: 1px; border-top: 1px solid #dddddd;"><span style="word-break: break-word;">&#8202;</span></td>
 																		</tr>
 																	</table>
 																</div>
 															</td>
 														</tr>
 													</table>
-													<table class="heading_block block-3" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
-														<tr>
-															<td class="pad" style="padding-bottom:10px;padding-left:10px;padding-right:10px;padding-top:30px;text-align:center;width:100%;">
-																<h1 style="margin: 0; color: #7747FF; direction: ltr; font-family: Arial, Helvetica, sans-serif; font-size: 38px; font-weight: 700; letter-spacing: normal; line-height: 120%; text-align: center; margin-top: 0; margin-bottom: 0; mso-line-height-alt: 45.6px;"><span class="tinyMce-placeholder">Sua nova senha chegou!</span></h1>
-															</td>
-														</tr>
-													</table>
-													<table class="paragraph_block block-4" width="100%" border="0" cellpadding="10" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;">
+													<table class="paragraph_block block-3" width="100%" border="0" cellpadding="10" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;">
 														<tr>
 															<td class="pad">
 																<div style="color:#101112;direction:ltr;font-family:Arial, Helvetica, sans-serif;font-size:16px;font-weight:400;letter-spacing:0px;line-height:120%;text-align:left;mso-line-height-alt:19.2px;">
-																	<p style="margin: 0; margin-bottom: 16px;">Olá, ${firstName}, utilize os dados abaixo para acessar a área dos aluno:</p>
-																	<p style="margin: 0; margin-bottom: 16px;">Link: <a href="https://escola.yogaemmovimento.com" target="_blank" title="Área dos Alunos" style="text-decoration: underline; color: #7747FF;" rel="noopener">https://escola.yogaemmovimento.com</a></p>
-																	<p style="margin: 0; margin-bottom: 16px;">Usuário: ${to}</p>
-																	<p style="margin: 0; margin-bottom: 16px;">Senha: ${password}</p>
-																	<p style="margin: 0; margin-bottom: 16px;">Caso precise de qualquer ajuda, não hesite em nos chamar no WhatsApp: <a href="https://wa.me/551149359150" target="_blank" title="WhatsApp da Yoga em Movimento" style="text-decoration: underline; color: #7747FF;" rel="noopener">+55 11 4935-9150</a></p>
-																	<p style="margin: 0; margin-bottom: 16px;">Um forte abraço,</p>
-																	<p style="margin: 0;">Equipe Yoga em Movimento</p>
+																	<p style="margin: 0; margin-bottom: 16px;">Olá, ${firstName}, tudo bem contigo?</p>
+																	<p style="margin: 0; margin-bottom: 16px;">Foi feita a tentativa de cobrança da sua mensalidade ou anuidade da Escola Online no seu cartão, mas houve uma falha na cobrança.</p>
+																	<p style="margin: 0; margin-bottom: 16px;">A Hotmart informou o seguinte erro ao tentar fazer a cobrança: ${descricaoDoErro}.</p>
+																	<p style="margin: 0; margin-bottom: 16px;">Acesse <a href="https://consumer.hotmart.com/purchase/135340" target="_blank" style="text-decoration: underline; color: #7747FF;" rel="noopener">https://consumer.hotmart.com/purchase/135340</a> com o email usado em nosso site (${to}) para regularizar o pagamento e não perder o acesso ao conteúdo.</p>
+																	<p style="margin: 0;">E se precisar da nossa ajuda, ficamos a disposição 🙏🙌😊</p>
 																</div>
 															</td>
 														</tr>
@@ -164,17 +155,14 @@ export const newPassWordEmailTemplate = (firstName: string, to: string, password
 </html>
   `,
 	text: `
-  Olá, ${firstName}, sua nova senha chegou.
-
-  Abaixo estão os dados para acessar a área dos alunos:
-
-  Link: https://escola.yogaemmovimento.com
-  Usuário: ${to}
-  Senha: ${password}
-
-  Caso precise de qualquer ajuda, não hesite em nos chamar no WhatsApp: +55 11 4935-9150
-
-  Um forte abraço,
-  Equipe Yoga em Movimento
+  Olá, ${firstName}, tudo bem contigo?
+	
+	Foi feita a tentativa de cobrança da sua mensalidade ou anuidade da Escola Online no seu cartão, mas houve uma falha na cobrança.
+	
+	A Hotmart informou o seguinte erro ao tentar fazer a cobrança: ${descricaoDoErro}.
+	
+	Acesse https://consumer.hotmart.com/purchase/135340 com o email usado em nosso site (${to}) para regularizar o pagamento e não perder o acesso ao conteúdo.
+	
+	E se precisar da nossa ajuda, ficamos a disposição 🙏🙌😊
   `,
 });
