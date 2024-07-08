@@ -19,6 +19,10 @@ import {formationHotmartDelayedBilletEmailTemplate} from '~/assets/email/formati
 import {formationHotmartDelayedPixEmailTemplate} from '~/assets/email/formation-hotmart-delayed-pix.email.template.server.js';
 import {schoolHotmartFailedCreditCardEmailTemplate} from '~/assets/email/school-hotmart-failed-credit-card.email.template.server.js';
 import {formationHotmartFailedCreditCardEmailTemplate} from '~/assets/email/formation-hotmart-failed-credit-card.email.template.server.js';
+import {schoolHotmartPrintedBilletEmailTemplate} from '~/assets/email/school-hotmart-printed-billet.email.template.server.js';
+import {schoolHotmartPrintedPixEmailTemplate} from '~/assets/email/school-hotmart-printed-pix.email.template.server.js';
+import {formationHotmartPrintedBilletEmailTemplate} from '~/assets/email/formation-hotmart-printed-billet.email.template.server.js';
+import {formationHotmartPrintedPixEmailTemplate} from '~/assets/email/formation-hotmart-printed-pix.email.template.server.js';
 
 export class HooksService {
 	private readonly _userService: UserService;
@@ -474,6 +478,7 @@ export class HooksService {
 						codigoDoBoleto: data.purchase.payment.billet_barcode!,
 					},
 				),
+				this._mailService.sendEmail(schoolHotmartPrintedBilletEmailTemplate(user.firstName, user.email, data.purchase.payment.billet_url!, data.purchase.payment.billet_barcode!)),
 			]);
 			return;
 		}
@@ -489,6 +494,7 @@ export class HooksService {
 						linkDoPix: data.purchase.payment.pix_qrcode!,
 					},
 				),
+				this._mailService.sendEmail(schoolHotmartPrintedPixEmailTemplate(user.firstName, user.email, data.purchase.payment.pix_qrcode!)),
 			]);
 			return;
 		}
@@ -505,6 +511,7 @@ export class HooksService {
 						codigoDoBoleto: data.purchase.payment.billet_barcode!,
 					},
 				),
+				this._mailService.sendEmail(formationHotmartPrintedBilletEmailTemplate(user.firstName, user.email, data.purchase.payment.billet_url!, data.purchase.payment.billet_barcode!)),
 			]);
 			return;
 		}
@@ -520,6 +527,7 @@ export class HooksService {
 						linkDoPix: data.purchase.payment.pix_qrcode!,
 					},
 				),
+				this._mailService.sendEmail(formationHotmartPrintedPixEmailTemplate(user.firstName, user.email, data.purchase.payment.pix_qrcode!)),
 			]);
 			return;
 		}
