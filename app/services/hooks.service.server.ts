@@ -15,6 +15,10 @@ import {formationWelcomeEmailTemplate} from '~/assets/email/formation-welcome.em
 import {getLrMessage} from '~/utils/get-lr-message.js';
 import {schoolHotmartDelayedBilletEmailTemplate} from '~/assets/email/school-hotmart-delayed-billet.email.template.server.js';
 import {schoolHotmartDelayedPixEmailTemplate} from '~/assets/email/school-hotmart-delayed-pix.email.template.server.js';
+import {formationHotmartDelayedBilletEmailTemplate} from '~/assets/email/formation-hotmart-delayed-billet.email.template.server.js';
+import {formationHotmartDelayedPixEmailTemplate} from '~/assets/email/formation-hotmart-delayed-pix.email.template.server.js';
+import {schoolHotmartFailedCreditCardEmailTemplate} from '~/assets/email/school-hotmart-failed-credit-card.email.template.server.js';
+import {formationHotmartFailedCreditCardEmailTemplate} from '~/assets/email/formation-hotmart-failed-credit-card.email.template.server.js';
 
 export class HooksService {
 	private readonly _userService: UserService;
@@ -587,6 +591,7 @@ export class HooksService {
 					},
 				),
 				this._userService.removeRolesFromUser(user, ['escolaOnline', 'escolaAnual']),
+				this._mailService.sendEmail(schoolHotmartFailedCreditCardEmailTemplate(user.firstName, user.email, data.purchase.payment.refusal_reason ?? 'Transação recusada')),
 			]);
 			return;
 		}
@@ -602,6 +607,7 @@ export class HooksService {
 					},
 				),
 				this._userService.removeRolesFromUser(user, ['escolaOnline', 'escolaAnual', 'novaFormacao']),
+				this._mailService.sendEmail(formationHotmartDelayedBilletEmailTemplate(user.firstName, user.email)),
 			]);
 			return;
 		}
@@ -617,6 +623,7 @@ export class HooksService {
 					},
 				),
 				this._userService.removeRolesFromUser(user, ['escolaOnline', 'escolaAnual', 'novaFormacao']),
+				this._mailService.sendEmail(formationHotmartDelayedPixEmailTemplate(user.firstName, user.email)),
 			]);
 			return;
 		}
@@ -633,6 +640,7 @@ export class HooksService {
 					},
 				),
 				this._userService.removeRolesFromUser(user, ['escolaOnline', 'escolaAnual', 'novaFormacao']),
+				this._mailService.sendEmail(formationHotmartFailedCreditCardEmailTemplate(user.firstName, user.email, data.purchase.payment.refusal_reason ?? 'Transação recusada')),
 			]);
 			return;
 		}

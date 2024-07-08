@@ -1,8 +1,8 @@
 import {type TEmailTemplate} from '../../types/email-template.type.js';
 
-export const schoolHotmartDelayedPixEmailTemplate = (firstName: string, to: string): TEmailTemplate => ({
+export const schoolHotmartFailedCreditCardEmailTemplate = (firstName: string, to: string, descricaoDoErro: string): TEmailTemplate => ({
 	to,
-	subject: 'Seu pagamento está atrasado',
+	subject: 'Houve um problema com seu pagamento',
 	html: `
   <!DOCTYPE html>
 <html xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office" lang="en">
@@ -130,8 +130,9 @@ export const schoolHotmartDelayedPixEmailTemplate = (firstName: string, to: stri
 															<td class="pad">
 																<div style="color:#101112;direction:ltr;font-family:Arial, Helvetica, sans-serif;font-size:16px;font-weight:400;letter-spacing:0px;line-height:120%;text-align:left;mso-line-height-alt:19.2px;">
 																	<p style="margin: 0; margin-bottom: 16px;">Olá, ${firstName}, tudo bem contigo?</p>
-																	<p style="margin: 0; margin-bottom: 16px;">A Hotmart ainda não identificou o pagamento do PIX da sua última mensalidade ou anuidade da Escola Online do Yoga em Movimento.</p>
-																	<p style="margin: 0; margin-bottom: 16px;">Você pode acessar <a href="https://consumer.hotmart.com/purchase/135340" target="_blank" style="text-decoration: underline; color: #7747FF;" rel="noopener">https://consumer.hotmart.com/purchase/135340</a> com o email usado em nosso site (${to}) para regularizar o pagamento das mensalidades que estiverem pendentes e não perder o acesso ao conteúdo.</p>
+																	<p style="margin: 0; margin-bottom: 16px;">Foi feita a tentativa de cobrança da sua mensalidade ou anuidade da Escola Online no seu cartão, mas houve uma falha na cobrança.</p>
+																	<p style="margin: 0; margin-bottom: 16px;">A Hotmart informou o seguinte erro ao tentar fazer a cobrança: ${descricaoDoErro}.</p>
+																	<p style="margin: 0; margin-bottom: 16px;">Acesse <a href="https://consumer.hotmart.com/purchase/135340" target="_blank" style="text-decoration: underline; color: #7747FF;" rel="noopener">https://consumer.hotmart.com/purchase/135340</a> com o email usado em nosso site (${to}) para regularizar o pagamento e não perder o acesso ao conteúdo.</p>
 																	<p style="margin: 0;">E se precisar da nossa ajuda, ficamos a disposição 🙏🙌😊</p>
 																</div>
 															</td>
@@ -155,11 +156,13 @@ export const schoolHotmartDelayedPixEmailTemplate = (firstName: string, to: stri
   `,
 	text: `
   Olá, ${firstName}, tudo bem contigo?
-
-	A Hotmart ainda não identificou o pagamento do PIX da sua última mensalidade ou anuidade da Escola Online do Yoga em Movimento.
-
-  Você pode acessar https://consumer.hotmart.com/purchase/135340 com o email usado em nosso site (${to}) para regularizar o pagamento das mensalidades que estiverem pendentes e não perder o acesso ao conteúdo.
 	
-  E se precisar da nossa ajuda, ficamos a disposição 🙏🙌😊
+	Foi feita a tentativa de cobrança da sua mensalidade ou anuidade da Escola Online no seu cartão, mas houve uma falha na cobrança.
+	
+	A Hotmart informou o seguinte erro ao tentar fazer a cobrança: ${descricaoDoErro}.
+	
+	Acesse https://consumer.hotmart.com/purchase/135340 com o email usado em nosso site (${to}) para regularizar o pagamento e não perder o acesso ao conteúdo.
+	
+	E se precisar da nossa ajuda, ficamos a disposição 🙏🙌😊
   `,
 });

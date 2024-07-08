@@ -1,6 +1,6 @@
 import {type TEmailTemplate} from '../../types/email-template.type.js';
 
-export const schoolHotmartDelayedPixEmailTemplate = (firstName: string, to: string): TEmailTemplate => ({
+export const formationHotmartDelayedPixEmailTemplate = (firstName: string, to: string): TEmailTemplate => ({
 	to,
 	subject: 'Seu pagamento está atrasado',
 	html: `
@@ -130,8 +130,8 @@ export const schoolHotmartDelayedPixEmailTemplate = (firstName: string, to: stri
 															<td class="pad">
 																<div style="color:#101112;direction:ltr;font-family:Arial, Helvetica, sans-serif;font-size:16px;font-weight:400;letter-spacing:0px;line-height:120%;text-align:left;mso-line-height-alt:19.2px;">
 																	<p style="margin: 0; margin-bottom: 16px;">Olá, ${firstName}, tudo bem contigo?</p>
-																	<p style="margin: 0; margin-bottom: 16px;">A Hotmart ainda não identificou o pagamento do PIX da sua última mensalidade ou anuidade da Escola Online do Yoga em Movimento.</p>
-																	<p style="margin: 0; margin-bottom: 16px;">Você pode acessar <a href="https://consumer.hotmart.com/purchase/135340" target="_blank" style="text-decoration: underline; color: #7747FF;" rel="noopener">https://consumer.hotmart.com/purchase/135340</a> com o email usado em nosso site (${to}) para regularizar o pagamento das mensalidades que estiverem pendentes e não perder o acesso ao conteúdo.</p>
+																	<p style="margin: 0; margin-bottom: 16px;">A Hotmart não recebeu a confirmação do pagamento do PIX relativo a sua última parcela da Formação em Yoga do Yoga em Movimento.</p>
+																	<p style="margin: 0; margin-bottom: 16px;">Acesse <a href="https://consumer.hotmart.com/purchase/1392822" target="_blank" style="text-decoration: underline; color: #7747FF;" rel="noopener">https://consumer.hotmart.com/purchase/1392822</a> com o email usado em nosso site (${to}) para regularizar o pagamento e não perder o acesso ao conteúdo.</p>
 																	<p style="margin: 0;">E se precisar da nossa ajuda, ficamos a disposição 🙏🙌😊</p>
 																</div>
 															</td>
@@ -156,10 +156,10 @@ export const schoolHotmartDelayedPixEmailTemplate = (firstName: string, to: stri
 	text: `
   Olá, ${firstName}, tudo bem contigo?
 
-	A Hotmart ainda não identificou o pagamento do PIX da sua última mensalidade ou anuidade da Escola Online do Yoga em Movimento.
-
-  Você pode acessar https://consumer.hotmart.com/purchase/135340 com o email usado em nosso site (${to}) para regularizar o pagamento das mensalidades que estiverem pendentes e não perder o acesso ao conteúdo.
-	
-  E se precisar da nossa ajuda, ficamos a disposição 🙏🙌😊
+	A Hotmart não recebeu a confirmação do pagamento do PIX relativo a sua última parcela da Formação em Yoga do Yoga em Movimento.
+																	
+	Acesse https://consumer.hotmart.com/purchase/1392822 com o email usado em nosso site (${to}) para regularizar o pagamento e não perder o acesso ao conteúdo.
+																	
+	E se precisar da nossa ajuda, ficamos a disposição 🙏🙌😊
   `,
 });
