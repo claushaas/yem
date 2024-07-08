@@ -13,6 +13,8 @@ import {convertStringToStartCase} from '~/utils/convert-string-to-start-case.js'
 import {schoolWelcomeEmailTemplate} from '~/assets/email/school-welcome.email.template.server.js';
 import {formationWelcomeEmailTemplate} from '~/assets/email/formation-welcome.email.template.server.js';
 import {getLrMessage} from '~/utils/get-lr-message.js';
+import {schoolHotmartDelayedBilletEmailTemplate} from '~/assets/email/school-hotmart-delayed-billet.email.template.server.js';
+import {schoolHotmartDelayedPixEmailTemplate} from '~/assets/email/school-hotmart-delayed-pix.email.template.server.js';
 
 export class HooksService {
 	private readonly _userService: UserService;
@@ -282,15 +284,18 @@ export class HooksService {
 				};
 			}
 
-			await this._botMakerService.sendWhatsappTemplateMessate(
-				user.phoneNumber,
-				'acao_de_cobranca',
-				{
-					nome: user.firstName,
-					dataDeVencimento: new Date(invoice.due_date).toLocaleDateString(),
-					linkDaFatura: invoice.secure_url,
-				},
-			);
+			await Promise.all([
+				this._botMakerService.sendWhatsappTemplateMessate(
+					user.phoneNumber,
+					'acao_de_cobranca',
+					{
+						nome: user.firstName,
+						dataDeVencimento: new Date(invoice.due_date).toLocaleDateString(),
+						linkDaFatura: invoice.secure_url,
+					},
+				),
+				this._userService.removeRolesFromUser(user, ['escolaOnline', 'escolaAnual']),
+			]);
 
 			return {
 				status: 'SUCCESSFUL',
@@ -547,6 +552,8 @@ export class HooksService {
 						emailAluno: user.email,
 					},
 				),
+				this._mailService.sendEmail(schoolHotmartDelayedBilletEmailTemplate(user.firstName, user.email)),
+				this._userService.removeRolesFromUser(user, ['escolaOnline', 'escolaAnual']),
 			]);
 			return;
 		}
@@ -562,6 +569,8 @@ export class HooksService {
 						linkCompraHotmart: 'https://consumer.hotmart.com/purchase/135340',
 					},
 				),
+				this._userService.removeRolesFromUser(user, ['escolaOnline', 'escolaAnual']),
+				this._mailService.sendEmail(schoolHotmartDelayedPixEmailTemplate(user.firstName, user.email)),
 			]);
 			return;
 		}
@@ -577,6 +586,7 @@ export class HooksService {
 						emailAluno: user.email,
 					},
 				),
+				this._userService.removeRolesFromUser(user, ['escolaOnline', 'escolaAnual']),
 			]);
 			return;
 		}
@@ -591,6 +601,7 @@ export class HooksService {
 						emailAluno: user.email,
 					},
 				),
+				this._userService.removeRolesFromUser(user, ['escolaOnline', 'escolaAnual', 'novaFormacao']),
 			]);
 			return;
 		}
@@ -605,6 +616,7 @@ export class HooksService {
 						emailAluno: user.email,
 					},
 				),
+				this._userService.removeRolesFromUser(user, ['escolaOnline', 'escolaAnual', 'novaFormacao']),
 			]);
 			return;
 		}
@@ -620,6 +632,7 @@ export class HooksService {
 						emailAluno: user.email,
 					},
 				),
+				this._userService.removeRolesFromUser(user, ['escolaOnline', 'escolaAnual', 'novaFormacao']),
 			]);
 			return;
 		}
