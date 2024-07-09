@@ -64,8 +64,11 @@ export const action = defineAction(async ({request, response}: ActionFunctionArg
 		userSession.set('lastName', lastName);
 		userSession.set('phoneNumber', phoneNumber);
 
-		response?.headers.set('Set-Cookie', await commitUserSession(userSession));
-		response?.headers.set('Location', '/courses');
+		if (response) {
+			response.headers.set('Set-Cookie', await commitUserSession(userSession));
+			response.headers.set('Location', '/courses');
+			response.status = 303;
+		}
 	} catch (error) {
 		logger.logError(`Error logging in: ${(error as Error).message}`);
 

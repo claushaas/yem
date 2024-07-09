@@ -1,10 +1,9 @@
 import {type LoaderFunctionArgs, unstable_defineLoader as defineLoader} from '@remix-run/node';
 import {
-	Link, Outlet, useNavigate, useLocation,
+	Link, Outlet, useLocation,
 	type MetaArgs_SingleFetch,
 	useLoaderData,
 } from '@remix-run/react';
-import {useEffect} from 'react';
 import {NavigateBar} from '~/components/navigation-bar.js';
 import {type TypeUserSession} from '~/types/user-session.type';
 import {getUserSession} from '~/utils/session.server';
@@ -16,25 +15,26 @@ export const meta = ({data}: MetaArgs_SingleFetch<typeof loader>) => [
 	...data!.meta,
 ];
 
-export const loader = defineLoader(async ({request}: LoaderFunctionArgs) => {
+export const loader = defineLoader(async ({request, response}: LoaderFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
+	const data = userSession.data as TypeUserSession;
+
+	if (!data.roles?.includes('admin')) {
+		response!.headers.set('Location', '/');
+		response!.status = 303;
+
+		throw response; // eslint-disable-line @typescript-eslint/no-throw-literal
+	}
 
 	return {
 		meta: [{tagName: 'link', rel: 'canonical', href: new URL('/admin', request.url).toString()}],
-		userData: userSession.data as TypeUserSession,
+		userData: data,
 	};
 });
 
 export default function Admin() {
 	const {userData} = useLoaderData<typeof loader>();
-	const navigate = useNavigate();
 	const {pathname} = useLocation();
-
-	useEffect(() => {
-		if (!userData?.roles.includes('admin')) {
-			navigate('/');
-		}
-	}, [userData?.roles, navigate]);
 
 	return userData?.roles.includes('admin') && (
 		<>

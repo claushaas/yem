@@ -70,24 +70,19 @@ export const action = defineAction(async ({request, response}: ActionFunctionArg
 			await new CourseService().create(newCourse);
 
 			userSession.flash('success', `Curso ${newCourse.name} criado com sucesso`);
-			response?.headers.set('Set-Cookie', await commitUserSession(userSession));
-			response?.headers.set('Location', '/admin/courses');
-
-			return null;
+		} else {
+			userSession.flash('error', 'Você não tem permissão para criar cursos');
 		}
-
-		userSession.flash('error', 'Você não tem permissão para criar cursos');
-		response?.headers.set('Set-Cookie', await commitUserSession(userSession));
-		response?.headers.set('Location', '/admin/courses');
-		return null;
 	} catch (error) {
 		logger.logError(`Error creating course: ${(error as Error).message}`);
 		userSession.flash('error', 'Erro ao criar curso');
-		response?.headers.set('Set-Cookie', await commitUserSession(userSession));
-		response?.headers.set('Location', '/admin/courses');
-
-		return null;
+	} finally {
+		response!.headers.set('Set-Cookie', await commitUserSession(userSession));
+		response!.headers.set('Location', '/admin/courses');
+		response!.status = 303;
 	}
+
+	return null;
 });
 
 export default function Courses() {

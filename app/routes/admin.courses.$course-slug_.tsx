@@ -163,7 +163,6 @@ export const action = defineAction(async ({request, params, response}: ActionFun
 		userSession.flash('error', `Error creating course: ${(error as Error).message}`);
 	} finally {
 		response?.headers.set('Set-Cookie', await commitUserSession(userSession));
-		response?.headers.set('Location', `/admin/courses/${courseSlug}`);
 	}
 
 	return null;

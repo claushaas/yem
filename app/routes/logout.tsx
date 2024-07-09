@@ -35,8 +35,11 @@ export const loader = defineLoader(async ({request}: LoaderFunctionArgs) => {
 export const action = defineAction(async ({request, response}: ActionFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 
-	response?.headers.set('Set-Cookie', await destroyUserSession(userSession));
-	response?.headers.set('Location', '/');
+	if (response) {
+		response?.headers.set('Set-Cookie', await destroyUserSession(userSession));
+		response.status = 303;
+		response?.headers.set('Location', '/');
+	}
 
 	return null;
 });
