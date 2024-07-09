@@ -1,5 +1,5 @@
 export type TGetLessonActivityForUser = {
-	saved: boolean;
-	completed: boolean;
-	favorited: boolean;
+	saved: boolean | undefined;
+	completed: boolean | undefined;
+	favorited: boolean | undefined;
 };

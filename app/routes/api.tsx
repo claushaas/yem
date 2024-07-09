@@ -1,7 +1,6 @@
 import {json, type LoaderFunctionArgs} from '@remix-run/node';
-import {type MetaFunction} from '@remix-run/react';
 
-export const meta: MetaFunction = () => [
+export const meta = () => [
 	{name: 'robots', content: 'noindex, nofollow'},
 ];
 

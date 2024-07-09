@@ -1,47 +1,43 @@
 import * as RadixForm from '@radix-ui/react-form';
-import {type LoaderFunctionArgs, json, type ActionFunctionArgs} from '@remix-run/node';
 import {
-	Form, type MetaFunction, useActionData, useNavigation,
+	type LoaderFunctionArgs,
+	type ActionFunctionArgs,
+	unstable_defineAction as defineAction,
+	unstable_defineLoader as defineLoader,
+} from '@remix-run/node';
+import {
+	Form, type MetaArgs_SingleFetch, useActionData, useNavigation,
 } from '@remix-run/react';
 import {populateCache} from '~/cache/initial-cache-population.js';
 import {SuccessOrErrorMessage} from '~/components/admin-success-or-error-message.js';
 import {Button, ButtonPreset, ButtonType} from '~/components/button.js';
-import {type TUser} from '~/types/user.type';
 import {logger} from '~/utils/logger.util';
-import {getUserSession} from '~/utils/session.server';
 
 type TActionData = {
 	error: string | undefined;
 	success: string | undefined;
 };
 
-export const meta: MetaFunction<typeof loader> = ({data}) => [
+export const meta = ({data}: MetaArgs_SingleFetch<typeof loader>) => [
 	{title: 'Yoga em Movimento - Área Administrativa - Repopular Cache'},
 	{name: 'description', content: 'Área para executar as funções administrativas e pedagógicas do Yoga em Movimento.'},
 	{name: 'robots', content: 'noindex, nofollow'},
 	...data!.meta,
 ];
 
-export const loader = ({request}: LoaderFunctionArgs) => json<{meta: Array<{tagName: string; rel: string; href: string}>}>({
+export const loader = defineLoader(({request}: LoaderFunctionArgs) => ({
 	meta: [{tagName: 'link', rel: 'canonical', href: new URL('/admin/repopulate-cache', request.url).toString()}],
-});
+}));
 
-export const action = async ({request}: ActionFunctionArgs) => {
-	const userSession = await getUserSession(request.headers.get('Cookie'));
-	const {data} = userSession as unknown as {data: TUser};
-
-	if (!data?.roles?.includes('admin')) {
-		return json<TActionData>({error: 'Acesso negado', success: undefined});
-	}
-
+export const action = defineAction(async ({response}: ActionFunctionArgs) => {
 	try {
 		await populateCache();
-		return json<TActionData>({error: undefined, success: 'Cache repopulado com sucesso'});
+		return {error: undefined, success: 'Cache repopulado com sucesso'};
 	} catch (error) {
 		logger.logError(`Error in AdminRepopulateCache: ${(error as Error).message}`);
-		return json<TActionData>({error: `Erro ao repopular o cache: ${(error as Error).message}`, success: undefined});
+		return {error: `Erro ao repopular o cache: ${(error as Error).message}`, success: undefined};
 	}
-};
+});
 
 export default function AdminRepopulateCache() {
 	const navigation = useNavigation();

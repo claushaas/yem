@@ -2,7 +2,6 @@ import {Bars4Icon} from '@heroicons/react/24/outline';
 import * as NavigationMenu from '@radix-ui/react-navigation-menu';
 import * as Separator from '@radix-ui/react-separator';
 import {Link, useLocation} from '@remix-run/react';
-import {Button, ButtonPreset, ButtonType} from './button.js';
 import {type TypeUserSession} from '~/types/user-session.type';
 
 type NavigateLinkProprierties = {
@@ -25,23 +24,7 @@ function NavigateLink({to, children, ...properties}: NavigateLinkProprierties) {
 	);
 }
 
-function MarketingNavigationBar({userData}: {readonly userData: TypeUserSession | undefined}) {
-	return (
-		<header className='max-xs:max-w-[95%] max-w-[90%] mx-auto my-4 flex justify-between items-center w-[-webkit-fill-available]'>
-			<div className='w-72'>
-				<div aria-label='Página inicial do Yoga em Movimento' className='inline before:bg-[url("./assets/logo/logo-reduzido-colorido.svg")] sm:before:bg-[url("./assets/logo/logo-retangular-colorido.svg")] max-xs:before:h-14 before:h-20 before:block before:bg-no-repeat'/>
-			</div>
-			<div className='flex gap-4 flex-wrap justify-end'>
-				<Link to='/login' aria-label='Entrar na plataforma do Yoga em Movimento'>
-					<Button type={ButtonType.Button} preset={ButtonPreset.Secondary} text='Entrar'/>
-				</Link>
-				<Button type={ButtonType.Button} preset={ButtonPreset.Primary} text='Começar Agora'/>
-			</div>
-		</header>
-	);
-}
-
-function NonMarketingNavigateBar({userData}: {readonly userData: TypeUserSession | undefined}) {
+export function NavigateBar({userData}: {readonly userData: TypeUserSession | undefined}) {
 	const {pathname} = useLocation();
 
 	return (
@@ -56,7 +39,7 @@ function NonMarketingNavigateBar({userData}: {readonly userData: TypeUserSession
 				className='relative flex justify-center'
 			>
 				<NavigationMenu.List className='gap-3 center flex list-none items-center px-4 py-2 rounded-md shadow-sm shadow-mauve-11 dark:shadow-mauvedark-3 bg-mauve-4 dark:bg-mauvedark-3'>
-					{!userData && pathname !== '/login' && (
+					{!userData?.id && pathname !== '/login' && (
 						<>
 							<NavigationMenu.Item>
 								<div className='py-1.5 leading-none'>
@@ -82,9 +65,9 @@ function NonMarketingNavigateBar({userData}: {readonly userData: TypeUserSession
 						<NavigationMenu.Content className='data-[motion=from-start]:animate-enterFromLeft data-[motion=from-end]:animate-enterFromRight data-[motion=to-start]:animate-exitToLeft data-[motion=to-end]:animate-exitToRight px-4 py-2 bg-mauve-3 dark:bg-mauvedark-3 absolute top-0 right-0 rounded-md max-xs:w-[calc(100vw_-_calc(100vw_*_5_/_100))] w-72'>
 							<ul className='grid grid-cols-2 gap-3'>
 								{pathname !== '/' && <NavigateLink to='/'>Home</NavigateLink>}
-								{userData?.roles.includes('admin') && pathname !== '/admin' && <NavigateLink to='/admin'>Admin</NavigateLink>}
+								{userData?.roles?.includes('admin') && pathname !== '/admin' && <NavigateLink to='/admin'>Admin</NavigateLink>}
 								{pathname !== '/courses' && <NavigateLink to='/courses'>Cursos</NavigateLink>}
-								{userData && pathname !== '/logout' && <NavigateLink to='/logout'>Sair</NavigateLink>}
+								{userData?.id && pathname !== '/logout' && <NavigateLink to='/logout'>Sair</NavigateLink>}
 							</ul>
 						</NavigationMenu.Content>
 					</NavigationMenu.Item>
@@ -99,17 +82,5 @@ function NonMarketingNavigateBar({userData}: {readonly userData: TypeUserSession
 				</div>
 			</NavigationMenu.Root>
 		</header>
-	);
-}
-
-export function NavigateBar({userData}: {readonly userData: TypeUserSession | undefined}) {
-	const {pathname} = useLocation();
-
-	if (pathname === '/escola-online') {
-		return <MarketingNavigationBar userData={userData}/>;
-	}
-
-	return (
-		<NonMarketingNavigateBar userData={userData}/>
 	);
 }

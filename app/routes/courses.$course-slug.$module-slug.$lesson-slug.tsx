@@ -22,6 +22,8 @@ import {ModuleService} from '~/services/module.service.server';
 import {type TUser} from '~/types/user.type';
 import {getUserSession} from '~/utils/session.server';
 import {YemSpinner} from '~/components/yem-spinner.js';
+import {type TypeUserSession} from '~/types/user-session.type';
+import {NavigateBar} from '~/components/navigation-bar.js';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => [
 	{title: data!.lesson?.lesson.name ?? 'Aula do Curso do Yoga em Movimento'},
@@ -60,6 +62,7 @@ export const loader = defineLoader(async ({request, params}: LoaderFunctionArgs)
 		},
 		meta,
 		userLessonActivity,
+		userData: userSession.data as TypeUserSession,
 	};
 });
 
@@ -111,7 +114,7 @@ export const action = defineAction(async ({request, params, response}: ActionFun
 
 export default function Lesson() {
 	const data = useLoaderData<typeof loader>();
-	const {lesson, module, course, userLessonActivity} = data;
+	const {lesson, module, course, userLessonActivity, userData} = data;
 
 	const {ops} = lesson?.lesson.content ? JSON.parse(lesson?.lesson.content) as OpIterator : {ops: []};
 	const contentConverter = new QuillDeltaToHtmlConverter(ops, {
@@ -119,62 +122,66 @@ export default function Lesson() {
 	});
 
 	return lesson && (
-		<main className='w-full max-w-[95%] sm:max-w-[90%] mx-auto'>
-			<Breadcrumbs data={[
-				[`/courses/${course.slug}`, course.name], // Course
-				[`/courses/${course.slug}/${module.slug}`, module.name], // Module
-				[`/courses/${course.slug}/${module.slug}/${lesson.lessonSlug}`, lesson.lesson.name], // Lesson
-			]}/>
-			<div className='w-full max-w-screen-lg mx-auto'>
-				<section id='title' className='flex justify-center gap-5 items-center mb-10'>
+		<>
+			<NavigateBar userData={userData}/>
+
+			<main className='w-full max-w-[95%] sm:max-w-[90%] mx-auto'>
+				<Breadcrumbs data={[
+					[`/courses/${course.slug}`, course.name], // Course
+					[`/courses/${course.slug}/${module.slug}`, module.name], // Module
+					[`/courses/${course.slug}/${module.slug}/${lesson.lessonSlug}`, lesson.lesson.name], // Lesson
+				]}/>
+				<div className='w-full max-w-screen-lg mx-auto'>
 					<Suspense fallback={<YemSpinner/>}>
 						<Await resolve={userLessonActivity}>
-							{userLessonActivity => (
-								<Form method='post' className='flex justify-center gap-3 items-center'>
-									<input type='text' className='hidden' name='completed' value={userLessonActivity.data?.completed ? 'true' : 'false'}/>
-									<input type='text' className='hidden' name='saved' value={userLessonActivity.data?.saved ? 'true' : 'false'}/>
-									<input type='text' className='hidden' name='favorited' value={userLessonActivity.data?.favorited ? 'true' : 'false'}/>
-									<button type='submit' name='action' value='complete' className='cursor-pointer'>
-										{userLessonActivity.data?.completed ? <SolidCheckCircleIcon className='size-8 stroke-purple-11 fill-purple-11'/> : <CheckCircleIcon className='size-8'/>}
-									</button>
-									<button type='submit' name='action' value='save' className='cursor-pointer'>
-										{userLessonActivity.data?.saved ? <SolidBookmarkIcon className='size-8 stroke-purple-11 fill-purple-11'/> : <BookmarkIcon className='size-8'/>}
-									</button>
-									<button type='submit' name='action' value='favorite' className='cursor-pointer'>
-										{userLessonActivity.data?.favorited ? <SolidHeartIcon className='size-8 stroke-purple-11 fill-purple-11'/> : <HeartIcon className='size-8'/>}
-									</button>
-								</Form>
+							{userLessonActivity => userLessonActivity.data.completed !== undefined && (
+								<section id='lesson-activity' className='flex justify-center gap-5 items-center mb-10'>
+									<Form method='post' className='flex justify-center gap-3 items-center'>
+										<input type='text' className='hidden' name='completed' value={userLessonActivity.data?.completed ? 'true' : 'false'}/>
+										<input type='text' className='hidden' name='saved' value={userLessonActivity.data?.saved ? 'true' : 'false'}/>
+										<input type='text' className='hidden' name='favorited' value={userLessonActivity.data?.favorited ? 'true' : 'false'}/>
+										<button type='submit' name='action' value='complete' className='cursor-pointer'>
+											{userLessonActivity.data?.completed ? <SolidCheckCircleIcon className='size-8 stroke-purple-11 fill-purple-11'/> : <CheckCircleIcon className='size-8'/>}
+										</button>
+										<button type='submit' name='action' value='save' className='cursor-pointer'>
+											{userLessonActivity.data?.saved ? <SolidBookmarkIcon className='size-8 stroke-purple-11 fill-purple-11'/> : <BookmarkIcon className='size-8'/>}
+										</button>
+										<button type='submit' name='action' value='favorite' className='cursor-pointer'>
+											{userLessonActivity.data?.favorited ? <SolidHeartIcon className='size-8 stroke-purple-11 fill-purple-11'/> : <HeartIcon className='size-8'/>}
+										</button>
+									</Form>
+								</section>
 							)}
 						</Await>
 					</Suspense>
-				</section>
 
-				{lesson.lesson.videoSourceUrl && (
-					<section id='video' className='h-fit mb-10 rounded-2xl'>
-						{!lesson.lesson.videoSourceUrl.startsWith('https://') && (
-							<Stream
-								controls
-								preload='auto'
-								className='pt-[56.25%] relative *:absolute *:w-full *:h-full *:top-0 *:left-0 *:inset-0'
-								src={lesson.lesson.videoSourceUrl}
-								responsive={false}
-							/>
-						)}
-						{lesson.lesson.videoSourceUrl.startsWith('https://') && (
-							<VideoPlayer
-								title={lesson.lesson.name}
-								src={lesson.lesson.videoSourceUrl}
-								alt={lesson.lesson.name}
-							/>
-						)}
-					</section>
-				)}
+					{lesson.lesson.videoSourceUrl && (
+						<section id='video' className='h-fit mb-10 rounded-2xl'>
+							{!lesson.lesson.videoSourceUrl.startsWith('https://') && (
+								<Stream
+									controls
+									preload='auto'
+									className='pt-[56.25%] relative *:absolute *:w-full *:h-full *:top-0 *:left-0 *:inset-0'
+									src={lesson.lesson.videoSourceUrl}
+									responsive={false}
+								/>
+							)}
+							{lesson.lesson.videoSourceUrl.startsWith('https://') && (
+								<VideoPlayer
+									title={lesson.lesson.name}
+									src={lesson.lesson.videoSourceUrl}
+									alt={lesson.lesson.name}
+								/>
+							)}
+						</section>
+					)}
 
-				{lesson.lesson.content && (
+					{lesson.lesson.content && (
 					/* eslint-disable-next-line react/no-danger, @typescript-eslint/naming-convention */
-					<section dangerouslySetInnerHTML={{__html: contentConverter.convert()}} id='content' className='p-1 sm:p-5 bg-mauvea-2 dark:bg-mauvedarka-2 rounded-2xl flex flex-col gap-6'/>
-				)}
-			</div>
-		</main>
+						<section dangerouslySetInnerHTML={{__html: contentConverter.convert()}} id='content' className='p-1 sm:p-5 bg-mauvea-2 dark:bg-mauvedarka-2 rounded-2xl flex flex-col gap-6'/>
+					)}
+				</div>
+			</main>
+		</>
 	);
 }

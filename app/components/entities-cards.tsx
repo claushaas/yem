@@ -15,21 +15,21 @@ type ClassCardPropierties = {
 type GenericEntityCardPropierties = ClassCardPropierties & {
 	readonly activity: Promise<{
 		data: {
-			totalLessons: number;
-			completedLessons: number;
-			percentage: number;
+			totalLessons: number | undefined;
+			completedLessons: number | undefined;
+			percentage: number | undefined;
 		};
-	}>;
+	} | undefined> | undefined;
 };
 
 type LessonEntityCardPropierties = ClassCardPropierties & {
 	readonly activity: Promise<{
 		data: {
-			saved: boolean;
-			completed: boolean;
-			favorited: boolean;
+			saved: boolean | undefined;
+			completed: boolean | undefined;
+			favorited: boolean | undefined;
 		};
-	}>;
+	}> | undefined;
 };
 
 export function AdminEntityCard({course, to}: ClassCardPropierties) {
@@ -92,16 +92,18 @@ export function GenericEntityCard({course, to, activity}: GenericEntityCardPropi
 						<Suspense fallback={<YemSpinner/>}>
 							<Await resolve={activity}>
 								{activity => (
-									<div className='flex justify-end'>
-										<div className='flex gap-3 p-1 bg-mauvea-10 rounded-xl'>
-											<div className='flex gap-1 items-center'>
-												{activity?.data.percentage === 100 ? <SolidCheckCircleIcon className='size-4 stroke-purple-11 fill-purple-11'/> : <CheckCircleIcon className='size-4'/>}
-												<p className='text-mauve-5 text-xs text-nowrap'>
-													{`${activity?.data.percentage} %`}
-												</p>
+									activity?.data.percentage !== undefined && (
+										<div className='flex justify-end'>
+											<div className='flex gap-3 p-1 bg-mauvea-10 rounded-xl'>
+												<div className='flex gap-1 items-center'>
+													{activity.data.percentage === 100 ? <SolidCheckCircleIcon className='size-4 stroke-purple-11 fill-purple-11'/> : <CheckCircleIcon className='size-4'/>}
+													<p className='text-mauve-5 text-xs text-nowrap'>
+														{`${activity.data.percentage} %`}
+													</p>
+												</div>
 											</div>
 										</div>
-									</div>
+									)
 								)}
 							</Await>
 						</Suspense>
@@ -139,12 +141,12 @@ export function LessonEntityCard({course, to, activity}: LessonEntityCardPropier
 						<p className='text-mauve-5 text-sm text-ellipsis line-clamp-3'>{course.description}</p>
 						<Suspense fallback={<YemSpinner/>}>
 							<Await resolve={activity}>
-								{({data}) => (
+								{activity => activity?.data.completed !== undefined && (
 									<div className='flex justify-end'>
 										<div className='flex gap-3 items-center w-fit p-1 bg-mauvea-10 rounded-xl'>
-											{data.completed ? <SolidCheckCircleIcon className='size-4 stroke-purple-11 fill-purple-11'/> : <CheckCircleIcon className='size-4'/>}
-											{data.saved ? <SolidBookmarkIcon className='size-4 stroke-purple-11 fill-purple-11'/> : <BookmarkIcon className='size-4'/>}
-											{data.favorited ? <SolidHeartIcon className='size-4 stroke-purple-11 fill-purple-11'/> : <HeartIcon className='size-4'/>}
+											{activity.data.completed ? <SolidCheckCircleIcon className='size-4 stroke-purple-11 fill-purple-11'/> : <CheckCircleIcon className='size-4'/>}
+											{activity.data.saved ? <SolidBookmarkIcon className='size-4 stroke-purple-11 fill-purple-11'/> : <BookmarkIcon className='size-4'/>}
+											{activity.data.favorited ? <SolidHeartIcon className='size-4 stroke-purple-11 fill-purple-11'/> : <HeartIcon className='size-4'/>}
 										</div>
 									</div>
 								)}
