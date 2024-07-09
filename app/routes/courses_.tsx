@@ -65,8 +65,7 @@ export default function Courses() {
 							key={course.id}
 							course={course}
 							to={`./${course.slug}`}
-							// eslint-disable-next-line unicorn/no-array-reduce
-							activity={coursesActivity!.reduce((accumulator, activity) => ({...accumulator, ...activity}), {})[course.slug]}
+							activity={coursesActivity?.reduce((accumulator, activity) => ({...accumulator, ...activity}), {})[course.slug] ?? undefined}
 						/>
 					))}
 				</div>

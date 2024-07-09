@@ -63,6 +63,8 @@ export const loader = defineLoader(async ({request, params}: LoaderFunctionArgs)
 export default function Course() {
 	const {course, courseActivity, modulesActivity, userData} = useLoaderData<typeof loader>();
 
+	console.log(modulesActivity);
+
 	const {ops} = course?.content ? JSON.parse(course?.content) as OpIterator : {ops: []};
 	const contentConverter = new QuillDeltaToHtmlConverter(ops, {
 		multiLineParagraph: false,
@@ -121,7 +123,7 @@ export default function Course() {
 										course={module.module}
 										to={`./${module.module.slug}`}
 										// eslint-disable-next-line unicorn/no-array-reduce
-										activity={modulesActivity.reduce((accumulator, activity) => ({...accumulator, ...activity}), {})[module.module.slug]}
+										activity={modulesActivity.reduce((accumulator, activity) => ({...accumulator, ...activity}), {})[module.module.slug] ?? undefined}
 									/>
 								))}
 							</div>
