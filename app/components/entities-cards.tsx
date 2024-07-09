@@ -19,7 +19,7 @@ type GenericEntityCardPropierties = ClassCardPropierties & {
 			completedLessons: number;
 			percentage: number;
 		};
-	}>;
+	} | undefined> | undefined;
 };
 
 type LessonEntityCardPropierties = ClassCardPropierties & {
@@ -92,16 +92,18 @@ export function GenericEntityCard({course, to, activity}: GenericEntityCardPropi
 						<Suspense fallback={<YemSpinner/>}>
 							<Await resolve={activity}>
 								{activity => (
-									<div className='flex justify-end'>
-										<div className='flex gap-3 p-1 bg-mauvea-10 rounded-xl'>
-											<div className='flex gap-1 items-center'>
-												{activity?.data.percentage === 100 ? <SolidCheckCircleIcon className='size-4 stroke-purple-11 fill-purple-11'/> : <CheckCircleIcon className='size-4'/>}
-												<p className='text-mauve-5 text-xs text-nowrap'>
-													{`${activity?.data.percentage} %`}
-												</p>
+									activity && (
+										<div className='flex justify-end'>
+											<div className='flex gap-3 p-1 bg-mauvea-10 rounded-xl'>
+												<div className='flex gap-1 items-center'>
+													{activity?.data.percentage === 100 ? <SolidCheckCircleIcon className='size-4 stroke-purple-11 fill-purple-11'/> : <CheckCircleIcon className='size-4'/>}
+													<p className='text-mauve-5 text-xs text-nowrap'>
+														{`${activity?.data.percentage} %`}
+													</p>
+												</div>
 											</div>
 										</div>
-									</div>
+									)
 								)}
 							</Await>
 						</Suspense>
