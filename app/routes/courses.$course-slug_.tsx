@@ -32,6 +32,8 @@ export const loader = defineLoader(async ({request, params}: LoaderFunctionArgs)
 	];
 
 	try {
+		console.log(userSession.data as TUser);
+
 		const lessonActivityService = new LessonActivityService();
 
 		const {data: course} = new CourseService().getBySlugFromCache(courseSlug!, userSession.data as TUser);
@@ -62,8 +64,6 @@ export const loader = defineLoader(async ({request, params}: LoaderFunctionArgs)
 
 export default function Course() {
 	const {course, courseActivity, modulesActivity, userData} = useLoaderData<typeof loader>();
-
-	console.log(modulesActivity);
 
 	const {ops} = course?.content ? JSON.parse(course?.content) as OpIterator : {ops: []};
 	const contentConverter = new QuillDeltaToHtmlConverter(ops, {

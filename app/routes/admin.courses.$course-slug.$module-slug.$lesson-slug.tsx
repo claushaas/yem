@@ -1,8 +1,11 @@
 import {
-	type ActionFunctionArgs, json, type LoaderFunctionArgs, redirect,
+	type ActionFunctionArgs,
+	type LoaderFunctionArgs,
+	unstable_defineAction as defineAction,
+	unstable_defineLoader as defineLoader,
 } from '@remix-run/node';
 import {
-	Form, type MetaFunction, useLoaderData, useNavigation, useParams,
+	Form, type MetaArgs_SingleFetch, useLoaderData, useNavigation, useParams,
 } from '@remix-run/react';
 import {useEffect, useState} from 'react';
 import {type OpIterator} from 'quill/core';
@@ -23,23 +26,15 @@ import {Editor} from '~/components/text-editor.client.js';
 import {YemSpinner} from '~/components/yem-spinner.js';
 import {useTextEditor} from '~/hooks/use-text-editor.hook';
 import {SuccessOrErrorMessage} from '~/components/admin-success-or-error-message.js';
-import {type TLessonDataForCache} from '~/cache/populate-lessons-to-cache.js';
 
-export const meta: MetaFunction<typeof loader> = ({data}) => ([
+export const meta = ({data}: MetaArgs_SingleFetch<typeof loader>) => ([
 	{title: `Aula ${data!.lesson?.lesson.name} - Yoga em Movimento`},
 	{name: 'description', content: data!.lesson?.lesson.description},
 	{name: 'robots', content: 'noindex, nofollow'},
 	...data!.meta,
 ]);
 
-type LessonLoaderData = {
-	error: string | undefined;
-	success: string | undefined;
-	lesson: TLessonDataForCache | undefined;
-	meta: Array<{tagName: string; rel: string; href: string}>;
-};
-
-export const loader = async ({request, params}: LoaderFunctionArgs) => {
+export const loader = defineLoader(async ({request, params, response}: LoaderFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 	const {
 		'course-slug': courseSlug,
@@ -53,39 +48,29 @@ export const loader = async ({request, params}: LoaderFunctionArgs) => {
 
 	try {
 		const {data: lesson} = new LessonService().getBySlugFromCache(moduleSlug!, lessonSlug!, userSession.data as TUser);
+		response!.headers.set('Set-Cookie', await commitUserSession(userSession));
 
-		return json<LessonLoaderData>({
+		return {
 			lesson,
 			error: userSession.get('error') as string | undefined,
 			success: userSession.get('success') as string | undefined,
 			meta,
-		}, {
-			headers: {
-				'Set-Cookie': await commitUserSession(userSession), // eslint-disable-line @typescript-eslint/naming-convention
-			},
-		});
+		};
 	} catch (error) {
 		logger.logError(`Error fetching lesson: ${(error as Error).message}`);
-		return json<LessonLoaderData>({
+		response!.headers.set('Set-Cookie', await commitUserSession(userSession));
+
+		return {
 			lesson: undefined,
 			error: `Error fetching lesson: ${(error as Error).message}`,
 			success: undefined,
 			meta,
-		}, {
-			headers: {
-				'Set-Cookie': await commitUserSession(userSession), // eslint-disable-line @typescript-eslint/naming-convention
-			},
-		});
+		};
 	}
-};
+});
 
-export const action = async ({request, params}: ActionFunctionArgs) => {
+export const action = defineAction(async ({request, response}: ActionFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
-	const {
-		'course-slug': courseSlug,
-		'module-slug': moduleSlug,
-		'lesson-slug': lessonSlug,
-	} = params;
 
 	if ((userSession.get('roles') as string[])?.includes('admin')) {
 		try {
@@ -112,28 +97,21 @@ export const action = async ({request, params}: ActionFunctionArgs) => {
 		} catch (error) {
 			logger.logError(`Error updating lesson: ${(error as Error).message}`);
 			userSession.flash('error', (error as Error).message);
-			return redirect(`/admin/courses/${courseSlug}/${moduleSlug}/${lessonSlug}`, {
-				headers: {
-					'Set-Cookie': await commitUserSession(userSession), // eslint-disable-line @typescript-eslint/naming-convention
-				},
-			});
 		}
+	} else {
+		userSession.flash('error', 'Você não tem permissão para realizar esta ação');
 	}
 
-	userSession.flash('error', 'Você não tem permissão para realizar esta ação');
-	return redirect(`/admin/courses/${courseSlug}/${moduleSlug}/${lessonSlug}`, {
-		headers: {
-			'Set-Cookie': await commitUserSession(userSession), // eslint-disable-line @typescript-eslint/naming-convention
-		},
-	});
-};
+	response!.headers.set('Set-Cookie', await commitUserSession(userSession));
+	return null;
+});
 
 export default function Lesson() {
 	const {
 		error,
 		success,
 		lesson,
-	} = useLoaderData<LessonLoaderData>();
+	} = useLoaderData<typeof loader>();
 
 	const {
 		'course-slug': courseSlug,

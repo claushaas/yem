@@ -45,7 +45,8 @@ export const action = defineAction(async ({request, response}: ActionFunctionArg
 	} catch (error) {
 		logger.logError(`Error generating new password: ${(error as Error).message}`);
 	} finally {
-		response?.headers.set('Location', '/login');
+		response!.headers.set('Location', '/login');
+		response!.status = 303;
 	}
 
 	return null;

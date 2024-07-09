@@ -35,7 +35,9 @@ export const loader = defineLoader(async ({request, response}: LoaderFunctionArg
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 
 	if (userSession.get('id')) {
-		response?.headers.set('Location', '/courses');
+		response!.headers.set('Location', '/courses');
+		response!.headers.set('Location', '/courses');
+		response!.status = 303;
 	}
 
 	return {
@@ -52,7 +54,9 @@ export const action = defineAction(async ({request, response}: ActionFunctionArg
 	if (userSession.has('id')) {
 		userSession.flash('error', 'Usuário já logado, faça o login para continuar');
 
-		response?.headers.set('Set-Cookie', await commitUserSession(userSession));
+		response!.headers.set('Set-Cookie', await commitUserSession(userSession));
+		response!.headers.set('Location', '/courses');
+		response!.status = 303;
 		return null;
 	}
 
@@ -74,12 +78,12 @@ export const action = defineAction(async ({request, response}: ActionFunctionArg
 
 		userSession.flash('success', 'Usuário criado com sucesso, em alguns instantes você vai receber a senha por email e WhatsApp. Utilize-a em conjunto com seu email para fazer o login');
 
-		response?.headers.set('Set-Cookie', await commitUserSession(userSession));
+		response!.headers.set('Set-Cookie', await commitUserSession(userSession));
 	} catch (error) {
 		logger.logError(`Error: ${(error as CustomError).message}`);
 		userSession.flash('error', (error as CustomError).message);
 
-		response?.headers.set('Set-Cookie', await commitUserSession(userSession));
+		response!.headers.set('Set-Cookie', await commitUserSession(userSession));
 	}
 
 	return null;

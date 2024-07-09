@@ -1,8 +1,11 @@
 import {
-	type ActionFunctionArgs, json, type LoaderFunctionArgs, redirect,
+	type ActionFunctionArgs,
+	type LoaderFunctionArgs,
+	unstable_defineAction as defineAction,
+	unstable_defineLoader as defineLoader,
 } from '@remix-run/node';
 import {
-	Form, type MetaFunction, useLoaderData, useNavigation, useParams,
+	Form, type MetaArgs_SingleFetch, useLoaderData, useNavigation, useParams,
 } from '@remix-run/react';
 import {useEffect, useState} from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
@@ -18,34 +21,26 @@ import {commitUserSession, getUserSession} from '~/utils/session.server';
 import {ModuleService} from '~/services/module.service.server';
 import {LessonService} from '~/services/lesson.service.server';
 import {type TUser} from '~/types/user.type';
-import {type TModule, type TPrismaPayloadGetModuleBySlug} from '~/types/module.type';
+import {type TModule} from '~/types/module.type';
 import {Button, ButtonPreset, ButtonType} from '~/components/button.js';
 import {Editor} from '~/components/text-editor.client.js';
 import {YemSpinner} from '~/components/yem-spinner.js';
 import {type TLesson, type TLessonType} from '~/types/lesson.type';
-import {type TTags, type TPrismaPayloadGetAllTags, type TTag} from '~/types/tag.type';
+import {type TTags, type TTag} from '~/types/tag.type';
 import {TagService} from '~/services/tag.service.server';
 import {useTextEditor} from '~/hooks/use-text-editor.hook.js';
 import {ContentConverter} from '~/components/content-converter.js';
 import {SuccessOrErrorMessage} from '~/components/admin-success-or-error-message.js';
 import {AdminEntityCard} from '~/components/entities-cards.js';
 
-export const meta: MetaFunction<typeof loader> = ({data}) => [
+export const meta = ({data}: MetaArgs_SingleFetch<typeof loader>) => [
 	{title: `${data?.module?.module.name} - Yoga em Movimento`},
 	{name: 'description', content: data?.module?.module.description},
 	{name: 'robots', content: 'noindex, nofollow'},
 	...data!.meta,
 ];
 
-type ModuleLoaderData = {
-	error: string | undefined;
-	success: string | undefined;
-	module: TPrismaPayloadGetModuleBySlug | undefined;
-	tags: TPrismaPayloadGetAllTags | undefined;
-	meta: Array<{tagName: string; rel: string; href: string}>;
-};
-
-export const loader = async ({request, params}: LoaderFunctionArgs) => {
+export const loader = defineLoader(async ({request, params, response}: LoaderFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 	const {
 		'course-slug': courseSlug,
@@ -57,41 +52,33 @@ export const loader = async ({request, params}: LoaderFunctionArgs) => {
 	];
 
 	const moduleService = new ModuleService();
+	response!.headers.set('Set-Cookie', await commitUserSession(userSession));
 
 	try {
 		const {data: module} = await moduleService.getBySlug(courseSlug!, moduleSlug!, userSession.data as TUser);
 		const {data: tags} = await new TagService().getAll();
 
-		return json<ModuleLoaderData>({
+		return {
 			module,
 			tags,
 			error: userSession.get('error') as string | undefined,
 			success: userSession.get('success') as string | undefined,
 			meta,
-		}, {
-			headers: {
-				'Set-Cookie': await commitUserSession(userSession), // eslint-disable-line @typescript-eslint/naming-convention
-			},
-		});
+		};
 	} catch (error) {
 		logger.logError(`Error getting module: ${(error as Error).message}`);
-		return json<ModuleLoaderData>({
+		return {
 			module: undefined,
 			tags: undefined,
 			error: (error as Error).message,
 			success: undefined,
 			meta,
-		}, {
-			headers: {
-				'Set-Cookie': await commitUserSession(userSession), // eslint-disable-line @typescript-eslint/naming-convention
-			},
-		});
+		};
 	}
-};
+});
 
-export const action = async ({request, params}: ActionFunctionArgs) => {
+export const action = defineAction(async ({request, response}: ActionFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
-	const {'course-slug': courseSlug, 'module-slug': moduleSlug} = params;
 
 	try {
 		if ((userSession.get('roles') as string[])?.includes('admin')) {
@@ -168,19 +155,11 @@ export const action = async ({request, params}: ActionFunctionArgs) => {
 	} catch (error) {
 		logger.logError(`Error: ${(error as Error).message}`);
 		userSession.flash('error', (error as Error).message);
-		return redirect(`/admin/courses/${courseSlug}/${moduleSlug}`, {
-			headers: {
-				'Set-Cookie': await commitUserSession(userSession), // eslint-disable-line @typescript-eslint/naming-convention
-			},
-		});
 	}
 
-	return redirect(`/admin/courses/${courseSlug}/${moduleSlug}`, {
-		headers: {
-			'Set-Cookie': await commitUserSession(userSession), // eslint-disable-line @typescript-eslint/naming-convention
-		},
-	});
-};
+	response!.headers.set('Set-Cookie', await commitUserSession(userSession));
+	return null;
+});
 
 export default function Module() {
 	const {
@@ -188,7 +167,7 @@ export default function Module() {
 		tags: rawTags,
 		error,
 		success,
-	} = useLoaderData<ModuleLoaderData>();
+	} = useLoaderData<typeof loader>();
 
 	const {
 		'course-slug': courseSlug,

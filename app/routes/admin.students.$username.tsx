@@ -1,8 +1,15 @@
 import {
-	type ActionFunctionArgs, json, redirect, type LoaderFunctionArgs,
+	type ActionFunctionArgs,
+	type LoaderFunctionArgs,
+	unstable_defineAction as defineAction,
+	unstable_defineLoader as defineLoader,
 } from '@remix-run/node';
 import {
-	Form, type MetaFunction, useLoaderData, useNavigation, useParams,
+	Form,
+	type MetaArgs_SingleFetch,
+	useLoaderData,
+	useNavigation,
+	useParams,
 } from '@remix-run/react';
 import * as Dialog from '@radix-ui/react-dialog';
 import * as RadixForm from '@radix-ui/react-form';
@@ -10,30 +17,20 @@ import {useEffect, useState} from 'react';
 import {XMarkIcon} from '@heroicons/react/24/outline';
 import {Button, ButtonPreset, ButtonType} from '~/components/button.js';
 import {UserService} from '~/services/user.service.server';
-import {type TUser} from '~/types/user.type';
 import {commitUserSession, getUserSession} from '~/utils/session.server';
 import {YemSpinner} from '~/components/yem-spinner.js';
 import {logger} from '~/utils/logger.util';
 import SubscriptionService from '~/services/subscription.service.server';
-import {type TPrismaPayloadGetUserSubscriptions} from '~/types/subscription.type';
 import {SuccessOrErrorMessage} from '~/components/admin-success-or-error-message.js';
 
-export const meta: MetaFunction<typeof loader> = ({data}) => ([
-	{title: `${data!.studentData!.firstName} ${data!.studentData!.lastName} - Yoga em Movimento`},
+export const meta = ({data}: MetaArgs_SingleFetch<typeof loader>) => ([
+	{title: `${data!.studentData?.firstName} ${data!.studentData?.lastName} - Yoga em Movimento`},
 	{name: 'description', content: 'Página de aluno do Yoga em Movimento'},
 	{name: 'robots', content: 'noindex, nofollow'},
 	...data!.meta,
 ]);
 
-type StudentLoaderData = {
-	studentData: TUser | undefined;
-	subscriptions: TPrismaPayloadGetUserSubscriptions[] | undefined;
-	error: string | undefined;
-	success: string | undefined;
-	meta: Array<{tagName: string; rel: string; href: string}>;
-};
-
-export const loader = async ({request, params}: LoaderFunctionArgs) => {
+export const loader = defineLoader(async ({request, params, response}: LoaderFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 	const {username} = params;
 
@@ -45,29 +42,29 @@ export const loader = async ({request, params}: LoaderFunctionArgs) => {
 		const {data: studentData} = await new UserService().getUserData(username!);
 		const {data: subscriptions} = await new SubscriptionService().getUserSubscriptions(studentData);
 
-		return json<StudentLoaderData>({
+		response!.headers.set('Set-Cookie', await commitUserSession(userSession));
+
+		return {
 			studentData,
 			subscriptions,
 			error: userSession.get('error') as string | undefined,
 			success: userSession.get('success') as string | undefined,
 			meta,
-		}, {
-			headers: {
-				'Set-Cookie': await commitUserSession(userSession), // eslint-disable-line @typescript-eslint/naming-convention
-			},
-		});
+		};
 	} catch {
 		userSession.flash('error', `Erro ao buscar dados do aluno ${username}`);
-
-		return redirect('/admin/students', {
-			headers: {
-				'Set-Cookie': await commitUserSession(userSession), // eslint-disable-line @typescript-eslint/naming-convention
-			},
-		});
+		response!.headers.set('Set-Cookie', await commitUserSession(userSession));
+		return {
+			studentData: undefined,
+			subscriptions: undefined,
+			error: userSession.get('error') as string | undefined,
+			success: userSession.get('success') as string | undefined,
+			meta,
+		};
 	}
-};
+});
 
-export const action = async ({request, params}: ActionFunctionArgs) => {
+export const action = defineAction(async ({request, params, response}: ActionFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 	const {username} = params;
 	const formData = await request.formData();
@@ -85,11 +82,8 @@ export const action = async ({request, params}: ActionFunctionArgs) => {
 				await userService.updateUserName(id, email, firstName, lastName);
 
 				userSession.flash('success', `Nome do aluno atualizado com sucesso para ${firstName} ${lastName}`);
-				return redirect(`/admin/students/${username}`, {
-					headers: {
-						'Set-Cookie': await commitUserSession(userSession), // eslint-disable-line @typescript-eslint/naming-convention
-					},
-				});
+
+				break;
 			}
 
 			case 'email': {
@@ -101,11 +95,7 @@ export const action = async ({request, params}: ActionFunctionArgs) => {
 
 				userSession.flash('success', `Email do aluno atualizado com sucesso para ${newEmail}`);
 
-				return redirect(`/admin/students/${newEmail}`, {
-					headers: {
-						'Set-Cookie': await commitUserSession(userSession), // eslint-disable-line @typescript-eslint/naming-convention
-					},
-				});
+				break;
 			}
 
 			case 'phoneNumber': {
@@ -116,11 +106,7 @@ export const action = async ({request, params}: ActionFunctionArgs) => {
 
 				userSession.flash('success', `Telefone do aluno atualizado com sucesso para ${phoneNumber}`);
 
-				return redirect(`/admin/students/${username}`, {
-					headers: {
-						'Set-Cookie': await commitUserSession(userSession), // eslint-disable-line @typescript-eslint/naming-convention
-					},
-				});
+				break;
 			}
 
 			case 'document': {
@@ -130,33 +116,22 @@ export const action = async ({request, params}: ActionFunctionArgs) => {
 				await userService.updateUserDocument(id, document);
 
 				userSession.flash('success', `Documento do aluno atualizado com sucesso para ${document}`);
-
-				return redirect(`/admin/students/${username}`, {
-					headers: {
-						'Set-Cookie': await commitUserSession(userSession), // eslint-disable-line @typescript-eslint/naming-convention
-					},
-				});
+				break;
 			}
 
 			default: {
 				userSession.flash('error', 'Tipo de formulário inválido');
-				return redirect(`/admin/students/${username}`, {
-					headers: {
-						'Set-Cookie': await commitUserSession(userSession), // eslint-disable-line @typescript-eslint/naming-convention
-					},
-				});
+				break;
 			}
 		}
 	} catch (error) {
 		logger.logError(`Erro ao editar ${formType} do aluno ${username}: ${(error as Error).message}`);
 		userSession.flash('error', (error as Error).message);
-		return redirect(`/admin/students/${username}`, {
-			headers: {
-				'Set-Cookie': await commitUserSession(userSession), // eslint-disable-line @typescript-eslint/naming-convention
-			},
-		});
 	}
-};
+
+	response!.headers.set('Set-Cookie', await commitUserSession(userSession));
+	return null;
+});
 
 export default function Student() {
 	const {
@@ -164,7 +139,7 @@ export default function Student() {
 		success,
 		studentData,
 		subscriptions,
-	} = useLoaderData<StudentLoaderData>();
+	} = useLoaderData<typeof loader>();
 
 	const [nameDialogIsOpen, setNameDialogIsOpen] = useState(false);
 	const [emailDialogIsOpen, setEmailDialogIsOpen] = useState(false);
@@ -559,7 +534,7 @@ export default function Student() {
 						{subscriptions.map(subscription => (
 							<li key={subscription.id}>
 								<h3>{subscription.course.name}</h3>
-								<p>{subscription.expiresAt}</p>
+								<p>{subscription.expiresAt.toLocaleDateString()}</p>
 							</li>
 						))}
 					</ul>

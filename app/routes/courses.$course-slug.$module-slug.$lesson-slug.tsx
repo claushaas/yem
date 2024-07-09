@@ -132,10 +132,10 @@ export default function Lesson() {
 					[`/courses/${course.slug}/${module.slug}/${lesson.lessonSlug}`, lesson.lesson.name], // Lesson
 				]}/>
 				<div className='w-full max-w-screen-lg mx-auto'>
-					<section id='title' className='flex justify-center gap-5 items-center mb-10'>
-						<Suspense fallback={<YemSpinner/>}>
-							<Await resolve={userLessonActivity}>
-								{userLessonActivity => (
+					<Suspense fallback={<YemSpinner/>}>
+						<Await resolve={userLessonActivity}>
+							{userLessonActivity => userLessonActivity.data.completed !== undefined && (
+								<section id='lesson-activity' className='flex justify-center gap-5 items-center mb-10'>
 									<Form method='post' className='flex justify-center gap-3 items-center'>
 										<input type='text' className='hidden' name='completed' value={userLessonActivity.data?.completed ? 'true' : 'false'}/>
 										<input type='text' className='hidden' name='saved' value={userLessonActivity.data?.saved ? 'true' : 'false'}/>
@@ -150,10 +150,10 @@ export default function Lesson() {
 											{userLessonActivity.data?.favorited ? <SolidHeartIcon className='size-8 stroke-purple-11 fill-purple-11'/> : <HeartIcon className='size-8'/>}
 										</button>
 									</Form>
-								)}
-							</Await>
-						</Suspense>
-					</section>
+								</section>
+							)}
+						</Await>
+					</Suspense>
 
 					{lesson.lesson.videoSourceUrl && (
 						<section id='video' className='h-fit mb-10 rounded-2xl'>

@@ -1,5 +1,5 @@
 import {type LoaderFunctionArgs, unstable_defineLoader as defineLoader} from '@remix-run/node';
-import {type MetaArgs_SingleFetch, useLoaderData} from '@remix-run/react';
+import {type MetaArgs_SingleFetch} from '@remix-run/react';
 
 export const meta = ({data}: MetaArgs_SingleFetch<typeof loader>) => [
 	{title: 'Comentários - Yoga em Movimento'},

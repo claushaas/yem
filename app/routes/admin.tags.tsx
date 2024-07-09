@@ -1,37 +1,32 @@
 import {
-	type ActionFunctionArgs, json, type LoaderFunctionArgs,
+	type ActionFunctionArgs,
+	type LoaderFunctionArgs,
+	unstable_defineAction as defineAction,
+	unstable_defineLoader as defineLoader,
 } from '@remix-run/node';
 import {
-	Form, type MetaFunction, redirect, useLoaderData, useNavigation,
+	Form, type MetaArgs_SingleFetch, useLoaderData, useNavigation,
 } from '@remix-run/react';
 import * as Dialog from '@radix-ui/react-dialog';
 import * as RadixForm from '@radix-ui/react-form';
 import {XMarkIcon} from '@heroicons/react/24/outline';
 import {useEffect, useState} from 'react';
 import {TagService} from '~/services/tag.service.server';
-import {type TServiceReturn} from '~/types/service-return.type';
-import {type TTag, type TPrismaPayloadGetAllTags} from '~/types/tag.type';
+import {type TTag} from '~/types/tag.type';
 import {logger} from '~/utils/logger.util';
 import {commitUserSession, getUserSession} from '~/utils/session.server';
 import {Button, ButtonPreset, ButtonType} from '~/components/button.js';
 import {YemSpinner} from '~/components/yem-spinner.js';
 import {SuccessOrErrorMessage} from '~/components/admin-success-or-error-message.js';
 
-export const meta: MetaFunction<typeof loader> = ({data}) => ([
+export const meta = ({data}: MetaArgs_SingleFetch<typeof loader>) => ([
 	{title: 'Tags - Yoga em Movimento'},
 	{name: 'description', content: 'Página de tags do Yoga em Movimento'},
 	{name: 'robots', content: 'noindex, nofollow'},
 	...data!.meta,
 ]);
 
-type TagsLoaderData = {
-	error: string | undefined;
-	success: string | undefined;
-	tags: TServiceReturn<TPrismaPayloadGetAllTags> | undefined;
-	meta: Array<{tagName: string; rel: string; href: string}>;
-};
-
-export const loader = async ({request}: LoaderFunctionArgs) => {
+export const loader = defineLoader(async ({request, response}: LoaderFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 
 	const meta = [
@@ -41,32 +36,26 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
 	try {
 		const tags = await new TagService().getAll();
 
-		return json<TagsLoaderData>({
+		response!.headers.set('Set-Cookie', await commitUserSession(userSession));
+		return {
 			error: userSession.get('error') as string | undefined,
 			success: userSession.get('success') as string | undefined,
 			tags,
 			meta,
-		}, {
-			headers: {
-				'Set-Cookie': await commitUserSession(userSession), // eslint-disable-line @typescript-eslint/naming-convention
-			},
-		});
+		};
 	} catch (error) {
 		logger.logError(`Error getting all tags: ${(error as Error).message}`);
-		return json<TagsLoaderData>({
+		response!.headers.set('Set-Cookie', await commitUserSession(userSession));
+		return {
 			tags: undefined,
 			error: `Error getting all tags: ${(error as Error).message}`,
 			success: undefined,
 			meta,
-		}, {
-			headers: {
-				'Set-Cookie': await commitUserSession(userSession), // eslint-disable-line @typescript-eslint/naming-convention
-			},
-		});
+		};
 	}
-};
+});
 
-export const action = async ({request}: ActionFunctionArgs) => {
+export const action = defineAction(async ({request, response}: ActionFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 	const formData = await request.formData();
 
@@ -79,30 +68,22 @@ export const action = async ({request}: ActionFunctionArgs) => {
 		await new TagService().create(tagData);
 
 		userSession.flash('success', `Tag ${tagData[0]} - ${tagData[1]} criada com sucesso!`);
-
-		return redirect('/admin/tags', {
-			headers: {
-				'Set-Cookie': await commitUserSession(userSession), // eslint-disable-line @typescript-eslint/naming-convention
-			},
-		});
 	} catch (error) {
 		logger.logError(`Error creating tag: ${(error as Error).message}`);
 		userSession.flash('error', `Error creating tag: ${(error as Error).message}`);
-
-		return redirect('/admin/tags', {
-			headers: {
-				'Set-Cookie': await commitUserSession(userSession), // eslint-disable-line @typescript-eslint/naming-convention
-			},
-		});
+	} finally {
+		response!.headers.set('Set-Cookie', await commitUserSession(userSession));
 	}
-};
+
+	return null;
+});
 
 export default function Tags() {
 	const {
 		tags,
 		error,
 		success,
-	} = useLoaderData<TagsLoaderData>();
+	} = useLoaderData<typeof loader>();
 
 	const navigation = useNavigation();
 	const isSubmitting = navigation.formAction === '/admin/tags';
