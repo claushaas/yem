@@ -1,8 +1,13 @@
 import * as Form from '@radix-ui/react-form';
-import {type LoaderFunctionArgs, type ActionFunctionArgs} from '@remix-run/node';
 import {
-	type MetaFunction,
-	Form as RemixForm, json, redirect, useLoaderData, useNavigation,
+	type LoaderFunctionArgs,
+	type ActionFunctionArgs,
+	unstable_defineAction as defineAction,
+	unstable_defineLoader as defineLoader,
+} from '@remix-run/node';
+import {
+	type MetaArgs_SingleFetch,
+	Form as RemixForm, useLoaderData, useNavigation,
 } from '@remix-run/react';
 import {SuccessOrErrorMessage} from '~/components/admin-success-or-error-message.js';
 import {Button, ButtonPreset, ButtonType} from '~/components/button.js';
@@ -10,34 +15,28 @@ import {YemSpinner} from '~/components/yem-spinner.js';
 import {UserService} from '~/services/user.service.server';
 import {commitUserSession, getUserSession} from '~/utils/session.server';
 
-export const meta: MetaFunction<typeof loader> = ({data}) => ([
+export const meta = ({data}: MetaArgs_SingleFetch<typeof loader>) => ([
 	{title: 'Alunos - Yoga em Movimento'},
 	{name: 'description', content: 'Página de alunos do Yoga em Movimento'},
 	{name: 'robots', content: 'noindex, nofollow'},
 	...data!.meta,
 ]);
 
-type StudentsLoaderData = {
-	error: string | undefined;
-	success: string | undefined;
-	meta: Array<{tagName: string; rel: string; href: string}>;
-};
-
-export const loader = async ({request}: LoaderFunctionArgs) => {
+export const loader = defineLoader(async ({request}: LoaderFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 
 	const meta = [
 		{tagName: 'link', rel: 'canonical', href: new URL('/admin/students', request.url).toString()},
 	];
 
-	return json<StudentsLoaderData>({
+	return {
 		error: userSession.get('error') as string | undefined,
 		success: userSession.get('success') as string | undefined,
 		meta,
-	});
-};
+	};
+});
 
-export const action = async ({request}: ActionFunctionArgs) => {
+export const action = defineAction(async ({request, response}: ActionFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 
 	try {
@@ -47,32 +46,30 @@ export const action = async ({request}: ActionFunctionArgs) => {
 		const {data: existUser} = await new UserService().verifyUserExists(username);
 
 		if (existUser) {
-			return redirect(`/admin/students/${username}`);
+			response!.headers.set('Set-Cookie', await commitUserSession(userSession));
+			response!.headers.set('Location', `/admin/students/${username}`);
+			response!.status = 303;
+
+			return null;
 		}
 
 		userSession.flash('error', `Usuário ${username} não encontrado`);
+		response!.headers.set('Set-Cookie', await commitUserSession(userSession));
 
-		return redirect('/admin/students', {
-			headers: {
-				'Set-Cookie': await commitUserSession(userSession), // eslint-disable-line @typescript-eslint/naming-convention
-			},
-		});
+		return null;
 	} catch {
 		userSession.flash('error', 'Erro ao pesquisar usuário');
+		response!.headers.set('Set-Cookie', await commitUserSession(userSession));
 
-		return redirect('/admin/students', {
-			headers: {
-				'Set-Cookie': await commitUserSession(userSession), // eslint-disable-line @typescript-eslint/naming-convention
-			},
-		});
+		return null;
 	}
-};
+});
 
 export default function Students() {
 	const {
 		error,
 		success,
-	} = useLoaderData<StudentsLoaderData>();
+	} = useLoaderData<typeof loader>();
 
 	const navigation = useNavigation();
 	const isSubmittingForm = navigation.formAction === '/admin/students';
