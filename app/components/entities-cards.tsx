@@ -52,11 +52,11 @@ export function AdminEntityCard({course, to}: ClassCardPropierties) {
 			/>
 			<Link to={to}>
 				<div className='absolute top-0 left-0 h-full w-full rounded-xl bg-mauvea-10 py-2 px-3 flex flex-col justify-between'>
-					<h2 className='text-mauve-3 text-lg drop-shadow-md'>
+					<h2 className='text-mauve-3 text-sm drop-shadow-md'>
 						{course.name}
 					</h2>
 					<div>
-						<p className='text-mauve-5 text-sm text-ellipsis line-clamp-3'>{course.description}</p>
+						<p className='text-mauve-5 text-xs text-ellipsis line-clamp-3'>{course.description}</p>
 					</div>
 				</div>
 			</Link>
@@ -84,11 +84,11 @@ export function GenericEntityCard({course, to, activity}: GenericEntityCardPropi
 			/>
 			<Link to={to}>
 				<div className='absolute top-0 left-0 h-full w-full rounded-xl bg-mauvea-10 py-2 px-3 flex flex-col justify-between'>
-					<h2 className='text-mauve-3 text-lg drop-shadow-md'>
+					<h2 className='text-mauve-3 text-sm drop-shadow-md'>
 						{course.name}
 					</h2>
 					<div>
-						<p className='text-mauve-5 text-sm text-ellipsis line-clamp-3'>{course.description}</p>
+						<p className='text-mauve-5 text-xs text-ellipsis line-clamp-3'>{course.description}</p>
 						<Suspense fallback={<YemSpinner/>}>
 							<Await resolve={activity}>
 								{activity => (
@@ -134,11 +134,11 @@ export function LessonEntityCard({course, to, activity}: LessonEntityCardPropier
 			/>
 			<Link to={to}>
 				<div className='absolute top-0 left-0 h-full w-full rounded-xl bg-mauvea-10 py-2 px-3 flex flex-col justify-between'>
-					<h2 className='text-mauve-3 text-lg drop-shadow-md'>
+					<h2 className='text-mauve-3 text-sm drop-shadow-md'>
 						{course.name}
 					</h2>
 					<div>
-						<p className='text-mauve-5 text-sm text-ellipsis line-clamp-3'>{course.description}</p>
+						<p className='text-mauve-5 text-xs text-ellipsis line-clamp-3'>{course.description}</p>
 						<Suspense fallback={<YemSpinner/>}>
 							<Await resolve={activity}>
 								{activity => activity?.data.completed !== undefined && (
