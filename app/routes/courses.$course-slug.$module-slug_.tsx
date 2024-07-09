@@ -141,8 +141,7 @@ export default function Module() {
 										key={lesson.lesson.id}
 										course={lesson.lesson}
 										to={`./${lesson.lesson.slug}`}
-										// eslint-disable-next-line unicorn/no-array-reduce
-										activity={lessonsActivity!.reduce((accumulator, activity) => ({...accumulator, ...activity}), {})[lesson.lesson.slug]}
+										activity={lessonsActivity?.reduce((accumulator, activity) => ({...accumulator, ...activity}), {})[lesson.lesson.slug] ?? undefined}
 									/>
 								))}
 							</div>

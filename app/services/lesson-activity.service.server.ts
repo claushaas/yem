@@ -11,11 +11,22 @@ export class LessonActivityService {
 		this._model = model;
 	}
 
-	public async getCourseProgressForUser(courseSlug: string, userId: string): Promise<TServiceReturn<{
-		totalLessons: number;
-		completedLessons: number;
-		percentage: number;
+	public async getCourseProgressForUser(courseSlug: string, userId: string | undefined): Promise<TServiceReturn<{
+		totalLessons: number | undefined;
+		completedLessons: number | undefined;
+		percentage: number | undefined;
 	}>> {
+		if (!userId) {
+			return {
+				status: 'SUCCESSFUL',
+				data: {
+					totalLessons: undefined,
+					completedLessons: undefined,
+					percentage: undefined,
+				},
+			};
+		}
+
 		const totalLessons = await this._model.lesson.count({
 			where: {
 				modules: {
@@ -63,11 +74,22 @@ export class LessonActivityService {
 		};
 	}
 
-	public async getModuleProgressForUser(moduleSlug: string, userId: string): Promise<TServiceReturn<{
-		totalLessons: number;
-		completedLessons: number;
-		percentage: number;
+	public async getModuleProgressForUser(moduleSlug: string, userId: string | undefined): Promise<TServiceReturn<{
+		totalLessons: number | undefined;
+		completedLessons: number | undefined;
+		percentage: number | undefined;
 	}>> {
+		if (!userId) {
+			return {
+				status: 'SUCCESSFUL',
+				data: {
+					totalLessons: undefined,
+					completedLessons: undefined,
+					percentage: undefined,
+				},
+			};
+		}
+
 		const totalLessons = await this._model.lesson.count({
 			where: {
 				modules: {
@@ -103,7 +125,18 @@ export class LessonActivityService {
 		};
 	}
 
-	public async getLessonActivityForUser(lessonSlug: string, userId: string): Promise<TServiceReturn<TGetLessonActivityForUser>> {
+	public async getLessonActivityForUser(lessonSlug: string, userId: string | undefined): Promise<TServiceReturn<TGetLessonActivityForUser>> {
+		if (!userId) {
+			return {
+				status: 'SUCCESSFUL',
+				data: {
+					saved: undefined,
+					completed: undefined,
+					favorited: undefined,
+				},
+			};
+		}
+
 		try {
 			const lesson = await this._model.lesson.findUnique({
 				where: {
