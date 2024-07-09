@@ -16,6 +16,8 @@ import {CourseService} from '~/services/course.service.server';
 import {VideoPlayer} from '~/components/video-player.js';
 import {LessonActivityService} from '~/services/lesson-activity.service.server';
 import {YemSpinner} from '~/components/yem-spinner.js';
+import {type TypeUserSession} from '~/types/user-session.type';
+import {NavigateBar} from '~/components/navigation-bar.js';
 
 export const meta = ({data}: MetaArgs_SingleFetch<typeof loader>) => [
 	{title: data!.module?.module.name ?? 'Módulo do Curso do Yoga em Movimento'},
@@ -59,6 +61,7 @@ export const loader = defineLoader(async ({request, params}: LoaderFunctionArgs)
 				slug: course?.slug ?? '',
 				name: course?.name ?? '',
 			},
+			userData: userSession.data as TypeUserSession,
 		};
 	} catch (error) {
 		logger.logError(`Error loading module: ${(error as Error).message}`);
@@ -69,13 +72,14 @@ export const loader = defineLoader(async ({request, params}: LoaderFunctionArgs)
 			meta,
 			actualPage: page,
 			course: undefined,
+			userData: userSession.data as TypeUserSession,
 		};
 	}
 });
 
 export default function Module() {
 	const data = useLoaderData<typeof loader>();
-	const {module, actualPage, course, moduleActivity, lessonsActivity} = data;
+	const {module, actualPage, course, moduleActivity, lessonsActivity, userData} = data;
 
 	const {ops} = module?.module.content ? JSON.parse(module?.module.content) as OpIterator : {ops: []};
 	const contentConverter = new QuillDeltaToHtmlConverter(ops, {
@@ -83,67 +87,71 @@ export default function Module() {
 	});
 
 	return module && (
-		<main className='w-full max-w-[95%] sm:max-w-[90%] mx-auto'>
-			<Breadcrumbs data={[
-				[`/courses/${course.slug}`, course.name], // Course
-				[`/courses/${course.slug}/${module.moduleSlug}`, module.module.name], // Module
-			]}/>
-			<div className='w-full max-w-screen-lg mx-auto'>
+		<>
+			<NavigateBar userData={userData}/>
 
-				{module.module.videoSourceUrl && (
-					<section id='video' className='h-fit rounded-2xl mb-10'>
-						{!module.module.videoSourceUrl.startsWith('https://') && (
-							<Stream
-								controls
-								preload='auto'
-								className='pt-[56.25%] relative *:absolute *:w-full *:h-full *:top-0 *:left-0 *:inset-0'
-								src={module.module.videoSourceUrl}
-								responsive={false}
-							/>
-						)}
-						{module.module.videoSourceUrl.startsWith('https://') && (
-							<VideoPlayer
-								title={module.module.name}
-								src={module.module.videoSourceUrl}
-								alt={module.module.name}
-							/>
-						)}
-					</section>
-				)}
+			<main className='w-full max-w-[95%] sm:max-w-[90%] mx-auto'>
+				<Breadcrumbs data={[
+					[`/courses/${course.slug}`, course.name], // Course
+					[`/courses/${course.slug}/${module.moduleSlug}`, module.module.name], // Module
+				]}/>
+				<div className='w-full max-w-screen-lg mx-auto'>
 
-				<section id='content' className='p-1 sm:p-5 bg-mauvea-2 dark:bg-mauvedarka-2 rounded-2xl flex flex-col gap-6 mb-10'>
-					{module.module.content && (
-						// eslint-disable-next-line react/no-danger, @typescript-eslint/naming-convention
-						<section dangerouslySetInnerHTML={{__html: contentConverter.convert()}}/>
-					)}
-					<Suspense fallback={<YemSpinner/>}>
-						<Await resolve={moduleActivity}>
-							{({data: {percentage}}) => (
-								<p className='text-sm'>Progresso do módulo: {percentage}% concluído</p>
-							)}
-						</Await>
-					</Suspense>
-				</section>
-
-				{module.lessons.length > 1 && (
-					<section id='lessons' className='p-1 sm:p-5 bg-mauvea-2 dark:bg-mauvedarka-2 rounded-2xl flex flex-col gap-6'>
-						<h2 className='text-center'>Aulas</h2>
-						<div className='flex flex-wrap justify-center gap-4 my-4'>
-							{(module.lessons as unknown as TLessonDataForCache[]).map(lesson => (
-								<LessonEntityCard
-									key={lesson.lesson.id}
-									course={lesson.lesson}
-									to={`./${lesson.lesson.slug}`}
-									// eslint-disable-next-line unicorn/no-array-reduce
-									activity={lessonsActivity!.reduce((accumulator, activity) => ({...accumulator, ...activity}), {})[lesson.lesson.slug]}
+					{module.module.videoSourceUrl && (
+						<section id='video' className='h-fit rounded-2xl mb-10'>
+							{!module.module.videoSourceUrl.startsWith('https://') && (
+								<Stream
+									controls
+									preload='auto'
+									className='pt-[56.25%] relative *:absolute *:w-full *:h-full *:top-0 *:left-0 *:inset-0'
+									src={module.module.videoSourceUrl}
+									responsive={false}
 								/>
-							))}
-						</div>
-						{module.pages > 1 && <Pagination pages={module.pages} actualPage={actualPage}/>}
-					</section>
-				)}
+							)}
+							{module.module.videoSourceUrl.startsWith('https://') && (
+								<VideoPlayer
+									title={module.module.name}
+									src={module.module.videoSourceUrl}
+									alt={module.module.name}
+								/>
+							)}
+						</section>
+					)}
 
-			</div>
-		</main>
+					<section id='content' className='p-1 sm:p-5 bg-mauvea-2 dark:bg-mauvedarka-2 rounded-2xl flex flex-col gap-6 mb-10'>
+						{module.module.content && (
+						// eslint-disable-next-line react/no-danger, @typescript-eslint/naming-convention
+							<section dangerouslySetInnerHTML={{__html: contentConverter.convert()}}/>
+						)}
+						<Suspense fallback={<YemSpinner/>}>
+							<Await resolve={moduleActivity}>
+								{({data: {percentage}}) => (
+									<p className='text-sm'>Progresso do módulo: {percentage}% concluído</p>
+								)}
+							</Await>
+						</Suspense>
+					</section>
+
+					{module.lessons.length > 1 && (
+						<section id='lessons' className='p-1 sm:p-5 bg-mauvea-2 dark:bg-mauvedarka-2 rounded-2xl flex flex-col gap-6'>
+							<h2 className='text-center'>Aulas</h2>
+							<div className='flex flex-wrap justify-center gap-4 my-4'>
+								{(module.lessons as unknown as TLessonDataForCache[]).map(lesson => (
+									<LessonEntityCard
+										key={lesson.lesson.id}
+										course={lesson.lesson}
+										to={`./${lesson.lesson.slug}`}
+										// eslint-disable-next-line unicorn/no-array-reduce
+										activity={lessonsActivity!.reduce((accumulator, activity) => ({...accumulator, ...activity}), {})[lesson.lesson.slug]}
+									/>
+								))}
+							</div>
+							{module.pages > 1 && <Pagination pages={module.pages} actualPage={actualPage}/>}
+						</section>
+					)}
+
+				</div>
+			</main>
+		</>
 	);
 }

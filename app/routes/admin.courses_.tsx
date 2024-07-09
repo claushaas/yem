@@ -1,58 +1,50 @@
 import {
-	type ActionFunctionArgs, json, type LoaderFunctionArgs, redirect,
+	type ActionFunctionArgs, type LoaderFunctionArgs, unstable_defineLoader as defineLoader, unstable_defineAction as defineAction,
 } from '@remix-run/node';
-import {useLoaderData, type MetaFunction} from '@remix-run/react';
+import {type MetaArgs_SingleFetch, useLoaderData} from '@remix-run/react';
 import {CourseService} from '~/services/course.service.server';
 import {commitUserSession, getUserSession} from '~/utils/session.server.js';
 import {logger} from '~/utils/logger.util.js';
 import {type TUserRoles} from '~/types/user.type';
-import {type TCourse, type TPrismaPayloadGetAllCourses} from '~/types/course.type';
-import {type TServiceReturn} from '~/types/service-return.type';
+import {type TCourse} from '~/types/course.type';
 import {CourseCreateOrEditForm} from '~/components/course-create-or-edit-form.js';
 import {SuccessOrErrorMessage} from '~/components/admin-success-or-error-message.js';
 import {AdminEntityCard} from '~/components/entities-cards.js';
+import {type TypeUserSession} from '~/types/user-session.type';
 
-export const meta: MetaFunction<typeof loader> = ({data}) => ([
+export const meta = ({data}: MetaArgs_SingleFetch<typeof loader>) => ([
 	{title: 'Cursos - Yoga em Movimento'},
 	{name: 'description', content: 'Cursos oferecidos pela Yoga em Movimento'},
 	{name: 'robots', content: 'noindex, nofollow'},
 	...data!.meta,
 ]);
 
-export type TCoursesLoaderData = {
-	error: string | undefined;
-	success: string | undefined;
-	courses: TServiceReturn<TPrismaPayloadGetAllCourses> | undefined;
-	meta: Array<{tagName: string; rel: string; href: string}>;
-};
-
-export const loader = async ({request}: LoaderFunctionArgs) => {
+export const loader = defineLoader(async ({request, response}: LoaderFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
+
+	response?.headers.set('Set-Cookie', await commitUserSession(userSession));
 
 	try {
 		const courses = await new CourseService().getAll(userSession.get('roles') as TUserRoles);
-		return json<TCoursesLoaderData>({
+
+		return {
 			error: userSession.get('error') as string | undefined,
 			success: userSession.get('success') as string | undefined,
 			courses,
 			meta: [{tagName: 'link', rel: 'canonical', href: new URL('/admin/courses', request.url).toString()}],
-		}, {
-			headers: {
-				'Set-Cookie': await commitUserSession(userSession), // eslint-disable-line @typescript-eslint/naming-convention
-			},
-		});
+		};
 	} catch (error) {
 		logger.logDebug(`Error getting courses: ${(error as Error).message}`);
-		return json<TCoursesLoaderData>({
+		return {
 			courses: undefined,
 			success: undefined,
 			error: `Error getting courses: ${(error as Error).message}`,
 			meta: [{tagName: 'link', rel: 'canonical', href: new URL('/admin/courses', request.url).toString()}],
-		});
+		};
 	}
-};
+});
 
-export const action = async ({request}: ActionFunctionArgs) => {
+export const action = defineAction(async ({request, response}: ActionFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 
 	try {
@@ -78,40 +70,35 @@ export const action = async ({request}: ActionFunctionArgs) => {
 			await new CourseService().create(newCourse);
 
 			userSession.flash('success', `Curso ${newCourse.name} criado com sucesso`);
+			response?.headers.set('Set-Cookie', await commitUserSession(userSession));
+			response?.headers.set('Location', '/admin/courses');
 
-			return redirect('/admin/courses', {
-				headers: {
-					'Set-Cookie': await commitUserSession(userSession), // eslint-disable-line @typescript-eslint/naming-convention
-				},
-			});
+			return null;
 		}
 
 		userSession.flash('error', 'Você não tem permissão para criar cursos');
-		return redirect('/admin/courses', {
-			headers: {
-				'Set-Cookie': await commitUserSession(userSession), // eslint-disable-line @typescript-eslint/naming-convention
-			},
-		});
+		response?.headers.set('Set-Cookie', await commitUserSession(userSession));
+		response?.headers.set('Location', '/admin/courses');
+		return null;
 	} catch (error) {
 		logger.logError(`Error creating course: ${(error as Error).message}`);
 		userSession.flash('error', 'Erro ao criar curso');
-		return redirect('/admin/courses', {
-			headers: {
-				'Set-Cookie': await commitUserSession(userSession), // eslint-disable-line @typescript-eslint/naming-convention
-			},
-		});
+		response?.headers.set('Set-Cookie', await commitUserSession(userSession));
+		response?.headers.set('Location', '/admin/courses');
+
+		return null;
 	}
-};
+});
 
 export default function Courses() {
 	const {
 		courses,
 		error,
 		success,
-	} = useLoaderData<TCoursesLoaderData>();
+	} = useLoaderData<typeof loader>();
 
 	return (
-		<>
+		<main>
 			<SuccessOrErrorMessage success={success} error={error}/>
 
 			<div className='flex items-center gap-5'>
@@ -124,6 +111,6 @@ export default function Courses() {
 					<AdminEntityCard key={course?.id} course={course ?? {}} to={`./${course?.slug}`}/>
 				))}
 			</div>
-		</>
+		</main>
 	);
 }

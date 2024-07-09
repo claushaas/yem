@@ -104,10 +104,7 @@ export class HooksService {
 		}
 	}
 
-	public async handleIuguWebhook(body: {
-		event: string;
-		data: Record<string, any>;
-	}): Promise<TServiceReturn<string>> {
+	public async handleIuguWebhook(body: {event: string; data: Record<string, any>}): Promise<TServiceReturn<string>> {
 		const {event} = body;
 		try {
 			switch (event) {
