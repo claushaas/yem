@@ -73,9 +73,8 @@ export const loader = defineLoader(async ({request, params, response}: LoaderFun
 	}
 });
 
-export const action = defineAction(async ({request, params, response}: ActionFunctionArgs) => {
+export const action = defineAction(async ({request, response}: ActionFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
-	const {'course-slug': courseSlug} = params;
 
 	try {
 		if ((userSession.get('roles') as string[])?.includes('admin')) {
