@@ -15,6 +15,7 @@ import {Testimonies} from '~/layouts/testimonies.js';
 import {History} from '~/layouts/yem-history.js';
 import {buildImgSource} from '~/utils/build-cloudflare-image-source.js';
 import {PlaylistCard} from '~/components/playlist-card.js';
+import {AccordionItem} from '~/components/accordion.js';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => [
 	{title: 'Escola Online - Yoga em Movimento'},
@@ -656,8 +657,8 @@ export default function EscolaOnline() {
 					<h1 className='text-purple-11 mb-24 text-3xl xs:text-5xl md:text-6xl lg:text-7xl text-center'>
 						Perguntas Frequentes
 					</h1>
-					<Accordion.Root collapsible type='single' defaultValue='1'>
-						<Accordion.Item value='1'>
+					<Accordion.Root collapsible type='single' defaultValue='1' className='rounded-xl'>
+						<AccordionItem value='1'>
 							<Accordion.Header>
 								<Accordion.Trigger>
 									<p>Posso parcelar a anuidade?</p>
@@ -666,9 +667,9 @@ export default function EscolaOnline() {
 							<Accordion.Content>
 								<p>Sim, é possível parcelar em até 12 vezes sem juros no cartão de crédito. Caso não tenha cartão ou precise de outra forma de pagamento entre em contato com nosso suporte no <a href='https://wa.me/551149359150' target='_blank' rel='noreferrer'>WhatsApp (11) 4935-9150</a></p>
 							</Accordion.Content>
-						</Accordion.Item>
+						</AccordionItem>
 
-						<Accordion.Item value='2'>
+						<AccordionItem value='2'>
 							<Accordion.Header>
 								<Accordion.Trigger>
 									<p>Como é feito o acesso?</p>
@@ -678,9 +679,9 @@ export default function EscolaOnline() {
 								<p>Caso ainda não possua cadastro em nossa plataforma, imediatamente após a confirmação do pagamento você receberá um email com a senha de acesso, exclusiva para você.</p>
 								<p>E além disso você receberá outros emails com as dicas de como começar a usufruir da sua escola de yoga.</p>
 							</Accordion.Content>
-						</Accordion.Item>
+						</AccordionItem>
 
-						<Accordion.Item value='3'>
+						<AccordionItem value='3'>
 							<Accordion.Header>
 								<Accordion.Trigger>
 									<p>Qual a diferença entre o plano anual e o plano mensal?</p>
@@ -690,9 +691,9 @@ export default function EscolaOnline() {
 								<p>Além do valor bem mais em conta do plano anual, os cursos de aprofundamento só estarão disponíveis para alunos do plano anual.</p>
 								<p>O plano mensal custo R$ 77,00 por mês. O plano anual esta saindo por apenas 497 reais por ano, equivalente a apenas 41 reais por mês.</p>
 							</Accordion.Content>
-						</Accordion.Item>
+						</AccordionItem>
 
-						<Accordion.Item value='4'>
+						<AccordionItem value='4'>
 							<Accordion.Header>
 								<Accordion.Trigger>
 									<p>Como funciona o cancelamento?</p>
@@ -701,7 +702,7 @@ export default function EscolaOnline() {
 							<Accordion.Content>
 								<p>Você pode cancelar as renovações futuras da sua anuidade ou mensalidades quando quiser, e oferecemos um prazo de 7 dias após o pagamento para estornos.</p>
 							</Accordion.Content>
-						</Accordion.Item>
+						</AccordionItem>
 					</Accordion.Root>
 				</section>
 			</main>
