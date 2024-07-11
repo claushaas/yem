@@ -164,12 +164,12 @@ export class LessonService {
 						userId: user?.id ?? '',
 					},
 				},
-				FavoritedBy: {
+				favoritedBy: {
 					where: {
 						userId: user?.id ?? '',
 					},
 				},
-				SavedBy: {
+				savedBy: {
 					where: {
 						userId: user?.id ?? '',
 					},
@@ -285,12 +285,12 @@ export class LessonService {
 									userId: user?.id ?? '',
 								},
 							},
-							SavedBy: {
+							savedBy: {
 								where: {
 									userId: user?.id ?? '',
 								},
 							},
-							FavoritedBy: {
+							favoritedBy: {
 								where: {
 									userId: user?.id ?? '',
 								},
