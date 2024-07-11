@@ -15,7 +15,7 @@
   "sideEffects": false,
   "type": "module",
   "engines": {
-    "node": ">=20.15.0"
+    "node": ">=20.15.1"
   },
   "bugs:": "https://github.com/claushaas/yem/issues",
   "scripts": {
@@ -32,14 +32,15 @@
     "db:reset": "npx prisma migrate reset"
   },
   "dependencies": {
-    "@aws-sdk/client-cognito-identity-provider": "^3.609.0",
-    "@aws-sdk/client-secrets-manager": "^3.609.0",
-    "@aws-sdk/client-sesv2": "^3.609.0",
-    "@aws-sdk/credential-providers": "^3.609.0",
+    "@aws-sdk/client-cognito-identity-provider": "^3.614.0",
+    "@aws-sdk/client-secrets-manager": "^3.614.0",
+    "@aws-sdk/client-sesv2": "^3.614.0",
+    "@aws-sdk/credential-providers": "^3.614.0",
     "@cloudflare/stream-react": "^1.9.1",
     "@epic-web/remember": "^1.1.0",
-    "@heroicons/react": "^2.1.4",
-    "@prisma/client": "^5.16.1",
+    "@heroicons/react": "^2.1.5",
+    "@prisma/client": "^5.16.2",
+    "@radix-ui/react-accordion": "^1.2.0",
     "@radix-ui/react-dialog": "^1.1.1",
     "@radix-ui/react-form": "^0.1.0",
     "@radix-ui/react-navigation-menu": "^1.2.0",
@@ -54,16 +55,16 @@
     "@vidstack/react": "^1.11.21",
     "axios": "^1.7.2",
     "express": "^4.19.2",
-    "framer-motion": "^11.2.13",
+    "framer-motion": "^11.3.2",
     "fuse.js": "^7.0.0",
     "helmet": "^7.1.0",
     "hls.js": "^1.5.13",
-    "isbot": "^5.1.11",
+    "isbot": "^5.1.12",
     "joi": "^17.13.3",
     "morgan": "^1.10.0",
     "nprogress": "^0.2.0",
-    "prisma": "^5.16.1",
-    "qs": "^6.12.2",
+    "prisma": "^5.16.2",
+    "qs": "^6.12.3",
     "quill": "^2.0.2",
     "quill-delta-to-html": "^0.12.1",
     "react": "^18.3.1",
@@ -72,7 +73,7 @@
     "react-select": "^5.8.0",
     "remix-create-express-app": "^0.4.4",
     "remix-utils": "^7.6.0",
-    "winston": "^3.13.0"
+    "winston": "^3.13.1"
   },
   "devDependencies": {
     "@radix-ui/colors": "^3.0.0",
