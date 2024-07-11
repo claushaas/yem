@@ -47,12 +47,12 @@ export const loader = defineLoader(async ({request, params, response}: LoaderFun
 		{tagName: 'link', rel: 'canonical', href: new URL(`/admin/courses/${courseSlug}`, request.url).toString()},
 	];
 
+	response!.headers.set('Set-Cookie', await commitUserSession(userSession));
+
 	try {
 		const courseService = new CourseService();
 		const {data: course} = await courseService.getBySlug(courseSlug!, userSession.data as TUser);
 		const {data: courses} = await courseService.getAll(userSession.get('roles') as string[]);
-
-		response?.headers.set('Set-Cookie', await commitUserSession(userSession));
 
 		return {
 			course,
@@ -160,9 +160,9 @@ export const action = defineAction(async ({request, response}: ActionFunctionArg
 	} catch (error) {
 		logger.logError(`Error creating course: ${(error as Error).message}`);
 		userSession.flash('error', `Error creating course: ${(error as Error).message}`);
-	} finally {
-		response?.headers.set('Set-Cookie', await commitUserSession(userSession));
 	}
+
+	response?.headers.set('Set-Cookie', await commitUserSession(userSession));
 
 	return null;
 });
