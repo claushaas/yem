@@ -10,7 +10,6 @@ import {type TCourse} from '~/types/course.type';
 import {CourseCreateOrEditForm} from '~/components/course-create-or-edit-form.js';
 import {SuccessOrErrorMessage} from '~/components/admin-success-or-error-message.js';
 import {AdminEntityCard} from '~/components/entities-cards.js';
-import {type TypeUserSession} from '~/types/user-session.type';
 
 export const meta = ({data}: MetaArgs_SingleFetch<typeof loader>) => ([
 	{title: 'Cursos - Yoga em Movimento'},

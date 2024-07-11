@@ -87,8 +87,8 @@ export type TPrismaPayloadGetLessonById = Prisma.LessonToModuleGetPayload<{
 					};
 				};
 				completedBy: true;
-				SavedBy: true;
-				FavoritedBy: true;
+				savedBy: true;
+				favoritedBy: true;
 			};
 		};
 	};

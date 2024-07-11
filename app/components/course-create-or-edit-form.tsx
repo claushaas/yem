@@ -11,13 +11,13 @@ import {useTextEditor} from '../hooks/use-text-editor.hook.js';
 import {Button, ButtonPreset, ButtonType} from '~/components/button.js';
 import {Editor} from '~/components/text-editor.client.js';
 import {YemSpinner} from '~/components/yem-spinner.js';
-import {type TCoursesLoaderData} from '~/routes/admin.courses_';
+import {type loader} from '~/routes/admin.courses_.js';
 
 export function CourseCreateOrEditForm() {
 	const {
 		courses,
 		success,
-	} = useLoaderData<TCoursesLoaderData>();
+	} = useLoaderData<typeof loader>();
 	const [content, setContetQuill] = useTextEditor();
 	const [mktContent, setMktQuill] = useTextEditor();
 	const [open, setOpen] = useState<boolean>(false);
