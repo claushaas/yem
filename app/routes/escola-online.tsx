@@ -652,7 +652,7 @@ export default function EscolaOnline() {
 				</section>
 
 				<section id='faq' className='max-w-[95%] sm:max-w-[90%] lg:max-w-screen-lg mx-auto my-20 sm:my-56'>
-					<h1 className='text-amber-11 mb-24 text-3xl xs:text-5xl md:text-6xl lg:text-7xl'>Perguntas Frequentes</h1>
+					<h1 className='text-purple-11 mb-24 text-3xl xs:text-5xl md:text-6xl lg:text-7xl'>Perguntas Frequentes</h1>
 				</section>
 			</main>
 		</>
