@@ -32,6 +32,7 @@ export const loader = defineLoader(async ({request, response}: LoaderFunctionArg
 
 	if (userSession.has('id')) {
 		response?.headers.set('Location', '/courses');
+		response!.status = 303;
 	}
 
 	response?.headers.set('Set-Cookie', await commitUserSession(userSession));
@@ -81,9 +82,9 @@ export const action = defineAction(async ({request, response}: ActionFunctionArg
 		userSession.flash('error', 'Usuário ou senha inválidos');
 
 		response?.headers.set('Set-Cookie', await commitUserSession(userSession));
-	} finally {
-		return null; // eslint-disable-line no-unsafe-finally
 	}
+
+	return null;
 });
 
 export default function Login() {
