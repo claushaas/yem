@@ -12,6 +12,7 @@ import NProgress from 'nprogress';
 import nProgressStyles from 'nprogress/nprogress.css?url';
 import {useEffect, useMemo} from 'react';
 import {useIsBot} from './hooks/use-is-bot.hook.js';
+import {HelpButton} from './components/help-button.js';
 import styles from '~/tailwind.css?url';
 import {Footer} from '~/components/footer.js';
 
@@ -67,6 +68,7 @@ function App() {
 			<body className='bg-mauve-2 dark:bg-mauvedark-2 min-h-screen flex flex-col justify-between'>
 				<Outlet/>
 				<Footer/>
+				<HelpButton/>
 				<ScrollRestoration/>
 				{isBot ? null : <Scripts/>}
 			</body>
