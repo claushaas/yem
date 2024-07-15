@@ -57,8 +57,10 @@ export const loader = defineLoader(async ({request, params, response}: LoaderFun
 	try {
 		const {data: module} = await moduleService.getBySlug(courseSlug!, moduleSlug!, userSession.data as TUser);
 		const {data: tags} = await new TagService().getAll();
+		const {data: allLessons} = await new LessonService().getAll(userSession.data as TUser);
 
 		return {
+			allLessons,
 			module,
 			tags,
 			error: userSession.get('error') as string | undefined,
@@ -68,6 +70,7 @@ export const loader = defineLoader(async ({request, params, response}: LoaderFun
 	} catch (error) {
 		logger.logError(`Error getting module: ${(error as Error).message}`);
 		return {
+			allLessons: undefined,
 			module: undefined,
 			tags: undefined,
 			error: (error as Error).message,
@@ -135,7 +138,7 @@ export const action = defineAction(async ({request, response}: ActionFunctionArg
 					const lessonSlug = formData.get('lessonSlug') as string;
 					const moduleSlug = formData.get('moduleSlug') as string;
 					const publicationDate = new Date(formData.get('publicationDate') as string);
-					const isPublished = Boolean(formData.get('isPublished'));
+					const isPublished = Boolean(formData.get('isPublished') === 'on');
 					const order = Number(formData.get('order'));
 
 					await new LessonService().associateLessonWithModule(lessonSlug, moduleSlug, publicationDate, isPublished, order);
@@ -163,6 +166,7 @@ export const action = defineAction(async ({request, response}: ActionFunctionArg
 
 export default function Module() {
 	const {
+		allLessons,
 		module,
 		tags: rawTags,
 		error,
@@ -175,6 +179,7 @@ export default function Module() {
 	} = useParams();
 
 	const tags: Array<{value: TTag; label: string}> = rawTags ? rawTags.map(tag => ({value: [tag.tagOptionName, tag.tagValueName], label: `${tag.tagOptionName}: ${tag.tagValueName}`})) : [];
+	const lessons: Array<{value: string; label: string}> = allLessons ? allLessons.map(lesson => ({value: lesson.slug, label: lesson.name})) : [];
 
 	const [moduleContent, setModuleContentEditor] = useTextEditor(module?.module.content);
 	const [moduleMktContent, setModuleMktContentEditor] = useTextEditor(module?.module.marketingContent);
@@ -186,6 +191,8 @@ export default function Module() {
 	const [existingLessonDialogIsOpen, setExistingLessonDialogIsOpen] = useState(false);
 
 	const [tagsValue, setTagsValue] = useState<Array<{value: TTag; label: string}>>([]);
+	const [lessonsValue, setLessonsValue] = useState<{value: string; label: string}>();
+
 	const navigation = useNavigation();
 	const isSubmittingAnyForm = navigation.formAction === `/admin/courses/${courseSlug}/${moduleSlug}`;
 
@@ -832,20 +839,28 @@ export default function Module() {
 
 								<RadixForm.Root asChild>
 									<Form method='post' action={`/admin/courses/${courseSlug}/${moduleSlug}`} className='flex flex-col gap-3'>
+
 										<RadixForm.Field name='lessonSlug'>
 											<div className='flex items-baseline justify-between'>
 												<RadixForm.Label>
-													<p>Slug da Aula Existente</p>
+													<p>Selecionar aula</p>
 												</RadixForm.Label>
 											</div>
 											<RadixForm.Control asChild>
 												<input
 													disabled={isSubmittingAnyForm}
 													type='text'
-													min={8}
-													className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
+													className='hidden'
+													value={lessonsValue?.value}
 												/>
 											</RadixForm.Control>
+											<Select
+												value={lessonsValue}
+												options={lessons}
+												onChange={selectedOption => {
+													setLessonsValue(selectedOption as {value: string; label: string});
+												}}
+											/>
 										</RadixForm.Field>
 
 										<RadixForm.Field name='publicationDate'>

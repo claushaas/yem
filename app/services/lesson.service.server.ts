@@ -98,6 +98,19 @@ export class LessonService {
 		};
 	}
 
+	public async getAll(user: TUser): Promise<TServiceReturn<Array<Prisma.LessonGetPayload<undefined>>>> {
+		if (!user.roles?.includes('admin')) {
+			throw new CustomError('UNAUTHORIZED', 'You are not authorized to perform this action');
+		}
+
+		const lessons = await this._model.lesson.findMany();
+
+		return {
+			status: 'SUCCESSFUL',
+			data: lessons,
+		};
+	}
+
 	public async getList(moduleId: string, user: TUser | undefined): Promise<TServiceReturn<TPrismaPayloadGetLessonList>> {
 		const lessons = await this._model.lesson.findMany({
 			where: {
@@ -317,7 +330,7 @@ export class LessonService {
 
 			return {
 				status: 'SUCCESSFUL',
-				data: returnableLesson as TPrismaPayloadGetLessonById,
+				data: returnableLesson,
 			};
 		} catch (error) {
 			logger.logError(`Error getting lesson by id: ${(error as Error).message}`);
