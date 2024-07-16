@@ -179,7 +179,11 @@ export default function Module() {
 	} = useParams();
 
 	const tags: Array<{value: TTag; label: string}> = rawTags ? rawTags.map(tag => ({value: [tag.tagOptionName, tag.tagValueName], label: `${tag.tagOptionName}: ${tag.tagValueName}`})) : [];
-	const lessons: Array<{value: string; label: string}> = allLessons ? allLessons.map(lesson => ({value: lesson.slug, label: lesson.name})) : [];
+	const lessons: Array<{value: string; label: string}> = allLessons
+		? allLessons
+			.filter(lesson => !module?.module.lessons.map(moduleLesson => moduleLesson.lessonSlug).includes(lesson.slug))
+			.map(lesson => ({value: lesson.slug, label: lesson.name}))
+		: [];
 
 	const [moduleContent, setModuleContentEditor] = useTextEditor(module?.module.content);
 	const [moduleMktContent, setModuleMktContentEditor] = useTextEditor(module?.module.marketingContent);
