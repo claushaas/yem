@@ -47,7 +47,7 @@ export const loader = defineLoader(async ({request, params, response}: LoaderFun
 	];
 
 	try {
-		const {data: lesson} = new LessonService().getBySlugFromCache(moduleSlug!, lessonSlug!, userSession.data as TUser);
+		const {data: lesson} = await new LessonService().getBySlug(courseSlug!, moduleSlug!, lessonSlug!, userSession.data as TUser);
 		response!.headers.set('Set-Cookie', await commitUserSession(userSession));
 
 		return {
