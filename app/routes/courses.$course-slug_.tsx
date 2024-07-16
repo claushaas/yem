@@ -32,8 +32,6 @@ export const loader = defineLoader(async ({request, params}: LoaderFunctionArgs)
 	];
 
 	try {
-		console.log(userSession.data as TUser);
-
 		const lessonActivityService = new LessonActivityService();
 
 		const {data: course} = new CourseService().getBySlugFromCache(courseSlug!, userSession.data as TUser);

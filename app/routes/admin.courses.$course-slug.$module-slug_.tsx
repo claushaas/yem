@@ -59,10 +59,15 @@ export const loader = defineLoader(async ({request, params, response}: LoaderFun
 		const {data: tags} = await new TagService().getAll();
 		const {data: allLessons} = await new LessonService().getAll(userSession.data as TUser);
 
+		const possibleLessons = allLessons.filter(lesson => !module?.module.lessons.map(moduleLesson => moduleLesson.lessonSlug).includes(lesson.slug))
+			.map(lesson => ({value: lesson.slug, label: lesson.name}));
+
+		const organizedTags = tags.map(tag => ({value: [tag.tagOptionName, tag.tagValueName], label: `${tag.tagOptionName}: ${tag.tagValueName}`})) as Array<{value: TTag; label: string}>;
+
 		return {
-			allLessons,
+			allLessons: possibleLessons,
 			module,
-			tags,
+			tags: organizedTags,
 			error: userSession.get('error') as string | undefined,
 			success: userSession.get('success') as string | undefined,
 			meta,
@@ -168,7 +173,7 @@ export default function Module() {
 	const {
 		allLessons,
 		module,
-		tags: rawTags,
+		tags,
 		error,
 		success,
 	} = useLoaderData<typeof loader>();
@@ -177,9 +182,6 @@ export default function Module() {
 		'course-slug': courseSlug,
 		'module-slug': moduleSlug,
 	} = useParams();
-
-	const tags: Array<{value: TTag; label: string}> = rawTags ? rawTags.map(tag => ({value: [tag.tagOptionName, tag.tagValueName], label: `${tag.tagOptionName}: ${tag.tagValueName}`})) : [];
-	const lessons: Array<{value: string; label: string}> = allLessons ? allLessons.map(lesson => ({value: lesson.slug, label: lesson.name})) : [];
 
 	const [moduleContent, setModuleContentEditor] = useTextEditor(module?.module.content);
 	const [moduleMktContent, setModuleMktContentEditor] = useTextEditor(module?.module.marketingContent);
@@ -856,7 +858,7 @@ export default function Module() {
 											</RadixForm.Control>
 											<Select
 												value={lessonsValue}
-												options={lessons}
+												options={allLessons}
 												onChange={selectedOption => {
 													setLessonsValue(selectedOption as {value: string; label: string});
 												}}
