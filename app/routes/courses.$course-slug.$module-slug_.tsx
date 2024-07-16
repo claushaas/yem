@@ -18,6 +18,7 @@ import {LessonActivityService} from '~/services/lesson-activity.service.server';
 import {YemSpinner} from '~/components/yem-spinner.js';
 import {type TypeUserSession} from '~/types/user-session.type';
 import {NavigateBar} from '~/components/navigation-bar.js';
+import {TagService} from '~/services/tag.service.server';
 
 export const meta = ({data}: MetaArgs_SingleFetch<typeof loader>) => [
 	{title: data!.module?.module.name ?? 'Módulo do Curso do Yoga em Movimento'},
@@ -45,6 +46,7 @@ export const loader = defineLoader(async ({request, params}: LoaderFunctionArgs)
 		const lessonActivityService = new LessonActivityService();
 		const {data: module} = new ModuleService().getBySlugFromCache(courseSlug!, moduleSlug!, userSession.data as TUser, page);
 		const {data: course} = new CourseService().getBySlugFromCache(courseSlug!, userSession.data as TUser);
+		const {data: tags} = new TagService().getTagsFromCache();
 
 		const moduleActivity = lessonActivityService.getModuleProgressForUser(moduleSlug!, (userSession.data as TUser).id);
 		const lessonsActivity = module?.lessons.map(lesson => ({
@@ -56,6 +58,7 @@ export const loader = defineLoader(async ({request, params}: LoaderFunctionArgs)
 			moduleActivity,
 			lessonsActivity,
 			meta,
+			tags,
 			actualPage: page,
 			course: {
 				slug: course?.slug ?? '',
@@ -70,6 +73,7 @@ export const loader = defineLoader(async ({request, params}: LoaderFunctionArgs)
 			moduleActivity: undefined,
 			lessonsActivity: undefined,
 			meta,
+			tags: undefined,
 			actualPage: page,
 			course: undefined,
 			userData: userSession.data as TypeUserSession,
@@ -79,7 +83,9 @@ export const loader = defineLoader(async ({request, params}: LoaderFunctionArgs)
 
 export default function Module() {
 	const data = useLoaderData<typeof loader>();
-	const {module, actualPage, course, moduleActivity, lessonsActivity, userData} = data;
+	const {module, actualPage, course, moduleActivity, lessonsActivity, userData, tags} = data;
+
+	console.log(tags);
 
 	const {ops} = module?.module.content ? JSON.parse(module?.module.content) as OpIterator : {ops: []};
 	const contentConverter = new QuillDeltaToHtmlConverter(ops, {
