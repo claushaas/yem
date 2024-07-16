@@ -13,6 +13,7 @@ import {type OpIterator} from 'quill/core';
 import {Suspense} from 'react';
 import {CheckCircleIcon, BookmarkIcon, HeartIcon} from '@heroicons/react/24/outline';
 import {CheckCircleIcon as SolidCheckCircleIcon, BookmarkIcon as SolidBookmarkIcon, HeartIcon as SolidHeartIcon} from '@heroicons/react/24/solid';
+import * as Tooltip from '@radix-ui/react-tooltip';
 import {Breadcrumbs} from '~/components/breadcrumbs.js';
 import {VideoPlayer} from '~/components/video-player.js';
 import {CourseService} from '~/services/course.service.server';
@@ -140,15 +141,58 @@ export default function Lesson() {
 										<input type='text' className='hidden' name='completed' value={userLessonActivity.data?.completed ? 'true' : 'false'}/>
 										<input type='text' className='hidden' name='saved' value={userLessonActivity.data?.saved ? 'true' : 'false'}/>
 										<input type='text' className='hidden' name='favorited' value={userLessonActivity.data?.favorited ? 'true' : 'false'}/>
-										<button type='submit' name='action' value='complete' className='cursor-pointer'>
-											{userLessonActivity.data?.completed ? <SolidCheckCircleIcon className='size-8 stroke-purple-11 fill-purple-11'/> : <CheckCircleIcon className='size-8'/>}
-										</button>
-										<button type='submit' name='action' value='save' className='cursor-pointer'>
-											{userLessonActivity.data?.saved ? <SolidBookmarkIcon className='size-8 stroke-purple-11 fill-purple-11'/> : <BookmarkIcon className='size-8'/>}
-										</button>
-										<button type='submit' name='action' value='favorite' className='cursor-pointer'>
-											{userLessonActivity.data?.favorited ? <SolidHeartIcon className='size-8 stroke-purple-11 fill-purple-11'/> : <HeartIcon className='size-8'/>}
-										</button>
+
+										<Tooltip.Provider>
+											<Tooltip.Root>
+												<Tooltip.Trigger asChild>
+													<button type='submit' name='action' value='complete' className='cursor-pointer'>
+														{userLessonActivity.data?.completed ? <SolidCheckCircleIcon className='size-8 stroke-purple-11 fill-purple-11'/> : <CheckCircleIcon className='size-8'/>}
+													</button>
+												</Tooltip.Trigger>
+
+												<Tooltip.Portal>
+													<Tooltip.Content sideOffset={5} className='bg-mauve-5 dark:bg-mauvedark-5 px-4 py-3 rounded-2xl shadow-sm shadow-mauve-8 dark:shadow-mauvedark-8'>
+														{userLessonActivity.data?.completed ? <p>Remover Aula Feita</p> : <p>Completar Aula</p>}
+														<Tooltip.Arrow className='fill-mauve-5 stroke-none'/>
+													</Tooltip.Content>
+												</Tooltip.Portal>
+											</Tooltip.Root>
+										</Tooltip.Provider>
+
+										<Tooltip.Provider>
+											<Tooltip.Root>
+												<Tooltip.Trigger asChild>
+													<button type='submit' name='action' value='save' className='cursor-pointer'>
+														{userLessonActivity.data?.saved ? <SolidBookmarkIcon className='size-8 stroke-purple-11 fill-purple-11'/> : <BookmarkIcon className='size-8'/>}
+													</button>
+												</Tooltip.Trigger>
+
+												<Tooltip.Portal>
+													<Tooltip.Content sideOffset={5} className='bg-mauve-5 dark:bg-mauvedark-5 px-4 py-3 rounded-2xl shadow-sm shadow-mauve-8 dark:shadow-mauvedark-8'>
+														{userLessonActivity.data?.completed ? <p>Remover Aula Salva</p> : <p>Salvar Aula</p>}
+														<Tooltip.Arrow className='fill-mauve-5 stroke-none'/>
+													</Tooltip.Content>
+												</Tooltip.Portal>
+											</Tooltip.Root>
+										</Tooltip.Provider>
+
+										<Tooltip.Provider>
+											<Tooltip.Root>
+												<Tooltip.Trigger asChild>
+													<button type='submit' name='action' value='favorite' className='cursor-pointer'>
+														{userLessonActivity.data?.favorited ? <SolidHeartIcon className='size-8 stroke-purple-11 fill-purple-11'/> : <HeartIcon className='size-8'/>}
+													</button>
+												</Tooltip.Trigger>
+
+												<Tooltip.Portal>
+													<Tooltip.Content sideOffset={5} className='bg-mauve-5 dark:bg-mauvedark-5 px-4 py-3 rounded-2xl shadow-sm shadow-mauve-8 dark:shadow-mauvedark-8'>
+														{userLessonActivity.data?.completed ? <p>Remover Aula Favorita</p> : <p>Favoritar Aula</p>}
+														<Tooltip.Arrow className='fill-mauve-5 stroke-none'/>
+													</Tooltip.Content>
+												</Tooltip.Portal>
+											</Tooltip.Root>
+										</Tooltip.Provider>
+
 									</Form>
 								</section>
 							)}
