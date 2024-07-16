@@ -59,8 +59,11 @@ export const loader = defineLoader(async ({request, params, response}: LoaderFun
 		const {data: tags} = await new TagService().getAll();
 		const {data: allLessons} = await new LessonService().getAll(userSession.data as TUser);
 
+		const possibleLessons = allLessons.filter(lesson => !module?.module.lessons.map(moduleLesson => moduleLesson.lessonSlug).includes(lesson.slug))
+			.map(lesson => ({value: lesson.slug, label: lesson.name}));
+
 		return {
-			allLessons,
+			allLessons: possibleLessons,
 			module,
 			tags,
 			error: userSession.get('error') as string | undefined,
@@ -179,11 +182,7 @@ export default function Module() {
 	} = useParams();
 
 	const tags: Array<{value: TTag; label: string}> = rawTags ? rawTags.map(tag => ({value: [tag.tagOptionName, tag.tagValueName], label: `${tag.tagOptionName}: ${tag.tagValueName}`})) : [];
-	const lessons: Array<{value: string; label: string}> = allLessons
-		? allLessons
-			.filter(lesson => !module?.module.lessons.map(moduleLesson => moduleLesson.lessonSlug).includes(lesson.slug))
-			.map(lesson => ({value: lesson.slug, label: lesson.name}))
-		: [];
+	const lessons: Array<{value: string; label: string}> = allLessons ?? [];
 
 	const [moduleContent, setModuleContentEditor] = useTextEditor(module?.module.content);
 	const [moduleMktContent, setModuleMktContentEditor] = useTextEditor(module?.module.marketingContent);
