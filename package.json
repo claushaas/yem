@@ -110,7 +110,12 @@
   "xo": {
     "extends": "xo-react",
     "rules": {
+      "import/extensions": "off",
       "n/prefer-global/process": [
+        "error",
+        "always"
+      ],
+      "n/file-extension-in-import": [
         "error",
         "always"
       ],

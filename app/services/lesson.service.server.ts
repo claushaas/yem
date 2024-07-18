@@ -1,17 +1,17 @@
 /* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
 import {type Prisma, type PrismaClient} from '@prisma/client';
 import Fuse, {type IFuseOptions} from 'fuse.js';
-import {type TUser} from '../types/user.type.js';
+import {type TUser} from '../types/user.type';
 import {CustomError} from '../utils/custom-error.js';
 import {
 	type TPrismaPayloadCreateOrUpdateLesson,
 	type TLesson,
 	type TPrismaPayloadGetLessonList,
 	type TPrismaPayloadGetLessonById,
-} from '../types/lesson.type.js';
-import {Lesson} from '../entities/lesson.entity.server.js';
-import {type TServiceReturn} from '../types/service-return.type.js';
-import {database} from '../database/database.server.js';
+} from '../types/lesson.type';
+import {Lesson} from '../entities/lesson.entity.server';
+import {type TServiceReturn} from '../types/service-return.type';
+import {database} from '../database/database.server';
 import {logger} from '~/utils/logger.util.js';
 import {type TLessonDataForCache} from '~/cache/populate-lessons-to-cache.js';
 import {memoryCache} from '~/cache/memory-cache.js';
@@ -201,6 +201,29 @@ export class LessonService {
 		};
 	}
 
+	public async getLessonsWithoutTags(user: TUser | undefined): Promise<TServiceReturn<Array<Prisma.LessonGetPayload<undefined>>>> {
+		if (!user?.roles?.includes('admin')) {
+			throw new CustomError('UNAUTHORIZED', 'You are not authorized to perform this action');
+		}
+
+		const lessons = await this._model.lesson.findMany({
+			where: {
+				tags: {
+					none: {},
+				},
+			},
+		});
+
+		if (!lessons) {
+			throw new CustomError('NOT_FOUND', 'No lessons found');
+		}
+
+		return {
+			status: 'SUCCESSFUL',
+			data: lessons,
+		};
+	}
+
 	public async search(moduleId: string, user: TUser | undefined, term: string): Promise<TServiceReturn<TPrismaPayloadGetLessonList>> {
 		const {data} = await this.getList(moduleId, user);
 
@@ -340,6 +363,27 @@ export class LessonService {
 				data: undefined,
 			};
 		}
+	}
+
+	public async getByLessonSlugOnly(lessonSlug: string, user: TUser | undefined): Promise<TServiceReturn<Prisma.LessonGetPayload<undefined>>> {
+		if (!user?.roles?.includes('admin')) {
+			throw new CustomError('UNAUTHORIZED', 'You are not authorized to perform this action');
+		}
+
+		const lesson = await this._model.lesson.findUnique({
+			where: {
+				slug: lessonSlug,
+			},
+		});
+
+		if (!lesson) {
+			throw new CustomError('NOT_FOUND', 'Lesson not found');
+		}
+
+		return {
+			status: 'SUCCESSFUL',
+			data: lesson,
+		};
 	}
 
 	public getBySlugFromCache(moduleSlug: string, lessonSlug: string, user: TUser | undefined): TServiceReturn<TLessonDataForCache | undefined> {
