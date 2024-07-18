@@ -121,6 +121,56 @@ const main = async () => {
 		},
 	});
 
+	await prisma.tagOptionTagValue.create({
+		data: {
+			tagOption: {
+				connectOrCreate: {
+					where: {
+						name: 'Dificuldade',
+					},
+					create: {
+						name: 'Dificuldade',
+					},
+				},
+			},
+			tagValue: {
+				connectOrCreate: {
+					where: {
+						name: 'Iniciante',
+					},
+					create: {
+						name: 'Iniciante',
+					},
+				},
+			},
+		},
+	});
+
+	await prisma.tagOptionTagValue.create({
+		data: {
+			tagOption: {
+				connectOrCreate: {
+					where: {
+						name: 'Dificuldade',
+					},
+					create: {
+						name: 'Dificuldade',
+					},
+				},
+			},
+			tagValue: {
+				connectOrCreate: {
+					where: {
+						name: 'Avançado',
+					},
+					create: {
+						name: 'Avançado',
+					},
+				},
+			},
+		},
+	});
+
 	await prisma.lesson.create({
 		data: {
 			id: 'd9fd2efe-ee41-45d6-25a5-4ec50aad7000',
@@ -135,6 +185,14 @@ const main = async () => {
 					isPublished: true,
 					publicationDate: new Date('2024-03-25 17:30:00'),
 					order: 1,
+				},
+			},
+			tags: {
+				connect: {
+					tag: {
+						tagOptionName: 'Dificuldade',
+						tagValueName: 'Iniciante',
+					},
 				},
 			},
 		},
@@ -153,6 +211,14 @@ const main = async () => {
 					isPublished: true,
 					publicationDate: new Date('2024-03-25 17:40:00'),
 					order: 1,
+				},
+			},
+			tags: {
+				connect: {
+					tag: {
+						tagOptionName: 'Dificuldade',
+						tagValueName: 'Avançado',
+					},
 				},
 			},
 		},
