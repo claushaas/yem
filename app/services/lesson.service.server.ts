@@ -201,6 +201,29 @@ export class LessonService {
 		};
 	}
 
+	public async getLessonsWithoutTags(user: TUser | undefined): Promise<TServiceReturn<Array<Prisma.LessonGetPayload<undefined>>>> {
+		if (!user?.roles?.includes('admin')) {
+			throw new CustomError('UNAUTHORIZED', 'You are not authorized to perform this action');
+		}
+
+		const lessons = await this._model.lesson.findMany({
+			where: {
+				tags: {
+					none: {},
+				},
+			},
+		});
+
+		if (!lessons) {
+			throw new CustomError('NOT_FOUND', 'No lessons found');
+		}
+
+		return {
+			status: 'SUCCESSFUL',
+			data: lessons,
+		};
+	}
+
 	public async search(moduleId: string, user: TUser | undefined, term: string): Promise<TServiceReturn<TPrismaPayloadGetLessonList>> {
 		const {data} = await this.getList(moduleId, user);
 
@@ -340,6 +363,27 @@ export class LessonService {
 				data: undefined,
 			};
 		}
+	}
+
+	public async getByLessonSlugOnly(lessonSlug: string, user: TUser | undefined): Promise<TServiceReturn<Prisma.LessonGetPayload<undefined>>> {
+		if (!user?.roles?.includes('admin')) {
+			throw new CustomError('UNAUTHORIZED', 'You are not authorized to perform this action');
+		}
+
+		const lesson = await this._model.lesson.findUnique({
+			where: {
+				slug: lessonSlug,
+			},
+		});
+
+		if (!lesson) {
+			throw new CustomError('NOT_FOUND', 'Lesson not found');
+		}
+
+		return {
+			status: 'SUCCESSFUL',
+			data: lesson,
+		};
 	}
 
 	public getBySlugFromCache(moduleSlug: string, lessonSlug: string, user: TUser | undefined): TServiceReturn<TLessonDataForCache | undefined> {
