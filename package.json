@@ -32,10 +32,10 @@
     "db:reset": "npx prisma migrate reset"
   },
   "dependencies": {
-    "@aws-sdk/client-cognito-identity-provider": "^3.614.0",
-    "@aws-sdk/client-secrets-manager": "^3.614.0",
-    "@aws-sdk/client-sesv2": "^3.614.0",
-    "@aws-sdk/credential-providers": "^3.614.0",
+    "@aws-sdk/client-cognito-identity-provider": "^3.616.0",
+    "@aws-sdk/client-secrets-manager": "^3.616.0",
+    "@aws-sdk/client-sesv2": "^3.616.0",
+    "@aws-sdk/credential-providers": "^3.616.0",
     "@cloudflare/stream-react": "^1.9.1",
     "@epic-web/remember": "^1.1.0",
     "@heroicons/react": "^2.1.5",
@@ -55,8 +55,9 @@
     "@unpic/react": "^0.1.14",
     "@vidstack/react": "^1.11.21",
     "axios": "^1.7.2",
+    "clipboard-copy": "^4.0.1",
     "express": "^4.19.2",
-    "framer-motion": "^11.3.4",
+    "framer-motion": "^11.3.7",
     "fuse.js": "^7.0.0",
     "helmet": "^7.1.0",
     "hls.js": "^1.5.13",
@@ -101,7 +102,7 @@
     "vite": "^5.3.4",
     "vite-plugin-svgr": "^4.2.0",
     "vite-tsconfig-paths": "^4.3.2",
-    "xo": "^0.58.0"
+    "xo": "^0.59.0"
   },
   "prisma": {
     "seed": "tsx ./prisma/seed.ts"

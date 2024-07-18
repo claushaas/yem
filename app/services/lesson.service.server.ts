@@ -15,6 +15,7 @@ import {database} from '../database/database.server.js';
 import {logger} from '~/utils/logger.util.js';
 import {type TLessonDataForCache} from '~/cache/populate-lessons-to-cache.js';
 import {memoryCache} from '~/cache/memory-cache.js';
+import {type TTag} from '~/types/tag.type.js';
 
 export class LessonService {
 	private static cache: typeof memoryCache;
@@ -394,6 +395,66 @@ export class LessonService {
 			};
 		} catch (error) {
 			throw new CustomError('UNKNOWN', `Error associating lesson with module: ${(error as Error).message}`);
+		}
+	}
+
+	public async addTagsToLesson(lessonId: string, tags: TTag[]): Promise<TServiceReturn<string>> {
+		try {
+			console.log('tags', tags);
+			const lesson = await this._model.lesson.update({
+				where: {
+					id: lessonId,
+				},
+				data: {
+					tags: {
+						connect: tags.map(tag => ({
+							tag: {
+								tagOptionName: tag[0],
+								tagValueName: tag[1],
+							},
+						})),
+					},
+				},
+			});
+
+			if (!lesson) {
+				throw new CustomError('NOT_FOUND', 'Lesson not found');
+			}
+
+			return {
+				status: 'SUCCESSFUL',
+				data: 'Tags added to lesson',
+			};
+		} catch (error) {
+			throw new CustomError('UNKNOWN', `Error adding tags to lesson: ${(error as Error).message}`);
+		}
+	}
+
+	public async removeTagFromLesson(lessonId: string, tagId: string): Promise<TServiceReturn<string>> {
+		try {
+			const lesson = await this._model.lesson.update({
+				where: {
+					id: lessonId,
+				},
+				data: {
+					tags: {
+						disconnect: {
+							id: tagId,
+						},
+					},
+				},
+			});
+
+			if (!lesson) {
+				throw new CustomError('NOT_FOUND', 'Lesson not found');
+			}
+
+			return {
+				status: 'SUCCESSFUL',
+				data: 'Tag removed from lesson',
+			};
+		} catch (error) {
+			throw new CustomError('UNKNOWN', `Error removing tag from lesson: ${(error as Error).message}`);
 		}
 	}
 
