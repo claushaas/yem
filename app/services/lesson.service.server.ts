@@ -1,17 +1,17 @@
 /* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
 import {type Prisma, type PrismaClient} from '@prisma/client';
 import Fuse, {type IFuseOptions} from 'fuse.js';
-import {type TUser} from '../types/user.type.js';
+import {type TUser} from '../types/user.type';
 import {CustomError} from '../utils/custom-error.js';
 import {
 	type TPrismaPayloadCreateOrUpdateLesson,
 	type TLesson,
 	type TPrismaPayloadGetLessonList,
 	type TPrismaPayloadGetLessonById,
-} from '../types/lesson.type.js';
-import {Lesson} from '../entities/lesson.entity.server.js';
-import {type TServiceReturn} from '../types/service-return.type.js';
-import {database} from '../database/database.server.js';
+} from '../types/lesson.type';
+import {Lesson} from '../entities/lesson.entity.server';
+import {type TServiceReturn} from '../types/service-return.type';
+import {database} from '../database/database.server';
 import {logger} from '~/utils/logger.util.js';
 import {type TLessonDataForCache} from '~/cache/populate-lessons-to-cache.js';
 import {memoryCache} from '~/cache/memory-cache.js';

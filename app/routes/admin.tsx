@@ -23,7 +23,7 @@ export const loader = defineLoader(async ({request, response}: LoaderFunctionArg
 		response!.headers.set('Location', '/');
 		response!.status = 303;
 
-		throw response; // eslint-disable-line @typescript-eslint/no-throw-literal
+		throw response; // eslint-disable-line @typescript-eslint/only-throw-error
 	}
 
 	return {
@@ -50,6 +50,9 @@ export default function Admin() {
 					</Link>
 					<Link to='/admin/courses'>
 						<p>Cursos</p>
+					</Link>
+					<Link to='/admin/lessons-without-tags'>
+						<p>Aulas sem Tags</p>
 					</Link>
 					<Link to='/admin/tags'>
 						<p>Tags</p>
