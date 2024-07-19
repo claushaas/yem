@@ -13,6 +13,7 @@ export type TModule = {
 	thumbnailUrl: string;
 	courses?: string[];
 	isLessonsOrderRandom: boolean;
+	showTagsFilters: boolean;
 	order?: number;
 	isPublished?: boolean;
 	publicationDate?: Date;

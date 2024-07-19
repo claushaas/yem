@@ -48,6 +48,7 @@ export class ModuleService {
 				marketingVideoUrl: newModule.marketingVideoUrl,
 				thumbnailUrl: newModule.thumbnailUrl,
 				isLessonsOrderRandom: newModule.isLessonsOrderRandom,
+				showTagsFilters: newModule.showTagsFilters,
 				courses: {
 					create: newModule.courses!.map(course => ({
 						courseSlug: course,
@@ -90,6 +91,7 @@ export class ModuleService {
 				marketingVideoUrl: newModule.marketingVideoUrl,
 				thumbnailUrl: newModule.thumbnailUrl,
 				isLessonsOrderRandom: newModule.isLessonsOrderRandom,
+				showTagsFilters: newModule.showTagsFilters,
 			},
 		});
 
