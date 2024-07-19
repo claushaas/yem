@@ -116,6 +116,7 @@ export const action = defineAction(async ({request, params, response}: ActionFun
 				await userService.updateUserDocument(id, document);
 
 				userSession.flash('success', `Documento do aluno atualizado com sucesso para ${document}`);
+
 				break;
 			}
 
