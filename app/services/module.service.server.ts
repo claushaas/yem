@@ -237,7 +237,8 @@ export class ModuleService {
 		}
 	}
 
-	public getBySlugFromCache(courseSlug: string, moduleSlug: string, user: TUser, page?: number): TServiceReturn<TModuleDataFromCache | undefined> {
+	// eslint-disable-next-line max-params
+	public getBySlugFromCache(courseSlug: string, moduleSlug: string, user: TUser, appliedTags: Array<[string, string]>, page?: number): TServiceReturn<TModuleDataFromCache | undefined> {
 		try {
 			const module = JSON.parse(ModuleService.cache.get(`${courseSlug}:${moduleSlug}`) ?? '{}') as TModuleDataFromCache;
 
@@ -262,8 +263,7 @@ export class ModuleService {
 			const actualPage = page ?? 1;
 			module.pages = Math.ceil(module.lessons.length / 16);
 
-			const lessons = module.lessons
-				.slice((actualPage - 1) * 16, actualPage * 16)
+			const allModuleLessons = module.lessons
 				.map(lessonSlug => {
 					const lessonData = JSON.parse(ModuleService.cache.get(`${moduleSlug}:${lessonSlug as string}`) ?? '{}') as TLessonDataForCache;
 
@@ -272,6 +272,16 @@ export class ModuleService {
 
 					return lessonData;
 				});
+
+			const lessons = allModuleLessons
+				.filter(lesson => {
+					if (appliedTags.length === 0) {
+						return true;
+					}
+
+					return lesson.lesson.tags.some(tag => appliedTags.some(([key, value]) => tag.tagOptionName === key && tag.tagValueName === value));
+				})
+				.slice((actualPage - 1) * 16, actualPage * 16);
 
 			module.lessons = lessons;
 			module.module.content = hasActiveSubscription ? module.module.content : module.module.marketingContent;

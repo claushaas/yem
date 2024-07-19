@@ -18,6 +18,7 @@ type ButtonProperties = {
 	readonly isDisabled?: boolean;
 	readonly preset?: ButtonPreset;
 	readonly type?: ButtonType;
+	readonly onClick?: () => void; // eslint-disable-line react/require-default-props
 };
 
 const baseButtonClasses = `
@@ -75,12 +76,15 @@ const classNames = (preset: ButtonPreset) => {
 	}
 };
 
+const noop = () => {}; // eslint-disable-line @typescript-eslint/no-empty-function
+
 export const Button = forwardRef(({
 	className,
 	isDisabled: disabled = false,
 	preset = ButtonPreset.Primary,
 	text = 'Clicar Aqui',
 	type = ButtonType.Button,
+	onClick = noop,
 }: ButtonProperties, forwardedReference: LegacyRef<HTMLButtonElement>) => (
 	<motion.button
 		ref={forwardedReference}
@@ -93,6 +97,7 @@ export const Button = forwardRef(({
 		className={classNames(preset) + (className ? ` ${className}` : '')}
 		disabled={disabled}
 		type={type ?? ButtonType.Button}
+		onClick={onClick}
 	>
 		<span className='font-gothamBold leading-none drop-shadow-sm'>{text}</span>
 	</motion.button>

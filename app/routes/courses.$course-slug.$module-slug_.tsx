@@ -1,9 +1,19 @@
 import {Stream} from '@cloudflare/stream-react';
 import {type LoaderFunctionArgs, unstable_defineLoader as defineLoader} from '@remix-run/node';
-import {type MetaArgs_SingleFetch, useLoaderData, Await} from '@remix-run/react';
+import {
+	type MetaArgs_SingleFetch,
+	useLoaderData,
+	Await,
+	useLocation,
+	useNavigate,
+} from '@remix-run/react';
 import {QuillDeltaToHtmlConverter} from 'quill-delta-to-html';
 import {type OpIterator} from 'quill/core';
-import {Suspense} from 'react';
+import {Suspense, useState} from 'react';
+import {AdjustmentsHorizontalIcon} from '@heroicons/react/24/outline';
+import {motion} from 'framer-motion';
+import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
+import * as Switch from '@radix-ui/react-switch';
 import {type TLessonDataForCache} from '~/cache/populate-lessons-to-cache.js';
 import {LessonEntityCard} from '~/components/entities-cards.js';
 import {ModuleService} from '~/services/module.service.server';
@@ -19,6 +29,7 @@ import {YemSpinner} from '~/components/yem-spinner.js';
 import {type TypeUserSession} from '~/types/user-session.type';
 import {NavigateBar} from '~/components/navigation-bar.js';
 import {TagService} from '~/services/tag.service.server';
+import {Button, ButtonPreset, ButtonType} from '~/components/button';
 
 export const meta = ({data}: MetaArgs_SingleFetch<typeof loader>) => [
 	{title: data!.module?.module.name ?? 'Módulo do Curso do Yoga em Movimento'},
@@ -35,6 +46,9 @@ export const loader = defineLoader(async ({request, params}: LoaderFunctionArgs)
 	} = params;
 
 	const url = new URL(request.url);
+
+	const appliedTags = [...url.searchParams.entries()].filter(([key]) => key === 'Dificuldade' || key === 'Técnicas' || key === 'Ênfase');
+
 	const pageString = url.searchParams.get('page');
 	const page = (pageString && !Number.isNaN(pageString)) ? Number(pageString) : 1;
 
@@ -44,7 +58,7 @@ export const loader = defineLoader(async ({request, params}: LoaderFunctionArgs)
 
 	try {
 		const lessonActivityService = new LessonActivityService();
-		const {data: module} = new ModuleService().getBySlugFromCache(courseSlug!, moduleSlug!, userSession.data as TUser, page);
+		const {data: module} = new ModuleService().getBySlugFromCache(courseSlug!, moduleSlug!, userSession.data as TUser, appliedTags, page);
 		const {data: course} = new CourseService().getBySlugFromCache(courseSlug!, userSession.data as TUser);
 		const {data: tags} = new TagService().getTagsFromCache();
 
@@ -82,15 +96,34 @@ export const loader = defineLoader(async ({request, params}: LoaderFunctionArgs)
 });
 
 export default function Module() {
-	const data = useLoaderData<typeof loader>();
-	const {module, actualPage, course, moduleActivity, lessonsActivity, userData, tags} = data;
+	const {module, actualPage, course, moduleActivity, lessonsActivity, userData, tags} = useLoaderData<typeof loader>();
 
-	console.log(tags);
+	const navigate = useNavigate();
+	const {search} = useLocation();
+
+	const queriesArray = decodeURI(search).slice(1).split('&').filter(query => !query.includes('page'));
+
+	const [filterQueries, setFilterQueries] = useState(queriesArray);
+	const [isFilterMenuOpen, setIsFilterMenuOpen] = useState(false);
 
 	const {ops} = module?.module.content ? JSON.parse(module?.module.content) as OpIterator : {ops: []};
 	const contentConverter = new QuillDeltaToHtmlConverter(ops, {
 		multiLineParagraph: false,
 	});
+
+	const onFilterChange = (query: string, state: boolean) => {
+		if (state) {
+			setFilterQueries([...filterQueries, query]);
+		} else {
+			setFilterQueries(filterQueries.filter(filterQuery => filterQuery !== query));
+		}
+	};
+
+	const onAplyFilters = () => {
+		const newQueries = filterQueries.map(query => `&${query}`).join('');
+		setIsFilterMenuOpen(false);
+		navigate(`/courses/${course!.slug}/${module!.moduleSlug}?page=${actualPage ?? 1}${newQueries}`);
+	};
 
 	return module && (
 		<>
@@ -138,9 +171,75 @@ export default function Module() {
 						</Suspense>
 					</section>
 
-					{module.lessons.length > 1 && (
+					{module.lessons.length > 0 && (
 						<section id='lessons' className='p-1 sm:p-5 bg-mauvea-2 dark:bg-mauvedarka-2 rounded-2xl flex flex-col gap-6'>
-							<h2 className='text-center'>Aulas</h2>
+							<div className='flex gap-5 justify-between items-center'>
+								<h2 className='text-center'>Aulas</h2>
+
+								{tags && (
+									<DropdownMenu.Root open={isFilterMenuOpen} onOpenChange={setIsFilterMenuOpen}>
+										<DropdownMenu.Trigger asChild>
+											<motion.div
+												className='flex gap-3 items-center bg-mauve-6 dark:bg-mauvedark-6 h-fit px-3 py-2 rounded-xl shadow-sm shadow-mauve-10 dark:shadow-mauvedark-10 cursor-pointer'
+												whileHover={{
+													scale: 1.05,
+													transition: {
+														duration: 0.5,
+													},
+												}}
+											>
+												<p>Filtros</p>
+												<AdjustmentsHorizontalIcon className='size-4'/>
+											</motion.div>
+										</DropdownMenu.Trigger>
+
+										<DropdownMenu.Portal>
+											<DropdownMenu.Content
+												align='end'
+												sideOffset={5}
+												className='bg-mauve-6 dark:bg-mauvedark-6 p-4 rounded-xl shadow-lg shadow-mauve-12 dark:shadow-mauvedark-12 max-w-64 xs:max-w-80'
+											>
+												<h6 className='mb-4'>Selecione as opções e clique em aplicar filtros:</h6>
+
+												{tags.map(tag => (
+													<div key={tag.tagOption} className='mb-4'>
+														<p className='font-gothamMedium mb-1'>{tag.tagOption}</p>
+
+														{tag.tagValues.map(tagValue => (
+															<div key={tagValue} className='flex gap-3 justify-start items-center mb-2 last:mb-0'>
+																<Switch.Root
+																	className='w-[42px] h-[25px] bg-blacka-6 rounded-full relative shadow-[0_2px_10px] shadow-blacka-4 focus:shadow-[0_0_0_2px] focus:shadow-black data-[state=checked]:bg-black outline-none cursor-default'
+																	defaultChecked={filterQueries.includes(`${tag.tagOption}=${tagValue}`)}
+																	onCheckedChange={(event => {
+																		onFilterChange(`${tag.tagOption}=${tagValue}`, event);
+																	})}
+																>
+																	<Switch.Thumb
+																		className='block w-[21px] h-[21px] bg-white rounded-full shadow-[0_2px_2px] shadow-blackA4 transition-transform duration-100 translate-x-0.5 will-change-transform data-[state=checked]:translate-x-[19px]'
+																	/>
+																</Switch.Root>
+																<p>{tagValue}</p>
+															</div>
+														))}
+
+														<div className='flex justify-center mt-8'>
+															<Button
+																type={ButtonType.Button}
+																preset={ButtonPreset.Primary}
+																text='Aplicar Filtros'
+																onClick={onAplyFilters}
+															/>
+														</div>
+													</div>
+												))}
+
+												<DropdownMenu.Arrow className='fill-mauve-6 dark:fill-mauvedark-6 border-none stroke-none'/>
+											</DropdownMenu.Content>
+										</DropdownMenu.Portal>
+									</DropdownMenu.Root>
+								)}
+							</div>
+
 							<div className='flex flex-wrap justify-center gap-4 my-4'>
 								{(module.lessons as unknown as TLessonDataForCache[]).map(lesson => (
 									<LessonEntityCard
