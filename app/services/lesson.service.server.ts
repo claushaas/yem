@@ -447,7 +447,6 @@ export class LessonService {
 
 	public async addTagsToLesson(lessonId: string, tags: TTag[]): Promise<TServiceReturn<string>> {
 		try {
-			console.log('tags', tags);
 			const lesson = await this._model.lesson.update({
 				where: {
 					id: lessonId,

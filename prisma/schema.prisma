@@ -48,6 +48,7 @@ model Module {
   updatedAt            DateTime         @updatedAt
   lessons              LessonToModule[]
   isLessonsOrderRandom Boolean          @default(false)
+  showTagsFilters      Boolean          @default(false)
   comments             Comment[]
   courses              ModuleToCourse[]
 

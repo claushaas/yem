@@ -120,6 +120,7 @@ export const action = defineAction(async ({request, response}: ActionFunctionArg
 						publicationDate: new Date(formData.get('publicationDate') as string),
 						isPublished: Boolean(formData.get('isPublished')),
 						isLessonsOrderRandom: Boolean(formData.get('isLessonsOrderRandom')),
+						showTagsFilters: Boolean(formData.get('showTagsFilters')),
 						order: Number(formData.get('order')),
 					};
 
@@ -878,6 +879,24 @@ export default function Course() {
 										<div className='flex items-baseline justify-between'>
 											<RadixForm.Label>
 												<p>As aulas deste módulo devem ser embaralhadas?</p>
+											</RadixForm.Label>
+										</div>
+										<RadixForm.Control asChild>
+											<Switch.Root
+												disabled={isSubmittingAnyForm}
+												className='w-[42px] h-[25px] bg-blacka-6 rounded-full relative shadow-[0_2px_10px] shadow-blacka-4 focus:shadow-[0_0_0_2px] focus:shadow-black data-[state=checked]:bg-black outline-none cursor-default'
+											>
+												<Switch.Thumb
+													className='block w-[21px] h-[21px] bg-white rounded-full shadow-[0_2px_2px] shadow-blackA4 transition-transform duration-100 translate-x-0.5 will-change-transform data-[state=checked]:translate-x-[19px]'
+												/>
+											</Switch.Root>
+										</RadixForm.Control>
+									</RadixForm.Field>
+
+									<RadixForm.Field name='showTagsFilters'>
+										<div className='flex items-baseline justify-between'>
+											<RadixForm.Label>
+												<p>Mostrar os filtros de tags?</p>
 											</RadixForm.Label>
 										</div>
 										<RadixForm.Control asChild>

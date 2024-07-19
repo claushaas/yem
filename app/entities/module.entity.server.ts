@@ -16,6 +16,7 @@ const moduleSchema = Joi.object({
 	isPublished: Joi.boolean().default(false),
 	courses: Joi.array().items(Joi.string()).unique(),
 	isLessonsOrderRandom: Joi.boolean().required().default(false),
+	showTagsFilters: Joi.boolean().default(false),
 	order: Joi.number().integer().default(0),
 });
 
@@ -34,6 +35,7 @@ export class Module implements TModule {
 	private readonly _courses?: string[];
 	private readonly _tags?: TTags;
 	private readonly _isLessonsOrderRandom: boolean;
+	private readonly _showTagsFilters: boolean;
 	private readonly _order?: number;
 
 	constructor(module: TModule) {
@@ -56,6 +58,7 @@ export class Module implements TModule {
 		this._isPublished = module.isPublished;
 		this._courses = module.courses;
 		this._isLessonsOrderRandom = module.isLessonsOrderRandom ?? false;
+		this._showTagsFilters = module.showTagsFilters ?? false;
 		this._order = module.order;
 	}
 
@@ -113,6 +116,10 @@ export class Module implements TModule {
 
 	get isLessonsOrderRandom() {
 		return this._isLessonsOrderRandom;
+	}
+
+	get showTagsFilters() {
+		return this._showTagsFilters;
 	}
 
 	get isPublished() {
