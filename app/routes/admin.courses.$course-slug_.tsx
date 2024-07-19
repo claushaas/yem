@@ -596,7 +596,6 @@ export default function Course() {
 							<Form method='post' action={`/admin/courses/${courseSlug}`}>
 
 								<RadixForm.Field name='type'>
-
 									<RadixForm.Control asChild>
 										<input
 											disabled={isSubmittingAnyForm}

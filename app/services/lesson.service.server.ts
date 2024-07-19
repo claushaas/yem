@@ -1,20 +1,21 @@
 /* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
 import {type Prisma, type PrismaClient} from '@prisma/client';
 import Fuse, {type IFuseOptions} from 'fuse.js';
-import {type TUser} from '../types/user.type.js';
+import {type TUser} from '../types/user.type';
 import {CustomError} from '../utils/custom-error.js';
 import {
 	type TPrismaPayloadCreateOrUpdateLesson,
 	type TLesson,
 	type TPrismaPayloadGetLessonList,
 	type TPrismaPayloadGetLessonById,
-} from '../types/lesson.type.js';
-import {Lesson} from '../entities/lesson.entity.server.js';
-import {type TServiceReturn} from '../types/service-return.type.js';
-import {database} from '../database/database.server.js';
+} from '../types/lesson.type';
+import {Lesson} from '../entities/lesson.entity.server';
+import {type TServiceReturn} from '../types/service-return.type';
+import {database} from '../database/database.server';
 import {logger} from '~/utils/logger.util.js';
 import {type TLessonDataForCache} from '~/cache/populate-lessons-to-cache.js';
 import {memoryCache} from '~/cache/memory-cache.js';
+import {type TTag} from '~/types/tag.type.js';
 
 export class LessonService {
 	private static cache: typeof memoryCache;
@@ -200,6 +201,32 @@ export class LessonService {
 		};
 	}
 
+	public async getLessonsWithoutTags(user: TUser | undefined): Promise<TServiceReturn<Array<Prisma.LessonGetPayload<undefined>>>> {
+		if (!user?.roles?.includes('admin')) {
+			throw new CustomError('UNAUTHORIZED', 'You are not authorized to perform this action');
+		}
+
+		const lessons = await this._model.lesson.findMany({
+			where: {
+				tags: {
+					none: {},
+				},
+			},
+			orderBy: {
+				name: 'asc',
+			},
+		});
+
+		if (!lessons) {
+			throw new CustomError('NOT_FOUND', 'No lessons found');
+		}
+
+		return {
+			status: 'SUCCESSFUL',
+			data: lessons,
+		};
+	}
+
 	public async search(moduleId: string, user: TUser | undefined, term: string): Promise<TServiceReturn<TPrismaPayloadGetLessonList>> {
 		const {data} = await this.getList(moduleId, user);
 
@@ -341,6 +368,27 @@ export class LessonService {
 		}
 	}
 
+	public async getByLessonSlugOnly(lessonSlug: string, user: TUser | undefined): Promise<TServiceReturn<Prisma.LessonGetPayload<undefined>>> {
+		if (!user?.roles?.includes('admin')) {
+			throw new CustomError('UNAUTHORIZED', 'You are not authorized to perform this action');
+		}
+
+		const lesson = await this._model.lesson.findUnique({
+			where: {
+				slug: lessonSlug,
+			},
+		});
+
+		if (!lesson) {
+			throw new CustomError('NOT_FOUND', 'Lesson not found');
+		}
+
+		return {
+			status: 'SUCCESSFUL',
+			data: lesson,
+		};
+	}
+
 	public getBySlugFromCache(moduleSlug: string, lessonSlug: string, user: TUser | undefined): TServiceReturn<TLessonDataForCache | undefined> {
 		try {
 			const lesson = JSON.parse(LessonService.cache.get(`${moduleSlug}:${lessonSlug}`) ?? '{}') as TLessonDataForCache;
@@ -394,6 +442,66 @@ export class LessonService {
 			};
 		} catch (error) {
 			throw new CustomError('UNKNOWN', `Error associating lesson with module: ${(error as Error).message}`);
+		}
+	}
+
+	public async addTagsToLesson(lessonId: string, tags: TTag[]): Promise<TServiceReturn<string>> {
+		try {
+			console.log('tags', tags);
+			const lesson = await this._model.lesson.update({
+				where: {
+					id: lessonId,
+				},
+				data: {
+					tags: {
+						connect: tags.map(tag => ({
+							tag: {
+								tagOptionName: tag[0],
+								tagValueName: tag[1],
+							},
+						})),
+					},
+				},
+			});
+
+			if (!lesson) {
+				throw new CustomError('NOT_FOUND', 'Lesson not found');
+			}
+
+			return {
+				status: 'SUCCESSFUL',
+				data: 'Tags added to lesson',
+			};
+		} catch (error) {
+			throw new CustomError('UNKNOWN', `Error adding tags to lesson: ${(error as Error).message}`);
+		}
+	}
+
+	public async removeTagFromLesson(lessonId: string, tagId: string): Promise<TServiceReturn<string>> {
+		try {
+			const lesson = await this._model.lesson.update({
+				where: {
+					id: lessonId,
+				},
+				data: {
+					tags: {
+						disconnect: {
+							id: tagId,
+						},
+					},
+				},
+			});
+
+			if (!lesson) {
+				throw new CustomError('NOT_FOUND', 'Lesson not found');
+			}
+
+			return {
+				status: 'SUCCESSFUL',
+				data: 'Tag removed from lesson',
+			};
+		} catch (error) {
+			throw new CustomError('UNKNOWN', `Error removing tag from lesson: ${(error as Error).message}`);
 		}
 	}
 

@@ -170,7 +170,7 @@ export default class SubscriptionService {
 			const {data: hotmartSubscriptions} = await this._hotmartService.getUserFormationSubscriptions(user);
 
 			if (hotmartSubscriptions.length > 0) {
-				await Promise.all([
+				await Promise.all([ // eslint-disable-line unicorn/no-single-promise-in-promise-methods
 					hotmartSubscriptions.map(async subscription => {
 						await this.createOrUpdate(subscription);
 					}),

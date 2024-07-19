@@ -1,3 +1,4 @@
+/* eslint-disable n/no-unsupported-features/node-builtins */
 import {UserService} from './user.service.server.js';
 import SubscriptionService from './subscription.service.server.js';
 import {IuguService} from './iugu.service.server.js';
