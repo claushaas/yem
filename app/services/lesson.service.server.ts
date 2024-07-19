@@ -212,6 +212,9 @@ export class LessonService {
 					none: {},
 				},
 			},
+			orderBy: {
+				name: 'asc',
+			},
 		});
 
 		if (!lessons) {
