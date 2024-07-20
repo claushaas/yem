@@ -221,17 +221,17 @@ export default function Module() {
 																<p>{tagValue}</p>
 															</div>
 														))}
-
-														<div className='flex justify-center mt-8'>
-															<Button
-																type={ButtonType.Button}
-																preset={ButtonPreset.Primary}
-																text='Aplicar Filtros'
-																onClick={onAplyFilters}
-															/>
-														</div>
 													</div>
 												))}
+
+												<div className='flex justify-center mt-8'>
+													<Button
+														type={ButtonType.Button}
+														preset={ButtonPreset.Primary}
+														text='Aplicar Filtros'
+														onClick={onAplyFilters}
+													/>
+												</div>
 
 												<DropdownMenu.Arrow className='fill-mauve-6 dark:fill-mauvedark-6 border-none stroke-none'/>
 											</DropdownMenu.Content>
