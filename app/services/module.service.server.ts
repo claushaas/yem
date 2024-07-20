@@ -272,13 +272,32 @@ export class ModuleService {
 					return lessonData;
 				});
 
+			// eslint-disable-next-line unicorn/no-array-reduce
+			const organizedTags = appliedTags.reduce<Array<Record<string, string[]>>>((accumulator, [key, value]) => {
+				const tagIndex = accumulator.findIndex(tag => tag[key]);
+
+				if (tagIndex === -1) {
+					accumulator.push({[key]: [value]});
+				} else if (!accumulator[tagIndex][key].includes(value)) {
+					accumulator[tagIndex][key].push(value);
+				}
+
+				return accumulator;
+			}, []);
+
 			const lessons = allModuleLessons
 				.filter(lesson => {
 					if (appliedTags.length === 0) {
 						return true;
 					}
 
-					return lesson.lesson.tags.some(tag => appliedTags.some(([key, value]) => tag.tagOptionName === key && tag.tagValueName === value));
+					return organizedTags.every(tagObject =>
+						Object.entries(tagObject).every(([key, values]) =>
+							lesson.lesson.tags.some(tag =>
+								tag.tagOptionName === key && values.includes(tag.tagValueName),
+							),
+						),
+					);
 				});
 
 			module.pages = Math.ceil(lessons.length / 16);
