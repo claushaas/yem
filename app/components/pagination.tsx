@@ -7,7 +7,9 @@ type PaginationProperties = {
 };
 
 export function Pagination({pages = 1, actualPage = 1}: PaginationProperties) {
-	const {pathname} = useLocation();
+	const {pathname, search} = useLocation();
+
+	const searchParameters = search.slice(1).split('&').filter(parameter => !parameter.startsWith('page')).join('&');
 
 	const limitArraySize = (array: number[], currentPage: number, maxSize = 5) => {
 		if (array.length <= maxSize) {
@@ -35,13 +37,13 @@ export function Pagination({pages = 1, actualPage = 1}: PaginationProperties) {
 	return (
 		<div className='flex items-center justify-center gap-2'>
 			{actualPage > 1 && (
-				<Link to={`${pathname}?page=${actualPage - 1}`}>
+				<Link to={`${pathname}?page=${actualPage - 1}&${searchParameters}`}>
 					<ChevronLeftIcon className='size-4'/>
 				</Link>
 			)}
 			{limitedArrayFirstPage !== 1 && (
 				<>
-					<Link to={`${pathname}?page=1`}>
+					<Link to={`${pathname}?page=1&${searchParameters}`}>
 						<p>1</p>
 					</Link>
 					<p>...</p>
@@ -55,7 +57,7 @@ export function Pagination({pages = 1, actualPage = 1}: PaginationProperties) {
 				}
 
 				return (
-					<Link key={page} to={`${pathname}?page=${page}`}>
+					<Link key={page} to={`${pathname}?page=${page}&${searchParameters}`}>
 						<p>{page}</p>
 					</Link>
 				);
@@ -63,13 +65,13 @@ export function Pagination({pages = 1, actualPage = 1}: PaginationProperties) {
 			{limitedPagesArray.at(-1) !== lastPage && (
 				<>
 					<p>...</p>
-					<Link to={`${pathname}?page=${lastPage}`}>
+					<Link to={`${pathname}?page=${lastPage}&${searchParameters}`}>
 						<p>{lastPage}</p>
 					</Link>
 				</>
 			)}
 			{actualPage < pages && (
-				<Link to={`${pathname}?page=${actualPage + 1}`}>
+				<Link to={`${pathname}?page=${actualPage + 1}&${searchParameters}`}>
 					<ChevronRightIcon className='size-4'/>
 				</Link>
 			)}

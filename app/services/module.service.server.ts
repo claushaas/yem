@@ -261,7 +261,6 @@ export class ModuleService {
 			});
 
 			const actualPage = page ?? 1;
-			module.pages = Math.ceil(module.lessons.length / 16);
 
 			const allModuleLessons = module.lessons
 				.map(lessonSlug => {
@@ -280,10 +279,13 @@ export class ModuleService {
 					}
 
 					return lesson.lesson.tags.some(tag => appliedTags.some(([key, value]) => tag.tagOptionName === key && tag.tagValueName === value));
-				})
-				.slice((actualPage - 1) * 16, actualPage * 16);
+				});
 
-			module.lessons = lessons;
+			module.pages = Math.ceil(lessons.length / 16);
+
+			const actualPageLessons = lessons.slice((actualPage - 1) * 16, actualPage * 16);
+
+			module.lessons = actualPageLessons;
 			module.module.content = hasActiveSubscription ? module.module.content : module.module.marketingContent;
 			module.module.videoSourceUrl = hasActiveSubscription ? module.module.videoSourceUrl : module.module.marketingVideoUrl;
 
