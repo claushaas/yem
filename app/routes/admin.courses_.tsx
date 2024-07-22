@@ -92,7 +92,7 @@ export default function Courses() {
 	} = useLoaderData<typeof loader>();
 
 	return (
-		<main>
+		<>
 			<SuccessOrErrorMessage success={success} error={error}/>
 
 			<div className='flex items-center gap-5'>
@@ -105,6 +105,6 @@ export default function Courses() {
 					<AdminEntityCard key={course?.id} course={course ?? {}} to={`./${course?.slug}`}/>
 				))}
 			</div>
-		</main>
+		</>
 	);
 }

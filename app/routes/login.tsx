@@ -96,6 +96,7 @@ export default function Login() {
 	return (
 		<>
 			<NavigateBar userData={userData}/>
+
 			<main className='flex flex-col flex-grow-[0.6] mt-20'>
 				<div className='my-auto'>
 					<RadixForm.Root asChild method='post'>

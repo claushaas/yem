@@ -8,6 +8,7 @@ import {
 	type TLesson,
 	type TPrismaPayloadGetLessonList,
 	type TPrismaPayloadGetLessonById,
+	type TPrismaPayloadGetCompletedLessons,
 } from '../types/lesson.type';
 import {Lesson} from '../entities/lesson.entity.server';
 import {type TServiceReturn} from '../types/service-return.type';
@@ -505,31 +506,44 @@ export class LessonService {
 		}
 	}
 
-	public async getCompletedLessonsByUser(user: TypeUserSession): Promise<TServiceReturn<Array<Prisma.LessonGetPayload<undefined> & {link: string}>>> {
-		const lessons = await this._model.lesson.findMany({
+	public async getCompletedLessonsByUser(user: TypeUserSession): Promise<TServiceReturn<TPrismaPayloadGetCompletedLessons>> {
+		const completedLessons = await this._model.completedLessons.findMany({
 			where: {
-				completedBy: {
-					some: {
-						userId: user.id,
-					},
-				},
+				userId: user.id,
 			},
-			include: {
-				modules: {
-					include: {
-						module: {
-							include: {
-								courses: {
-									include: {
-										course: {
-											include: {
-												delegateAuthTo: {
-													include: {
-														subscriptions: {
-															where: {
-																userId: user.id,
-																expiresAt: {
-																	gte: new Date(),
+			orderBy: {
+				updatedAt: 'desc',
+			},
+			select: {
+				lessonSlug: true,
+				userId: true,
+				updatedAt: true,
+				id: true,
+				lesson: {
+					select: {
+						name: true,
+						slug: true,
+						thumbnailUrl: true,
+						description: true,
+						modules: {
+							select: {
+								module: {
+									select: {
+										slug: true,
+										courses: {
+											select: {
+												course: {
+													select: {
+														slug: true,
+														delegateAuthTo: {
+															select: {
+																subscriptions: {
+																	where: {
+																		userId: user.id,
+																		expiresAt: {
+																			gte: new Date(),
+																		},
+																	},
 																},
 															},
 														},
@@ -546,26 +560,14 @@ export class LessonService {
 			},
 		});
 
-		const lessonsWithLinks = lessons.map(lesson => {
-			const hasActiveSubscription = lesson.modules.some(lessonToModule =>
-				lessonToModule.module.courses.some(course =>
-					course.course.delegateAuthTo.some(delegateAuthTo =>
-						delegateAuthTo.subscriptions.some(subscription => subscription.expiresAt >= new Date()), // eslint-disable-line max-nested-callbacks
-					),
-				),
-			);
-
-			return {
-				...lesson,
-				content: hasActiveSubscription ? lesson.content : lesson.marketingContent,
-				videoSourceUrl: hasActiveSubscription ? lesson.videoSourceUrl : lesson.marketingVideoUrl,
-				link: `/courses/${lesson.modules[0].module.courses[0].course.slug}/${lesson.modules[0].module.slug}/${lesson.slug}`,
-			};
-		});
+		const completedLessonsWithLinks = completedLessons.map(lesson => ({
+			...lesson,
+			link: `/courses/${lesson.lesson.modules[0].module.courses[0].course.slug}/${lesson.lesson.modules[0].module.slug}/${lesson.lesson.slug}`,
+		}));
 
 		return {
 			status: 'SUCCESSFUL',
-			data: lessonsWithLinks,
+			data: completedLessonsWithLinks,
 		};
 	}
 
