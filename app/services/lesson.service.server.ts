@@ -16,6 +16,7 @@ import {logger} from '~/utils/logger.util.js';
 import {type TLessonDataForCache} from '~/cache/populate-lessons-to-cache.js';
 import {memoryCache} from '~/cache/memory-cache.js';
 import {type TTag} from '~/types/tag.type.js';
+import {type TypeUserSession} from '~/types/user-session.type';
 
 export class LessonService {
 	private static cache: typeof memoryCache;
@@ -504,6 +505,198 @@ export class LessonService {
 		}
 	}
 
+	public async getCompletedLessonsByUser(user: TypeUserSession): Promise<TServiceReturn<Array<Prisma.LessonGetPayload<undefined> & {link: string}>>> {
+		const lessons = await this._model.lesson.findMany({
+			where: {
+				completedBy: {
+					some: {
+						userId: user.id,
+					},
+				},
+			},
+			include: {
+				modules: {
+					include: {
+						module: {
+							include: {
+								courses: {
+									include: {
+										course: {
+											include: {
+												delegateAuthTo: {
+													include: {
+														subscriptions: {
+															where: {
+																userId: user.id,
+																expiresAt: {
+																	gte: new Date(),
+																},
+															},
+														},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		});
+
+		const lessonsWithLinks = lessons.map(lesson => {
+			const hasActiveSubscription = lesson.modules.some(lessonToModule =>
+				lessonToModule.module.courses.some(course =>
+					course.course.delegateAuthTo.some(delegateAuthTo =>
+						delegateAuthTo.subscriptions.some(subscription => subscription.expiresAt >= new Date()), // eslint-disable-line max-nested-callbacks
+					),
+				),
+			);
+
+			return {
+				...lesson,
+				content: hasActiveSubscription ? lesson.content : lesson.marketingContent,
+				videoSourceUrl: hasActiveSubscription ? lesson.videoSourceUrl : lesson.marketingVideoUrl,
+				link: `/courses/${lesson.modules[0].module.courses[0].course.slug}/${lesson.modules[0].module.slug}/${lesson.slug}`,
+			};
+		});
+
+		return {
+			status: 'SUCCESSFUL',
+			data: lessonsWithLinks,
+		};
+	}
+
+	public async getSavedLessonsByUser(user: TypeUserSession): Promise<TServiceReturn<Array<Prisma.LessonGetPayload<undefined> & {link: string}>>> {
+		const lessons = await this._model.lesson.findMany({
+			where: {
+				savedBy: {
+					some: {
+						userId: user.id,
+					},
+				},
+			},
+			include: {
+				modules: {
+					include: {
+						module: {
+							include: {
+								courses: {
+									include: {
+										course: {
+											include: {
+												delegateAuthTo: {
+													include: {
+														subscriptions: {
+															where: {
+																userId: user.id,
+																expiresAt: {
+																	gte: new Date(),
+																},
+															},
+														},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		});
+
+		const lessonsWithLinks = lessons.map(lesson => {
+			const hasActiveSubscription = lesson.modules.some(lessonToModule =>
+				lessonToModule.module.courses.some(course =>
+					course.course.delegateAuthTo.some(delegateAuthTo =>
+						delegateAuthTo.subscriptions.some(subscription => subscription.expiresAt >= new Date()), // eslint-disable-line max-nested-callbacks
+					),
+				),
+			);
+
+			return {
+				...lesson,
+				content: hasActiveSubscription ? lesson.content : lesson.marketingContent,
+				videoSourceUrl: hasActiveSubscription ? lesson.videoSourceUrl : lesson.marketingVideoUrl,
+				link: `/courses/${lesson.modules[0].module.courses[0].course.slug}/${lesson.modules[0].module.slug}/${lesson.slug}`,
+			};
+		});
+
+		return {
+			status: 'SUCCESSFUL',
+			data: lessonsWithLinks,
+		};
+	}
+
+	public async getFavoritedLessonsByUser(user: TypeUserSession): Promise<TServiceReturn<Array<Prisma.LessonGetPayload<undefined> & {link: string}>>> {
+		const lessons = await this._model.lesson.findMany({
+			where: {
+				favoritedBy: {
+					some: {
+						userId: user.id,
+					},
+				},
+			},
+			include: {
+				modules: {
+					include: {
+						module: {
+							include: {
+								courses: {
+									include: {
+										course: {
+											include: {
+												delegateAuthTo: {
+													include: {
+														subscriptions: {
+															where: {
+																userId: user.id,
+																expiresAt: {
+																	gte: new Date(),
+																},
+															},
+														},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		});
+
+		const lessonsWithLinks = lessons.map(lesson => {
+			const hasActiveSubscription = lesson.modules.some(lessonToModule =>
+				lessonToModule.module.courses.some(course =>
+					course.course.delegateAuthTo.some(delegateAuthTo =>
+						delegateAuthTo.subscriptions.some(subscription => subscription.expiresAt >= new Date()), // eslint-disable-line max-nested-callbacks
+					),
+				),
+			);
+
+			return {
+				...lesson,
+				content: hasActiveSubscription ? lesson.content : lesson.marketingContent,
+				videoSourceUrl: hasActiveSubscription ? lesson.videoSourceUrl : lesson.marketingVideoUrl,
+				link: `/courses/${lesson.modules[0].module.courses[0].course.slug}/${lesson.modules[0].module.slug}/${lesson.slug}`,
+			};
+		});
+
+		return {
+			status: 'SUCCESSFUL',
+			data: lessonsWithLinks,
+		};
+	}
+
 	private _hasActiveSubscription(user: TUser | undefined, lessonToModule: TPrismaPayloadGetLessonById): boolean {
 		const isAdmin = user?.roles?.includes('admin');
 		const hasActiveSubscription = lessonToModule.module.courses.some(
@@ -517,5 +710,3 @@ export class LessonService {
 		return isAdmin || hasActiveSubscription;
 	}
 }
-
-type test = Prisma.LessonToModuleCreateManyLessonInputEnvelope;
