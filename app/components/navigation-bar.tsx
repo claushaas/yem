@@ -65,8 +65,9 @@ export function NavigateBar({userData}: {readonly userData: TypeUserSession | un
 						<NavigationMenu.Content className='data-[motion=from-start]:animate-enterFromLeft data-[motion=from-end]:animate-enterFromRight data-[motion=to-start]:animate-exitToLeft data-[motion=to-end]:animate-exitToRight px-4 py-2 bg-mauve-3 dark:bg-mauvedark-3 absolute top-0 right-0 rounded-md max-xs:w-[calc(100vw_-_calc(100vw_*_5_/_100))] w-72'>
 							<ul className='grid grid-cols-2 gap-3'>
 								{pathname !== '/' && <NavigateLink to='/'>Home</NavigateLink>}
-								{userData?.roles?.includes('admin') && pathname !== '/admin' && <NavigateLink to='/admin'>Admin</NavigateLink>}
+								{userData?.roles?.includes('admin') && !pathname.startsWith('/admin') && <NavigateLink to='/admin'>Admin</NavigateLink>}
 								{pathname !== '/courses' && <NavigateLink to='/courses'>Cursos</NavigateLink>}
+								{!pathname.startsWith('/profile') && userData?.id && <NavigateLink to='/profile'>Minha Área</NavigateLink>}
 								{userData?.id && pathname !== '/logout' && <NavigateLink to='/logout'>Sair</NavigateLink>}
 							</ul>
 						</NavigationMenu.Content>
