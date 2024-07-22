@@ -47,7 +47,7 @@ export const loader = defineLoader(async ({request, params}: LoaderFunctionArgs)
 	const userId = (userSession.data as TUser).id;
 
 	const {data: lesson} = new LessonService().getBySlugFromCache(moduleSlug!, lessonSlug!, userSession.data as TUser);
-	const {data: module} = new ModuleService().getBySlugFromCache(courseSlug!, moduleSlug!, userSession.data as TUser);
+	const {data: module} = new ModuleService().getBySlugFromCache(courseSlug!, moduleSlug!, userSession.data as TUser, []);
 	const {data: course} = new CourseService().getBySlugFromCache(courseSlug!, userSession.data as TUser);
 	const userLessonActivity = new LessonActivityService().getLessonActivityForUser(lessonSlug!, userId);
 
@@ -169,7 +169,7 @@ export default function Lesson() {
 
 												<Tooltip.Portal>
 													<Tooltip.Content sideOffset={5} className='bg-mauve-5 dark:bg-mauvedark-5 px-4 py-3 rounded-2xl shadow-sm shadow-mauve-8 dark:shadow-mauvedark-8'>
-														{userLessonActivity.data?.completed ? <p>Remover Aula Salva</p> : <p>Salvar Aula</p>}
+														{userLessonActivity.data?.saved ? <p>Remover Aula Salva</p> : <p>Salvar Aula</p>}
 														<Tooltip.Arrow className='fill-mauve-5 stroke-none'/>
 													</Tooltip.Content>
 												</Tooltip.Portal>
@@ -186,7 +186,7 @@ export default function Lesson() {
 
 												<Tooltip.Portal>
 													<Tooltip.Content sideOffset={5} className='bg-mauve-5 dark:bg-mauvedark-5 px-4 py-3 rounded-2xl shadow-sm shadow-mauve-8 dark:shadow-mauvedark-8'>
-														{userLessonActivity.data?.completed ? <p>Remover Aula Favorita</p> : <p>Favoritar Aula</p>}
+														{userLessonActivity.data?.favorited ? <p>Remover Aula Favorita</p> : <p>Favoritar Aula</p>}
 														<Tooltip.Arrow className='fill-mauve-5 stroke-none'/>
 													</Tooltip.Content>
 												</Tooltip.Portal>
