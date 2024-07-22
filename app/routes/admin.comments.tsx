@@ -14,8 +14,8 @@ export const loader = defineLoader(({request}: LoaderFunctionArgs) => ({
 
 export default function Comments() {
 	return (
-		<main>
+		<div>
 			<h1>Comments</h1>
-		</main>
+		</div>
 	);
 }

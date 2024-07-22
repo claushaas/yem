@@ -8,6 +8,9 @@ import {
 	type TLesson,
 	type TPrismaPayloadGetLessonList,
 	type TPrismaPayloadGetLessonById,
+	type TPrismaPayloadGetCompletedLessons,
+	type TPrismaPayloadGetSavedLessons,
+	type TPrismaPayloadGetFavoritedLessons,
 } from '../types/lesson.type';
 import {Lesson} from '../entities/lesson.entity.server';
 import {type TServiceReturn} from '../types/service-return.type';
@@ -16,6 +19,7 @@ import {logger} from '~/utils/logger.util.js';
 import {type TLessonDataForCache} from '~/cache/populate-lessons-to-cache.js';
 import {memoryCache} from '~/cache/memory-cache.js';
 import {type TTag} from '~/types/tag.type.js';
+import {type TypeUserSession} from '~/types/user-session.type';
 
 export class LessonService {
 	private static cache: typeof memoryCache;
@@ -504,6 +508,204 @@ export class LessonService {
 		}
 	}
 
+	public async getCompletedLessonsByUser(user: TypeUserSession): Promise<TServiceReturn<TPrismaPayloadGetCompletedLessons>> {
+		const completedLessons = await this._model.completedLessons.findMany({
+			where: {
+				userId: user.id,
+				isCompleted: true,
+			},
+			orderBy: {
+				updatedAt: 'desc',
+			},
+			select: {
+				lessonSlug: true,
+				userId: true,
+				updatedAt: true,
+				id: true,
+				lesson: {
+					select: {
+						name: true,
+						slug: true,
+						thumbnailUrl: true,
+						description: true,
+						modules: {
+							select: {
+								module: {
+									select: {
+										slug: true,
+										courses: {
+											select: {
+												course: {
+													select: {
+														slug: true,
+														delegateAuthTo: {
+															select: {
+																subscriptions: {
+																	where: {
+																		userId: user.id,
+																		expiresAt: {
+																			gte: new Date(),
+																		},
+																	},
+																},
+															},
+														},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		});
+
+		const completedLessonsWithLinks = completedLessons.map(lesson => ({
+			...lesson,
+			link: `/courses/${lesson.lesson.modules[0].module.courses[0].course.slug}/${lesson.lesson.modules[0].module.slug}/${lesson.lesson.slug}`,
+		}));
+
+		return {
+			status: 'SUCCESSFUL',
+			data: completedLessonsWithLinks,
+		};
+	}
+
+	public async getSavedLessonsByUser(user: TypeUserSession): Promise<TServiceReturn<TPrismaPayloadGetSavedLessons>> {
+		const savedLessons = await this._model.savedLessons.findMany({
+			where: {
+				userId: user.id,
+				isSaved: true,
+			},
+			orderBy: {
+				updatedAt: 'desc',
+			},
+			select: {
+				lessonSlug: true,
+				userId: true,
+				updatedAt: true,
+				id: true,
+				lesson: {
+					select: {
+						name: true,
+						slug: true,
+						thumbnailUrl: true,
+						description: true,
+						modules: {
+							select: {
+								module: {
+									select: {
+										slug: true,
+										courses: {
+											select: {
+												course: {
+													select: {
+														slug: true,
+														delegateAuthTo: {
+															select: {
+																subscriptions: {
+																	where: {
+																		userId: user.id,
+																		expiresAt: {
+																			gte: new Date(),
+																		},
+																	},
+																},
+															},
+														},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		});
+
+		const savedLessonsWithLinks = savedLessons.map(lesson => ({
+			...lesson,
+			link: `/courses/${lesson.lesson.modules[0].module.courses[0].course.slug}/${lesson.lesson.modules[0].module.slug}/${lesson.lesson.slug}`,
+		}));
+
+		return {
+			status: 'SUCCESSFUL',
+			data: savedLessonsWithLinks,
+		};
+	}
+
+	public async getFavoritedLessonsByUser(user: TypeUserSession): Promise<TServiceReturn<TPrismaPayloadGetFavoritedLessons>> {
+		const favoritedLessons = await this._model.favoritedLessons.findMany({
+			where: {
+				userId: user.id,
+				isFavorited: true,
+			},
+			orderBy: {
+				updatedAt: 'desc',
+			},
+			select: {
+				lessonSlug: true,
+				userId: true,
+				updatedAt: true,
+				id: true,
+				lesson: {
+					select: {
+						name: true,
+						slug: true,
+						thumbnailUrl: true,
+						description: true,
+						modules: {
+							select: {
+								module: {
+									select: {
+										slug: true,
+										courses: {
+											select: {
+												course: {
+													select: {
+														slug: true,
+														delegateAuthTo: {
+															select: {
+																subscriptions: {
+																	where: {
+																		userId: user.id,
+																		expiresAt: {
+																			gte: new Date(),
+																		},
+																	},
+																},
+															},
+														},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		});
+
+		const favoritedLessonsWithLinks = favoritedLessons.map(lesson => ({
+			...lesson,
+			link: `/courses/${lesson.lesson.modules[0].module.courses[0].course.slug}/${lesson.lesson.modules[0].module.slug}/${lesson.lesson.slug}`,
+		}));
+
+		return {
+			status: 'SUCCESSFUL',
+			data: favoritedLessonsWithLinks,
+		};
+	}
+
 	private _hasActiveSubscription(user: TUser | undefined, lessonToModule: TPrismaPayloadGetLessonById): boolean {
 		const isAdmin = user?.roles?.includes('admin');
 		const hasActiveSubscription = lessonToModule.module.courses.some(
@@ -517,5 +719,3 @@ export class LessonService {
 		return isAdmin || hasActiveSubscription;
 	}
 }
-
-type test = Prisma.LessonToModuleCreateManyLessonInputEnvelope;
