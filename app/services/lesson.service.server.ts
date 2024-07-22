@@ -9,6 +9,8 @@ import {
 	type TPrismaPayloadGetLessonList,
 	type TPrismaPayloadGetLessonById,
 	type TPrismaPayloadGetCompletedLessons,
+	type TPrismaPayloadGetSavedLessons,
+	type TPrismaPayloadGetFavoritedLessons,
 } from '../types/lesson.type';
 import {Lesson} from '../entities/lesson.entity.server';
 import {type TServiceReturn} from '../types/service-return.type';
@@ -510,6 +512,7 @@ export class LessonService {
 		const completedLessons = await this._model.completedLessons.findMany({
 			where: {
 				userId: user.id,
+				isCompleted: true,
 			},
 			orderBy: {
 				updatedAt: 'desc',
@@ -571,31 +574,45 @@ export class LessonService {
 		};
 	}
 
-	public async getSavedLessonsByUser(user: TypeUserSession): Promise<TServiceReturn<Array<Prisma.LessonGetPayload<undefined> & {link: string}>>> {
-		const lessons = await this._model.lesson.findMany({
+	public async getSavedLessonsByUser(user: TypeUserSession): Promise<TServiceReturn<TPrismaPayloadGetSavedLessons>> {
+		const savedLessons = await this._model.savedLessons.findMany({
 			where: {
-				savedBy: {
-					some: {
-						userId: user.id,
-					},
-				},
+				userId: user.id,
+				isSaved: true,
 			},
-			include: {
-				modules: {
-					include: {
-						module: {
-							include: {
-								courses: {
-									include: {
-										course: {
-											include: {
-												delegateAuthTo: {
-													include: {
-														subscriptions: {
-															where: {
-																userId: user.id,
-																expiresAt: {
-																	gte: new Date(),
+			orderBy: {
+				updatedAt: 'desc',
+			},
+			select: {
+				lessonSlug: true,
+				userId: true,
+				updatedAt: true,
+				id: true,
+				lesson: {
+					select: {
+						name: true,
+						slug: true,
+						thumbnailUrl: true,
+						description: true,
+						modules: {
+							select: {
+								module: {
+									select: {
+										slug: true,
+										courses: {
+											select: {
+												course: {
+													select: {
+														slug: true,
+														delegateAuthTo: {
+															select: {
+																subscriptions: {
+																	where: {
+																		userId: user.id,
+																		expiresAt: {
+																			gte: new Date(),
+																		},
+																	},
 																},
 															},
 														},
@@ -612,54 +629,56 @@ export class LessonService {
 			},
 		});
 
-		const lessonsWithLinks = lessons.map(lesson => {
-			const hasActiveSubscription = lesson.modules.some(lessonToModule =>
-				lessonToModule.module.courses.some(course =>
-					course.course.delegateAuthTo.some(delegateAuthTo =>
-						delegateAuthTo.subscriptions.some(subscription => subscription.expiresAt >= new Date()), // eslint-disable-line max-nested-callbacks
-					),
-				),
-			);
-
-			return {
-				...lesson,
-				content: hasActiveSubscription ? lesson.content : lesson.marketingContent,
-				videoSourceUrl: hasActiveSubscription ? lesson.videoSourceUrl : lesson.marketingVideoUrl,
-				link: `/courses/${lesson.modules[0].module.courses[0].course.slug}/${lesson.modules[0].module.slug}/${lesson.slug}`,
-			};
-		});
+		const savedLessonsWithLinks = savedLessons.map(lesson => ({
+			...lesson,
+			link: `/courses/${lesson.lesson.modules[0].module.courses[0].course.slug}/${lesson.lesson.modules[0].module.slug}/${lesson.lesson.slug}`,
+		}));
 
 		return {
 			status: 'SUCCESSFUL',
-			data: lessonsWithLinks,
+			data: savedLessonsWithLinks,
 		};
 	}
 
-	public async getFavoritedLessonsByUser(user: TypeUserSession): Promise<TServiceReturn<Array<Prisma.LessonGetPayload<undefined> & {link: string}>>> {
-		const lessons = await this._model.lesson.findMany({
+	public async getFavoritedLessonsByUser(user: TypeUserSession): Promise<TServiceReturn<TPrismaPayloadGetFavoritedLessons>> {
+		const favoritedLessons = await this._model.favoritedLessons.findMany({
 			where: {
-				favoritedBy: {
-					some: {
-						userId: user.id,
-					},
-				},
+				userId: user.id,
+				isFavorited: true,
 			},
-			include: {
-				modules: {
-					include: {
-						module: {
-							include: {
-								courses: {
-									include: {
-										course: {
-											include: {
-												delegateAuthTo: {
-													include: {
-														subscriptions: {
-															where: {
-																userId: user.id,
-																expiresAt: {
-																	gte: new Date(),
+			orderBy: {
+				updatedAt: 'desc',
+			},
+			select: {
+				lessonSlug: true,
+				userId: true,
+				updatedAt: true,
+				id: true,
+				lesson: {
+					select: {
+						name: true,
+						slug: true,
+						thumbnailUrl: true,
+						description: true,
+						modules: {
+							select: {
+								module: {
+									select: {
+										slug: true,
+										courses: {
+											select: {
+												course: {
+													select: {
+														slug: true,
+														delegateAuthTo: {
+															select: {
+																subscriptions: {
+																	where: {
+																		userId: user.id,
+																		expiresAt: {
+																			gte: new Date(),
+																		},
+																	},
 																},
 															},
 														},
@@ -676,26 +695,14 @@ export class LessonService {
 			},
 		});
 
-		const lessonsWithLinks = lessons.map(lesson => {
-			const hasActiveSubscription = lesson.modules.some(lessonToModule =>
-				lessonToModule.module.courses.some(course =>
-					course.course.delegateAuthTo.some(delegateAuthTo =>
-						delegateAuthTo.subscriptions.some(subscription => subscription.expiresAt >= new Date()), // eslint-disable-line max-nested-callbacks
-					),
-				),
-			);
-
-			return {
-				...lesson,
-				content: hasActiveSubscription ? lesson.content : lesson.marketingContent,
-				videoSourceUrl: hasActiveSubscription ? lesson.videoSourceUrl : lesson.marketingVideoUrl,
-				link: `/courses/${lesson.modules[0].module.courses[0].course.slug}/${lesson.modules[0].module.slug}/${lesson.slug}`,
-			};
-		});
+		const favoritedLessonsWithLinks = favoritedLessons.map(lesson => ({
+			...lesson,
+			link: `/courses/${lesson.lesson.modules[0].module.courses[0].course.slug}/${lesson.lesson.modules[0].module.slug}/${lesson.lesson.slug}`,
+		}));
 
 		return {
 			status: 'SUCCESSFUL',
-			data: lessonsWithLinks,
+			data: favoritedLessonsWithLinks,
 		};
 	}
 

@@ -46,10 +46,10 @@ export default function Profile() {
 						<p>Aulas Assistidas</p>
 					</Link>
 					<Link to='/profile/saved-lessons'>
-						<p>Aulas salvas</p>
+						<p>Aulas Salvadas</p>
 					</Link>
 					<Link to='/profile/favorited-lessons'>
-						<p>Aulas favoritadas</p>
+						<p>Aulas Favoritadas</p>
 					</Link>
 				</aside>
 				<main className='flex-grow flex-shrink p-3'>
