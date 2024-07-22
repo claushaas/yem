@@ -176,7 +176,7 @@ export default function Module() {
 							<div className='flex gap-5 justify-between items-center'>
 								<h2 className='text-center'>Aulas</h2>
 
-								{tags && (
+								{tags && tags.length > 0 && module.module.showTagsFilters && (
 									<DropdownMenu.Root open={isFilterMenuOpen} onOpenChange={setIsFilterMenuOpen}>
 										<DropdownMenu.Trigger asChild>
 											<motion.div
