@@ -133,3 +133,83 @@ export type TPrismaPayloadGetCompletedLessons = Array<Prisma.CompletedLessonsGet
 		};
 	};
 }> & {link: string}>;
+
+export type TPrismaPayloadGetSavedLessons = Array<Prisma.SavedLessonsGetPayload<{
+	select: {
+		lessonSlug: true;
+		userId: true;
+		updatedAt: true;
+		id: true;
+		lesson: {
+			select: {
+				name: true;
+				slug: true;
+				thumbnailUrl: true;
+				description: true;
+				modules: {
+					select: {
+						module: {
+							select: {
+								slug: true;
+								courses: {
+									select: {
+										course: {
+											select: {
+												slug: true;
+												delegateAuthTo: {
+													select: {
+														subscriptions: true;
+													};
+												};
+											};
+										};
+									};
+								};
+							};
+						};
+					};
+				};
+			};
+		};
+	};
+}> & {link: string}>;
+
+export type TPrismaPayloadGetFavoritedLessons = Array<Prisma.FavoritedLessonsGetPayload<{
+	select: {
+		lessonSlug: true;
+		userId: true;
+		updatedAt: true;
+		id: true;
+		lesson: {
+			select: {
+				name: true;
+				slug: true;
+				thumbnailUrl: true;
+				description: true;
+				modules: {
+					select: {
+						module: {
+							select: {
+								slug: true;
+								courses: {
+									select: {
+										course: {
+											select: {
+												slug: true;
+												delegateAuthTo: {
+													select: {
+														subscriptions: true;
+													};
+												};
+											};
+										};
+									};
+								};
+							};
+						};
+					};
+				};
+			};
+		};
+	};
+}> & {link: string}>;

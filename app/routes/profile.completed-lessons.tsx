@@ -7,8 +7,8 @@ import {type TypeUserSession} from '~/types/user-session.type';
 import {getUserSession} from '~/utils/session.server';
 
 export const meta = ({data}: MetaArgs_SingleFetch<typeof loader>) => [
-	{title: 'Yoga em Movimento - Área Pessoal'},
-	{name: 'description', content: 'Área pessoal de cada aluno dentro do site da Yoga em Movimento.'},
+	{title: 'Yoga em Movimento - Área Pessoal - Aulas Assistidas'},
+	{name: 'description', content: 'Aulas assistidas por cada aluno.'},
 	{name: 'robots', content: 'noindex, nofollow'},
 	...data!.meta,
 ];
