@@ -49,6 +49,7 @@ const getModuleDataForCache = (moduleToCourse: TAllDataToBeCached['modules'][0],
 			createdAt: moduleToCourse.module.createdAt,
 			updatedAt: moduleToCourse.module.updatedAt,
 			isLessonsOrderRandom: moduleToCourse.module.isLessonsOrderRandom,
+			showTagsFilters: moduleToCourse.module.showTagsFilters,
 		},
 	};
 
