@@ -285,20 +285,47 @@ export class ModuleService {
 				return accumulator;
 			}, []);
 
-			const lessons = allModuleLessons
-				.filter(lesson => {
-					if (appliedTags.length === 0) {
-						return true;
+			const durationTagsTest = (value: number, lessonDuration: number) => {
+				switch (value) {
+					case 1: {
+						return lessonDuration <= 30;
 					}
 
-					return organizedTags.every(tagObject =>
-						Object.entries(tagObject).every(([key, values]) =>
-							lesson.lesson.tags.some(tag =>
-								tag.tagOptionName === key && values.includes(tag.tagValueName),
-							),
-						),
-					);
-				});
+					case 2: {
+						return lessonDuration >= 31 && lessonDuration <= 50;
+					}
+
+					case 3: {
+						return lessonDuration >= 51 && lessonDuration <= 70;
+					}
+
+					case 4: {
+						return lessonDuration >= 71;
+					}
+
+					default: {
+						return false;
+					}
+				}
+			};
+
+			const lessons = allModuleLessons.filter(lesson => {
+				if (appliedTags.length === 0) {
+					return true;
+				}
+
+				return organizedTags.every(tagObject =>
+					Object.entries(tagObject).every(([key, values]) => {
+						if (key === 'Duração') {
+							return values.some(value => durationTagsTest(Number(value), lesson.lesson.duration ?? 500));
+						}
+
+						return lesson.lesson.tags.some(tag =>
+							tag.tagOptionName === key && values.includes(tag.tagValueName),
+						);
+					}),
+				);
+			});
 
 			module.pages = Math.ceil(lessons.length / 16);
 
