@@ -47,7 +47,7 @@ export const loader = defineLoader(async ({request, params}: LoaderFunctionArgs)
 
 	const url = new URL(request.url);
 
-	const appliedTags = [...url.searchParams.entries()].filter(([key]) => key === 'Dificuldade' || key === 'Técnicas' || key === 'Ênfase');
+	const appliedTags = [...url.searchParams.entries()].filter(([key]) => key === 'Duração' || key === 'Dificuldade' || key === 'Técnicas' || key === 'Ênfase');
 
 	const pageString = url.searchParams.get('page');
 	const page = (pageString && !Number.isNaN(pageString)) ? Number(pageString) : 1;
@@ -101,7 +101,7 @@ export default function Module() {
 	const navigate = useNavigate();
 	const {search} = useLocation();
 
-	const queriesArray = decodeURI(search).slice(1).split('&').filter(query => !query.includes('page'));
+	const queriesArray = decodeURI(search).slice(1).split('&').filter(query => !query.includes('page') && query !== '');
 
 	const [filterQueries, setFilterQueries] = useState(queriesArray);
 	const [isFilterMenuOpen, setIsFilterMenuOpen] = useState(false);
@@ -171,88 +171,153 @@ export default function Module() {
 						</Suspense>
 					</section>
 
-					{module.lessons.length > 0 && (
-						<section id='lessons' className='p-1 sm:p-5 bg-mauvea-2 dark:bg-mauvedarka-2 rounded-2xl flex flex-col gap-6'>
-							<div className='flex gap-5 justify-between items-center'>
-								<h2 className='text-center'>Aulas</h2>
+					<section id='lessons' className='p-1 sm:p-5 bg-mauvea-2 dark:bg-mauvedarka-2 rounded-2xl flex flex-col gap-6'>
+						<div className='flex gap-5 justify-between items-center'>
+							<h2 className='text-center'>Aulas</h2>
 
-								{tags && tags.length > 0 && module.module.showTagsFilters && (
-									<DropdownMenu.Root open={isFilterMenuOpen} onOpenChange={setIsFilterMenuOpen}>
-										<DropdownMenu.Trigger asChild>
-											<motion.div
-												className='flex gap-3 items-center bg-mauve-6 dark:bg-mauvedark-6 h-fit px-3 py-2 rounded-xl shadow-sm shadow-mauve-10 dark:shadow-mauvedark-10 cursor-pointer'
-												whileHover={{
-													scale: 1.05,
-													transition: {
-														duration: 0.5,
-													},
-												}}
-											>
-												<p>Filtros</p>
-												<AdjustmentsHorizontalIcon className='size-4'/>
-											</motion.div>
-										</DropdownMenu.Trigger>
+							{tags && tags.length > 0 && module.module.showTagsFilters && (
+								<DropdownMenu.Root open={isFilterMenuOpen} onOpenChange={setIsFilterMenuOpen}>
+									<DropdownMenu.Trigger asChild>
+										<motion.div
+											className='flex gap-3 items-center bg-mauve-6 dark:bg-mauvedark-6 h-fit px-3 py-2 rounded-xl shadow-sm shadow-mauve-10 dark:shadow-mauvedark-10 cursor-pointer'
+											whileHover={{
+												scale: 1.05,
+												transition: {
+													duration: 0.5,
+												},
+											}}
+										>
+											<p>Filtros</p>
+											<AdjustmentsHorizontalIcon className='size-4'/>
+										</motion.div>
+									</DropdownMenu.Trigger>
 
-										<DropdownMenu.Portal>
-											<DropdownMenu.Content
-												align='end'
-												sideOffset={5}
-												className='bg-mauve-6 dark:bg-mauvedark-6 p-4 rounded-xl shadow-lg shadow-mauve-12 dark:shadow-mauvedark-12 max-w-64 xs:max-w-80'
-											>
-												<h6 className='mb-4'>Selecione as opções e clique em aplicar filtros:</h6>
+									<DropdownMenu.Portal>
+										<DropdownMenu.Content
+											align='end'
+											sideOffset={5}
+											className='bg-mauve-6 dark:bg-mauvedark-6 p-4 rounded-xl shadow-lg shadow-mauve-12 dark:shadow-mauvedark-12 max-w-64 xs:max-w-80 max-h-[450px] overflow-y-auto'
+										>
+											<h6 className='mb-4'>Selecione as opções e clique em aplicar filtros:</h6>
 
-												{tags.map(tag => (
-													<div key={tag.tagOption} className='mb-4'>
-														<p className='font-gothamMedium mb-1'>{tag.tagOption}</p>
+											<div className='mb-4'>
+												<p className='font-gothamMedium mb-1'>Duração</p>
 
-														{tag.tagValues.map(tagValue => (
-															<div key={tagValue} className='flex gap-3 justify-start items-center mb-2 last:mb-0'>
-																<Switch.Root
-																	className='w-[42px] h-[25px] bg-blacka-6 rounded-full relative shadow-[0_2px_10px] shadow-blacka-4 focus:shadow-[0_0_0_2px] focus:shadow-black data-[state=checked]:bg-black outline-none cursor-default'
-																	defaultChecked={filterQueries.includes(`${tag.tagOption}=${tagValue}`)}
-																	onCheckedChange={(event => {
-																		onFilterChange(`${tag.tagOption}=${tagValue}`, event);
-																	})}
-																>
-																	<Switch.Thumb
-																		className='block w-[21px] h-[21px] bg-white rounded-full shadow-[0_2px_2px] shadow-blackA4 transition-transform duration-100 translate-x-0.5 will-change-transform data-[state=checked]:translate-x-[19px]'
-																	/>
-																</Switch.Root>
-																<p>{tagValue}</p>
-															</div>
-														))}
-													</div>
-												))}
-
-												<div className='flex justify-center mt-8'>
-													<Button
-														type={ButtonType.Button}
-														preset={ButtonPreset.Primary}
-														text='Aplicar Filtros'
-														onClick={onAplyFilters}
-													/>
+												<div className='flex gap-3 justify-start items-center mb-2 last:mb-0'>
+													<Switch.Root
+														className='w-[42px] h-[25px] bg-blacka-6 rounded-full relative shadow-[0_2px_10px] shadow-blacka-4 focus:shadow-[0_0_0_2px] focus:shadow-black data-[state=checked]:bg-black outline-none cursor-default'
+														defaultChecked={filterQueries.includes('Duração=1')}
+														onCheckedChange={(event => {
+															onFilterChange('Duração=1', event);
+														})}
+													>
+														<Switch.Thumb
+															className='block w-[21px] h-[21px] bg-white rounded-full shadow-[0_2px_2px] shadow-blackA4 transition-transform duration-100 translate-x-0.5 will-change-transform data-[state=checked]:translate-x-[19px]'
+														/>
+													</Switch.Root>
+													<p>Até 30min</p>
 												</div>
 
-												<DropdownMenu.Arrow className='fill-mauve-6 dark:fill-mauvedark-6 border-none stroke-none'/>
-											</DropdownMenu.Content>
-										</DropdownMenu.Portal>
-									</DropdownMenu.Root>
-								)}
-							</div>
+												<div className='flex gap-3 justify-start items-center mb-2 last:mb-0'>
+													<Switch.Root
+														className='w-[42px] h-[25px] bg-blacka-6 rounded-full relative shadow-[0_2px_10px] shadow-blacka-4 focus:shadow-[0_0_0_2px] focus:shadow-black data-[state=checked]:bg-black outline-none cursor-default'
+														defaultChecked={filterQueries.includes('Duração=2')}
+														onCheckedChange={(event => {
+															onFilterChange('Duração=2', event);
+														})}
+													>
+														<Switch.Thumb
+															className='block w-[21px] h-[21px] bg-white rounded-full shadow-[0_2px_2px] shadow-blackA4 transition-transform duration-100 translate-x-0.5 will-change-transform data-[state=checked]:translate-x-[19px]'
+														/>
+													</Switch.Root>
+													<p>De 31min até 50min</p>
+												</div>
 
-							<div className='flex flex-wrap justify-center gap-4 my-4'>
-								{(module.lessons as unknown as TLessonDataForCache[]).map(lesson => (
+												<div className='flex gap-3 justify-start items-center mb-2 last:mb-0'>
+													<Switch.Root
+														className='w-[42px] h-[25px] bg-blacka-6 rounded-full relative shadow-[0_2px_10px] shadow-blacka-4 focus:shadow-[0_0_0_2px] focus:shadow-black data-[state=checked]:bg-black outline-none cursor-default'
+														defaultChecked={filterQueries.includes('Duração=3')}
+														onCheckedChange={(event => {
+															onFilterChange('Duração=3', event);
+														})}
+													>
+														<Switch.Thumb
+															className='block w-[21px] h-[21px] bg-white rounded-full shadow-[0_2px_2px] shadow-blackA4 transition-transform duration-100 translate-x-0.5 will-change-transform data-[state=checked]:translate-x-[19px]'
+														/>
+													</Switch.Root>
+													<p>De 51min até 1h 10min</p>
+												</div>
+
+												<div className='flex gap-3 justify-start items-center mb-2 last:mb-0'>
+													<Switch.Root
+														className='w-[42px] h-[25px] bg-blacka-6 rounded-full relative shadow-[0_2px_10px] shadow-blacka-4 focus:shadow-[0_0_0_2px] focus:shadow-black data-[state=checked]:bg-black outline-none cursor-default'
+														defaultChecked={filterQueries.includes('Duração=4')}
+														onCheckedChange={(event => {
+															onFilterChange('Duração=4', event);
+														})}
+													>
+														<Switch.Thumb
+															className='block w-[21px] h-[21px] bg-white rounded-full shadow-[0_2px_2px] shadow-blackA4 transition-transform duration-100 translate-x-0.5 will-change-transform data-[state=checked]:translate-x-[19px]'
+														/>
+													</Switch.Root>
+													<p>Mais que 1h 11min</p>
+												</div>
+											</div>
+
+											{tags.map(tag => (
+												<div key={tag.tagOption} className='mb-4'>
+													<p className='font-gothamMedium mb-1'>{tag.tagOption}</p>
+
+													{tag.tagValues.map(tagValue => (
+														<div key={tagValue} className='flex gap-3 justify-start items-center mb-2 last:mb-0'>
+															<Switch.Root
+																className='w-[42px] h-[25px] bg-blacka-6 rounded-full relative shadow-[0_2px_10px] shadow-blacka-4 focus:shadow-[0_0_0_2px] focus:shadow-black data-[state=checked]:bg-black outline-none cursor-default'
+																defaultChecked={filterQueries.includes(`${tag.tagOption}=${tagValue}`)}
+																onCheckedChange={(event => {
+																	onFilterChange(`${tag.tagOption}=${tagValue}`, event);
+																})}
+															>
+																<Switch.Thumb
+																	className='block w-[21px] h-[21px] bg-white rounded-full shadow-[0_2px_2px] shadow-blackA4 transition-transform duration-100 translate-x-0.5 will-change-transform data-[state=checked]:translate-x-[19px]'
+																/>
+															</Switch.Root>
+															<p>{tagValue}</p>
+														</div>
+													))}
+												</div>
+											))}
+
+											<div className='flex justify-center mt-8'>
+												<Button
+													type={ButtonType.Button}
+													preset={ButtonPreset.Primary}
+													text='Aplicar Filtros'
+													onClick={onAplyFilters}
+												/>
+											</div>
+
+											<DropdownMenu.Arrow className='fill-mauve-6 dark:fill-mauvedark-6 border-none stroke-none'/>
+										</DropdownMenu.Content>
+									</DropdownMenu.Portal>
+								</DropdownMenu.Root>
+							)}
+						</div>
+
+						<div className='flex flex-wrap justify-center gap-4 my-4'>
+							{module.lessons.length > 0
+								? (module.lessons as unknown as TLessonDataForCache[]).map(lesson => (
 									<LessonEntityCard
 										key={lesson.lesson.id}
 										course={lesson.lesson}
 										to={`./${lesson.lesson.slug}`}
 										activity={lessonsActivity?.reduce((accumulator, activity) => ({...accumulator, ...activity}), {})[lesson.lesson.slug] ?? undefined}
 									/>
-								))}
-							</div>
-							{module.pages > 1 && <Pagination pages={module.pages} actualPage={actualPage}/>}
-						</section>
-					)}
+								))
+								: <p>Nenhuma aula encontrada</p>}
+						</div>
+
+						{module.pages > 1 && <Pagination pages={module.pages} actualPage={actualPage}/>}
+					</section>
 
 				</div>
 			</main>
