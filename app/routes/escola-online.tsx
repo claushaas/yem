@@ -10,12 +10,14 @@ import {
 } from '@heroicons/react/24/outline';
 import {Image} from '@unpic/react';
 import * as Accordion from '@radix-ui/react-accordion';
+import {useState} from 'react';
 import {Button, ButtonPreset, ButtonType} from '~/components/button.js';
 import {Testimonies} from '~/layouts/testimonies.js';
 import {History} from '~/layouts/yem-history.js';
 import {buildImgSource} from '~/utils/build-cloudflare-image-source.js';
 import {PlaylistCard} from '~/components/playlist-card.js';
 import {AccordionItem} from '~/components/accordion.js';
+import SchoolPlansDialog from '~/components/school-plans-dialog';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => [
 	{title: 'Escola Online - Yoga em Movimento'},
@@ -28,6 +30,7 @@ export const loader = ({request}: LoaderFunctionArgs) => json<{meta: Array<{tagN
 });
 
 export default function EscolaOnline() {
+	const [isSchoolPlansDialogOpen, setIsSchoolPlansDialogOpen] = useState<boolean>(false);
 	return (
 		<>
 			<header className='max-xs:max-w-[95%] max-w-[90%] mx-auto my-4 flex justify-between items-center w-[-webkit-fill-available]'>
@@ -38,7 +41,13 @@ export default function EscolaOnline() {
 					<Link to='/login' aria-label='Entrar na plataforma do Yoga em Movimento'>
 						<Button type={ButtonType.Button} preset={ButtonPreset.Secondary} text='Entrar'/>
 					</Link>
-					<Button type={ButtonType.Button} preset={ButtonPreset.Primary} text='Começar Agora'/>
+					<Button
+						type={ButtonType.Button}
+						preset={ButtonPreset.Primary}
+						text='Começar Agora'
+						onClick={() => {
+							setIsSchoolPlansDialogOpen(true);
+						}}/>
 				</div>
 			</header>
 			<main>
@@ -50,7 +59,13 @@ export default function EscolaOnline() {
 						<h3 className='text-purple-12 dark:text-purple-4'>Viva os benefícios do Yoga para o seu Corpo, Mente e Emoções.<br/>Transforme-se na Sua Melhor Versão.</h3>
 					</div>
 					<div className='w-fit mx-auto'>
-						<Button type={ButtonType.Button} preset={ButtonPreset.Primary} text='Praticar 7 Dias Grátis'/>
+						<Button
+							type={ButtonType.Button}
+							preset={ButtonPreset.Primary}
+							text='Praticar 7 Dias Grátis'
+							onClick={() => {
+								setIsSchoolPlansDialogOpen(true);
+							}}/>
 						<p className='text-center text-sm mt-1.5'>cancele quando quiser</p>
 					</div>
 				</section>
@@ -706,6 +721,8 @@ export default function EscolaOnline() {
 					</Accordion.Root>
 				</section>
 			</main>
+
+			<SchoolPlansDialog isOpen={isSchoolPlansDialogOpen} onOpenChange={setIsSchoolPlansDialogOpen}/>
 		</>
 	);
 }
