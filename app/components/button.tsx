@@ -1,3 +1,4 @@
+/* eslint-disable react/require-default-props */
 import {type LegacyRef, forwardRef} from 'react';
 import {motion} from 'framer-motion';
 
@@ -18,7 +19,7 @@ type ButtonProperties = {
 	readonly isDisabled?: boolean;
 	readonly preset?: ButtonPreset;
 	readonly type?: ButtonType;
-	readonly onClick?: () => void; // eslint-disable-line react/require-default-props
+	readonly onClick?: () => void;
 };
 
 const baseButtonClasses = `
@@ -102,11 +103,3 @@ export const Button = forwardRef(({
 		<span className='font-gothamBold leading-none drop-shadow-sm'>{text}</span>
 	</motion.button>
 ));
-
-Button.defaultProps = {
-	className: ButtonPreset.Primary,
-	isDisabled: false,
-	preset: ButtonPreset.Primary,
-	text: 'Clicar Aqui',
-	type: ButtonType.Button,
-};
