@@ -72,10 +72,30 @@ export default function EscolaOnline() {
 
 				<Testimonies/>
 
-				<History/>
+				<section id='history' className='my-20 sm:my-40 max-w-[95%] sm:max-w-[90%] mx-auto flex flex-col items-center justify-center gap-12'>
+					<div className='max-w-screen-lg w-full'>
+						<h1 className='text-purple-11 text-3xl xs:text-5xl md:text-6xl lg:text-7xl text-left mb-5'>Yoga é para Todas Pessoas!</h1>
+						<h2 className='text-xl xs:text-2xl md:text-3xl lg:text-4xl text-purple-8 mb-4'>É nisso que acreditamos. É por isso que existimos.</h2>
+						<p className='my-3 font-gothamMedium'>O Yoga em Movimento surgiu em 2010 no interior de São Paulo, do sonho de seus fundadores de espargir esse estilo de vida baseado na saúde e no autoconhecimento para cada vez mais pessoas.</p>
+						<p className='my-3 font-gothamMedium'>Para tornar o Yoga acessível para todas pessoas, de qualquer lugar, migramos em 2015 para o formato EAD, para podermos levar essa filosofia de vida a todos os cantos deste planeta.</p>
+						<p className='my-3 font-gothamMedium'>Desde então, nossa equipe de professores já formou mais de 1.000 professores. E junto com a Nossa Escola, já são mais de 14.000 alunos espalhados pelo mundo.</p>
+					</div>
 
-				<section id='platform' className='max-w-[95%] sm:max-w-[90%] lg:max-w-screen-lg mx-auto my-20 sm:my-56'>
+					<div className='w-fit mx-auto'>
+						<Button
+							type={ButtonType.Button}
+							preset={ButtonPreset.Primary}
+							text='Yoga É para Mim!'
+							onClick={() => {
+								setIsSchoolPlansDialogOpen(true);
+							}}/>
+						<p className='text-center text-sm mt-1.5'>cancele quando quiser</p>
+					</div>
+				</section>
+
+				<section id='platform' className='max-w-[95%] sm:max-w-[90%] lg:max-w-screen-lg mx-auto my-20 sm:my-56 flex flex-col items-center gap-12'>
 					<h1 className='text-center text-amber-11 text-3xl xs:text-5xl'>A Plataforma da Yoga em Movimento evoluiu e foi repensada especialmente para a prática do Yoga</h1>
+
 					<div className='flex justify-center gap-4 flex-wrap'>
 						<div className='flex flex-col items-center max-w-80'>
 							<CheckCircleIcon className='size-20 stroke-amber-10'/>
@@ -102,6 +122,17 @@ export default function EscolaOnline() {
 							<h2 className='text-center'>Mais de 15.000 alunos</h2>
 						</div>
 					</div>
+
+					<div className='w-fit mx-auto'>
+						<Button
+							type={ButtonType.Button}
+							preset={ButtonPreset.Primary}
+							text='Quero começar Agora!'
+							onClick={() => {
+								setIsSchoolPlansDialogOpen(true);
+							}}/>
+						<p className='text-center text-sm mt-1.5'>cancele quando quiser</p>
+					</div>
 				</section>
 
 				<section id='support' className='max-w-[95%] sm:max-w-[90%] lg:max-w-screen-lg mx-auto my-20 sm:my-56'>
@@ -109,10 +140,23 @@ export default function EscolaOnline() {
 					<h2 className='text-sky-11 text-2xl xs:text-4xl md:text-5xl lg:text-6xl'>Você pode conversar diretamente com nossos professores pelo whatsapp ou telegram para tirar suas dúvidas</h2>
 				</section>
 
-				<section id='duration' className='max-w-[95%] sm:max-w-[90%] lg:max-w-screen-lg mx-auto my-20 sm:my-56'>
-					<h1 className='text-grass-12 dark:text-grass-11 mb-5 text-3xl xs:text-5xl md:text-6xl lg:text-7xl'>Fica fácil inserir o Yoga na sua rotina diária</h1>
-					<h2 className='text-grass-9 text-2xl xs:text-4xl md:text-5xl lg:text-6xl'>Pratique em qualquer horário e escolha aula de acordo com o tempo disponível</h2>
-					<h2 className='text-grass-11 text-2xl xs:text-4xl md:text-5xl lg:text-6xl'>Aulas de 15 até 90 minutos</h2>
+				<section id='duration' className='max-w-[95%] sm:max-w-[90%] lg:max-w-screen-lg mx-auto my-20 sm:my-56 flex flex-col items-center gap-12'>
+					<div>
+						<h1 className='text-grass-12 dark:text-grass-11 mb-5 text-3xl xs:text-5xl md:text-6xl lg:text-7xl'>Fica fácil inserir o Yoga na sua rotina diária</h1>
+						<h2 className='text-grass-9 text-2xl xs:text-4xl md:text-5xl lg:text-6xl'>Pratique em qualquer horário e escolha aula de acordo com o tempo disponível</h2>
+						<h2 className='text-grass-11 text-2xl xs:text-4xl md:text-5xl lg:text-6xl'>Aulas de 15 até 90 minutos</h2>
+					</div>
+
+					<div className='w-fit mx-auto'>
+						<Button
+							type={ButtonType.Button}
+							preset={ButtonPreset.Primary}
+							text='Praticar 7 dias Grátis!'
+							onClick={() => {
+								setIsSchoolPlansDialogOpen(true);
+							}}/>
+						<p className='text-center text-sm mt-1.5'>cancele quando quiser</p>
+					</div>
 				</section>
 
 				<section id='objectives' className='max-w-[95%] sm:max-w-[90%] lg:max-w-screen-lg mx-auto mt-20 sm:mt-56 mb-10'>
@@ -452,6 +496,17 @@ export default function EscolaOnline() {
 							<h3 className='text-white text-[30cqb] leading-none break-words w-full text-center'>Súrya Namaskar</h3>
 						</div>
 					</div>
+
+					<div className='w-fit mx-auto mt-20'>
+						<Button
+							type={ButtonType.Button}
+							preset={ButtonPreset.Primary}
+							text='Quero começar Agora!'
+							onClick={() => {
+								setIsSchoolPlansDialogOpen(true);
+							}}/>
+						<p className='text-center text-sm mt-1.5'>cancele quando quiser</p>
+					</div>
 				</section>
 
 				<section id='training' className='my-20 sm:my-56 flex flex-col-reverse sm:flex-row'>
@@ -481,6 +536,16 @@ export default function EscolaOnline() {
 								<h3 className='text-sm xl:text-lg'>Kriyás</h3>
 							</li>
 						</ul>
+						<div className='w-fit mx-auto mt-20'>
+							<Button
+								type={ButtonType.Button}
+								preset={ButtonPreset.Primary}
+								text='Começar a Praticar'
+								onClick={() => {
+									setIsSchoolPlansDialogOpen(true);
+								}}/>
+							<p className='text-center text-sm mt-1.5'>cancele quando quiser</p>
+						</div>
 					</div>
 					<div className='sm:basis-5/12'>
 						<Image
@@ -514,6 +579,17 @@ export default function EscolaOnline() {
 						<h1 className='text-ruby-11 mb-1 text-4xl xs:text-5xl md:text-5xl lg:text-6xl xl:text-7xl'>Cursos de Aprofundamento</h1>
 						<p className='text-ruby-12 dark:text-rubydark-11 mb-7'>Exclusivo para alunos do plano anual</p>
 						<h2 className='text-ruby-9 md:text-5xl lg:text-6xl'>Diversos cursos para se aprofundar em temas específicos do Yoga e também outros assuntos que estão relacionados a prática</h2>
+
+						<div className='w-fit mx-auto mt-20'>
+							<Button
+								type={ButtonType.Button}
+								preset={ButtonPreset.Primary}
+								text='Aproveitar os Cursos Grátis'
+								onClick={() => {
+									setIsSchoolPlansDialogOpen(true);
+								}}/>
+							<p className='text-center text-sm mt-1.5'>cancele quando quiser</p>
+						</div>
 					</div>
 
 					<div className='flex flex-wrap flex-col gap-3 sm:basis-1/2 lg:basis-5/12'>
@@ -719,6 +795,17 @@ export default function EscolaOnline() {
 							</Accordion.Content>
 						</AccordionItem>
 					</Accordion.Root>
+
+					<div className='w-fit mx-auto mt-28'>
+						<Button
+							type={ButtonType.Button}
+							preset={ButtonPreset.Primary}
+							text='Quero começar Agora!'
+							onClick={() => {
+								setIsSchoolPlansDialogOpen(true);
+							}}/>
+						<p className='text-center text-sm mt-1.5'>cancele quando quiser</p>
+					</div>
 				</section>
 			</main>
 
