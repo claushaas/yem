@@ -592,7 +592,7 @@ export default function EscolaOnline() {
 						</div>
 					</div>
 
-					<div className='flex flex-wrap flex-col gap-3 sm:basis-1/2 lg:basis-5/12'>
+					<div className='flex flex-wrap flex-col gap-3 sm:basis-1/2 lg:basis-5/12 w-full'>
 						<div className='grid grid-rows-[1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] grid-cols-[1fr_1fr_1fr_1fr_1fr_1fr] gap-3 flex-grow h-[450px]'>
 							<div className='bg-mauve-10 md:rounded-3xl rounded-e-3xl px-1 py-3 w-full h-full row-span-3 col-span-3 -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center'>
 								<Image
