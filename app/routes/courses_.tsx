@@ -1,5 +1,5 @@
 import {type LoaderFunctionArgs, unstable_defineLoader as defineLoader} from '@remix-run/node';
-import {type MetaArgs_SingleFetch, useLoaderData} from '@remix-run/react';
+import {Link, type MetaArgs_SingleFetch, useLoaderData} from '@remix-run/react';
 import {GenericEntityCard} from '~/components/entities-cards.js';
 import {NavigateBar} from '~/components/navigation-bar.js';
 import {CourseService} from '~/services/course.service.server';
@@ -56,6 +56,12 @@ export default function Courses() {
 			<NavigateBar userData={userData}/>
 
 			<main>
+				{userData.id && (
+					<div className='max-w-screen-lg w-[95%] sm:w-[90%] mx-auto bg-purplea-4 p-5 rounded-2xl my-10'>
+						<p className='mb-4'>Querido(a) aluno(a), recentemente iniciamos a transição para a nova versão da plataforma da Yoga em Movimento, que você está acessando neste momento. Nem todas aulas e cursos estão publicadas na plataforma nova ainda, mas você pode encontrá-las na plataforma antiga, acessando através do link abaixo</p>
+						<p className='text-center'><Link to='https://escola.yogaemmovimento.com' target='_blank'>https://escola.yogaemmovimento.com</Link></p>
+					</div>
+				)}
 				<h1 className='text-center my-16 max-w-[95%] sm:max-w-[90%] mx-auto'>
 					Acesse aqui os cursos oferecidos pela Yoga em Movimento
 				</h1>
