@@ -15,7 +15,7 @@
   "sideEffects": false,
   "type": "module",
   "engines": {
-    "node": ">=20.15.1"
+    "node": ">=20.16.0"
   },
   "bugs:": "https://github.com/claushaas/yem/issues",
   "scripts": {
@@ -32,7 +32,7 @@
     "db:reset": "npx prisma migrate reset"
   },
   "dependencies": {
-    "@aws-sdk/client-cognito-identity-provider": "^3.621.0",
+    "@aws-sdk/client-cognito-identity-provider": "^3.622.0",
     "@aws-sdk/client-secrets-manager": "^3.621.0",
     "@aws-sdk/client-sesv2": "^3.621.0",
     "@aws-sdk/credential-providers": "^3.621.0",
@@ -55,10 +55,10 @@
     "@tailwindcss/container-queries": "^0.1.1",
     "@unpic/react": "^0.1.14",
     "@vidstack/react": "^1.11.21",
-    "axios": "^1.7.2",
+    "axios": "^1.7.3",
     "clipboard-copy": "^4.0.1",
     "express": "^4.19.2",
-    "framer-motion": "^11.3.19",
+    "framer-motion": "^11.3.21",
     "fuse.js": "^7.0.0",
     "helmet": "^7.1.0",
     "hls.js": "^1.5.13",
@@ -67,7 +67,7 @@
     "morgan": "^1.10.0",
     "nprogress": "^0.2.0",
     "prisma": "^5.17.0",
-    "qs": "^6.12.3",
+    "qs": "^6.13.0",
     "quill": "^2.0.2",
     "quill-delta-to-html": "^0.12.1",
     "react": "^18.3.1",
@@ -98,7 +98,7 @@
     "tailwindcss": "^3.4.7",
     "tailwindcss-radix": "^3.0.3",
     "tailwindcss-radix-colors": "^1.3.1",
-    "tsx": "^4.16.3",
+    "tsx": "^4.16.5",
     "typescript": "^5.5.4",
     "vite": "^5.3.5",
     "vite-plugin-svgr": "^4.2.0",
