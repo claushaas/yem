@@ -1,4 +1,4 @@
-import {type LoaderFunctionArgs, unstable_defineLoader as defineLoader} from '@remix-run/node';
+import {type LoaderFunctionArgs, unstable_defineLoader as defineLoader, unstable_data as data} from '@remix-run/node';
 import {useLoaderData, type MetaArgs_SingleFetch} from '@remix-run/react';
 import {LessonEntityCard} from '~/components/entities-cards';
 import {LessonActivityService} from '~/services/lesson-activity.service.server';
@@ -13,15 +13,21 @@ export const meta = ({data}: MetaArgs_SingleFetch<typeof loader>) => [
 	...data!.meta,
 ];
 
-export const loader = defineLoader(async ({request, response}: LoaderFunctionArgs) => {
+export const loader = defineLoader(async ({request}: LoaderFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 	const userData = userSession.data as TypeUserSession;
 
 	if (!userData.id) {
-		response!.headers.set('Location', '/');
-		response!.status = 303;
-
-		throw response; // eslint-disable-line @typescript-eslint/only-throw-error
+		return data({
+			meta: [{tagName: 'link', rel: 'canonical', href: new URL('/profile/completed-lessons', request.url).toString()}],
+			userData,
+			completedLessonsWithActivity: undefined,
+		}, {
+			status: 303,
+			headers: {
+				Location: '/',
+			},
+		});
 	}
 
 	const completedLessons = await new LessonService().getCompletedLessonsByUser(userData);
@@ -31,17 +37,17 @@ export const loader = defineLoader(async ({request, response}: LoaderFunctionArg
 		activity: new LessonActivityService().getLessonActivityForUser(lesson.lessonSlug, userData.id),
 	}));
 
-	return {
+	return data({
 		meta: [{tagName: 'link', rel: 'canonical', href: new URL('/profile/completed-lessons', request.url).toString()}],
 		userData,
 		completedLessonsWithActivity,
-	};
+	});
 });
 
 export default function CompletedLessons() {
 	const {completedLessonsWithActivity, userData} = useLoaderData<typeof loader>();
 
-	if (completedLessonsWithActivity.length === 0) {
+	if (completedLessonsWithActivity?.length === 0) {
 		return (
 			<div>
 				<h1>Aulas Assistidas</h1>
@@ -55,7 +61,7 @@ export default function CompletedLessons() {
 			<h1>Aulas Assistidas</h1>
 
 			<div className='flex gap-4 my-4 flex-wrap'>
-				{completedLessonsWithActivity.map(lesson => (
+				{completedLessonsWithActivity?.map(lesson => (
 					<LessonEntityCard key={lesson.id} course={lesson.lesson} to={lesson.link} activity={lesson.activity}/>
 				))}
 			</div>

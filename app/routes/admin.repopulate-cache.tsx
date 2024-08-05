@@ -29,7 +29,7 @@ export const loader = defineLoader(({request}: LoaderFunctionArgs) => ({
 	meta: [{tagName: 'link', rel: 'canonical', href: new URL('/admin/repopulate-cache', request.url).toString()}],
 }));
 
-export const action = defineAction(async ({response}: ActionFunctionArgs) => {
+export const action = defineAction(async () => {
 	try {
 		await populateCache();
 		return {error: undefined, success: 'Cache repopulado com sucesso'};

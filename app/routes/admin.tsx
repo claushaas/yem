@@ -1,4 +1,4 @@
-import {type LoaderFunctionArgs, unstable_defineLoader as defineLoader} from '@remix-run/node';
+import {type LoaderFunctionArgs, unstable_defineLoader as defineLoader, unstable_data as data} from '@remix-run/node';
 import {
 	Link, Outlet, useLocation,
 	type MetaArgs_SingleFetch,
@@ -15,21 +15,21 @@ export const meta = ({data}: MetaArgs_SingleFetch<typeof loader>) => [
 	...data!.meta,
 ];
 
-export const loader = defineLoader(async ({request, response}: LoaderFunctionArgs) => {
+export const loader = defineLoader(async ({request}: LoaderFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
-	const data = userSession.data as TypeUserSession;
+	const userData = userSession.data as TypeUserSession;
 
-	if (!data.roles?.includes('admin')) {
-		response!.headers.set('Location', '/');
-		response!.status = 303;
-
-		throw response; // eslint-disable-line @typescript-eslint/only-throw-error
+	if (!userData.roles?.includes('admin')) {
+		return data({
+			meta: [{tagName: 'link', rel: 'canonical', href: new URL('/admin', request.url).toString()}],
+			userData,
+		}, {status: 303, headers: {Location: '/'}});
 	}
 
-	return {
+	return data({
 		meta: [{tagName: 'link', rel: 'canonical', href: new URL('/admin', request.url).toString()}],
-		userData: data,
-	};
+		userData,
+	});
 });
 
 export default function Admin() {

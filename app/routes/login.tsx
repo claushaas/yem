@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import * as RadixForm from '@radix-ui/react-form';
 import {
 	type ActionFunctionArgs,
 	type LoaderFunctionArgs,
 	unstable_defineAction as defineAction,
 	unstable_defineLoader as defineLoader,
+	unstable_data as data,
 } from '@remix-run/node';
 import {
 	Form,
@@ -27,24 +29,40 @@ export const meta = ({data}: MetaArgs_SingleFetch<typeof loader>) => [
 	...data!.meta,
 ];
 
-export const loader = defineLoader(async ({request, response}: LoaderFunctionArgs) => {
+export const loader = defineLoader(async ({request}: LoaderFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 
 	if (userSession.has('id')) {
-		response?.headers.set('Location', '/courses');
-		response!.status = 303;
+		return data(
+			{
+				error: undefined,
+				meta: [{tagName: 'link', rel: 'canonical', href: new URL('/login', request.url).toString()}],
+				userData: userSession.data as TypeUserSession,
+			},
+			{
+				status: 303,
+				headers: {
+					Location: '/courses',
+				},
+			},
+		);
 	}
 
-	response?.headers.set('Set-Cookie', await commitUserSession(userSession));
-
-	return {
-		error: userSession.get('error') as string | undefined,
-		meta: [{tagName: 'link', rel: 'canonical', href: new URL('/login', request.url).toString()}],
-		userData: userSession.data as TypeUserSession,
-	};
+	return data(
+		{
+			error: userSession.get('error') as string | undefined,
+			meta: [{tagName: 'link', rel: 'canonical', href: new URL('/login', request.url).toString()}],
+			userData: userSession.data as TypeUserSession,
+		},
+		{
+			headers: {
+				'Set-Cookie': await commitUserSession(userSession),
+			},
+		},
+	);
 });
 
-export const action = defineAction(async ({request, response}: ActionFunctionArgs) => {
+export const action = defineAction(async ({request}: ActionFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 
 	try {
@@ -65,11 +83,16 @@ export const action = defineAction(async ({request, response}: ActionFunctionArg
 		userSession.set('lastName', lastName);
 		userSession.set('phoneNumber', phoneNumber);
 
-		if (response) {
-			response.headers.set('Set-Cookie', await commitUserSession(userSession));
-			response.headers.set('Location', '/courses');
-			response.status = 303;
-		}
+		return data(
+			{},
+			{
+				status: 303,
+				headers: {
+					'Set-Cookie': await commitUserSession(userSession),
+					Location: '/courses',
+				},
+			},
+		);
 	} catch (error) {
 		logger.logError(`Error logging in: ${(error as Error).message}`);
 
@@ -80,11 +103,9 @@ export const action = defineAction(async ({request, response}: ActionFunctionArg
 		userSession.unset('lastName');
 		userSession.unset('phoneNumber');
 		userSession.flash('error', 'Usuário ou senha inválidos');
-
-		response?.headers.set('Set-Cookie', await commitUserSession(userSession));
 	}
 
-	return null;
+	return data({}, {headers: {'Set-Cookie': await commitUserSession(userSession)}});
 });
 
 export default function Login() {

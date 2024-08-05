@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import * as Form from '@radix-ui/react-form';
 import {
 	type LoaderFunctionArgs,
 	type ActionFunctionArgs,
 	unstable_defineAction as defineAction,
 	unstable_defineLoader as defineLoader,
+	unstable_data as data,
 } from '@remix-run/node';
 import {
 	type MetaArgs_SingleFetch,
@@ -36,7 +38,7 @@ export const loader = defineLoader(async ({request}: LoaderFunctionArgs) => {
 	};
 });
 
-export const action = defineAction(async ({request, response}: ActionFunctionArgs) => {
+export const action = defineAction(async ({request}: ActionFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 
 	try {
@@ -46,22 +48,21 @@ export const action = defineAction(async ({request, response}: ActionFunctionArg
 		const {data: existUser} = await new UserService().verifyUserExists(username);
 
 		if (existUser) {
-			response!.headers.set('Set-Cookie', await commitUserSession(userSession));
-			response!.headers.set('Location', `/admin/students/${username}`);
-			response!.status = 303;
-
-			return null;
+			return data({}, {
+				status: 303, headers: {
+					Location: `/admin/students/${username}`,
+					'Set-Cookie': await commitUserSession(userSession),
+				},
+			});
 		}
 
 		userSession.flash('error', `Usuário ${username} não encontrado`);
-		response!.headers.set('Set-Cookie', await commitUserSession(userSession));
 
-		return null;
+		return data({}, {headers: {'Set-Cookie': await commitUserSession(userSession)}});
 	} catch {
 		userSession.flash('error', 'Erro ao pesquisar usuário');
-		response!.headers.set('Set-Cookie', await commitUserSession(userSession));
 
-		return null;
+		return data({}, {headers: {'Set-Cookie': await commitUserSession(userSession)}});
 	}
 });
 

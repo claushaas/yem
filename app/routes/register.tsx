@@ -5,6 +5,7 @@ import {
 	type LoaderFunctionArgs,
 	unstable_defineAction as defineAction,
 	unstable_defineLoader as defineLoader,
+	unstable_data as data,
 } from '@remix-run/node';
 import {
 	Form,
@@ -31,33 +32,32 @@ export const meta = ({data}: MetaArgs_SingleFetch<typeof loader>) => [
 	...data!.meta,
 ];
 
-export const loader = defineLoader(async ({request, response}: LoaderFunctionArgs) => {
+export const loader = defineLoader(async ({request}: LoaderFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 
-	if (userSession.get('id')) {
-		response!.headers.set('Location', '/courses');
-		response!.headers.set('Location', '/courses');
-		response!.status = 303;
-	}
-
-	return {
-		error: userSession.get('error') as string | undefined,
-		success: userSession.get('success') as string | undefined,
-		meta: [{tagName: 'link', rel: 'canonical', href: new URL('/register', request.url).toString()}],
-		userData: userSession.data as TypeUserSession,
-	};
+	return data(
+		{
+			error: userSession.get('error') as string | undefined,
+			success: userSession.get('success') as string | undefined,
+			meta: [{tagName: 'link', rel: 'canonical', href: new URL('/register', request.url).toString()}],
+			userData: userSession.data as TypeUserSession,
+		},
+		{
+			status: userSession.get('id') ? 303 : 200,
+			headers: userSession.get('id') ? {
+				Location: '/courses',
+			} : undefined,
+		},
+	);
 });
 
-export const action = defineAction(async ({request, response}: ActionFunctionArgs) => {
+export const action = defineAction(async ({request}: ActionFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 
 	if (userSession.has('id')) {
 		userSession.flash('error', 'Usuário já logado, faça o login para continuar');
 
-		response!.headers.set('Set-Cookie', await commitUserSession(userSession));
-		response!.headers.set('Location', '/courses');
-		response!.status = 303;
-		return null;
+		return data({}, {status: 303, headers: {Location: '/courses'}});
 	}
 
 	try {
@@ -77,16 +77,12 @@ export const action = defineAction(async ({request, response}: ActionFunctionArg
 		});
 
 		userSession.flash('success', 'Usuário criado com sucesso, em alguns instantes você vai receber a senha por email e WhatsApp. Utilize-a em conjunto com seu email para fazer o login');
-
-		response!.headers.set('Set-Cookie', await commitUserSession(userSession));
 	} catch (error) {
 		logger.logError(`Error: ${(error as CustomError).message}`);
 		userSession.flash('error', (error as CustomError).message);
-
-		response!.headers.set('Set-Cookie', await commitUserSession(userSession));
 	}
 
-	return null;
+	return data({}, {status: 303, headers: {'Set-Cookie': await commitUserSession(userSession)}}); // eslint-disable-line @typescript-eslint/naming-convention
 });
 
 export default function Register() {

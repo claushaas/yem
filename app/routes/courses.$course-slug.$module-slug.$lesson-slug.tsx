@@ -4,6 +4,7 @@ import {
 	unstable_defineLoader as defineLoader,
 	type LoaderFunctionArgs,
 	type ActionFunctionArgs,
+	unstable_data as data,
 } from '@remix-run/node';
 import {
 	Await, Form, useLoaderData, type MetaFunction,
@@ -67,7 +68,7 @@ export const loader = defineLoader(async ({request, params}: LoaderFunctionArgs)
 	};
 });
 
-export const action = defineAction(async ({request, params, response}: ActionFunctionArgs) => {
+export const action = defineAction(async ({request, params}: ActionFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 	const {
 		'course-slug': courseSlug,
@@ -107,10 +108,7 @@ export const action = defineAction(async ({request, params, response}: ActionFun
 		}
 	}
 
-	response!.headers.set('Location', `/courses/${courseSlug}/${moduleSlug}/${lessonSlug}`);
-	response!.status = 200;
-
-	return null;
+	return data({}, {status: 200, headers: {Location: `/courses/${courseSlug}/${moduleSlug}/${lessonSlug}`}});
 });
 
 export default function Lesson() {

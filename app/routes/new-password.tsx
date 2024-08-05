@@ -4,6 +4,7 @@ import {
 	type LoaderFunctionArgs,
 	unstable_defineAction as defineAction,
 	unstable_defineLoader as defineLoader,
+	unstable_data as data,
 } from '@remix-run/node';
 import {
 	Form,
@@ -36,7 +37,7 @@ export const loader = defineLoader(async ({request}: LoaderFunctionArgs) => {
 	};
 });
 
-export const action = defineAction(async ({request, response}: ActionFunctionArgs) => {
+export const action = defineAction(async ({request}: ActionFunctionArgs) => {
 	try {
 		const formData = await request.formData();
 		const email = formData.get('email');
@@ -44,12 +45,17 @@ export const action = defineAction(async ({request, response}: ActionFunctionArg
 		await new UserService().getNewPassword(email as string);
 	} catch (error) {
 		logger.logError(`Error generating new password: ${(error as Error).message}`);
-	} finally {
-		response!.headers.set('Location', '/login');
-		response!.status = 303;
 	}
 
-	return null;
+	return data(
+		{},
+		{
+			status: 303,
+			headers: {
+				Location: '/login',
+			},
+		},
+	);
 });
 
 export default function NewPassword() {
