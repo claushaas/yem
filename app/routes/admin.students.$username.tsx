@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import {
 	type ActionFunctionArgs,
 	type LoaderFunctionArgs,
 	unstable_defineAction as defineAction,
 	unstable_defineLoader as defineLoader,
+	unstable_data as data,
 } from '@remix-run/node';
 import {
 	Form,
@@ -30,7 +32,7 @@ export const meta = ({data}: MetaArgs_SingleFetch<typeof loader>) => ([
 	...data!.meta,
 ]);
 
-export const loader = defineLoader(async ({request, params, response}: LoaderFunctionArgs) => {
+export const loader = defineLoader(async ({request, params}: LoaderFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 	const {username} = params;
 
@@ -42,29 +44,41 @@ export const loader = defineLoader(async ({request, params, response}: LoaderFun
 		const {data: studentData} = await new UserService().getUserData(username!);
 		const {data: subscriptions} = await new SubscriptionService().getUserSubscriptions(studentData);
 
-		response!.headers.set('Set-Cookie', await commitUserSession(userSession));
-
-		return {
-			studentData,
-			subscriptions,
-			error: userSession.get('error') as string | undefined,
-			success: userSession.get('success') as string | undefined,
-			meta,
-		};
+		return data(
+			{
+				studentData,
+				subscriptions,
+				error: userSession.get('error') as string | undefined,
+				success: userSession.get('success') as string | undefined,
+				meta,
+			},
+			{
+				headers: {
+					'Set-Cookie': await commitUserSession(userSession),
+				},
+			},
+		);
 	} catch {
 		userSession.flash('error', `Erro ao buscar dados do aluno ${username}`);
-		response!.headers.set('Set-Cookie', await commitUserSession(userSession));
-		return {
-			studentData: undefined,
-			subscriptions: undefined,
-			error: userSession.get('error') as string | undefined,
-			success: userSession.get('success') as string | undefined,
-			meta,
-		};
+
+		return data(
+			{
+				studentData: undefined,
+				subscriptions: undefined,
+				error: userSession.get('error') as string | undefined,
+				success: userSession.get('success') as string | undefined,
+				meta,
+			},
+			{
+				headers: {
+					'Set-Cookie': await commitUserSession(userSession),
+				},
+			},
+		);
 	}
 });
 
-export const action = defineAction(async ({request, params, response}: ActionFunctionArgs) => {
+export const action = defineAction(async ({request, params}: ActionFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 	const {username} = params;
 	const formData = await request.formData();
@@ -130,8 +144,7 @@ export const action = defineAction(async ({request, params, response}: ActionFun
 		userSession.flash('error', (error as Error).message);
 	}
 
-	response!.headers.set('Set-Cookie', await commitUserSession(userSession));
-	return null;
+	return data({}, {headers: {'Set-Cookie': await commitUserSession(userSession)}});
 });
 
 export default function Student() {

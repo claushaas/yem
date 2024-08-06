@@ -31,14 +31,8 @@ export const meta = ({data}: MetaArgs_SingleFetch<typeof loader>) => [
 	...data!.meta,
 ];
 
-export const loader = defineLoader(async ({request, response}: LoaderFunctionArgs) => {
+export const loader = defineLoader(async ({request}: LoaderFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
-
-	if (userSession.get('id')) {
-		response!.headers.set('Location', '/courses');
-		response!.headers.set('Location', '/courses');
-		response!.status = 303;
-	}
 
 	return {
 		error: userSession.get('error') as string | undefined,
@@ -48,17 +42,8 @@ export const loader = defineLoader(async ({request, response}: LoaderFunctionArg
 	};
 });
 
-export const action = defineAction(async ({request, response}: ActionFunctionArgs) => {
+export const action = defineAction(async ({request}: ActionFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
-
-	if (userSession.has('id')) {
-		userSession.flash('error', 'Usuário já logado, faça o login para continuar');
-
-		response!.headers.set('Set-Cookie', await commitUserSession(userSession));
-		response!.headers.set('Location', '/courses');
-		response!.status = 303;
-		return null;
-	}
 
 	try {
 		const formData = await request.formData();
@@ -77,14 +62,12 @@ export const action = defineAction(async ({request, response}: ActionFunctionArg
 		});
 
 		userSession.flash('success', 'Usuário criado com sucesso, em alguns instantes você vai receber a senha por email e WhatsApp. Utilize-a em conjunto com seu email para fazer o login');
-
-		response!.headers.set('Set-Cookie', await commitUserSession(userSession));
 	} catch (error) {
 		logger.logError(`Error: ${(error as CustomError).message}`);
 		userSession.flash('error', (error as CustomError).message);
-
-		response!.headers.set('Set-Cookie', await commitUserSession(userSession));
 	}
+
+	await commitUserSession(userSession);
 
 	return null;
 });

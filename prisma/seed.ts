@@ -547,6 +547,16 @@ const main = async () => {
 			},
 		},
 	});
+
+	await prisma.userSubscriptions.create({
+		data: {
+			userId: 'c4f35074-cfb4-4fba-973e-9be9846fbf4e',
+			courseSlug: 'escola-online',
+			expiresAt: new Date('2026-04-25 17:30:00'),
+			provider: 'iugu',
+			providerSubscriptionId: '123',
+		},
+	});
 };
 
 try {

@@ -13,15 +13,16 @@ export const meta = ({data}: MetaArgs_SingleFetch<typeof loader>) => [
 	...data!.meta,
 ];
 
-export const loader = defineLoader(async ({request, response}: LoaderFunctionArgs) => {
+export const loader = defineLoader(async ({request}: LoaderFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 	const userData = userSession.data as TypeUserSession;
 
 	if (!userData.id) {
-		response!.headers.set('Location', '/');
-		response!.status = 303;
-
-		throw response; // eslint-disable-line @typescript-eslint/only-throw-error
+		return {
+			meta: [{tagName: 'link', rel: 'canonical', href: new URL('/profile/completed-lessons', request.url).toString()}],
+			userData,
+			savedLessonsWithActivity: [],
+		};
 	}
 
 	const savedLessons = await new LessonService().getSavedLessonsByUser(userData);
@@ -45,7 +46,7 @@ export default function CompletedLessons() {
 		return (
 			<div>
 				<h1>Aulas Salvadas</h1>
-				<p>{userData.firstName}, você ainda não salcou nenhuma aula. Conforme assistir as aulas e marcá-las como salvas, a lista de suas aulas salvadas aparecerá aqui.</p>
+				<p>{userData.firstName}, você ainda não salvou nenhuma aula. Conforme assistir as aulas e marcá-las como salvas, a lista de suas aulas salvadas aparecerá aqui.</p>
 			</div>
 		);
 	}

@@ -1,4 +1,3 @@
-/* eslint-disable n/no-unsupported-features/node-builtins */
 import {PassThrough} from 'node:stream';
 import {createReadableStreamFromReadable, type EntryContext} from '@remix-run/node';
 import {RemixServer} from '@remix-run/react';

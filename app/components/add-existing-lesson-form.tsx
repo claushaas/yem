@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import {
 	type ActionFunctionArgs,
 	type LoaderFunctionArgs,
 	unstable_defineAction as defineAction,
 	unstable_defineLoader as defineLoader,
+	unstable_data as data,
 } from '@remix-run/node';
 import {
 	Form, useLoaderData, useNavigation, useParams,
@@ -23,7 +25,7 @@ import {YemSpinner} from '~/components/yem-spinner.js';
 import {type TLesson, type TLessonType} from '~/types/lesson.type';
 import {type TTags} from '~/types/tag.type';
 
-export const loader = defineLoader(async ({request, params, response}: LoaderFunctionArgs) => {
+export const loader = defineLoader(async ({request, params}: LoaderFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 	const {
 		'course-slug': courseSlug,
@@ -35,27 +37,34 @@ export const loader = defineLoader(async ({request, params, response}: LoaderFun
 	];
 
 	const moduleService = new ModuleService();
-	response!.headers.set('Set-Cookie', await commitUserSession(userSession));
 
 	try {
 		const {data: module} = await moduleService.getBySlug(courseSlug!, moduleSlug!, userSession.data as TUser);
 
-		return {
+		return data({
 			module,
 			success: userSession.get('success') as string | undefined,
 			meta,
-		};
+		}, {
+			headers: {
+				'Set-Cookie': await commitUserSession(userSession),
+			},
+		});
 	} catch (error) {
 		logger.logError(`Error getting module: ${(error as Error).message}`);
-		return {
+		return data({
 			module: undefined,
 			success: undefined,
 			meta,
-		};
+		}, {
+			headers: {
+				'Set-Cookie': await commitUserSession(userSession),
+			},
+		});
 	}
 });
 
-export const action = defineAction(async ({request, response}: ActionFunctionArgs) => {
+export const action = defineAction(async ({request}: ActionFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 
 	try {
@@ -63,52 +72,6 @@ export const action = defineAction(async ({request, response}: ActionFunctionArg
 			const formData = await request.formData();
 
 			switch (formData.get('formType')) {
-				case 'editModule': {
-					const id = formData.get('id') as string;
-
-					const moduleToUpdate: TModule = {
-						oldId: formData.get('oldId') as string,
-						name: formData.get('name') as string,
-						description: formData.get('description') as string,
-						content: formData.get('content') as string,
-						marketingContent: formData.get('marketingContent') as string,
-						videoSourceUrl: formData.get('videoSourceUrl') as string,
-						marketingVideoUrl: formData.get('marketingVideoUrl') as string,
-						thumbnailUrl: formData.get('thumbnailUrl') as string,
-						isLessonsOrderRandom: Boolean(formData.get('isLessonsOrderRandom')),
-					};
-
-					await new ModuleService().update(id, moduleToUpdate);
-
-					userSession.flash('success', `Módulo ${moduleToUpdate.name} atualizado com sucesso`);
-					break;
-				}
-
-				case 'newLesson': {
-					const newLesson: TLesson = {
-						oldId: formData.get('oldId') as string,
-						name: formData.get('name') as string,
-						description: formData.get('description') as string,
-						content: formData.get('content') as string,
-						marketingContent: formData.get('marketingContent') as string,
-						type: formData.get('type') as TLessonType,
-						videoSourceUrl: formData.get('videoSourceUrl') as string,
-						marketingVideoUrl: formData.get('marketingVideoUrl') as string,
-						duration: Number(formData.get('duration')),
-						thumbnailUrl: formData.get('thumbnailUrl') as string,
-						modules: (formData.get('modules') as string).split(','),
-						publicationDate: new Date(formData.get('publicationDate') as string),
-						isPublished: Boolean(formData.get('isPublished')),
-						tags: JSON.parse(formData.get('tags') as string) as TTags,
-						order: Number(formData.get('order')),
-					};
-
-					await new LessonService().create(newLesson);
-
-					userSession.flash('success', `Nova aula ${newLesson.name} criada com sucesso`);
-					break;
-				}
-
 				case 'existingLesson': {
 					const lessonSlug = formData.get('lessonSlug') as string;
 					const moduleSlug = formData.get('moduleSlug') as string;
@@ -135,8 +98,7 @@ export const action = defineAction(async ({request, response}: ActionFunctionArg
 		userSession.flash('error', (error as Error).message);
 	}
 
-	response!.headers.set('Set-Cookie', await commitUserSession(userSession));
-	return null;
+	return data({}, {headers: {'Set-Cookie': await commitUserSession(userSession)}});
 });
 
 export default function AddExistingLessonForm() {

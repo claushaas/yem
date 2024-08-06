@@ -15,20 +15,13 @@ export const meta = ({data}: MetaArgs_SingleFetch<typeof loader>) => [
 	...data!.meta,
 ];
 
-export const loader = defineLoader(async ({request, response}: LoaderFunctionArgs) => {
+export const loader = defineLoader(async ({request}: LoaderFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
-	const data = userSession.data as TypeUserSession;
-
-	if (!data.id) {
-		response!.headers.set('Location', '/');
-		response!.status = 303;
-
-		throw response; // eslint-disable-line @typescript-eslint/only-throw-error
-	}
+	const userData = userSession.data as TypeUserSession;
 
 	return {
 		meta: [{tagName: 'link', rel: 'canonical', href: new URL('/profile', request.url).toString()}],
-		userData: data,
+		userData,
 	};
 });
 

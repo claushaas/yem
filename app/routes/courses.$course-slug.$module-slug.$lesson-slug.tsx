@@ -4,9 +4,10 @@ import {
 	unstable_defineLoader as defineLoader,
 	type LoaderFunctionArgs,
 	type ActionFunctionArgs,
+	unstable_data as data,
 } from '@remix-run/node';
 import {
-	Await, Form, useLoaderData, type MetaFunction,
+	Await, Form, redirect, useLoaderData, type MetaFunction,
 } from '@remix-run/react';
 import {QuillDeltaToHtmlConverter} from 'quill-delta-to-html';
 import {type OpIterator} from 'quill/core';
@@ -67,7 +68,7 @@ export const loader = defineLoader(async ({request, params}: LoaderFunctionArgs)
 	};
 });
 
-export const action = defineAction(async ({request, params, response}: ActionFunctionArgs) => {
+export const action = defineAction(async ({request, params}: ActionFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 	const {
 		'course-slug': courseSlug,
@@ -107,10 +108,7 @@ export const action = defineAction(async ({request, params, response}: ActionFun
 		}
 	}
 
-	response!.headers.set('Location', `/courses/${courseSlug}/${moduleSlug}/${lessonSlug}`);
-	response!.status = 200;
-
-	return null;
+	return redirect(`/courses/${courseSlug}/${moduleSlug}/${lessonSlug}`);
 });
 
 export default function Lesson() {
@@ -138,9 +136,9 @@ export default function Lesson() {
 							{userLessonActivity => userLessonActivity.data.completed !== undefined && (
 								<section id='lesson-activity' className='flex justify-center gap-5 items-center mb-10'>
 									<Form method='post' className='flex justify-center gap-3 items-center'>
-										<input type='text' className='hidden' name='completed' value={userLessonActivity.data?.completed ? 'true' : 'false'}/>
-										<input type='text' className='hidden' name='saved' value={userLessonActivity.data?.saved ? 'true' : 'false'}/>
-										<input type='text' className='hidden' name='favorited' value={userLessonActivity.data?.favorited ? 'true' : 'false'}/>
+										<input readOnly type='text' className='hidden' name='completed' value={userLessonActivity.data?.completed ? 'true' : 'false'}/>
+										<input readOnly type='text' className='hidden' name='saved' value={userLessonActivity.data?.saved ? 'true' : 'false'}/>
+										<input readOnly type='text' className='hidden' name='favorited' value={userLessonActivity.data?.favorited ? 'true' : 'false'}/>
 
 										<Tooltip.Provider>
 											<Tooltip.Root>

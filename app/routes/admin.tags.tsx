@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import {
 	type ActionFunctionArgs,
 	type LoaderFunctionArgs,
 	unstable_defineAction as defineAction,
 	unstable_defineLoader as defineLoader,
+	unstable_data as data,
 } from '@remix-run/node';
 import {
 	Form, type MetaArgs_SingleFetch, useLoaderData, useNavigation,
@@ -26,7 +28,7 @@ export const meta = ({data}: MetaArgs_SingleFetch<typeof loader>) => ([
 	...data!.meta,
 ]);
 
-export const loader = defineLoader(async ({request, response}: LoaderFunctionArgs) => {
+export const loader = defineLoader(async ({request}: LoaderFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 
 	const meta = [
@@ -36,26 +38,39 @@ export const loader = defineLoader(async ({request, response}: LoaderFunctionArg
 	try {
 		const tags = await new TagService().getAll();
 
-		response!.headers.set('Set-Cookie', await commitUserSession(userSession));
-		return {
-			error: userSession.get('error') as string | undefined,
-			success: userSession.get('success') as string | undefined,
-			tags,
-			meta,
-		};
+		return data(
+			{
+				error: userSession.get('error') as string | undefined,
+				success: userSession.get('success') as string | undefined,
+				tags,
+				meta,
+			},
+			{
+				headers: {
+					'Set-Cookie': await commitUserSession(userSession),
+				},
+			},
+		);
 	} catch (error) {
 		logger.logError(`Error getting all tags: ${(error as Error).message}`);
-		response!.headers.set('Set-Cookie', await commitUserSession(userSession));
-		return {
-			tags: undefined,
-			error: `Error getting all tags: ${(error as Error).message}`,
-			success: undefined,
-			meta,
-		};
+
+		return data(
+			{
+				tags: undefined,
+				error: `Error getting all tags: ${(error as Error).message}`,
+				success: undefined,
+				meta,
+			},
+			{
+				headers: {
+					'Set-Cookie': await commitUserSession(userSession),
+				},
+			},
+		);
 	}
 });
 
-export const action = defineAction(async ({request, response}: ActionFunctionArgs) => {
+export const action = defineAction(async ({request}: ActionFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 	const formData = await request.formData();
 
@@ -71,11 +86,9 @@ export const action = defineAction(async ({request, response}: ActionFunctionArg
 	} catch (error) {
 		logger.logError(`Error creating tag: ${(error as Error).message}`);
 		userSession.flash('error', `Error creating tag: ${(error as Error).message}`);
-	} finally {
-		response!.headers.set('Set-Cookie', await commitUserSession(userSession));
 	}
 
-	return null;
+	return data({}, {headers: {'Set-Cookie': await commitUserSession(userSession)}});
 });
 
 export default function Tags() {
