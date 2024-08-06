@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import {
 	type ActionFunctionArgs,
 	type LoaderFunctionArgs,
 	unstable_defineLoader as defineLoader,
 	unstable_defineAction as defineAction,
+	unstable_data as data,
 } from '@remix-run/node';
 import {
 	Form,
@@ -39,7 +41,7 @@ export const meta = ({data}: MetaArgs_SingleFetch<typeof loader>) => ([
 	...data!.meta,
 ]);
 
-export const loader = defineLoader(async ({request, params, response}: LoaderFunctionArgs) => {
+export const loader = defineLoader(async ({request, params}: LoaderFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 	const {'course-slug': courseSlug} = params;
 
@@ -47,33 +49,45 @@ export const loader = defineLoader(async ({request, params, response}: LoaderFun
 		{tagName: 'link', rel: 'canonical', href: new URL(`/admin/courses/${courseSlug}`, request.url).toString()},
 	];
 
-	response!.headers.set('Set-Cookie', await commitUserSession(userSession));
-
 	try {
 		const courseService = new CourseService();
 		const {data: course} = await courseService.getBySlug(courseSlug!, userSession.data as TUser);
 		const {data: courses} = await courseService.getAll(userSession.get('roles') as string[]);
 
-		return {
-			course,
-			courses,
-			error: userSession.get('error') as string | undefined,
-			success: userSession.get('success') as string | undefined,
-			meta,
-		};
+		return data(
+			{
+				course,
+				courses,
+				error: userSession.get('error') as string | undefined,
+				success: userSession.get('success') as string | undefined,
+				meta,
+			},
+			{
+				headers: {
+					'Set-Cookie': await commitUserSession(userSession),
+				},
+			},
+		);
 	} catch (error) {
 		logger.logError(`Error getting course: ${(error as Error).message}`);
-		return {
-			course: undefined,
-			courses: undefined,
-			error: 'Erro ao buscar curso',
-			success: undefined,
-			meta,
-		};
+		return data(
+			{
+				course: undefined,
+				courses: undefined,
+				error: 'Erro ao buscar curso',
+				success: undefined,
+				meta,
+			},
+			{
+				headers: {
+					'Set-Cookie': await commitUserSession(userSession),
+				},
+			},
+		);
 	}
 });
 
-export const action = defineAction(async ({request, response}: ActionFunctionArgs) => {
+export const action = defineAction(async ({request}: ActionFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 
 	try {
@@ -163,9 +177,7 @@ export const action = defineAction(async ({request, response}: ActionFunctionArg
 		userSession.flash('error', `Error creating course: ${(error as Error).message}`);
 	}
 
-	response?.headers.set('Set-Cookie', await commitUserSession(userSession));
-
-	return null;
+	return data({}, {headers: {'Set-Cookie': await commitUserSession(userSession)}});
 });
 
 export default function Course() {

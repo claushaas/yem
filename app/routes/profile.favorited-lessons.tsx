@@ -13,16 +13,9 @@ export const meta = ({data}: MetaArgs_SingleFetch<typeof loader>) => [
 	...data!.meta,
 ];
 
-export const loader = defineLoader(async ({request, response}: LoaderFunctionArgs) => {
+export const loader = defineLoader(async ({request}: LoaderFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 	const userData = userSession.data as TypeUserSession;
-
-	if (!userData.id) {
-		response!.headers.set('Location', '/');
-		response!.status = 303;
-
-		throw response; // eslint-disable-line @typescript-eslint/only-throw-error
-	}
 
 	const favoritedLessons = await new LessonService().getFavoritedLessonsByUser(userData);
 

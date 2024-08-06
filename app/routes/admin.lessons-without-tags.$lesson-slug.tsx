@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import {
 	type ActionFunctionArgs,
 	type LoaderFunctionArgs,
 	unstable_defineAction as defineAction,
 	unstable_defineLoader as defineLoader,
+	unstable_data as data,
 } from '@remix-run/node';
 import {
 	Form, type MetaArgs_SingleFetch, useLoaderData, useNavigation, useParams,
@@ -33,7 +35,7 @@ export const meta = ({data}: MetaArgs_SingleFetch<typeof loader>) => ([
 	...data!.meta,
 ]);
 
-export const loader = defineLoader(async ({request, params, response}: LoaderFunctionArgs) => {
+export const loader = defineLoader(async ({request, params}: LoaderFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 	const {
 		'lesson-slug': lessonSlug,
@@ -46,33 +48,45 @@ export const loader = defineLoader(async ({request, params, response}: LoaderFun
 	try {
 		const {data: lesson} = await new LessonService().getByLessonSlugOnly(lessonSlug!, userSession.data as TUser);
 		const {data: tags} = await new TagService().getAll();
-		response!.headers.set('Set-Cookie', await commitUserSession(userSession));
 
 		const organizedTags = tags
 			.map(tag => ({value: [tag.tagOptionName, tag.tagValueName], label: `${tag.tagOptionName}: ${tag.tagValueName}`})) as Array<{value: TTag; label: string}>;
 
-		return {
-			lesson,
-			tags: organizedTags,
-			error: userSession.get('error') as string | undefined,
-			success: userSession.get('success') as string | undefined,
-			meta,
-		};
+		return data(
+			{
+				lesson,
+				tags: organizedTags,
+				error: userSession.get('error') as string | undefined,
+				success: userSession.get('success') as string | undefined,
+				meta,
+			},
+			{
+				headers: {
+					'Set-Cookie': await commitUserSession(userSession),
+				},
+			},
+		);
 	} catch (error) {
 		logger.logError(`Error fetching lesson: ${(error as Error).message}`);
-		response!.headers.set('Set-Cookie', await commitUserSession(userSession));
 
-		return {
-			lesson: undefined,
-			tags: undefined,
-			error: `Error fetching lesson: ${(error as Error).message}`,
-			success: undefined,
-			meta,
-		};
+		return data(
+			{
+				lesson: undefined,
+				tags: undefined,
+				error: `Error fetching lesson: ${(error as Error).message}`,
+				success: undefined,
+				meta,
+			},
+			{
+				headers: {
+					'Set-Cookie': await commitUserSession(userSession),
+				},
+			},
+		);
 	}
 });
 
-export const action = defineAction(async ({request, response}: ActionFunctionArgs) => {
+export const action = defineAction(async ({request}: ActionFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 
 	if ((userSession.get('roles') as string[])?.includes('admin')) {
@@ -135,8 +149,7 @@ export const action = defineAction(async ({request, response}: ActionFunctionArg
 		userSession.flash('error', 'Você não tem permissão para realizar esta ação');
 	}
 
-	response!.headers.set('Set-Cookie', await commitUserSession(userSession));
-	return null;
+	return data({}, {headers: {'Set-Cookie': await commitUserSession(userSession)}});
 });
 
 export default function Lesson() {
@@ -177,7 +190,7 @@ export default function Lesson() {
 				{lesson.videoSourceUrl && (
 					<div className='flex gap-5'>
 						<p>Link HLS: {lesson.videoSourceUrl}</p>
-						<p><DocumentDuplicateIcon className='size-5 cursor-pointer' onClick={async () => copyToClipboard(lesson.videoSourceUrl!)}/></p>
+						<p><DocumentDuplicateIcon className='size-5 cursor-pointer' onClick={async () => copyToClipboard(lesson.videoSourceUrl ?? '')}/></p>
 					</div>
 				)}
 

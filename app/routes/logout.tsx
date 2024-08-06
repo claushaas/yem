@@ -8,6 +8,7 @@ import {
 import {
 	Form,
 	type MetaArgs_SingleFetch,
+	redirect,
 	useLoaderData,
 	useNavigation,
 } from '@remix-run/react';
@@ -32,16 +33,12 @@ export const loader = defineLoader(async ({request}: LoaderFunctionArgs) => {
 	};
 });
 
-export const action = defineAction(async ({request, response}: ActionFunctionArgs) => {
+export const action = defineAction(async ({request}: ActionFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 
-	if (response) {
-		response?.headers.set('Set-Cookie', await destroyUserSession(userSession));
-		response.status = 303;
-		response?.headers.set('Location', '/');
-	}
+	await destroyUserSession(userSession);
 
-	return null;
+	return redirect('/');
 });
 
 export default function Logout() {

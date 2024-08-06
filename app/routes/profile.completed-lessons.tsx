@@ -13,16 +13,9 @@ export const meta = ({data}: MetaArgs_SingleFetch<typeof loader>) => [
 	...data!.meta,
 ];
 
-export const loader = defineLoader(async ({request, response}: LoaderFunctionArgs) => {
+export const loader = defineLoader(async ({request}: LoaderFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 	const userData = userSession.data as TypeUserSession;
-
-	if (!userData.id) {
-		response!.headers.set('Location', '/');
-		response!.status = 303;
-
-		throw response; // eslint-disable-line @typescript-eslint/only-throw-error
-	}
 
 	const completedLessons = await new LessonService().getCompletedLessonsByUser(userData);
 
@@ -41,7 +34,7 @@ export const loader = defineLoader(async ({request, response}: LoaderFunctionArg
 export default function CompletedLessons() {
 	const {completedLessonsWithActivity, userData} = useLoaderData<typeof loader>();
 
-	if (completedLessonsWithActivity.length === 0) {
+	if (completedLessonsWithActivity?.length === 0) {
 		return (
 			<div>
 				<h1>Aulas Assistidas</h1>
@@ -55,7 +48,7 @@ export default function CompletedLessons() {
 			<h1>Aulas Assistidas</h1>
 
 			<div className='flex gap-4 my-4 flex-wrap'>
-				{completedLessonsWithActivity.map(lesson => (
+				{completedLessonsWithActivity?.map(lesson => (
 					<LessonEntityCard key={lesson.id} course={lesson.lesson} to={lesson.link} activity={lesson.activity}/>
 				))}
 			</div>
