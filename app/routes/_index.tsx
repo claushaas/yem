@@ -2,13 +2,14 @@ import {
 	type LoaderFunctionArgs, unstable_defineLoader as defineLoader,
 } from '@remix-run/node';
 import {Image} from '@unpic/react';
-import {type MetaArgs_SingleFetch, useLoaderData} from '@remix-run/react';
+import {Link, type MetaArgs_SingleFetch, useLoaderData} from '@remix-run/react';
 import {buildImgSource} from '~/utils/build-cloudflare-image-source.js';
 import {Testimonies} from '~/layouts/testimonies.js';
 import {History} from '~/layouts/yem-history.js';
 import {getUserSession} from '~/utils/session.server';
 import {NavigateBar} from '~/components/navigation-bar.js';
 import {type TypeUserSession} from '~/types/user-session.type';
+import {Button, ButtonPreset, ButtonType} from '~/components/button';
 
 export const meta = ({data}: MetaArgs_SingleFetch<typeof loader>) => [
 	{title: 'Yoga em Movimento'},
@@ -53,6 +54,31 @@ export default function Index() {
 					</div>
 				</section>
 				<Testimonies/>
+
+				<section id='services' className='my-20 sm:my-40 max-w-[95%] sm:max-w-[90%] mx-auto flex justify-center'>
+					<div className='max-w-screen-lg w-full'>
+						<h1 className='text-purple-11 text-3xl xs:text-5xl md:text-6xl lg:text-7xl text-left mb-5 text-center'>Conheça nossos Serviços</h1>
+
+						<div className='flex justify-center flex-wrap gap-10'>
+							<div className='w-60 shrink-0 p-5 shadow-sm shadow-mauve-11 dark:shadow-mauvedark-3 bg-mauve-4 dark:bg-mauvedark-3 rounded-2xl flex flex-col justify-center items-center gap-5'>
+								<h2 className='text-center'>Escola Online</h2>
+								<p>Para praticar Yoga todos os dias, onde estiver e quando quiser.</p>
+								<Link to='/escola-online'>
+									<Button text='Conhecer Agora' type={ButtonType.Button} preset={ButtonPreset.Primary}/>
+								</Link>
+							</div>
+
+							<div className='w-60 shrink-0 p-5 shadow-sm shadow-mauve-11 dark:shadow-mauvedark-3 bg-mauve-4 dark:bg-mauvedark-3 rounded-2xl flex flex-col justify-center items-center gap-5'>
+								<h2 className='text-center'>Formação em Yoga</h2>
+								<p>Para se formar como Instrutor de Yoga certificado.</p>
+								<Link to='https://site.yogaemmovimento.com/formacao'>
+									<Button text='Conhecer Agora' type={ButtonType.Button} preset={ButtonPreset.Primary}/>
+								</Link>
+							</div>
+						</div>
+					</div>
+				</section>
+
 				<History/>
 			</main>
 		</>
