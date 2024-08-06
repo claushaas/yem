@@ -411,7 +411,9 @@ export class LessonService {
 					return false;
 				}
 
-				return new Date(subscription) >= new Date();
+				const expirationDate = (JSON.parse(subscription) as Prisma.UserSubscriptionsGetPayload<undefined>).expiresAt;
+
+				return new Date(expirationDate) >= new Date();
 			});
 
 			lesson.lesson.content = hasActiveSubscription ? lesson.lesson.content : lesson.lesson.marketingContent;
