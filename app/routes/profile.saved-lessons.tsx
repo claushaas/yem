@@ -46,7 +46,7 @@ export default function CompletedLessons() {
 		return (
 			<div>
 				<h1>Aulas Salvadas</h1>
-				<p>{userData.firstName}, você ainda não salcou nenhuma aula. Conforme assistir as aulas e marcá-las como salvas, a lista de suas aulas salvadas aparecerá aqui.</p>
+				<p>{userData.firstName}, você ainda não salvou nenhuma aula. Conforme assistir as aulas e marcá-las como salvas, a lista de suas aulas salvadas aparecerá aqui.</p>
 			</div>
 		);
 	}
