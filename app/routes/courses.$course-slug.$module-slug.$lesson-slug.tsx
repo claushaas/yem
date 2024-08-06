@@ -136,9 +136,9 @@ export default function Lesson() {
 							{userLessonActivity => userLessonActivity.data.completed !== undefined && (
 								<section id='lesson-activity' className='flex justify-center gap-5 items-center mb-10'>
 									<Form method='post' className='flex justify-center gap-3 items-center'>
-										<input type='text' className='hidden' name='completed' value={userLessonActivity.data?.completed ? 'true' : 'false'}/>
-										<input type='text' className='hidden' name='saved' value={userLessonActivity.data?.saved ? 'true' : 'false'}/>
-										<input type='text' className='hidden' name='favorited' value={userLessonActivity.data?.favorited ? 'true' : 'false'}/>
+										<input readOnly type='text' className='hidden' name='completed' value={userLessonActivity.data?.completed ? 'true' : 'false'}/>
+										<input readOnly type='text' className='hidden' name='saved' value={userLessonActivity.data?.saved ? 'true' : 'false'}/>
+										<input readOnly type='text' className='hidden' name='favorited' value={userLessonActivity.data?.favorited ? 'true' : 'false'}/>
 
 										<Tooltip.Provider>
 											<Tooltip.Root>
