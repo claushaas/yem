@@ -1,4 +1,4 @@
-import {type LoaderFunctionArgs, unstable_defineLoader as defineLoader, unstable_data as data} from '@remix-run/node';
+import {type LoaderFunctionArgs, unstable_defineLoader as defineLoader} from '@remix-run/node';
 import {
 	Link, Outlet, useLocation,
 	type MetaArgs_SingleFetch,
@@ -19,22 +19,10 @@ export const loader = defineLoader(async ({request}: LoaderFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 	const userData = userSession.data as TypeUserSession;
 
-	if (!userData.id) {
-		return data({
-			meta: [{tagName: 'link', rel: 'canonical', href: new URL('/profile', request.url).toString()}],
-			userData,
-		}, {
-			status: 303,
-			headers: {
-				Location: '/',
-			},
-		});
-	}
-
-	return data({
+	return {
 		meta: [{tagName: 'link', rel: 'canonical', href: new URL('/profile', request.url).toString()}],
 		userData,
-	});
+	};
 });
 
 export default function Profile() {

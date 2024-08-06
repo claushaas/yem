@@ -1,8 +1,12 @@
-import {type LoaderFunctionArgs, unstable_defineLoader as defineLoader, unstable_data as data} from '@remix-run/node';
+import {
+	type LoaderFunctionArgs,
+	unstable_defineLoader as defineLoader,
+} from '@remix-run/node';
 import {
 	Link, Outlet, useLocation,
 	type MetaArgs_SingleFetch,
 	useLoaderData,
+	replace,
 } from '@remix-run/react';
 import {NavigateBar} from '~/components/navigation-bar.js';
 import {type TypeUserSession} from '~/types/user-session.type';
@@ -12,31 +16,34 @@ export const meta = ({data}: MetaArgs_SingleFetch<typeof loader>) => [
 	{title: 'Yoga em Movimento - Área Administrativa'},
 	{name: 'description', content: 'Área para executar as funções administrativas e pedagógicas do Yoga em Movimento.'},
 	{name: 'robots', content: 'noindex, nofollow'},
-	...data!.meta,
+	...(data! as LoaderData).meta,
 ];
+
+type LoaderData = {
+	meta: Array<{tagName: string; rel: string; href: string}>;
+	userData: TypeUserSession;
+};
 
 export const loader = defineLoader(async ({request}: LoaderFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 	const userData = userSession.data as TypeUserSession;
 
 	if (!userData.roles?.includes('admin')) {
-		return data({
-			meta: [{tagName: 'link', rel: 'canonical', href: new URL('/admin', request.url).toString()}],
-			userData,
-		}, {status: 303, headers: {Location: '/'}});
+		console.log('User is not an admin');
+		return replace('/');
 	}
 
-	return data({
+	return {
 		meta: [{tagName: 'link', rel: 'canonical', href: new URL('/admin', request.url).toString()}],
 		userData,
-	});
+	};
 });
 
 export default function Admin() {
-	const {userData} = useLoaderData<typeof loader>();
+	const {userData} = useLoaderData<typeof loader>() as {meta: Array<{tagName: string; rel: string; href: string}>; userData: TypeUserSession};
 	const {pathname} = useLocation();
 
-	return userData?.roles.includes('admin') && (
+	return userData?.roles?.includes('admin') && (
 		<>
 			<NavigateBar userData={userData}/>
 

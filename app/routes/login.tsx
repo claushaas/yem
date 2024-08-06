@@ -11,6 +11,7 @@ import {
 	Form,
 	Link,
 	type MetaArgs_SingleFetch,
+	redirect,
 	useLoaderData,
 	useNavigation,
 } from '@remix-run/react';
@@ -26,26 +27,24 @@ import {NavigateBar} from '~/components/navigation-bar.js';
 export const meta = ({data}: MetaArgs_SingleFetch<typeof loader>) => [
 	{title: 'Yoga em Movimento - Entrar'},
 	{name: 'description', content: 'Faça o login para acessar a plataforma do Yoga em Movimento.'},
-	...data!.meta,
+	...(data! as unknown as LoaderData).meta,
 ];
+
+type LoaderData = {
+	error: string | undefined;
+	meta: Array<{
+		tagName: string;
+		rel: string;
+		href: string;
+	}>;
+	userData: TypeUserSession;
+};
 
 export const loader = defineLoader(async ({request}: LoaderFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 
 	if (userSession.has('id')) {
-		return data(
-			{
-				error: undefined,
-				meta: [{tagName: 'link', rel: 'canonical', href: new URL('/login', request.url).toString()}],
-				userData: userSession.data as TypeUserSession,
-			},
-			{
-				status: 303,
-				headers: {
-					Location: '/courses',
-				},
-			},
-		);
+		return redirect('/courses');
 	}
 
 	return data(
@@ -83,16 +82,7 @@ export const action = defineAction(async ({request}: ActionFunctionArgs) => {
 		userSession.set('lastName', lastName);
 		userSession.set('phoneNumber', phoneNumber);
 
-		return data(
-			{},
-			{
-				status: 303,
-				headers: {
-					'Set-Cookie': await commitUserSession(userSession),
-					Location: '/courses',
-				},
-			},
-		);
+		return redirect('/courses');
 	} catch (error) {
 		logger.logError(`Error logging in: ${(error as Error).message}`);
 
@@ -109,7 +99,7 @@ export const action = defineAction(async ({request}: ActionFunctionArgs) => {
 });
 
 export default function Login() {
-	const {error, userData} = useLoaderData<typeof loader>();
+	const {error, userData} = useLoaderData<typeof loader>() as unknown as LoaderData;
 
 	const navigation = useNavigation();
 	const isSubmitting = navigation.formAction === '/login';

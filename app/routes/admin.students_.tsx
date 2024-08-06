@@ -9,6 +9,7 @@ import {
 } from '@remix-run/node';
 import {
 	type MetaArgs_SingleFetch,
+	redirect,
 	Form as RemixForm, useLoaderData, useNavigation,
 } from '@remix-run/react';
 import {SuccessOrErrorMessage} from '~/components/admin-success-or-error-message.js';
@@ -48,12 +49,7 @@ export const action = defineAction(async ({request}: ActionFunctionArgs) => {
 		const {data: existUser} = await new UserService().verifyUserExists(username);
 
 		if (existUser) {
-			return data({}, {
-				status: 303, headers: {
-					Location: `/admin/students/${username}`,
-					'Set-Cookie': await commitUserSession(userSession),
-				},
-			});
+			return redirect(`/admin/students/${username}`);
 		}
 
 		userSession.flash('error', `Usuário ${username} não encontrado`);

@@ -4,12 +4,12 @@ import {
 	type LoaderFunctionArgs,
 	unstable_defineAction as defineAction,
 	unstable_defineLoader as defineLoader,
-	unstable_data as data,
 } from '@remix-run/node';
 import {
 	Form,
 	Link,
 	type MetaArgs_SingleFetch,
+	redirect,
 	useLoaderData,
 	useNavigation,
 } from '@remix-run/react';
@@ -47,15 +47,7 @@ export const action = defineAction(async ({request}: ActionFunctionArgs) => {
 		logger.logError(`Error generating new password: ${(error as Error).message}`);
 	}
 
-	return data(
-		{},
-		{
-			status: 303,
-			headers: {
-				Location: '/login',
-			},
-		},
-	);
+	return redirect('/login');
 });
 
 export default function NewPassword() {

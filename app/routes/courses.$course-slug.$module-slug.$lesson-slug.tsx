@@ -7,7 +7,7 @@ import {
 	unstable_data as data,
 } from '@remix-run/node';
 import {
-	Await, Form, useLoaderData, type MetaFunction,
+	Await, Form, redirect, useLoaderData, type MetaFunction,
 } from '@remix-run/react';
 import {QuillDeltaToHtmlConverter} from 'quill-delta-to-html';
 import {type OpIterator} from 'quill/core';
@@ -108,7 +108,7 @@ export const action = defineAction(async ({request, params}: ActionFunctionArgs)
 		}
 	}
 
-	return data({}, {status: 200, headers: {Location: `/courses/${courseSlug}/${moduleSlug}/${lessonSlug}`}});
+	return redirect(`/courses/${courseSlug}/${moduleSlug}/${lessonSlug}`);
 });
 
 export default function Lesson() {

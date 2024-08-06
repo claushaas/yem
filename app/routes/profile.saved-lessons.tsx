@@ -1,4 +1,4 @@
-import {type LoaderFunctionArgs, unstable_defineLoader as defineLoader, unstable_data as data} from '@remix-run/node';
+import {type LoaderFunctionArgs, unstable_defineLoader as defineLoader} from '@remix-run/node';
 import {useLoaderData, type MetaArgs_SingleFetch} from '@remix-run/react';
 import {LessonEntityCard} from '~/components/entities-cards';
 import {LessonActivityService} from '~/services/lesson-activity.service.server';
@@ -18,16 +18,11 @@ export const loader = defineLoader(async ({request}: LoaderFunctionArgs) => {
 	const userData = userSession.data as TypeUserSession;
 
 	if (!userData.id) {
-		return data({
+		return {
 			meta: [{tagName: 'link', rel: 'canonical', href: new URL('/profile/completed-lessons', request.url).toString()}],
 			userData,
 			savedLessonsWithActivity: [],
-		}, {
-			status: 303,
-			headers: {
-				Location: '/',
-			},
-		});
+		};
 	}
 
 	const savedLessons = await new LessonService().getSavedLessonsByUser(userData);
@@ -37,11 +32,11 @@ export const loader = defineLoader(async ({request}: LoaderFunctionArgs) => {
 		activity: new LessonActivityService().getLessonActivityForUser(lesson.lessonSlug, userData.id),
 	}));
 
-	return data({
+	return {
 		meta: [{tagName: 'link', rel: 'canonical', href: new URL('/profile/completed-lessons', request.url).toString()}],
 		userData,
 		savedLessonsWithActivity,
-	});
+	};
 });
 
 export default function CompletedLessons() {

@@ -1,15 +1,14 @@
-/* eslint-disable @typescript-eslint/naming-convention */
 import * as RadixForm from '@radix-ui/react-form';
 import {
 	type ActionFunctionArgs,
 	type LoaderFunctionArgs,
 	unstable_defineAction as defineAction,
 	unstable_defineLoader as defineLoader,
-	unstable_data as data,
 } from '@remix-run/node';
 import {
 	Form,
 	type MetaArgs_SingleFetch,
+	redirect,
 	useLoaderData,
 	useNavigation,
 } from '@remix-run/react';
@@ -37,19 +36,9 @@ export const loader = defineLoader(async ({request}: LoaderFunctionArgs) => {
 export const action = defineAction(async ({request}: ActionFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 
-	return data(
-		{
-			meta: [{tagName: 'link', rel: 'canonical', href: new URL('/logout', request.url).toString()}],
-			userData: userSession.data as TypeUserSession,
-		},
-		{
-			status: 303,
-			headers: {
-				Location: '/',
-				'Set-Cookie': await destroyUserSession(userSession),
-			},
-		},
-	);
+	await destroyUserSession(userSession);
+
+	return redirect('/');
 });
 
 export default function Logout() {

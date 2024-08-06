@@ -5,7 +5,6 @@ import {
 	type LoaderFunctionArgs,
 	unstable_defineAction as defineAction,
 	unstable_defineLoader as defineLoader,
-	unstable_data as data,
 } from '@remix-run/node';
 import {
 	Form,
@@ -35,30 +34,16 @@ export const meta = ({data}: MetaArgs_SingleFetch<typeof loader>) => [
 export const loader = defineLoader(async ({request}: LoaderFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 
-	return data(
-		{
-			error: userSession.get('error') as string | undefined,
-			success: userSession.get('success') as string | undefined,
-			meta: [{tagName: 'link', rel: 'canonical', href: new URL('/register', request.url).toString()}],
-			userData: userSession.data as TypeUserSession,
-		},
-		{
-			status: userSession.get('id') ? 303 : 200,
-			headers: userSession.get('id') ? {
-				Location: '/courses',
-			} : undefined,
-		},
-	);
+	return {
+		error: userSession.get('error') as string | undefined,
+		success: userSession.get('success') as string | undefined,
+		meta: [{tagName: 'link', rel: 'canonical', href: new URL('/register', request.url).toString()}],
+		userData: userSession.data as TypeUserSession,
+	};
 });
 
 export const action = defineAction(async ({request}: ActionFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
-
-	if (userSession.has('id')) {
-		userSession.flash('error', 'Usuário já logado, faça o login para continuar');
-
-		return data({}, {status: 303, headers: {Location: '/courses'}});
-	}
 
 	try {
 		const formData = await request.formData();
@@ -82,7 +67,9 @@ export const action = defineAction(async ({request}: ActionFunctionArgs) => {
 		userSession.flash('error', (error as CustomError).message);
 	}
 
-	return data({}, {status: 303, headers: {'Set-Cookie': await commitUserSession(userSession)}}); // eslint-disable-line @typescript-eslint/naming-convention
+	await commitUserSession(userSession);
+
+	return null;
 });
 
 export default function Register() {
