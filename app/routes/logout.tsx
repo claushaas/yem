@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import * as RadixForm from '@radix-ui/react-form';
 import {
 	type ActionFunctionArgs,
 	type LoaderFunctionArgs,
 	unstable_defineAction as defineAction,
 	unstable_defineLoader as defineLoader,
+	unstable_data as data,
 } from '@remix-run/node';
 import {
 	Form,
@@ -21,11 +23,22 @@ import {NavigateBar} from '~/components/navigation-bar.js';
 export const meta = ({data}: MetaArgs_SingleFetch<typeof loader>) => [
 	{title: 'Yoga em Movimento - Sair'},
 	{name: 'description', content: 'Faça o logout da plataforma do Yoga em Movimento.'},
-	...data!.meta,
+	...(data! as {
+		meta: Array<{
+			tagName: string;
+			rel: string;
+			href: string;
+		}>;
+		userData: TypeUserSession;
+	}).meta,
 ];
 
 export const loader = defineLoader(async ({request}: LoaderFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
+
+	if (!userSession.data.id) {
+		return redirect('/');
+	}
 
 	return {
 		meta: [{tagName: 'link', rel: 'canonical', href: new URL('/logout', request.url).toString()}],
@@ -36,15 +49,20 @@ export const loader = defineLoader(async ({request}: LoaderFunctionArgs) => {
 export const action = defineAction(async ({request}: ActionFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 
-	await destroyUserSession(userSession);
-
-	return redirect('/');
+	return data({}, {headers: {'Set-Cookie': await destroyUserSession(userSession)}});
 });
 
 export default function Logout() {
 	const navigation = useNavigation();
 	const isSubmitting = navigation.formAction === '/logout';
-	const {userData} = useLoaderData<typeof loader>();
+	const {userData} = useLoaderData<typeof loader>() as {
+		meta: Array<{
+			tagName: string;
+			rel: string;
+			href: string;
+		}>;
+		userData: TypeUserSession;
+	};
 
 	return (
 		<>

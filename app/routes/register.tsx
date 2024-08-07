@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import {useState} from 'react';
 import * as RadixForm from '@radix-ui/react-form';
 import {
@@ -5,11 +6,13 @@ import {
 	type LoaderFunctionArgs,
 	unstable_defineAction as defineAction,
 	unstable_defineLoader as defineLoader,
+	unstable_data as data,
 } from '@remix-run/node';
 import {
 	Form,
 	Link,
 	type MetaArgs_SingleFetch,
+	redirect,
 	useLoaderData,
 	useNavigation,
 } from '@remix-run/react';
@@ -28,11 +31,24 @@ import {NavigateBar} from '~/components/navigation-bar.js';
 export const meta = ({data}: MetaArgs_SingleFetch<typeof loader>) => [
 	{title: 'Yoga em Movimento - Cadastro'},
 	{name: 'description', content: 'Crie sua conta no Yoga em Movimento e tenha acesso a conteúdos exclusivos.'},
-	...data!.meta,
+	...(data! as {
+		error: string | undefined;
+		success: string | undefined;
+		meta: Array<{
+			tagName: string;
+			rel: string;
+			href: string;
+		}>;
+		userData: TypeUserSession;
+	}).meta,
 ];
 
 export const loader = defineLoader(async ({request}: LoaderFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
+
+	if (userSession.data.id) {
+		return redirect('/courses');
+	}
 
 	return {
 		error: userSession.get('error') as string | undefined,
@@ -67,13 +83,20 @@ export const action = defineAction(async ({request}: ActionFunctionArgs) => {
 		userSession.flash('error', (error as CustomError).message);
 	}
 
-	await commitUserSession(userSession);
-
-	return null;
+	return data({}, {headers: {'Set-Cookie': await commitUserSession(userSession)}});
 });
 
 export default function Register() {
-	const {success, error, userData} = useLoaderData<typeof loader>();
+	const {success, error, userData} = useLoaderData<typeof loader>() as {
+		error: string | undefined;
+		success: string | undefined;
+		meta: Array<{
+			tagName: string;
+			rel: string;
+			href: string;
+		}>;
+		userData: TypeUserSession;
+	};
 
 	const navigation = useNavigation();
 	const isSubmitting = navigation.formAction === '/register';
