@@ -81,8 +81,6 @@ export const action = defineAction(async ({request}: ActionFunctionArgs) => {
 		userSession.set('firstName', firstName);
 		userSession.set('lastName', lastName);
 		userSession.set('phoneNumber', phoneNumber);
-
-		return redirect('/courses');
 	} catch (error) {
 		logger.logError(`Error logging in: ${(error as Error).message}`);
 
