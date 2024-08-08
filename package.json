@@ -58,7 +58,7 @@
     "axios": "^1.7.3",
     "clipboard-copy": "^4.0.1",
     "express": "^4.19.2",
-    "framer-motion": "^11.3.22",
+    "framer-motion": "^11.3.24",
     "fuse.js": "^7.0.0",
     "helmet": "^7.1.0",
     "hls.js": "^1.5.14",
@@ -76,7 +76,7 @@
     "react-select": "^5.8.0",
     "remix-create-express-app": "^0.4.5",
     "remix-utils": "^7.6.0",
-    "winston": "^3.13.1"
+    "winston": "^3.14.0"
   },
   "devDependencies": {
     "@radix-ui/colors": "^3.0.0",
@@ -95,14 +95,14 @@
     "postcss": "^8.4.41",
     "remix-development-tools": "^4.2.2",
     "remix-express-dev-server": "^0.4.4",
-    "tailwindcss": "^3.4.7",
+    "tailwindcss": "^3.4.9",
     "tailwindcss-radix": "^3.0.3",
     "tailwindcss-radix-colors": "^1.3.1",
-    "tsx": "^4.16.5",
+    "tsx": "^4.17.0",
     "typescript": "^5.5.4",
-    "vite": "^5.3.5",
+    "vite": "^5.4.0",
     "vite-plugin-svgr": "^4.2.0",
-    "vite-tsconfig-paths": "^4.3.2",
+    "vite-tsconfig-paths": "^5.0.0",
     "xo": "^0.59.3"
   },
   "prisma": {
