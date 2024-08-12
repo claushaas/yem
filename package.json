@@ -32,7 +32,7 @@
     "db:reset": "npx prisma migrate reset"
   },
   "dependencies": {
-    "@aws-sdk/client-cognito-identity-provider": "^3.625.0",
+    "@aws-sdk/client-cognito-identity-provider": "^3.628.0",
     "@aws-sdk/client-secrets-manager": "^3.624.0",
     "@aws-sdk/client-sesv2": "^3.624.0",
     "@aws-sdk/credential-providers": "^3.624.0",
@@ -76,7 +76,7 @@
     "react-select": "^5.8.0",
     "remix-create-express-app": "^0.4.5",
     "remix-utils": "^7.6.0",
-    "winston": "^3.14.0"
+    "winston": "^3.14.1"
   },
   "devDependencies": {
     "@radix-ui/colors": "^3.0.0",
@@ -102,7 +102,7 @@
     "typescript": "^5.5.4",
     "vite": "^5.4.0",
     "vite-plugin-svgr": "^4.2.0",
-    "vite-tsconfig-paths": "^5.0.0",
+    "vite-tsconfig-paths": "^5.0.1",
     "xo": "^0.59.3"
   },
   "prisma": {
