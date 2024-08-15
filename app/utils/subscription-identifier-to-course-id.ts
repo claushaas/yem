@@ -22,6 +22,7 @@ export const subscriptionIdentifierToCourseSlug = {
 	beginner: 'yoga-para-iniciantes',
 	Mensal: 'escola-online',
 	Anual: 'cursos-de-aprofundamento',
+	oldFormation: 'formacao-de-instrutores',
 };
 
 export const convertSubscriptionIdentifierToCourseSlug = (subscriptionIdentifier: TPlanIdentifier): string => subscriptionIdentifierToCourseSlug[subscriptionIdentifier];
