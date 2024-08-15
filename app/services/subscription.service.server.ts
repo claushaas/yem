@@ -67,6 +67,7 @@ export default class SubscriptionService {
 		const hasHotmartFormationSubscriptions = actualSubscriptions?.some(subscription =>
 			(subscription.provider === 'hotmart' && subscription.courseSlug === 'formacao-em-yoga'));
 		const hasBeginnerSubscription = actualSubscriptions?.some(subscription => subscription.courseSlug === 'yoga-para-iniciantes');
+		const hasOldFormationSubscriptions = actualSubscriptions?.some(subscription => subscription.courseSlug === 'formacao-de-instrutores');
 
 		if (!hasIuguSubscriptions || !hasHotmartSchoolSubscriptions || !hasHotmartFormationSubscriptions || !hasBeginnerSubscription) {
 			await Promise.all([
@@ -74,6 +75,18 @@ export default class SubscriptionService {
 				!hasHotmartSchoolSubscriptions && this._createUserHotmartSchoolSubscriptions(user),
 				!hasHotmartFormationSubscriptions && this._createUserHotmartFormationSubscriptions(user),
 				!hasBeginnerSubscription && this._createOrUpdateBeginnerSubscription(user),
+				!hasOldFormationSubscriptions && user.roles?.some(role =>
+					role === 'formacao2017'
+					|| role === 'formacao2018'
+					|| role === 'formacao20182'
+					|| role === 'formacaoJan2019'
+					|| role === 'formacaoMai2019'
+					|| role === 'formacaoSet2019'
+					|| role === 'formacaoJan2020'
+					|| role === 'formacaoMai2020'
+					|| role === 'formacaoSet2020'
+					|| role === 'formacaoJan2021',
+				) && this._createOrUpdateOldFormationSubscription(user),
 			]);
 		}
 
@@ -195,6 +208,16 @@ export default class SubscriptionService {
 			courseSlug: convertSubscriptionIdentifierToCourseSlug('beginner'),
 			provider: 'manual',
 			providerSubscriptionId: `begginner-${user.id}`,
+			expiresAt: new Date(2_556_113_460_000),
+		});
+	}
+
+	private async _createOrUpdateOldFormationSubscription(user: TUser): Promise<void> {
+		await this.createOrUpdate({
+			userId: user.id,
+			courseSlug: convertSubscriptionIdentifierToCourseSlug('oldFormation'),
+			provider: 'manual',
+			providerSubscriptionId: `old-formation-${user.id}`,
 			expiresAt: new Date(2_556_113_460_000),
 		});
 	}
