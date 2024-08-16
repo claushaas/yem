@@ -398,11 +398,10 @@ export class HooksService {
 							this._mailService.sendEmail(schoolWelcomeEmailTemplate(userData.firstName, userData.email)),
 							this._botMakerService.sendWhatsappTemplateMessate(
 								userData.phoneNumber,
-								'boas_vindas_escola',
+								'escola_boas_vindas_2',
 								{
 									nome: userData.firstName,
 									linkDaAreaDosAlunos: 'https://escola.yogaemmovimento.com',
-									linkDaAulaAoVivo: 'https://escola.yogaemmovimento.com/aluno/DfLC8966upYGytkrW',
 									linkDoGrupoDeRecados: 'https://t.me/+_-lrXmqVqD1mMDk5',
 									linkDaFichaMedica: 'https://img.amo.yoga/ficha-medica.pdf',
 								},
