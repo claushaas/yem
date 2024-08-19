@@ -2,6 +2,7 @@ import Joi from 'joi';
 import {type TLessonType, type TLesson} from '../types/lesson.type.js';
 import {CustomError} from '../utils/custom-error.js';
 import {type TTags} from '../types/tag.type.js';
+import {convertNameToSlug} from '~/utils/convert-name-to-slug.js';
 
 const lessonSchema = Joi.object({
 	oldId: Joi.string().allow(''),
@@ -48,7 +49,7 @@ export class Lesson implements TLesson {
 
 		this._oldId = lesson.oldId;
 		this._name = lesson.name;
-		this._slug = this._name.toLowerCase().normalize('NFD').replaceAll(/[\u0300-\u036F]/g, '').replaceAll(/[^a-zA-Z\d\s]/g, '').replaceAll(' ', '-');
+		this._slug = convertNameToSlug(this._name);
 		this._type = lesson.type;
 		this._description = lesson.description;
 		this._content = lesson.content;

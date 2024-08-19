@@ -2,6 +2,7 @@ import Joi from 'joi';
 import {type TModule} from '../types/module.type.js';
 import {CustomError} from '../utils/custom-error.js';
 import {type TTags} from '../types/tag.type.js';
+import {convertNameToSlug} from '~/utils/convert-name-to-slug.js';
 
 const moduleSchema = Joi.object({
 	oldId: Joi.string().allow(''),
@@ -47,7 +48,7 @@ export class Module implements TModule {
 
 		this._oldId = module.oldId;
 		this._name = module.name;
-		this._slug = this._name.toLowerCase().normalize('NFD').replaceAll(/[\u0300-\u036F]/g, '').replaceAll(' ', '-');
+		this._slug = convertNameToSlug(this._name);
 		this._description = module.description;
 		this._content = module.content;
 		this._marketingContent = module.marketingContent;

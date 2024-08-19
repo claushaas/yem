@@ -1,6 +1,7 @@
 import Joi from 'joi';
 import {type TCourse} from '../types/course.type.js';
 import {CustomError} from '../utils/custom-error.js';
+import {convertNameToSlug} from '~/utils/convert-name-to-slug.js';
 
 const courseSchema = Joi.object({
 	oldId: Joi.string().allow(''),
@@ -44,7 +45,7 @@ export class Course implements TCourse {
 
 		this._oldId = course.oldId;
 		this._name = course.name;
-		this._slug = this._name.toLowerCase().normalize('NFD').replaceAll(/[\u0300-\u036F]/g, '').replaceAll(' ', '-');
+		this._slug = convertNameToSlug(this._name);
 		this._description = course.description;
 		this._order = course.order;
 		this._content = course.content;
