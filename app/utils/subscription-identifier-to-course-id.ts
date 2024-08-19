@@ -14,7 +14,7 @@ export const subscriptionIdentifierToCourseSlug = {
 	escola_mensal_promocional: 'escola-online',
 	escola_anual_promocional: 'cursos-de-aprofundamento',
 	'135340': 'escola-online',
-	'1392822': 'formacao-em-yoga',
+	'1392822': 'formacao-em-yoga-introducao',
 	'Mensal 77': 'escola-online',
 	'Mensal boleto': 'escola-online',
 	'Anual 497': 'cursos-de-aprofundamento',
