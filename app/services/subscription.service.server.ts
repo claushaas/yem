@@ -65,7 +65,7 @@ export default class SubscriptionService {
 		const hasHotmartSchoolSubscriptions = actualSubscriptions?.some(subscription => (subscription.provider === 'hotmart'
 				&& (subscription.courseSlug === 'escola-online' || subscription.courseSlug === 'escola-anual')));
 		const hasHotmartFormationSubscriptions = actualSubscriptions?.some(subscription =>
-			(subscription.provider === 'hotmart' && subscription.courseSlug === 'formacao-em-yoga'));
+			(subscription.provider === 'hotmart' && subscription.courseSlug === 'formacao-em-yoga-introducao'));
 		const hasBeginnerSubscription = actualSubscriptions?.some(subscription => subscription.courseSlug === 'yoga-para-iniciantes');
 		const hasOldFormationSubscriptions = actualSubscriptions?.some(subscription => subscription.courseSlug === 'formacao-de-instrutores');
 
