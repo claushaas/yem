@@ -6,7 +6,7 @@ import {convertNameToSlug} from '~/utils/convert-name-to-slug.js';
 const courseSchema = Joi.object({
 	oldId: Joi.string().allow(''),
 	name: Joi.string().required().min(3).max(50),
-	description: Joi.string().min(10).max(154).required(),
+	description: Joi.string().min(3).max(154).required(),
 	order: Joi.number().integer().min(0),
 	content: Joi.string().allow(''),
 	marketingContent: Joi.string().allow(''),
