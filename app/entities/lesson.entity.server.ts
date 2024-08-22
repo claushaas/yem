@@ -8,7 +8,7 @@ const lessonSchema = Joi.object({
 	oldId: Joi.string().allow(''),
 	name: Joi.string().required().min(3).max(100),
 	type: Joi.string().required().valid('video', 'text', 'courseWare'),
-	description: Joi.string().min(10).max(154).required(),
+	description: Joi.string().min(3).max(154).required(),
 	content: Joi.string().allow(''),
 	marketingContent: Joi.string().allow(''),
 	videoSourceUrl: Joi.string().allow(''),
