@@ -101,23 +101,33 @@ export class CourseService {
 		};
 	}
 
-	public getAllFromCache(userRoles: TUserRoles = []): TServiceReturn<TCourseDataForCache[]> {
-		const isAdmin = userRoles.includes('admin');
-
+	public getAllFromCache(user: TUser): TServiceReturn<TCourseDataForCache[]> {
 		const allCoursesKeys = CourseService.cache.keys().filter(key => key.startsWith('course:'));
 		logger.logDebug(`All courses keys: ${JSON.stringify(allCoursesKeys)}`);
 
 		const allCourses = allCoursesKeys.map(key => {
 			const course = JSON.parse(CourseService.cache.get(key) ?? '{}') as TCourseDataForCache;
 
+			const hasActiveSubscription = user.roles?.includes('admin') ?? course.delegateAuthTo.some(courseSlug => {
+				const subscription = CourseService.cache.get(`${courseSlug}:${user.id}`);
+
+				if (!subscription) {
+					return false;
+				}
+
+				const {expiresAt} = JSON.parse(subscription) as TSubscription;
+				return expiresAt >= new Date();
+			});
+
 			return {
 				...course,
-				content: isAdmin ? course.content : course.marketingContent,
-				videoSourceUrl: isAdmin ? course.videoSourceUrl : course.marketingVideoUrl,
+				content: hasActiveSubscription ? course.content : course.marketingContent,
+				videoSourceUrl: hasActiveSubscription ? course.videoSourceUrl : course.marketingVideoUrl,
+				hasActiveSubscription,
 			};
 		});
 
-		const filteredCourses = allCourses.filter(course => isAdmin || course.isPublished);
+		const filteredCourses = allCourses.filter(course => user.roles?.includes('admin') ?? (course.isPublished && course.hasActiveSubscription) ?? course.isSelling);
 
 		filteredCourses.sort((a, b) => {
 			if (!a.order && !b.order) {

@@ -25,8 +25,8 @@ export const loader = defineLoader(async ({request}: LoaderFunctionArgs) => {
 	try {
 		const lessonActivityService = new LessonActivityService();
 
-		const userRoles = userSession.get('roles') as TUserRoles;
-		const {data: courses} = new CourseService().getAllFromCache(userRoles);
+		const userData = userSession.data as TypeUserSession;
+		const {data: courses} = new CourseService().getAllFromCache(userData);
 		const coursesActivity = typeof userSession.get('id') === 'string' ? courses.map(course => ({
 			[course.slug]: lessonActivityService.getCourseProgressForUser(course.slug, userSession.get('id') as string),
 		})) : undefined;
@@ -35,7 +35,7 @@ export const loader = defineLoader(async ({request}: LoaderFunctionArgs) => {
 			courses,
 			coursesActivity,
 			meta,
-			userData: userSession.data as TypeUserSession,
+			userData,
 		};
 	} catch (error) {
 		logger.logError(`Error loading courses: ${(error as Error).message}`);
