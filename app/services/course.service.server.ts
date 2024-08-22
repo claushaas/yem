@@ -108,8 +108,10 @@ export class CourseService {
 		const allCourses = allCoursesKeys.map(key => {
 			const course = JSON.parse(CourseService.cache.get(key) ?? '{}') as TCourseDataForCache;
 
-			const hasActiveSubscription = user.roles?.includes('admin') ?? course.delegateAuthTo.some(courseSlug => {
+			const hasActiveSubscription = user.roles?.includes('admin') || course.delegateAuthTo.some(courseSlug => { // eslint-disable-line @typescript-eslint/prefer-nullish-coalescing
 				const subscription = CourseService.cache.get(`${courseSlug}:${user.id}`);
+
+				console.log('assinatura', subscription);
 
 				if (!subscription) {
 					return false;
@@ -127,7 +129,7 @@ export class CourseService {
 			};
 		});
 
-		const filteredCourses = allCourses.filter(course => user.roles?.includes('admin') ?? (course.isPublished && course.hasActiveSubscription) ?? course.isSelling);
+		const filteredCourses = allCourses.filter(course => user.roles?.includes('admin') || (course.isPublished && course.hasActiveSubscription) || course.isSelling); // eslint-disable-line @typescript-eslint/prefer-nullish-coalescing
 
 		filteredCourses.sort((a, b) => {
 			if (!a.order && !b.order) {
