@@ -3,7 +3,7 @@ import {
 	CheckCircleIcon,
 } from '@heroicons/react/24/outline';
 import * as Dialog from '@radix-ui/react-dialog';
-import {Link} from '@remix-run/react';
+import {Link, useLocation} from '@remix-run/react';
 import {Button, ButtonPreset, ButtonType} from './button.js';
 
 type SchoolPlansDialogProperties = {
@@ -12,6 +12,10 @@ type SchoolPlansDialogProperties = {
 };
 
 export default function SchoolPlansDialog({isOpen, onOpenChange}: SchoolPlansDialogProperties) {
+	const {search} = useLocation();
+	const searchParameters = search ? search.split('?')[1].split('&') : [];
+	const marketingSearchParameters = searchParameters.filter(searchParameter => searchParameter.includes('utm_'));
+
 	return (
 		<Dialog.Root open={isOpen} onOpenChange={onOpenChange}>
 			<Dialog.Portal>
@@ -65,7 +69,7 @@ export default function SchoolPlansDialog({isOpen, onOpenChange}: SchoolPlansDia
 
 								<div className='flex justify-center flex-col items-center gap-3'>
 									<p>R$ 77,00/mês</p>
-									<Link to='https://pay.hotmart.com/Y5414825L?off=z0k6km14&hideBillet=1&hidePix=1&showOnlyTrial=1' target='_blank'>
+									<Link to={`https://pay.hotmart.com/Y5414825L?off=z0k6km14&hideBillet=1&hidePix=1&showOnlyTrial=1&${marketingSearchParameters.join('&')}`} target='_blank'>
 										<Button
 											type={ButtonType.Button}
 											preset={ButtonPreset.Secondary}
@@ -140,7 +144,7 @@ export default function SchoolPlansDialog({isOpen, onOpenChange}: SchoolPlansDia
 										<p className='text-xs'>pago anualmente</p>
 										<p>ou R$ 497,00 por ano</p>
 									</div>
-									<Link to='https://pay.hotmart.com/Y5414825L?off=0dc69b6z&hideBillet=1&hidePix=1&showOnlyTrial=1' target='_blank'>
+									<Link to={`https://pay.hotmart.com/Y5414825L?off=0dc69b6z&hideBillet=1&hidePix=1&showOnlyTrial=1&${marketingSearchParameters.join('&')}`} target='_blank'>
 										<Button
 											type={ButtonType.Button}
 											preset={ButtonPreset.Primary}
