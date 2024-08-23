@@ -13,7 +13,6 @@ import * as Accordion from '@radix-ui/react-accordion';
 import {useState} from 'react';
 import {Button, ButtonPreset, ButtonType} from '~/components/button.js';
 import {Testimonies} from '~/layouts/testimonies.js';
-import {History} from '~/layouts/yem-history.js';
 import {buildImgSource} from '~/utils/build-cloudflare-image-source.js';
 import {PlaylistCard} from '~/components/playlist-card.js';
 import {AccordionItem} from '~/components/accordion.js';
