@@ -215,6 +215,17 @@ export class LessonService {
 				tags: {
 					none: {},
 				},
+				modules: {
+					some: {
+						module: {
+							courses: {
+								some: {
+									courseSlug: 'escola-online',
+								},
+							},
+						},
+					},
+				},
 			},
 			orderBy: {
 				name: 'asc',
