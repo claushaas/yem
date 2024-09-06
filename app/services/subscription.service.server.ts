@@ -10,6 +10,7 @@ import {IuguService} from './iugu.service.server.js';
 import {CustomError} from '~/utils/custom-error.js';
 import {convertSubscriptionIdentifierToCourseSlug} from '~/utils/subscription-identifier-to-course-id.js';
 import {memoryCache} from '~/cache/memory-cache.js';
+import {userHasOldFormationRoles} from '~/utils/test-user-roles-for-old-formation.js';
 
 export default class SubscriptionService {
 	private readonly _model: PrismaClient;
@@ -75,18 +76,7 @@ export default class SubscriptionService {
 				!hasHotmartSchoolSubscriptions && this._createUserHotmartSchoolSubscriptions(user),
 				!hasHotmartFormationSubscriptions && this._createUserHotmartFormationSubscriptions(user),
 				!hasBeginnerSubscription && this._createOrUpdateBeginnerSubscription(user),
-				!hasOldFormationSubscriptions && user.roles?.some(role =>
-					role === 'formacao2017'
-					|| role === 'formacao2018'
-					|| role === 'formacao20182'
-					|| role === 'formacaoJan2019'
-					|| role === 'formacaoMai2019'
-					|| role === 'formacaoSet2019'
-					|| role === 'formacaoJan2020'
-					|| role === 'formacaoMai2020'
-					|| role === 'formacaoSet2020'
-					|| role === 'formacaoJan2021',
-				) && this._createOrUpdateOldFormationSubscription(user),
+				!hasOldFormationSubscriptions && this._createOrUpdateOldFormationSubscription(user),
 			]);
 		}
 
@@ -213,18 +203,7 @@ export default class SubscriptionService {
 	}
 
 	private async _createOrUpdateOldFormationSubscription(user: TUser): Promise<void> {
-		if (user.roles?.some(role =>
-			role === 'formacao2017'
-			|| role === 'formacao2018'
-			|| role === 'formacao20182'
-			|| role === 'formacaoJan2019'
-			|| role === 'formacaoMai2019'
-			|| role === 'formacaoSet2019'
-			|| role === 'formacaoJan2020'
-			|| role === 'formacaoMai2020'
-			|| role === 'formacaoSet2020'
-			|| role === 'formacaoJan2021',
-		)) {
+		if (userHasOldFormationRoles(user)) {
 			await this.createOrUpdate({
 				userId: user.id,
 				courseSlug: convertSubscriptionIdentifierToCourseSlug('oldFormation'),
