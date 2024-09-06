@@ -69,7 +69,7 @@ export default class SubscriptionService {
 		const hasBeginnerSubscription = actualSubscriptions?.some(subscription => subscription.courseSlug === 'yoga-para-iniciantes');
 		const hasOldFormationSubscriptions = actualSubscriptions?.some(subscription => subscription.courseSlug === 'formacao-de-instrutores');
 
-		if (!hasIuguSubscriptions || !hasHotmartSchoolSubscriptions || !hasHotmartFormationSubscriptions || !hasBeginnerSubscription) {
+		if (!hasIuguSubscriptions || !hasHotmartSchoolSubscriptions || !hasHotmartFormationSubscriptions || !hasBeginnerSubscription || !hasOldFormationSubscriptions) {
 			await Promise.all([
 				!hasIuguSubscriptions && this._createUserIuguSubscriptions(user),
 				!hasHotmartSchoolSubscriptions && this._createUserHotmartSchoolSubscriptions(user),
