@@ -14,7 +14,29 @@ const tagsDataToBeCached = (allDataToBeCached: TAllDataToBeCached[]) => {
 		}
 	}
 
-	return [...tags];
+	const tagsArray = [...tags];
+
+	const sortedTags = tagsArray.sort((a, b) => {
+		if (a.tagOption < b.tagOption) {
+			return -1;
+		}
+
+		if (a.tagOption > b.tagOption) {
+			return 1;
+		}
+
+		if (a.tagValue < b.tagValue) {
+			return -1;
+		}
+
+		if (a.tagValue > b.tagValue) {
+			return 1;
+		}
+
+		return 0;
+	});
+
+	return sortedTags;
 };
 
 export const populateTagsToCache = (allDataToBeCached: TAllDataToBeCached[]) => {
