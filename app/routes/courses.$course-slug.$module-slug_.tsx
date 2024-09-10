@@ -47,7 +47,7 @@ export const loader = defineLoader(async ({request, params}: LoaderFunctionArgs)
 
 	const url = new URL(request.url);
 
-	const appliedTags = [...url.searchParams.entries()].filter(([key]) => key === 'Duração' || key === 'Dificuldade' || key === 'Técnicas' || key === 'Ênfase');
+	const appliedTags = [...url.searchParams.entries()].filter(([key]) => key === 'Duração' || key === 'Dificuldade' || key === 'Técnicas' || key === 'Ênfase' || key === 'Professor');
 
 	const pageString = url.searchParams.get('page');
 	const page = (pageString && !Number.isNaN(pageString)) ? Number(pageString) : 1;
