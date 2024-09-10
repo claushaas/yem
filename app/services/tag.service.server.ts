@@ -81,13 +81,15 @@ export class TagService {
 		const tags = [];
 
 		for (const tag of parsedTags) {
-			const tagIndex = tags.findIndex(({tagOption, tagValues}) => tagOption === tag.tagOption);
+			const tagIndex = tags.findIndex(({tagOption}) => tagOption === tag.tagOption);
 
 			if (tagIndex === -1) {
 				tags.push({tagOption: tag.tagOption, tagValues: [tag.tagValue]});
 			} else if (!tags[tagIndex].tagValues.includes(tag.tagValue)) {
 				tags[tagIndex].tagValues.push(tag.tagValue);
 			}
+
+			tags[tagIndex].tagValues.sort((a, b) => a.localeCompare(b));
 		}
 
 		return {
