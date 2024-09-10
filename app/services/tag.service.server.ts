@@ -88,8 +88,6 @@ export class TagService {
 			} else if (!tags[tagIndex].tagValues.includes(tag.tagValue)) {
 				tags[tagIndex].tagValues.push(tag.tagValue);
 			}
-
-			tags[tagIndex].tagValues.sort((a, b) => a.localeCompare(b));
 		}
 
 		return {
