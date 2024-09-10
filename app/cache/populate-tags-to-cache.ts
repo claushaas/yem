@@ -14,7 +14,29 @@ const tagsDataToBeCached = (allDataToBeCached: TAllDataToBeCached[]) => {
 		}
 	}
 
-	return [...tags];
+	const tagsArray = [...tags];
+
+	const sortedTags = tagsArray.sort((a, b) => {
+		if (a.tagOption.localeCompare(b.tagOption) < 0) {
+			return -1;
+		}
+
+		if (a.tagOption.localeCompare(b.tagOption) > 0) {
+			return 1;
+		}
+
+		if (a.tagValue.localeCompare(b.tagValue) < 0) {
+			return -1;
+		}
+
+		if (a.tagValue.localeCompare(b.tagValue) > 0) {
+			return 1;
+		}
+
+		return 0;
+	});
+
+	return sortedTags;
 };
 
 export const populateTagsToCache = (allDataToBeCached: TAllDataToBeCached[]) => {
