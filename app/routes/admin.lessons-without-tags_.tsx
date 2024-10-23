@@ -1,11 +1,11 @@
-import {unstable_defineLoader as defineLoader, type LoaderFunctionArgs} from '@remix-run/node';
+import {type LoaderFunctionArgs} from '@remix-run/node';
 import {useLoaderData} from '@remix-run/react';
 import {AdminEntityCard} from '~/components/entities-cards';
 import {LessonService} from '~/services/lesson.service.server';
 import {type TypeUserSession} from '~/types/user-session.type';
 import {getUserSession} from '~/utils/session.server';
 
-export const loader = defineLoader(async ({request}: LoaderFunctionArgs) => {
+export const loader = async ({request}: LoaderFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 	const user = userSession.data as TypeUserSession;
 
@@ -14,7 +14,7 @@ export const loader = defineLoader(async ({request}: LoaderFunctionArgs) => {
 	return {
 		lessons,
 	};
-});
+};
 
 export default function LessonsWithoutTags() {
 	const {lessons} = useLoaderData<typeof loader>();

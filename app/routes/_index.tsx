@@ -1,8 +1,6 @@
-import {
-	type LoaderFunctionArgs, unstable_defineLoader as defineLoader,
-} from '@remix-run/node';
+import {type LoaderFunctionArgs} from '@remix-run/node';
 import {Image} from '@unpic/react';
-import {Link, type MetaArgs_SingleFetch, useLoaderData} from '@remix-run/react';
+import {Link, type MetaArgs, useLoaderData} from '@remix-run/react';
 import {buildImgSource} from '~/utils/build-cloudflare-image-source.js';
 import {Testimonies} from '~/layouts/testimonies.js';
 import {History} from '~/layouts/yem-history.js';
@@ -11,20 +9,20 @@ import {NavigateBar} from '~/components/navigation-bar.js';
 import {type TypeUserSession} from '~/types/user-session.type';
 import {Button, ButtonPreset, ButtonType} from '~/components/button';
 
-export const meta = ({data}: MetaArgs_SingleFetch<typeof loader>) => [
+export const meta = ({data}: MetaArgs<typeof loader>) => [
 	{title: 'Yoga em Movimento'},
 	{name: 'description', content: 'Pratique Yoga com mais de 1500 aulas sem sair de casa e torne-se um professor de Yoga certificado.'},
 	...data!.meta,
 ];
 
-export const loader = defineLoader(async ({request}: LoaderFunctionArgs) => {
+export const loader = async ({request}: LoaderFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 
 	return {
 		meta: [{tagName: 'link', rel: 'canonical', href: new URL('/', request.url).toString()}],
 		userData: userSession.data as TypeUserSession,
 	};
-});
+};
 
 export default function Index() {
 	const {userData} = useLoaderData<typeof loader>();

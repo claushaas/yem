@@ -29,7 +29,7 @@ export default defineConfig({
 		remix({
 			future: {
 				v3_relativeSplatPath: true, // eslint-disable-line @typescript-eslint/naming-convention
-				unstable_singleFetch: true, // eslint-disable-line @typescript-eslint/naming-convention
+				v3_singleFetch: true, // eslint-disable-line @typescript-eslint/naming-convention
 			},
 		}),
 		tsconfigPaths(),
@@ -38,3 +38,9 @@ export default defineConfig({
 		}),
 	],
 });
+
+declare module '@remix-run/server-runtime' {
+	interface Future { // eslint-disable-line @typescript-eslint/consistent-type-definitions
+		v3_singleFetch: true; // eslint-disable-line @typescript-eslint/naming-convention
+	}
+}

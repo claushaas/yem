@@ -2,12 +2,10 @@
 import {
 	type ActionFunctionArgs,
 	type LoaderFunctionArgs,
-	unstable_defineAction as defineAction,
-	unstable_defineLoader as defineLoader,
-	unstable_data as data,
+	data,
 } from '@remix-run/node';
 import {
-	Form, type MetaArgs_SingleFetch, useLoaderData, useNavigation, useParams,
+	Form, type MetaArgs, useLoaderData, useNavigation, useParams,
 } from '@remix-run/react';
 import {useEffect, useState} from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
@@ -28,14 +26,14 @@ import {SuccessOrErrorMessage} from '~/components/admin-success-or-error-message
 import {TagService} from '~/services/tag.service.server';
 import {type TTag} from '~/types/tag.type';
 
-export const meta = ({data}: MetaArgs_SingleFetch<typeof loader>) => ([
+export const meta = ({data}: MetaArgs<typeof loader>) => ([
 	{title: `Aula ${data!.lesson?.name} - Yoga em Movimento`},
 	{name: 'description', content: data!.lesson?.description},
 	{name: 'robots', content: 'noindex, nofollow'},
 	...data!.meta,
 ]);
 
-export const loader = defineLoader(async ({request, params}: LoaderFunctionArgs) => {
+export const loader = async ({request, params}: LoaderFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 	const {
 		'lesson-slug': lessonSlug,
@@ -84,9 +82,9 @@ export const loader = defineLoader(async ({request, params}: LoaderFunctionArgs)
 			},
 		);
 	}
-});
+};
 
-export const action = defineAction(async ({request}: ActionFunctionArgs) => {
+export const action = async ({request}: ActionFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 
 	if ((userSession.get('roles') as string[])?.includes('admin')) {
@@ -150,7 +148,7 @@ export const action = defineAction(async ({request}: ActionFunctionArgs) => {
 	}
 
 	return data({}, {headers: {'Set-Cookie': await commitUserSession(userSession)}});
-});
+};
 
 export default function Lesson() {
 	const {

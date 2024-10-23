@@ -2,12 +2,10 @@
 import {
 	type ActionFunctionArgs,
 	type LoaderFunctionArgs,
-	unstable_defineAction as defineAction,
-	unstable_defineLoader as defineLoader,
-	unstable_data as data,
+	data,
 } from '@remix-run/node';
 import {
-	Form, type MetaArgs_SingleFetch, useLoaderData, useNavigation, useParams,
+	Form, type MetaArgs, useLoaderData, useNavigation, useParams,
 } from '@remix-run/react';
 import {useEffect, useState} from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
@@ -35,14 +33,14 @@ import {ContentConverter} from '~/components/content-converter.js';
 import {SuccessOrErrorMessage} from '~/components/admin-success-or-error-message.js';
 import {AdminEntityCard} from '~/components/entities-cards.js';
 
-export const meta = ({data}: MetaArgs_SingleFetch<typeof loader>) => [
+export const meta = ({data}: MetaArgs<typeof loader>) => [
 	{title: `${data?.module?.module.name} - Yoga em Movimento`},
 	{name: 'description', content: data?.module?.module.description},
 	{name: 'robots', content: 'noindex, nofollow'},
 	...data!.meta,
 ];
 
-export const loader = defineLoader(async ({request, params}: LoaderFunctionArgs) => {
+export const loader = async ({request, params}: LoaderFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 	const {
 		'course-slug': courseSlug,
@@ -98,9 +96,9 @@ export const loader = defineLoader(async ({request, params}: LoaderFunctionArgs)
 			},
 		);
 	}
-});
+};
 
-export const action = defineAction(async ({request}: ActionFunctionArgs) => {
+export const action = async ({request}: ActionFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 
 	try {
@@ -182,7 +180,7 @@ export const action = defineAction(async ({request}: ActionFunctionArgs) => {
 	}
 
 	return data({}, {headers: {'Set-Cookie': await commitUserSession(userSession)}});
-});
+};
 
 export default function Module() {
 	const {

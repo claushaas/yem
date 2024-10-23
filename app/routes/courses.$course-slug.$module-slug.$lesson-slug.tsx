@@ -1,10 +1,7 @@
 import {Stream} from '@cloudflare/stream-react';
 import {
-	unstable_defineAction as defineAction,
-	unstable_defineLoader as defineLoader,
 	type LoaderFunctionArgs,
 	type ActionFunctionArgs,
-	unstable_data as data,
 } from '@remix-run/node';
 import {
 	Await, Form, redirect, useLoaderData, type MetaFunction,
@@ -33,7 +30,7 @@ export const meta: MetaFunction<typeof loader> = ({data}) => [
 	...data!.meta,
 ];
 
-export const loader = defineLoader(async ({request, params}: LoaderFunctionArgs) => {
+export const loader = async ({request, params}: LoaderFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 	const {
 		'course-slug': courseSlug,
@@ -66,9 +63,9 @@ export const loader = defineLoader(async ({request, params}: LoaderFunctionArgs)
 		userLessonActivity,
 		userData: userSession.data as TypeUserSession,
 	};
-});
+};
 
-export const action = defineAction(async ({request, params}: ActionFunctionArgs) => {
+export const action = async ({request, params}: ActionFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 	const {
 		'course-slug': courseSlug,
@@ -109,7 +106,7 @@ export const action = defineAction(async ({request, params}: ActionFunctionArgs)
 	}
 
 	return redirect(`/courses/${courseSlug}/${moduleSlug}/${lessonSlug}`);
-});
+};
 
 export default function Lesson() {
 	const data = useLoaderData<typeof loader>();
