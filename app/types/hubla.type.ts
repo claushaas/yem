@@ -1,5 +1,6 @@
 export type THublaInvoiceEvents = {
-	'type': 'invoice.created' | 'invoice.status_updated' | 'invoice.payment_succeeded' | 'invoice.payment_failed' | 'invoice.expired' | 'invoice.refunded';
+	// 'type': 'invoice.created' | 'invoice.status_updated' | 'invoice.payment_succeeded' | 'invoice.payment_failed' | 'invoice.expired' | 'invoice.refunded';
+	type: string;
 	'event': {
 		'product': {
 			'id': string;

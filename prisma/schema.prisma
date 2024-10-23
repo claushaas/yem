@@ -234,4 +234,5 @@ enum SubscriptionProviderType {
   hotmart
   iugu
   manual
+  hubla
 }
