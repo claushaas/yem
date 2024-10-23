@@ -2,12 +2,10 @@
 import {
 	type ActionFunctionArgs,
 	type LoaderFunctionArgs,
-	unstable_defineAction as defineAction,
-	unstable_defineLoader as defineLoader,
-	unstable_data as data,
+	data,
 } from '@remix-run/node';
 import {
-	Form, type MetaArgs_SingleFetch, useLoaderData, useNavigation,
+	Form, type MetaArgs, useLoaderData, useNavigation,
 } from '@remix-run/react';
 import * as Dialog from '@radix-ui/react-dialog';
 import * as RadixForm from '@radix-ui/react-form';
@@ -21,14 +19,14 @@ import {Button, ButtonPreset, ButtonType} from '~/components/button.js';
 import {YemSpinner} from '~/components/yem-spinner.js';
 import {SuccessOrErrorMessage} from '~/components/admin-success-or-error-message.js';
 
-export const meta = ({data}: MetaArgs_SingleFetch<typeof loader>) => ([
+export const meta = ({data}: MetaArgs<typeof loader>) => ([
 	{title: 'Tags - Yoga em Movimento'},
 	{name: 'description', content: 'Página de tags do Yoga em Movimento'},
 	{name: 'robots', content: 'noindex, nofollow'},
 	...data!.meta,
 ]);
 
-export const loader = defineLoader(async ({request}: LoaderFunctionArgs) => {
+export const loader = async ({request}: LoaderFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 
 	const meta = [
@@ -68,9 +66,9 @@ export const loader = defineLoader(async ({request}: LoaderFunctionArgs) => {
 			},
 		);
 	}
-});
+};
 
-export const action = defineAction(async ({request}: ActionFunctionArgs) => {
+export const action = async ({request}: ActionFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 	const formData = await request.formData();
 
@@ -89,7 +87,7 @@ export const action = defineAction(async ({request}: ActionFunctionArgs) => {
 	}
 
 	return data({}, {headers: {'Set-Cookie': await commitUserSession(userSession)}});
-});
+};
 
 export default function Tags() {
 	const {

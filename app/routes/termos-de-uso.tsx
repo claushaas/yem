@@ -1,23 +1,23 @@
-import {type LoaderFunctionArgs, unstable_defineLoader as defineLoader} from '@remix-run/node';
-import {useLoaderData, type MetaArgs_SingleFetch} from '@remix-run/react';
+import {type LoaderFunctionArgs} from '@remix-run/node';
+import {useLoaderData, type MetaArgs} from '@remix-run/react';
 import {NavigateBar} from '~/components/navigation-bar.js';
 import {type TypeUserSession} from '~/types/user-session.type';
 import {getUserSession} from '~/utils/session.server';
 
-export const meta = ({data}: MetaArgs_SingleFetch<typeof loader>) => [
+export const meta = ({data}: MetaArgs<typeof loader>) => [
 	{title: 'Yoga em Movimento - Termos de Uso'},
 	{name: 'description', content: 'Termos de uso do site Yoga em Movimento.'},
 	...data!.meta,
 ];
 
-export const loader = defineLoader(async ({request}: LoaderFunctionArgs) => {
+export const loader = async ({request}: LoaderFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 
 	return {
 		meta: [{tagName: 'link', rel: 'canonical', href: new URL('/termos-de-uso', request.url).toString()}],
 		userData: userSession.data as TypeUserSession,
 	};
-});
+};
 
 export default function TermosDeUso() {
 	const {userData} = useLoaderData<typeof loader>();

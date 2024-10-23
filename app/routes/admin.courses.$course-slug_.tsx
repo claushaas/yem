@@ -1,14 +1,12 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import {
+	type MetaArgs,
 	type ActionFunctionArgs,
 	type LoaderFunctionArgs,
-	unstable_defineLoader as defineLoader,
-	unstable_defineAction as defineAction,
-	unstable_data as data,
 } from '@remix-run/node';
 import {
+	data,
 	Form,
-	type MetaArgs_SingleFetch,
 	useLoaderData,
 	useNavigation,
 	useParams,
@@ -34,14 +32,14 @@ import {useTextEditor} from '~/hooks/use-text-editor.hook';
 import {ContentConverter} from '~/components/content-converter.js';
 import {SuccessOrErrorMessage} from '~/components/admin-success-or-error-message.js';
 
-export const meta = ({data}: MetaArgs_SingleFetch<typeof loader>) => ([
+export const meta = ({data}: MetaArgs<typeof loader>) => ([
 	{title: data?.course?.name ?? 'Cursos - Yoga em Movimento'},
 	{name: 'description', content: data?.course?.description ?? 'Conheça os cursos oferecidos pela Yoga em Movimento'},
 	{name: 'robots', content: 'noindex, nofollow'},
 	...data!.meta,
 ]);
 
-export const loader = defineLoader(async ({request, params}: LoaderFunctionArgs) => {
+export const loader = async ({request, params}: LoaderFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 	const {'course-slug': courseSlug} = params;
 
@@ -85,9 +83,9 @@ export const loader = defineLoader(async ({request, params}: LoaderFunctionArgs)
 			},
 		);
 	}
-});
+};
 
-export const action = defineAction(async ({request}: ActionFunctionArgs) => {
+export const action = async ({request}: ActionFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 
 	try {
@@ -178,7 +176,7 @@ export const action = defineAction(async ({request}: ActionFunctionArgs) => {
 	}
 
 	return data({}, {headers: {'Set-Cookie': await commitUserSession(userSession)}});
-});
+};
 
 export default function Course() {
 	const {

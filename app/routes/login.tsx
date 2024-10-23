@@ -3,14 +3,12 @@ import * as RadixForm from '@radix-ui/react-form';
 import {
 	type ActionFunctionArgs,
 	type LoaderFunctionArgs,
-	unstable_defineAction as defineAction,
-	unstable_defineLoader as defineLoader,
-	unstable_data as data,
+	data,
 } from '@remix-run/node';
 import {
 	Form,
 	Link,
-	type MetaArgs_SingleFetch,
+	type MetaArgs,
 	redirect,
 	useLoaderData,
 	useNavigation,
@@ -24,7 +22,7 @@ import {UserService} from '~/services/user.service.server';
 import {logger} from '~/utils/logger.util';
 import {NavigateBar} from '~/components/navigation-bar.js';
 
-export const meta = ({data}: MetaArgs_SingleFetch<typeof loader>) => [
+export const meta = ({data}: MetaArgs<typeof loader>) => [
 	{title: 'Yoga em Movimento - Entrar'},
 	{name: 'description', content: 'Faça o login para acessar a plataforma do Yoga em Movimento.'},
 	...(data! as unknown as LoaderData).meta,
@@ -40,7 +38,7 @@ type LoaderData = {
 	userData: TypeUserSession;
 };
 
-export const loader = defineLoader(async ({request}: LoaderFunctionArgs) => {
+export const loader = async ({request}: LoaderFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 
 	if (userSession.has('id')) {
@@ -59,9 +57,9 @@ export const loader = defineLoader(async ({request}: LoaderFunctionArgs) => {
 			},
 		},
 	);
-});
+};
 
-export const action = defineAction(async ({request}: ActionFunctionArgs) => {
+export const action = async ({request}: ActionFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 
 	try {
@@ -94,7 +92,7 @@ export const action = defineAction(async ({request}: ActionFunctionArgs) => {
 	}
 
 	return data({}, {headers: {'Set-Cookie': await commitUserSession(userSession)}});
-});
+};
 
 export default function Login() {
 	const {error, userData} = useLoaderData<typeof loader>() as unknown as LoaderData;

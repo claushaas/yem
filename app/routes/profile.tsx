@@ -1,21 +1,21 @@
-import {type LoaderFunctionArgs, unstable_defineLoader as defineLoader} from '@remix-run/node';
+import {type LoaderFunctionArgs} from '@remix-run/node';
 import {
 	Link, Outlet, useLocation,
-	type MetaArgs_SingleFetch,
+	type MetaArgs,
 	useLoaderData,
 } from '@remix-run/react';
 import {NavigateBar} from '~/components/navigation-bar.js';
 import {type TypeUserSession} from '~/types/user-session.type';
 import {getUserSession} from '~/utils/session.server';
 
-export const meta = ({data}: MetaArgs_SingleFetch<typeof loader>) => [
+export const meta = ({data}: MetaArgs<typeof loader>) => [
 	{title: 'Yoga em Movimento - Área Pessoal'},
 	{name: 'description', content: 'Área pessoal de cada aluno dentro do site da Yoga em Movimento.'},
 	{name: 'robots', content: 'noindex, nofollow'},
 	...data!.meta,
 ];
 
-export const loader = defineLoader(async ({request}: LoaderFunctionArgs) => {
+export const loader = async ({request}: LoaderFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 	const userData = userSession.data as TypeUserSession;
 
@@ -23,7 +23,7 @@ export const loader = defineLoader(async ({request}: LoaderFunctionArgs) => {
 		meta: [{tagName: 'link', rel: 'canonical', href: new URL('/profile', request.url).toString()}],
 		userData,
 	};
-});
+};
 
 export default function Profile() {
 	const {userData} = useLoaderData<typeof loader>();

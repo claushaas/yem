@@ -1,10 +1,7 @@
-import {
-	type LoaderFunctionArgs,
-	unstable_defineLoader as defineLoader,
-} from '@remix-run/node';
+import {type LoaderFunctionArgs} from '@remix-run/node';
 import {
 	Link, Outlet, useLocation,
-	type MetaArgs_SingleFetch,
+	type MetaArgs,
 	useLoaderData,
 	replace,
 } from '@remix-run/react';
@@ -12,7 +9,7 @@ import {NavigateBar} from '~/components/navigation-bar.js';
 import {type TypeUserSession} from '~/types/user-session.type';
 import {getUserSession} from '~/utils/session.server';
 
-export const meta = ({data}: MetaArgs_SingleFetch<typeof loader>) => [
+export const meta = ({data}: MetaArgs<typeof loader>) => [
 	{title: 'Yoga em Movimento - Área Administrativa'},
 	{name: 'description', content: 'Área para executar as funções administrativas e pedagógicas do Yoga em Movimento.'},
 	{name: 'robots', content: 'noindex, nofollow'},
@@ -24,7 +21,7 @@ type LoaderData = {
 	userData: TypeUserSession;
 };
 
-export const loader = defineLoader(async ({request}: LoaderFunctionArgs) => {
+export const loader = async ({request}: LoaderFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 	const userData = userSession.data as TypeUserSession;
 
@@ -37,7 +34,7 @@ export const loader = defineLoader(async ({request}: LoaderFunctionArgs) => {
 		meta: [{tagName: 'link', rel: 'canonical', href: new URL('/admin', request.url).toString()}],
 		userData,
 	};
-});
+};
 
 export default function Admin() {
 	const {userData} = useLoaderData<typeof loader>() as {meta: Array<{tagName: string; rel: string; href: string}>; userData: TypeUserSession};

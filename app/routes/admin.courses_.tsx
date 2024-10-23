@@ -2,11 +2,9 @@
 import {
 	type ActionFunctionArgs,
 	type LoaderFunctionArgs,
-	unstable_defineLoader as defineLoader,
-	unstable_defineAction as defineAction,
-	unstable_data as data,
+	data,
 } from '@remix-run/node';
-import {type MetaArgs_SingleFetch, useLoaderData} from '@remix-run/react';
+import {type MetaArgs, useLoaderData} from '@remix-run/react';
 import {CourseService} from '~/services/course.service.server';
 import {commitUserSession, getUserSession} from '~/utils/session.server.js';
 import {logger} from '~/utils/logger.util.js';
@@ -16,14 +14,14 @@ import {CourseCreateOrEditForm} from '~/components/course-create-or-edit-form.js
 import {SuccessOrErrorMessage} from '~/components/admin-success-or-error-message.js';
 import {AdminEntityCard} from '~/components/entities-cards.js';
 
-export const meta = ({data}: MetaArgs_SingleFetch<typeof loader>) => ([
+export const meta = ({data}: MetaArgs<typeof loader>) => ([
 	{title: 'Cursos - Yoga em Movimento'},
 	{name: 'description', content: 'Cursos oferecidos pela Yoga em Movimento'},
 	{name: 'robots', content: 'noindex, nofollow'},
 	...data!.meta,
 ]);
 
-export const loader = defineLoader(async ({request}: LoaderFunctionArgs) => {
+export const loader = async ({request}: LoaderFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 
 	try {
@@ -58,9 +56,9 @@ export const loader = defineLoader(async ({request}: LoaderFunctionArgs) => {
 			},
 		);
 	}
-});
+};
 
-export const action = defineAction(async ({request}: ActionFunctionArgs) => {
+export const action = async ({request}: ActionFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 
 	try {
@@ -95,7 +93,7 @@ export const action = defineAction(async ({request}: ActionFunctionArgs) => {
 	}
 
 	return data({}, {status: 303, headers: {'Set-Cookie': await commitUserSession(userSession)}});
-});
+};
 
 export default function Courses() {
 	const {

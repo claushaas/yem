@@ -1,19 +1,19 @@
-import {type LoaderFunctionArgs, unstable_defineLoader as defineLoader} from '@remix-run/node';
-import {useLoaderData, type MetaArgs_SingleFetch} from '@remix-run/react';
+import {type LoaderFunctionArgs} from '@remix-run/node';
+import {useLoaderData, type MetaArgs} from '@remix-run/react';
 import {LessonEntityCard} from '~/components/entities-cards';
 import {LessonActivityService} from '~/services/lesson-activity.service.server';
 import {LessonService} from '~/services/lesson.service.server';
 import {type TypeUserSession} from '~/types/user-session.type';
 import {getUserSession} from '~/utils/session.server';
 
-export const meta = ({data}: MetaArgs_SingleFetch<typeof loader>) => [
+export const meta = ({data}: MetaArgs<typeof loader>) => [
 	{title: 'Yoga em Movimento - Área Pessoal - Aulas salvas'},
 	{name: 'description', content: 'Aulas salvadas por cada aluno.'},
 	{name: 'robots', content: 'noindex, nofollow'},
 	...data!.meta,
 ];
 
-export const loader = defineLoader(async ({request}: LoaderFunctionArgs) => {
+export const loader = async ({request}: LoaderFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 	const userData = userSession.data as TypeUserSession;
 
@@ -37,7 +37,7 @@ export const loader = defineLoader(async ({request}: LoaderFunctionArgs) => {
 		userData,
 		savedLessonsWithActivity,
 	};
-});
+};
 
 export default function CompletedLessons() {
 	const {savedLessonsWithActivity, userData} = useLoaderData<typeof loader>();

@@ -2,13 +2,11 @@ import * as RadixForm from '@radix-ui/react-form';
 import {
 	type ActionFunctionArgs,
 	type LoaderFunctionArgs,
-	unstable_defineAction as defineAction,
-	unstable_defineLoader as defineLoader,
 } from '@remix-run/node';
 import {
 	Form,
 	Link,
-	type MetaArgs_SingleFetch,
+	type MetaArgs,
 	redirect,
 	useLoaderData,
 	useNavigation,
@@ -22,22 +20,22 @@ import {getUserSession} from '~/utils/session.server';
 import {type TypeUserSession} from '~/types/user-session.type';
 import {NavigateBar} from '~/components/navigation-bar.js';
 
-export const meta = ({data}: MetaArgs_SingleFetch<typeof loader>) => [
+export const meta = ({data}: MetaArgs<typeof loader>) => [
 	{title: 'Yoga em Movimento - Nova Senha'},
 	{name: 'description', content: 'Gere uma nova senha para acessar a plataforma do Yoga em Movimento.'},
 	...data!.meta,
 ];
 
-export const loader = defineLoader(async ({request}: LoaderFunctionArgs) => {
+export const loader = async ({request}: LoaderFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 
 	return {
 		meta: [{tagName: 'link', rel: 'canonical', href: new URL('/new-password', request.url).toString()}],
 		userData: userSession.data as TypeUserSession,
 	};
-});
+};
 
-export const action = defineAction(async ({request}: ActionFunctionArgs) => {
+export const action = async ({request}: ActionFunctionArgs) => {
 	try {
 		const formData = await request.formData();
 		const email = formData.get('email');
@@ -48,7 +46,7 @@ export const action = defineAction(async ({request}: ActionFunctionArgs) => {
 	}
 
 	return redirect('/login');
-});
+};
 
 export default function NewPassword() {
 	const navigation = useNavigation();

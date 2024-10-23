@@ -1,21 +1,20 @@
-import {type LoaderFunctionArgs, unstable_defineLoader as defineLoader} from '@remix-run/node';
-import {Link, type MetaArgs_SingleFetch, useLoaderData} from '@remix-run/react';
+import {type LoaderFunctionArgs} from '@remix-run/node';
+import {Link, type MetaArgs, useLoaderData} from '@remix-run/react';
 import {GenericEntityCard} from '~/components/entities-cards.js';
 import {NavigateBar} from '~/components/navigation-bar.js';
 import {CourseService} from '~/services/course.service.server';
 import {LessonActivityService} from '~/services/lesson-activity.service.server';
 import {type TypeUserSession} from '~/types/user-session.type';
-import {type TUserRoles} from '~/types/user.type';
 import {logger} from '~/utils/logger.util';
 import {getUserSession} from '~/utils/session.server';
 
-export const meta = ({data}: MetaArgs_SingleFetch<typeof loader>) => [
+export const meta = ({data}: MetaArgs<typeof loader>) => [
 	{title: 'Cursos - Yoga em Movimento'},
 	{name: 'description', content: 'Conheça os cursos oferecidos pela Yoga em Movimento'},
 	...data!.meta,
 ];
 
-export const loader = defineLoader(async ({request}: LoaderFunctionArgs) => {
+export const loader = async ({request}: LoaderFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 
 	const meta = [
@@ -46,7 +45,7 @@ export const loader = defineLoader(async ({request}: LoaderFunctionArgs) => {
 			userData: userSession.data as TypeUserSession,
 		};
 	}
-});
+};
 
 export default function Courses() {
 	const {courses, coursesActivity, userData} = useLoaderData<typeof loader>();
