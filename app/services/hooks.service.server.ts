@@ -23,7 +23,7 @@ import {schoolHotmartPrintedBilletEmailTemplate} from '~/assets/email/school-hot
 import {schoolHotmartPrintedPixEmailTemplate} from '~/assets/email/school-hotmart-printed-pix.email.template.server.js';
 import {formationHotmartPrintedBilletEmailTemplate} from '~/assets/email/formation-hotmart-printed-billet.email.template.server.js';
 import {formationHotmartPrintedPixEmailTemplate} from '~/assets/email/formation-hotmart-printed-pix.email.template.server.js';
-import {type THublaEvents, type THublaInvoiceEvents, type THublaSubscriptionEvents} from '~/types/hubla.type.js';
+import {type THublaEvents} from '~/types/hubla.type.js';
 
 export class HooksService {
 	private readonly _userService: UserService;
@@ -47,6 +47,96 @@ export class HooksService {
 
 		try {
 			switch (type) {
+				case 'AbandonedCheckout': {
+					break;
+				}
+
+				case 'NewSale': {
+					break;
+				}
+
+				case 'invoice.payment_succeeded': {
+					const {data: {userData: user}} = await this._userService.createOrUpdate({
+						email: body.event.user.email.toLowerCase(),
+						firstName: convertStringToStartCase(body.event.user.firstName),
+						lastName: convertStringToStartCase(body.event.user.lastName),
+						document: body.event.user.document,
+						phoneNumber: body.event.user.phone,
+						roles: ['iniciantes'],
+					});
+
+					await Promise.all([
+						this._botMakerService.sendWhatsappTemplateMessate(
+							user.phoneNumber,
+							'boas_vindas_formacao2',
+							{
+								nome: user.firstName,
+								linkCanalRecadosFormacao: 'https://t.me/joinchat/_2UwTcWJ5to3MTAx',
+								linkGrupoFormacao: 'https://t.me/joinchat/gxazJsQTmwI5YzYx',
+								linkSuporte: 'https://t.me/yogaemmovimento_bot',
+								linkManualDoAlunoFormacao: 'https://img.amo.yoga/MANUAL_DO_ALUNO.pdf',
+							},
+						),
+						this._mailService.sendEmail(formationWelcomeEmailTemplate(user.firstName, user.email)),
+						fetch(process.env.SLACK_WEBHOOK_URL_FORMATION!, {
+							method: 'POST',
+							headers: {
+								'Content-Type': 'application/json', // eslint-disable-line @typescript-eslint/naming-convention
+							},
+							body: JSON.stringify({text: `Novo Aluno na Formação\nNome: ${user.firstName} ${user.lastName}\nEmail: ${user.email}\nTelefone: ${user.phoneNumber}`}),
+						}),
+					]);
+
+					const rolesToAdd = ['iniciantes', 'escolaOnline', 'escolaAnual', 'novaFormacao'];
+
+					let expiresAt: Date;
+					if (body.event.invoice.smartInstallment.installments > body.event.invoice.smartInstallment.installment) {
+						expiresAt = new Date();
+						expiresAt.setDate(expiresAt.getDate() + 35);
+					} else {
+						expiresAt = new Date(2_556_113_460_000);
+					}
+
+					await Promise.all([
+						this._userService.addRolesToUser(user, rolesToAdd), // Should be deleted when old site stops being suported
+						this._subscriptionService.createOrUpdate({
+							userId: user.id,
+							courseSlug: convertSubscriptionIdentifierToCourseSlug('novaFormacao'),
+							expiresAt,
+							provider: 'hubla',
+							providerSubscriptionId: body.event.invoice.subscriptionId,
+						}),
+					]);
+
+					break;
+				}
+
+				case 'invoice.refunded': {
+					const rolesToRemove = ['escolaOnline', 'escolaAnual', 'novaFormacao'];
+
+					const {data: {userData: user}} = await this._userService.createOrUpdate({
+						email: body.event.user.email.toLowerCase(),
+						firstName: convertStringToStartCase(body.event.user.firstName),
+						lastName: convertStringToStartCase(body.event.user.lastName),
+						document: body.event.user.document,
+						phoneNumber: body.event.user.phone,
+						roles: ['iniciantes'],
+					});
+
+					await Promise.all([
+						this._userService.removeRolesFromUser(user, rolesToRemove),
+						this._subscriptionService.createOrUpdate({
+							userId: user.id,
+							courseSlug: convertSubscriptionIdentifierToCourseSlug('novaFormacao'),
+							expiresAt: new Date(),
+							provider: 'hubla',
+							providerSubscriptionId: body.event.invoice.subscriptionId,
+						}),
+					]);
+
+					break;
+				}
+
 				default: {
 					await this._slackService.sendMessage(body);
 					break;
