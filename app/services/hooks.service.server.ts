@@ -23,6 +23,7 @@ import {schoolHotmartPrintedBilletEmailTemplate} from '~/assets/email/school-hot
 import {schoolHotmartPrintedPixEmailTemplate} from '~/assets/email/school-hotmart-printed-pix.email.template.server.js';
 import {formationHotmartPrintedBilletEmailTemplate} from '~/assets/email/formation-hotmart-printed-billet.email.template.server.js';
 import {formationHotmartPrintedPixEmailTemplate} from '~/assets/email/formation-hotmart-printed-pix.email.template.server.js';
+import {type THublaEvents, type THublaInvoiceEvents, type THublaSubscriptionEvents} from '~/types/hubla.type.js';
 
 export class HooksService {
 	private readonly _userService: UserService;
@@ -39,6 +40,27 @@ export class HooksService {
 		this._iuguService = new IuguService();
 		this._botMakerService = new BotmakerService();
 		this._mailService = new MailService();
+	}
+
+	public async handleHublaWebhook(body: THublaEvents): Promise<TServiceReturn<string>> {
+		const {type} = body;
+
+		try {
+			switch (type) {
+				default: {
+					await this._slackService.sendMessage(body);
+					break;
+				}
+			}
+
+			return {
+				status: 'SUCCESSFUL',
+				data: 'Hubla Webhook received',
+			};
+		} catch (error) {
+			logger.logError(`Error handling hubla webhook: ${(error as Error).message}`);
+			throw new CustomError('INVALID_DATA', `Error handling hubla webhook: ${(error as Error).message}`);
+		}
 	}
 
 	public async handleHotmartWebhook(body: TIncommingHotmartWebhook): Promise<TServiceReturn<string>> {
