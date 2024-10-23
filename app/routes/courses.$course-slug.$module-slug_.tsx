@@ -1,7 +1,7 @@
 import {Stream} from '@cloudflare/stream-react';
-import {type LoaderFunctionArgs, unstable_defineLoader as defineLoader} from '@remix-run/node';
+import {type LoaderFunctionArgs} from '@remix-run/node';
 import {
-	type MetaArgs_SingleFetch,
+	type MetaArgs,
 	useLoaderData,
 	Await,
 	useLocation,
@@ -31,13 +31,13 @@ import {NavigateBar} from '~/components/navigation-bar.js';
 import {TagService} from '~/services/tag.service.server';
 import {Button, ButtonPreset, ButtonType} from '~/components/button';
 
-export const meta = ({data}: MetaArgs_SingleFetch<typeof loader>) => [
+export const meta = ({data}: MetaArgs<typeof loader>) => [
 	{title: data!.module?.module.name ?? 'Módulo do Curso do Yoga em Movimento'},
 	{name: 'description', content: data!.module?.module.description ?? 'Conheça o módulo do curso oferecido pela Yoga em Movimento'},
 	...data!.meta,
 ];
 
-export const loader = defineLoader(async ({request, params}: LoaderFunctionArgs) => {
+export const loader = async ({request, params}: LoaderFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 
 	const {
@@ -93,7 +93,7 @@ export const loader = defineLoader(async ({request, params}: LoaderFunctionArgs)
 			userData: userSession.data as TypeUserSession,
 		};
 	}
-});
+};
 
 export default function Module() {
 	const {module, actualPage, course, moduleActivity, lessonsActivity, userData, tags} = useLoaderData<typeof loader>();

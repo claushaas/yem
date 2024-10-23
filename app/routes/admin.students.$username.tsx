@@ -2,13 +2,11 @@
 import {
 	type ActionFunctionArgs,
 	type LoaderFunctionArgs,
-	unstable_defineAction as defineAction,
-	unstable_defineLoader as defineLoader,
-	unstable_data as data,
+	data,
 } from '@remix-run/node';
 import {
 	Form,
-	type MetaArgs_SingleFetch,
+	type MetaArgs,
 	useLoaderData,
 	useNavigation,
 	useParams,
@@ -25,14 +23,14 @@ import {logger} from '~/utils/logger.util';
 import SubscriptionService from '~/services/subscription.service.server';
 import {SuccessOrErrorMessage} from '~/components/admin-success-or-error-message.js';
 
-export const meta = ({data}: MetaArgs_SingleFetch<typeof loader>) => ([
+export const meta = ({data}: MetaArgs<typeof loader>) => ([
 	{title: `${data!.studentData?.firstName} ${data!.studentData?.lastName} - Yoga em Movimento`},
 	{name: 'description', content: 'Página de aluno do Yoga em Movimento'},
 	{name: 'robots', content: 'noindex, nofollow'},
 	...data!.meta,
 ]);
 
-export const loader = defineLoader(async ({request, params}: LoaderFunctionArgs) => {
+export const loader = async ({request, params}: LoaderFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 	const {username} = params;
 
@@ -76,9 +74,9 @@ export const loader = defineLoader(async ({request, params}: LoaderFunctionArgs)
 			},
 		);
 	}
-});
+};
 
-export const action = defineAction(async ({request, params}: ActionFunctionArgs) => {
+export const action = async ({request, params}: ActionFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 	const {username} = params;
 	const formData = await request.formData();
@@ -145,7 +143,7 @@ export const action = defineAction(async ({request, params}: ActionFunctionArgs)
 	}
 
 	return data({}, {headers: {'Set-Cookie': await commitUserSession(userSession)}});
-});
+};
 
 export default function Student() {
 	const {

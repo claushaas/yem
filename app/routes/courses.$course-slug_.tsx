@@ -1,6 +1,6 @@
 import {Stream} from '@cloudflare/stream-react';
-import {type LoaderFunctionArgs, unstable_defineLoader as defineLoader} from '@remix-run/node';
-import {Await, type MetaArgs_SingleFetch, useLoaderData} from '@remix-run/react';
+import {type LoaderFunctionArgs} from '@remix-run/node';
+import {Await, type MetaArgs, useLoaderData} from '@remix-run/react';
 import {QuillDeltaToHtmlConverter} from 'quill-delta-to-html';
 import {type OpIterator} from 'quill/core';
 import {Suspense} from 'react';
@@ -17,13 +17,13 @@ import {type TUser} from '~/types/user.type';
 import {logger} from '~/utils/logger.util';
 import {getUserSession} from '~/utils/session.server';
 
-export const meta = ({data}: MetaArgs_SingleFetch<typeof loader>) => [
+export const meta = ({data}: MetaArgs<typeof loader>) => [
 	{title: data!.course?.name ?? 'Curso da Yoga em Movimento'},
 	{name: 'description', content: data!.course?.description ?? 'Conheça o curso oferecido pela Yoga em Movimento'},
 	...data!.meta,
 ];
 
-export const loader = defineLoader(async ({request, params}: LoaderFunctionArgs) => {
+export const loader = async ({request, params}: LoaderFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 	const {'course-slug': courseSlug} = params;
 
@@ -58,7 +58,7 @@ export const loader = defineLoader(async ({request, params}: LoaderFunctionArgs)
 			userData: userSession.data as TypeUserSession,
 		};
 	}
-});
+};
 
 export default function Course() {
 	const {course, courseActivity, modulesActivity, userData} = useLoaderData<typeof loader>();

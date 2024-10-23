@@ -3,12 +3,10 @@ import * as Form from '@radix-ui/react-form';
 import {
 	type LoaderFunctionArgs,
 	type ActionFunctionArgs,
-	unstable_defineAction as defineAction,
-	unstable_defineLoader as defineLoader,
-	unstable_data as data,
+	data,
 } from '@remix-run/node';
 import {
-	type MetaArgs_SingleFetch,
+	type MetaArgs,
 	redirect,
 	Form as RemixForm, useLoaderData, useNavigation,
 } from '@remix-run/react';
@@ -18,14 +16,14 @@ import {YemSpinner} from '~/components/yem-spinner.js';
 import {UserService} from '~/services/user.service.server';
 import {commitUserSession, getUserSession} from '~/utils/session.server';
 
-export const meta = ({data}: MetaArgs_SingleFetch<typeof loader>) => ([
+export const meta = ({data}: MetaArgs<typeof loader>) => ([
 	{title: 'Alunos - Yoga em Movimento'},
 	{name: 'description', content: 'Página de alunos do Yoga em Movimento'},
 	{name: 'robots', content: 'noindex, nofollow'},
 	...data!.meta,
 ]);
 
-export const loader = defineLoader(async ({request}: LoaderFunctionArgs) => {
+export const loader = async ({request}: LoaderFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 
 	const meta = [
@@ -37,9 +35,9 @@ export const loader = defineLoader(async ({request}: LoaderFunctionArgs) => {
 		success: userSession.get('success') as string | undefined,
 		meta,
 	};
-});
+};
 
-export const action = defineAction(async ({request}: ActionFunctionArgs) => {
+export const action = async ({request}: ActionFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 
 	try {
@@ -60,7 +58,7 @@ export const action = defineAction(async ({request}: ActionFunctionArgs) => {
 
 		return data({}, {headers: {'Set-Cookie': await commitUserSession(userSession)}});
 	}
-});
+};
 
 export default function Students() {
 	const {

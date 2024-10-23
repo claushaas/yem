@@ -2,9 +2,7 @@
 import {
 	type ActionFunctionArgs,
 	type LoaderFunctionArgs,
-	unstable_defineAction as defineAction,
-	unstable_defineLoader as defineLoader,
-	unstable_data as data,
+	data,
 } from '@remix-run/node';
 import {
 	Form, useLoaderData, useNavigation, useParams,
@@ -19,13 +17,10 @@ import {commitUserSession, getUserSession} from '~/utils/session.server';
 import {ModuleService} from '~/services/module.service.server';
 import {LessonService} from '~/services/lesson.service.server';
 import {type TUser} from '~/types/user.type';
-import {type TModule} from '~/types/module.type';
 import {Button, ButtonPreset, ButtonType} from '~/components/button.js';
 import {YemSpinner} from '~/components/yem-spinner.js';
-import {type TLesson, type TLessonType} from '~/types/lesson.type';
-import {type TTags} from '~/types/tag.type';
 
-export const loader = defineLoader(async ({request, params}: LoaderFunctionArgs) => {
+export const loader = async ({request, params}: LoaderFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 	const {
 		'course-slug': courseSlug,
@@ -62,33 +57,27 @@ export const loader = defineLoader(async ({request, params}: LoaderFunctionArgs)
 			},
 		});
 	}
-});
+};
 
-export const action = defineAction(async ({request}: ActionFunctionArgs) => {
+export const action = async ({request}: ActionFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 
 	try {
 		if ((userSession.get('roles') as string[])?.includes('admin')) {
 			const formData = await request.formData();
 
-			switch (formData.get('formType')) {
-				case 'existingLesson': {
-					const lessonSlug = formData.get('lessonSlug') as string;
-					const moduleSlug = formData.get('moduleSlug') as string;
-					const publicationDate = new Date(formData.get('publicationDate') as string);
-					const isPublished = Boolean(formData.get('isPublished'));
-					const order = Number(formData.get('order'));
+			if (formData.get('formType') === 'existingLesson') {
+				const lessonSlug = formData.get('lessonSlug') as string;
+				const moduleSlug = formData.get('moduleSlug') as string;
+				const publicationDate = new Date(formData.get('publicationDate') as string);
+				const isPublished = Boolean(formData.get('isPublished'));
+				const order = Number(formData.get('order'));
 
-					await new LessonService().associateLessonWithModule(lessonSlug, moduleSlug, publicationDate, isPublished, order);
+				await new LessonService().associateLessonWithModule(lessonSlug, moduleSlug, publicationDate, isPublished, order);
 
-					userSession.flash('success', 'Aula associada com sucesso');
-					break;
-				}
-
-				default: {
-					userSession.flash('error', 'Formulário inválido');
-					break;
-				}
+				userSession.flash('success', 'Aula associada com sucesso');
+			} else {
+				userSession.flash('error', 'Formulário inválido');
 			}
 		} else {
 			userSession.flash('error', 'Você não tem permissão');
@@ -99,7 +88,7 @@ export const action = defineAction(async ({request}: ActionFunctionArgs) => {
 	}
 
 	return data({}, {headers: {'Set-Cookie': await commitUserSession(userSession)}});
-});
+};
 
 export default function AddExistingLessonForm() {
 	const {
