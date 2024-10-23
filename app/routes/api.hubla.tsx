@@ -29,7 +29,7 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
 export const action = async ({request}: LoaderFunctionArgs) => {
 	try {
 		const {headers} = request;
-		const HUBLA_TOKEN = headers.get('X-hubla-token');
+		const HUBLA_TOKEN = headers.get('x-hubla-token');
 
 		if (HUBLA_TOKEN === process.env.HUBLA_TOKEN) {
 			const body = await request.json() as THublaEvents;
