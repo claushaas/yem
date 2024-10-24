@@ -132,6 +132,16 @@ export const action = async ({request, params}: ActionFunctionArgs) => {
 				break;
 			}
 
+			case 'subscriptions': {
+				const {data: user} = await userService.getUserData(username!);
+
+				await new SubscriptionService().resetUserSubscriptions(user);
+
+				userSession.flash('success', 'Matrículas do aluno resetadas com sucesso');
+
+				break;
+			}
+
 			default: {
 				userSession.flash('error', 'Tipo de formulário inválido');
 				break;
@@ -541,6 +551,38 @@ export default function Student() {
 
 			<div>
 				<h2>Matrículas</h2>
+
+				<RadixForm.Root asChild>
+					<Form method='post' action={`/admin/students/${username}`}>
+
+						<RadixForm.Field name='id' className='hidden'>
+							<RadixForm.Control asChild>
+								<input
+									disabled={isSubmittingAnyForm}
+									type='text'
+									value={studentData.id}
+								/>
+							</RadixForm.Control>
+						</RadixForm.Field>
+
+						<RadixForm.Field name='type' className='hidden'>
+							<RadixForm.Control asChild>
+								<input
+									disabled={isSubmittingAnyForm}
+									type='text'
+									value='subscriptions'
+								/>
+							</RadixForm.Control>
+						</RadixForm.Field>
+
+						<RadixForm.Submit asChild>
+							<Button isDisabled={isSubmittingAnyForm} text='Resetar Matrículas' preset={ButtonPreset.Secondary} type={ButtonType.Submit}/>
+						</RadixForm.Submit>
+
+						{isSubmittingAnyForm && <YemSpinner/>}
+					</Form>
+				</RadixForm.Root>
+
 				{subscriptions && (
 					<ul>
 						{subscriptions.map(subscription => (
