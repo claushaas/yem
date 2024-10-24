@@ -86,6 +86,26 @@ export default class SubscriptionService {
 		};
 	}
 
+	public async resetUserSubscriptions(user: TUser): Promise<TServiceReturn<string>> {
+		try {
+			await this._model.userSubscriptions.deleteMany({
+				where: {
+					userId: user.id,
+				},
+			});
+
+			await this.createUserInitialSubscriptions(user);
+
+			return {
+				status: 'NO_CONTENT',
+				data: 'Subscriptions reset successfully',
+			};
+		} catch (error) {
+			logger.logError(`Error resetting user subscriptions: ${(error as Error).message}`);
+			throw new CustomError('UNKNOWN', `Error resetting user subscriptions: ${(error as Error).message}`);
+		}
+	}
+
 	public async getUserSubscriptions(user: TUser): Promise<TServiceReturn<TPrismaPayloadGetUserSubscriptions[] | undefined>> {
 		try {
 			const subscriptions = await this._model.userSubscriptions.findMany({
@@ -172,13 +192,20 @@ export default class SubscriptionService {
 		try {
 			const {data: hotmartSubscriptions} = await this._hotmartService.getUserFormationSubscriptions(user);
 
-			if (hotmartSubscriptions.length > 0) {
-				await Promise.all([ // eslint-disable-line unicorn/no-single-promise-in-promise-methods
-					hotmartSubscriptions.map(async subscription => {
+			if (hotmartSubscriptions.length > 0 || (hotmartSubscriptions.length === 0 && user.roles?.includes('novaFormacao'))) {
+				await Promise.all([
+					hotmartSubscriptions.length > 0 && hotmartSubscriptions.map(async subscription => {
 						await this.createOrUpdate(subscription);
 					}),
+					(hotmartSubscriptions.length === 0 && user.roles?.includes('novaFormacao')) && this.createOrUpdate({
+						userId: user.id,
+						courseSlug: convertSubscriptionIdentifierToCourseSlug('1392822'),
+						provider: 'hotmart',
+						providerSubscriptionId: `no-hotmart-formation-${user.id}`,
+						expiresAt: new Date(2_556_113_460_000),
+					}),
 				]);
-			} else if (hotmartSubscriptions.length === 0) {
+			} else if (hotmartSubscriptions.length === 0 && !user.roles?.includes('novaFormacao')) {
 				await this.createOrUpdate({
 					userId: user.id,
 					courseSlug: convertSubscriptionIdentifierToCourseSlug('1392822'),
