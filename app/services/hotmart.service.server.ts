@@ -94,11 +94,14 @@ export class HotmartService {
 			logger.logDebug(`Got response: ${JSON.stringify(response.data)}`);
 
 			const {data: {items}} = response;
-			items.sort((a, b) => new Date(b.purchase.approved_date).getTime() - new Date(a.purchase.approved_date).getTime());
+			console.log(items);
+			if (items.length > 1) {
+				items.sort((a, b) => new Date(b.purchase.approved_date).getTime() - new Date(a.purchase.approved_date).getTime());
+			}
 
 			return {
 				status: 'SUCCESSFUL',
-				data: items ? this._mapFormationSubscriptions([items[0]], user) : [],
+				data: items.length > 0 ? this._mapFormationSubscriptions([items[0]], user) : [],
 			};
 		} catch (error) {
 			logger.logError(`Error getting user formation subscriptions on first try: ${JSON.stringify((error as Record<string, string>).data)}`);
