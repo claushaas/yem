@@ -86,6 +86,26 @@ export default class SubscriptionService {
 		};
 	}
 
+	public async resetUserSubscriptions(user: TUser): Promise<TServiceReturn<string>> {
+		try {
+			await this._model.userSubscriptions.deleteMany({
+				where: {
+					userId: user.id,
+				},
+			});
+
+			await this.createUserInitialSubscriptions(user);
+
+			return {
+				status: 'NO_CONTENT',
+				data: 'Subscriptions reset successfully',
+			};
+		} catch (error) {
+			logger.logError(`Error resetting user subscriptions: ${(error as Error).message}`);
+			throw new CustomError('UNKNOWN', `Error resetting user subscriptions: ${(error as Error).message}`);
+		}
+	}
+
 	public async getUserSubscriptions(user: TUser): Promise<TServiceReturn<TPrismaPayloadGetUserSubscriptions[] | undefined>> {
 		try {
 			const subscriptions = await this._model.userSubscriptions.findMany({
