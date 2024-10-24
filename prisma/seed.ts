@@ -8,7 +8,7 @@ const main = async () => {
 			{
 				id: 'db66f261-f832-4f0b-9565-53d8f8422d51',
 				name: 'Formação em Yoga',
-				slug: 'formacao-em-yoga',
+				slug: 'formacao-em-yoga-introducao',
 				description: 'Curso de formação em Yoga',
 				thumbnailUrl: 'd9fd2efe-ee41-45d6-25a5-4ec50aad7000',
 				videoSourceUrl: 'd4d143774ac00547befe64063fc8f7e2',
@@ -51,7 +51,7 @@ const main = async () => {
 				connect: [
 					{slug: 'yoga-para-iniciantes'},
 					{slug: 'escola-online'},
-					{slug: 'formacao-em-yoga'},
+					{slug: 'formacao-em-yoga-introducao'},
 				],
 			},
 		},
@@ -65,7 +65,7 @@ const main = async () => {
 			delegateAuthTo: {
 				connect: [
 					{slug: 'escola-online'},
-					{slug: 'formacao-em-yoga'},
+					{slug: 'formacao-em-yoga-introducao'},
 				],
 			},
 		},
@@ -73,11 +73,11 @@ const main = async () => {
 
 	await prisma.course.update({
 		where: {
-			slug: 'formacao-em-yoga',
+			slug: 'formacao-em-yoga-introducao',
 		},
 		data: {
 			delegateAuthTo: {
-				connect: {slug: 'formacao-em-yoga'},
+				connect: {slug: 'formacao-em-yoga-introducao'},
 			},
 		},
 	});
@@ -92,7 +92,7 @@ const main = async () => {
 			isLessonsOrderRandom: false,
 			courses: {
 				create: {
-					courseSlug: 'formacao-em-yoga',
+					courseSlug: 'formacao-em-yoga-introducao',
 					isPublished: true,
 					publicationDate: new Date('2024-03-25 17:30:00'),
 					order: 1,
