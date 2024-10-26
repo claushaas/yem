@@ -20,6 +20,8 @@ import {type TLessonDataForCache} from '~/cache/populate-lessons-to-cache.js';
 import {memoryCache} from '~/cache/memory-cache.js';
 import {type TTag} from '~/types/tag.type.js';
 import {type TypeUserSession} from '~/types/user-session.type';
+import {type TModuleDataFromCache} from '~/types/module.type';
+import {type TCourseDataForCache} from '~/cache/populate-courses-to-cache';
 
 export class LessonService {
 	private static cache: typeof memoryCache;
@@ -404,7 +406,7 @@ export class LessonService {
 		};
 	}
 
-	public getBySlugFromCache(moduleSlug: string, lessonSlug: string, user: TUser | undefined): TServiceReturn<TLessonDataForCache | undefined> {
+	public getBySlugFromCache(courseSlug: string, moduleSlug: string, lessonSlug: string, user: TUser | undefined): TServiceReturn<TLessonDataForCache | undefined> {
 		try {
 			const lesson = JSON.parse(LessonService.cache.get(`${moduleSlug}:${lessonSlug}`) ?? '{}') as TLessonDataForCache;
 
@@ -427,8 +429,13 @@ export class LessonService {
 				return new Date(expirationDate) >= new Date();
 			});
 
-			lesson.lesson.content = hasActiveSubscription ? lesson.lesson.content : lesson.lesson.marketingContent;
-			lesson.lesson.videoSourceUrl = hasActiveSubscription ? lesson.lesson.videoSourceUrl : lesson.lesson.marketingVideoUrl;
+			if (!hasActiveSubscription) {
+				const module = JSON.parse(LessonService.cache.get(`${courseSlug}:${moduleSlug}`) ?? '{}') as TModuleDataFromCache;
+				const course = JSON.parse(LessonService.cache.get(`course:${courseSlug}`) ?? '{}') as TCourseDataForCache;
+
+				lesson.lesson.content = lesson.lesson.marketingContent || module.module.marketingContent || course.marketingContent;
+				lesson.lesson.videoSourceUrl = lesson.lesson.marketingVideoUrl || module.module.marketingVideoUrl || course.marketingVideoUrl;
+			}
 
 			return {
 				status: 'SUCCESSFUL',

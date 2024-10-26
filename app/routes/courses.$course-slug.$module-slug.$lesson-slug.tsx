@@ -44,7 +44,7 @@ export const loader = async ({request, params}: LoaderFunctionArgs) => {
 
 	const userId = (userSession.data as TUser).id;
 
-	const {data: lesson} = new LessonService().getBySlugFromCache(moduleSlug!, lessonSlug!, userSession.data as TUser);
+	const {data: lesson} = new LessonService().getBySlugFromCache(courseSlug!, moduleSlug!, lessonSlug!, userSession.data as TUser);
 	const {data: module} = new ModuleService().getBySlugFromCache(courseSlug!, moduleSlug!, userSession.data as TUser, []);
 	const {data: course} = new CourseService().getBySlugFromCache(courseSlug!, userSession.data as TUser);
 	const userLessonActivity = new LessonActivityService().getLessonActivityForUser(lessonSlug!, userId);
