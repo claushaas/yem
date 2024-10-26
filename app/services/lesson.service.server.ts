@@ -433,8 +433,8 @@ export class LessonService {
 				const module = JSON.parse(LessonService.cache.get(`${courseSlug}:${moduleSlug}`) ?? '{}') as TModuleDataFromCache;
 				const course = JSON.parse(LessonService.cache.get(`course:${courseSlug}`) ?? '{}') as TCourseDataForCache;
 
-				lesson.lesson.content = lesson.lesson.marketingContent ?? module.module.marketingContent ?? course.marketingContent;
-				lesson.lesson.videoSourceUrl = lesson.lesson.marketingVideoUrl ?? module.module.marketingVideoUrl ?? course.marketingVideoUrl;
+				lesson.lesson.content = lesson.lesson.marketingContent || module.module.marketingContent || course.marketingContent;
+				lesson.lesson.videoSourceUrl = lesson.lesson.marketingVideoUrl || module.module.marketingVideoUrl || course.marketingVideoUrl;
 			}
 
 			return {
