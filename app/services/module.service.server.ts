@@ -242,7 +242,7 @@ export class ModuleService {
 	public getBySlugFromCache(courseSlug: string, moduleSlug: string, user: TUser, appliedTags: Array<[string, string]>, page?: number): TServiceReturn<TModuleDataFromCache | undefined> {
 		try {
 			const module = JSON.parse(ModuleService.cache.get(`${courseSlug}:${moduleSlug}`) ?? '{}') as TModuleDataFromCache;
-			const course = JSON.parse(ModuleService.cache.get(courseSlug) ?? '{}') as TCourseDataForCache;
+			const course = JSON.parse(ModuleService.cache.get(`course:${courseSlug}`) ?? '{}') as TCourseDataForCache;
 
 			if (!module) {
 				logger.logError(`Module ${moduleSlug} for ${courseSlug} not found in cache`);
