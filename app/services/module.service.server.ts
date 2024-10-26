@@ -265,8 +265,8 @@ export class ModuleService {
 			const actualPage = page ?? 1;
 
 			if (!hasActiveSubscription) {
-				module.module.content = module.module.marketingContent ?? course.marketingContent;
-				module.module.videoSourceUrl = module.module.marketingVideoUrl ?? course.marketingVideoUrl;
+				module.module.content = module.module.marketingContent || course.marketingContent;
+				module.module.videoSourceUrl = module.module.marketingVideoUrl || course.marketingVideoUrl;
 			}
 
 			const allModuleLessons = module.lessons
@@ -274,8 +274,8 @@ export class ModuleService {
 					const lessonData = JSON.parse(ModuleService.cache.get(`${moduleSlug}:${lessonSlug as string}`) ?? '{}') as TLessonDataForCache;
 
 					if (!hasActiveSubscription) {
-						lessonData.lesson.content = lessonData.lesson.marketingContent ?? module.module.marketingContent;
-						lessonData.lesson.videoSourceUrl = lessonData.lesson.marketingVideoUrl ?? module.module.marketingVideoUrl;
+						lessonData.lesson.content = lessonData.lesson.marketingContent || module.module.marketingContent;
+						lessonData.lesson.videoSourceUrl = lessonData.lesson.marketingVideoUrl || module.module.marketingVideoUrl;
 					}
 
 					return lessonData;
