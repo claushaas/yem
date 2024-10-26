@@ -16,6 +16,7 @@ import {logger} from '~/utils/logger.util.js';
 import {memoryCache} from '~/cache/memory-cache.js';
 import {type TSubscription} from '~/types/subscription.type.js';
 import {type TLessonDataForCache} from '~/cache/populate-lessons-to-cache.js';
+import {type TCourseDataForCache} from '~/cache/populate-courses-to-cache.js';
 
 export class ModuleService {
 	private static cache: typeof memoryCache;
@@ -241,6 +242,7 @@ export class ModuleService {
 	public getBySlugFromCache(courseSlug: string, moduleSlug: string, user: TUser, appliedTags: Array<[string, string]>, page?: number): TServiceReturn<TModuleDataFromCache | undefined> {
 		try {
 			const module = JSON.parse(ModuleService.cache.get(`${courseSlug}:${moduleSlug}`) ?? '{}') as TModuleDataFromCache;
+			const course = JSON.parse(ModuleService.cache.get(courseSlug) ?? '{}') as TCourseDataForCache;
 
 			if (!module) {
 				logger.logError(`Module ${moduleSlug} for ${courseSlug} not found in cache`);
@@ -262,12 +264,19 @@ export class ModuleService {
 
 			const actualPage = page ?? 1;
 
+			if (!hasActiveSubscription) {
+				module.module.content = module.module.marketingContent ?? course.marketingContent;
+				module.module.videoSourceUrl = module.module.marketingVideoUrl ?? course.marketingVideoUrl;
+			}
+
 			const allModuleLessons = module.lessons
 				.map(lessonSlug => {
 					const lessonData = JSON.parse(ModuleService.cache.get(`${moduleSlug}:${lessonSlug as string}`) ?? '{}') as TLessonDataForCache;
 
-					lessonData.lesson.content = hasActiveSubscription ? lessonData.lesson.content : lessonData.lesson.marketingContent;
-					lessonData.lesson.videoSourceUrl = hasActiveSubscription ? lessonData.lesson.videoSourceUrl : lessonData.lesson.marketingVideoUrl;
+					if (!hasActiveSubscription) {
+						lessonData.lesson.content = lessonData.lesson.marketingContent ?? module.module.marketingContent;
+						lessonData.lesson.videoSourceUrl = lessonData.lesson.marketingVideoUrl ?? module.module.marketingVideoUrl;
+					}
 
 					return lessonData;
 				});
@@ -332,8 +341,6 @@ export class ModuleService {
 			const actualPageLessons = lessons.slice((actualPage - 1) * 16, actualPage * 16);
 
 			module.lessons = actualPageLessons;
-			module.module.content = hasActiveSubscription ? module.module.content : module.module.marketingContent;
-			module.module.videoSourceUrl = hasActiveSubscription ? module.module.videoSourceUrl : module.module.marketingVideoUrl;
 
 			return {
 				status: 'SUCCESSFUL',
