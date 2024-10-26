@@ -32,10 +32,10 @@
     "db:reset": "npx prisma migrate reset"
   },
   "dependencies": {
-    "@aws-sdk/client-cognito-identity-provider": "^3.678.0",
-    "@aws-sdk/client-secrets-manager": "^3.678.0",
-    "@aws-sdk/client-sesv2": "^3.678.0",
-    "@aws-sdk/credential-providers": "^3.678.0",
+    "@aws-sdk/client-cognito-identity-provider": "^3.679.0",
+    "@aws-sdk/client-secrets-manager": "^3.679.0",
+    "@aws-sdk/client-sesv2": "^3.679.0",
+    "@aws-sdk/credential-providers": "^3.679.0",
     "@cloudflare/stream-react": "^1.9.1",
     "@epic-web/remember": "^1.1.0",
     "@heroicons/react": "^2.1.5",
@@ -58,7 +58,7 @@
     "axios": "^1.7.7",
     "clipboard-copy": "^4.0.1",
     "express": "^4.21.1",
-    "framer-motion": "^11.11.9",
+    "framer-motion": "^11.11.10",
     "fuse.js": "^7.0.0",
     "helmet": "^8.0.0",
     "hls.js": "^1.5.17",
@@ -73,7 +73,7 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-phone-number-input": "^3.4.9",
-    "react-select": "^5.8.1",
+    "react-select": "^5.8.2",
     "remix-create-express-app": "^0.4.5",
     "remix-utils": "^7.7.0",
     "winston": "^3.15.0"
