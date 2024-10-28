@@ -271,6 +271,10 @@ export class HooksService {
 					break;
 				}
 
+				case 'subscription.changed': {
+					break;
+				}
+
 				case 'subscription.suspended': {
 					await this._handleIuguSubscriptionSuspendedWebhook(body);
 					break;
@@ -312,16 +316,20 @@ export class HooksService {
 		try {
 			switch (data.status) {
 				case 'paid': {
-					const {data: subscription} = await this._iuguService.getSubscriptionById(data.subscription_id as string);
-					const {data: user} = await this._userService.getUserData(subscription.customer_email.toLowerCase());
+					try {
+						const {data: subscription} = await this._iuguService.getSubscriptionById(data.subscription_id as string);
+						const {data: user} = await this._userService.getUserData(subscription.customer_email.toLowerCase());
 
-					await this._subscriptionService.createOrUpdate({
-						userId: user.id,
-						courseSlug: convertSubscriptionIdentifierToCourseSlug(subscription.plan_identifier),
-						expiresAt: new Date(subscription.expires_at),
-						provider: 'iugu',
-						providerSubscriptionId: subscription.id,
-					});
+						await this._subscriptionService.createOrUpdate({
+							userId: user.id,
+							courseSlug: convertSubscriptionIdentifierToCourseSlug(subscription.plan_identifier),
+							expiresAt: new Date(subscription.expires_at),
+							provider: 'iugu',
+							providerSubscriptionId: subscription.id,
+						});
+					} catch {
+						await this._slackService.sendMessage({message: 'Error handling iugu invoice status changed (paid)', ...body});
+					}
 
 					break;
 				}
@@ -332,6 +340,14 @@ export class HooksService {
 
 				case 'pending': {
 					await this._slackService.sendMessage({message: 'Iugu invoice status changed not handled', ...body});
+					break;
+				}
+
+				case 'refunded': {
+					break;
+				}
+
+				case 'canceled': {
 					break;
 				}
 
