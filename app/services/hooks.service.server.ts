@@ -55,6 +55,10 @@ export class HooksService {
 					break;
 				}
 
+				case 'invoice.created': {
+					break;
+				}
+
 				case 'invoice.payment_succeeded': {
 					const {data: {userData: user}} = await this._userService.createOrUpdate({
 						email: body.event.user.email.toLowerCase(),
@@ -66,6 +70,7 @@ export class HooksService {
 					});
 
 					await Promise.all([
+						this._slackService.sendMessage(body),
 						this._botMakerService.sendWhatsappTemplateMessate(
 							user.phoneNumber,
 							'boas_vindas_formacao2',
