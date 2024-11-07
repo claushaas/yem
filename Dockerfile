@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1.4
 
-FROM node:20-alpine AS base
+FROM node:22-alpine AS base
 
     RUN apk update && apk add --no-cache tzdata
     ENV TZ="America/Sao_Paulo"
@@ -53,9 +53,7 @@ FROM base AS builder
 
     COPY --link . .
 
-    RUN npx prisma generate
-
-    RUN npm run build
+    RUN npx prisma generate && npm run build
 
 FROM base AS prod
 
