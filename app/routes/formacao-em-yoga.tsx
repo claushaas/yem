@@ -1,4 +1,4 @@
-import {type LoaderFunctionArgs, json} from '@remix-run/node';
+import {type LoaderFunctionArgs} from '@remix-run/node';
 import {Link, type MetaFunction} from '@remix-run/react';
 import {Button, ButtonPreset, ButtonType} from '~/components/button.js';
 
@@ -8,7 +8,7 @@ export const meta: MetaFunction<typeof loader> = ({data}) => [
 	...data!.meta,
 ];
 
-export const loader = ({request}: LoaderFunctionArgs) => json<{meta: Array<{tagName: string; rel: string; href: string}>}>({
+export const loader = ({request}: LoaderFunctionArgs) => ({
 	meta: [{tagName: 'link', rel: 'canonical', href: new URL('/formacao-em-yoga', request.url).toString()}],
 });
 

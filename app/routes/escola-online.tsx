@@ -1,5 +1,5 @@
 import {type LoaderFunctionArgs} from '@remix-run/node';
-import {json, Link, type MetaFunction} from '@remix-run/react';
+import {Link, type MetaFunction} from '@remix-run/react';
 import {
 	CheckCircleIcon,
 	HeartIcon,
@@ -24,7 +24,7 @@ export const meta: MetaFunction<typeof loader> = ({data}) => [
 	...data!.meta,
 ];
 
-export const loader = ({request}: LoaderFunctionArgs) => json<{meta: Array<{tagName: string; rel: string; href: string}>}>({
+export const loader = ({request}: LoaderFunctionArgs) => ({
 	meta: [{tagName: 'link', rel: 'canonical', href: new URL('/escola-online', request.url).toString()}],
 });
 
