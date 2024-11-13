@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 import {UserService} from './user.service.server.js';
 import SubscriptionService from './subscription.service.server.js';
 import {IuguService} from './iugu.service.server.js';
@@ -525,6 +526,47 @@ export class HooksService {
 					break;
 				}
 
+				case 4_735_693: { // Formation Subscription
+					if (data.purchase.recurrence_number === 1) {
+						await Promise.all([
+							this._botMakerService.sendWhatsappTemplateMessate(
+								userData.phoneNumber,
+								'boas_vindas_formacao2',
+								{
+									nome: userData.firstName,
+									linkCanalRecadosFormacao: 'https://t.me/joinchat/_2UwTcWJ5to3MTAx',
+									linkGrupoFormacao: 'https://t.me/joinchat/gxazJsQTmwI5YzYx',
+									linkSuporte: 'https://t.me/yogaemmovimento_bot',
+									linkManualDoAlunoFormacao: 'https://img.amo.yoga/MANUAL_DO_ALUNO.pdf',
+								},
+							),
+							this._mailService.sendEmail(formationWelcomeEmailTemplate(userData.firstName, userData.email)),
+							fetch(process.env.SLACK_WEBHOOK_URL_FORMATION!, {
+								method: 'POST',
+								headers: {
+									'Content-Type': 'application/json', // eslint-disable-line @typescript-eslint/naming-convention
+								},
+								body: JSON.stringify({text: `Novo Aluno na Formação\nNome: ${userData.firstName} ${userData.lastName}\nEmail: ${userData.email}\nTelefone: ${userData.phoneNumber}`}),
+							}),
+						]);
+					}
+
+					const rolesToAdd = ['iniciantes', 'escolaOnline', 'escolaAnual', 'novaFormacao'];
+
+					await Promise.all([
+						this._userService.addRolesToUser(userData, rolesToAdd), // Should be deleted when old site stops being suported
+						this._subscriptionService.createOrUpdate({
+							userId: userData.id,
+							courseSlug: convertSubscriptionIdentifierToCourseSlug(data.product.id.toString() as TPlanIdentifier),
+							expiresAt: new Date(data.purchase.date_next_charge!),
+							provider: 'hotmart',
+							providerSubscriptionId: data.subscription?.subscriber.code ?? data.purchase.transaction,
+						}),
+					]);
+
+					break;
+				}
+
 				case 135_340: { // School
 					if (data.purchase.recurrence_number === 1) {
 						await Promise.all([
@@ -581,7 +623,7 @@ export class HooksService {
 		const {data} = body;
 
 		const isSchool = data.product.id === 135_340;
-		const isFormation = data.product.id === 1_392_822;
+		const isFormation = data.product.id === 1_392_822 || data.product.id === 4_735_693;
 
 		const isBillet = data.purchase.payment.type === 'BILLET';
 		const isPix = data.purchase.payment.type === 'PIX';
@@ -668,7 +710,7 @@ export class HooksService {
 		const {data} = body;
 
 		const isSchool = data.product.id === 135_340;
-		const isFormation = data.product.id === 1_392_822;
+		const isFormation = data.product.id === 1_392_822 || data.product.id === 4_735_693;
 
 		const isBillet = data.purchase.payment.type === 'BILLET';
 		const isPix = data.purchase.payment.type === 'PIX';
@@ -790,6 +832,7 @@ export class HooksService {
 
 		const isSchool = 135_340;
 		const isFormation = 1_392_822;
+		const isFormationSubscription = 4_735_693;
 
 		const {data: {userData: user}} = await this._userService.createOrUpdate({
 			email: data.buyer.email.toLowerCase(),
@@ -817,7 +860,7 @@ export class HooksService {
 					break;
 				}
 
-				case isFormation: {
+				case isFormation || isFormationSubscription: {
 					const rolesToRemove = ['escolaOnline', 'escolaAnual', 'novaFormacao'];
 					await Promise.all([
 						this._userService.removeRolesFromUser(user, rolesToRemove),
