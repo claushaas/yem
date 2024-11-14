@@ -24,6 +24,8 @@ export const subscriptionIdentifierToCourseSlug = {
 	Mensal: 'escola-online',
 	Anual: 'cursos-de-aprofundamento',
 	oldFormation: 'formacao-de-instrutores',
+	ypg: 'formacao-em-yoga-para-gestantes',
+	vinyasa: 'especializacao-em-vinyasa-yoga',
 };
 
 export const convertSubscriptionIdentifierToCourseSlug = (subscriptionIdentifier: TPlanIdentifier): string => subscriptionIdentifierToCourseSlug[subscriptionIdentifier];
