@@ -326,13 +326,26 @@ export class HooksService {
 						const {data: subscription} = await this._iuguService.getSubscriptionById(data.subscription_id as string);
 						const {data: user} = await this._userService.getUserData(subscription.customer_email.toLowerCase());
 
-						await this._subscriptionService.createOrUpdate({
-							userId: user.id,
-							courseSlug: convertSubscriptionIdentifierToCourseSlug(subscription.plan_identifier),
-							expiresAt: new Date(subscription.expires_at),
-							provider: 'iugu',
-							providerSubscriptionId: subscription.id,
-						});
+						let rolesToAdd: string[] = [];
+
+						if (subscription.plan_identifier === 'escola_mensal' || subscription.plan_identifier === 'escola_mensal_promocional') {
+							rolesToAdd = ['iniciantes', 'escolaOnline'];
+						} else if (subscription.plan_identifier === 'escola_online_plano_anual' || subscription.plan_identifier === 'escola_anual_bf' || subscription.plan_identifier === 'escola_trimestral_bf' || subscription.plan_identifier === 'escola_semestral' || subscription.plan_identifier === 'escola_anual' || subscription.plan_identifier === 'escola_semestral_promocional' || subscription.plan_identifier === 'escola_anual_promocional') {
+							rolesToAdd = ['iniciantes', 'escolaOnline', 'escolaAnual'];
+						} else {
+							rolesToAdd = ['iniciantes'];
+						}
+
+						await Promise.all([
+							this._userService.addRolesToUser(user, rolesToAdd), // Should be deleted when old site stops being suported
+							this._subscriptionService.createOrUpdate({
+								userId: user.id,
+								courseSlug: convertSubscriptionIdentifierToCourseSlug(subscription.plan_identifier),
+								expiresAt: new Date(subscription.expires_at),
+								provider: 'iugu',
+								providerSubscriptionId: subscription.id,
+							}),
+						]);
 					} catch {
 						await this._slackService.sendMessage({message: 'Error handling iugu invoice status changed (paid)', ...body});
 					}
