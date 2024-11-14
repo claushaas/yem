@@ -12,3 +12,11 @@ export const userHasOldFormationRoles = (user: TUser): boolean => Boolean(user.r
   || role === 'formacaoSet2020'
   || role === 'formacaoJan2021',
 ));
+
+export const userHasYPGRoles = (user: TUser): boolean => Boolean(user.roles?.some(role =>
+	role === 'ypg',
+));
+
+export const userHasVinyasaRoles = (user: TUser): boolean => Boolean(user.roles?.some(role =>
+	role === 'vinyasa',
+));
