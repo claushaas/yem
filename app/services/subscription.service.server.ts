@@ -10,7 +10,7 @@ import {IuguService} from './iugu.service.server.js';
 import {CustomError} from '~/utils/custom-error.js';
 import {convertSubscriptionIdentifierToCourseSlug} from '~/utils/subscription-identifier-to-course-id.js';
 import {memoryCache} from '~/cache/memory-cache.js';
-import {userHasOldFormationRoles, userHasYPGRoles} from '~/utils/test-user-roles-for-old-courses.js';
+import {userHasOldFormationRoles, userHasYPGRoles, userHasVinyasaRoles} from '~/utils/test-user-roles-for-old-courses.js';
 
 export default class SubscriptionService {
 	private readonly _model: PrismaClient;
@@ -274,7 +274,7 @@ export default class SubscriptionService {
 	}
 
 	private async _createOrUpdateVinyasaSubscription(user: TUser): Promise<void> {
-		if (userHasYPGRoles(user)) {
+		if (userHasVinyasaRoles(user)) {
 			await this.createOrUpdate({
 				userId: user.id,
 				courseSlug: convertSubscriptionIdentifierToCourseSlug('vinyasa'),
