@@ -10,7 +10,7 @@ import {IuguService} from './iugu.service.server.js';
 import {CustomError} from '~/utils/custom-error.js';
 import {convertSubscriptionIdentifierToCourseSlug} from '~/utils/subscription-identifier-to-course-id.js';
 import {memoryCache} from '~/cache/memory-cache.js';
-import {userHasOldFormationRoles} from '~/utils/test-user-roles-for-old-formation.js';
+import {userHasOldFormationRoles, userHasYPGRoles, userHasVinyasaRoles} from '~/utils/test-user-roles-for-old-courses.js';
 
 export default class SubscriptionService {
 	private readonly _model: PrismaClient;
@@ -69,14 +69,18 @@ export default class SubscriptionService {
 			(subscription.provider === 'hotmart' && subscription.courseSlug === 'formacao-em-yoga-introducao'));
 		const hasBeginnerSubscription = actualSubscriptions?.some(subscription => subscription.courseSlug === 'yoga-para-iniciantes');
 		const hasOldFormationSubscriptions = actualSubscriptions?.some(subscription => subscription.courseSlug === 'formacao-de-instrutores');
+		const hasYPGSubscription = actualSubscriptions?.some(subscription => subscription.courseSlug === 'formacao-em-yoga-para-gestantes');
+		const hasVinyasaSubscription = actualSubscriptions?.some(subscription => subscription.courseSlug === 'especializacao-em-vinyasa-yoga');
 
-		if (!hasIuguSubscriptions || !hasHotmartSchoolSubscriptions || !hasHotmartFormationSubscriptions || !hasBeginnerSubscription || !hasOldFormationSubscriptions) {
+		if (!hasIuguSubscriptions || !hasHotmartSchoolSubscriptions || !hasHotmartFormationSubscriptions || !hasBeginnerSubscription || !hasOldFormationSubscriptions || !hasYPGSubscription || !hasVinyasaSubscription) {
 			await Promise.all([
 				!hasIuguSubscriptions && this._createUserIuguSubscriptions(user),
 				!hasHotmartSchoolSubscriptions && this._createUserHotmartSchoolSubscriptions(user),
 				!hasHotmartFormationSubscriptions && this._createUserHotmartFormationSubscriptions(user),
 				!hasBeginnerSubscription && this._createOrUpdateBeginnerSubscription(user),
 				!hasOldFormationSubscriptions && this._createOrUpdateOldFormationSubscription(user),
+				!hasYPGSubscription && this._createOrUpdateYPGSubscription(user),
+				!hasVinyasaSubscription && this._createOrUpdateVinyasaSubscription(user),
 			]);
 		}
 
@@ -244,6 +248,46 @@ export default class SubscriptionService {
 				courseSlug: convertSubscriptionIdentifierToCourseSlug('oldFormation'),
 				provider: 'manual',
 				providerSubscriptionId: `no-oldFormation-${user.id}`,
+				expiresAt: new Date(946_684_800),
+			});
+		}
+	}
+
+	private async _createOrUpdateYPGSubscription(user: TUser): Promise<void> {
+		if (userHasYPGRoles(user)) {
+			await this.createOrUpdate({
+				userId: user.id,
+				courseSlug: convertSubscriptionIdentifierToCourseSlug('ypg'),
+				provider: 'manual',
+				providerSubscriptionId: `ypg-${user.id}`,
+				expiresAt: new Date(2_556_113_460_000),
+			});
+		} else {
+			await this.createOrUpdate({
+				userId: user.id,
+				courseSlug: convertSubscriptionIdentifierToCourseSlug('ypg'),
+				provider: 'manual',
+				providerSubscriptionId: `no-ypg-${user.id}`,
+				expiresAt: new Date(946_684_800),
+			});
+		}
+	}
+
+	private async _createOrUpdateVinyasaSubscription(user: TUser): Promise<void> {
+		if (userHasVinyasaRoles(user)) {
+			await this.createOrUpdate({
+				userId: user.id,
+				courseSlug: convertSubscriptionIdentifierToCourseSlug('vinyasa'),
+				provider: 'manual',
+				providerSubscriptionId: `vinyasa-${user.id}`,
+				expiresAt: new Date(2_556_113_460_000),
+			});
+		} else {
+			await this.createOrUpdate({
+				userId: user.id,
+				courseSlug: convertSubscriptionIdentifierToCourseSlug('vinyasa'),
+				provider: 'manual',
+				providerSubscriptionId: `no-vinyasa-${user.id}`,
 				expiresAt: new Date(946_684_800),
 			});
 		}
