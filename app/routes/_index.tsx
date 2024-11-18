@@ -69,7 +69,7 @@ export default function Index() {
 							<div className='w-60 shrink-0 p-5 shadow-sm shadow-mauve-11 dark:shadow-mauvedark-3 bg-mauve-4 dark:bg-mauvedark-3 rounded-2xl flex flex-col justify-center items-center gap-5'>
 								<h2 className='text-center'>Formação em Yoga</h2>
 								<p>Para se formar como Instrutor de Yoga certificado.</p>
-								<Link to='https://site.yogaemmovimento.com/formacao'>
+								<Link to='/formacao-em-yoga'>
 									<Button text='Conhecer Agora' type={ButtonType.Button} preset={ButtonPreset.Primary}/>
 								</Link>
 							</div>
