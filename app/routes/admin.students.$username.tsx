@@ -296,6 +296,10 @@ export default function Student() {
 			</div>
 
 			<div>
+				<h3>{studentData.id}</h3>
+			</div>
+
+			<div>
 				<h3>{studentData.email}</h3>
 				<Dialog.Root open={emailDialogIsOpen} onOpenChange={setEmailDialogIsOpen}>
 					<Dialog.Trigger asChild>
@@ -587,7 +591,7 @@ export default function Student() {
 					<ul>
 						{subscriptions.map(subscription => (
 							<li key={subscription.id}>
-								<h3>{subscription.course.name}</h3>
+								<h3>{subscription.course.name} - {subscription.provider} - {subscription.providerSubscriptionId}</h3>
 								<p>{subscription.expiresAt.toLocaleDateString()}</p>
 							</li>
 						))}
