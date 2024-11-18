@@ -13,6 +13,7 @@ import {memoryCache} from '~/cache/memory-cache.js';
 import {userHasOldFormationRoles, userHasYPGRoles, userHasVinyasaRoles} from '~/utils/test-user-roles-for-old-courses.js';
 
 export default class SubscriptionService {
+	private static cache: typeof memoryCache;
 	private readonly _model: PrismaClient;
 	private readonly _hotmartService: HotmartService;
 	private readonly _iuguService: IuguService;
@@ -21,6 +22,7 @@ export default class SubscriptionService {
 		this._model = model;
 		this._hotmartService = new HotmartService();
 		this._iuguService = new IuguService();
+		SubscriptionService.cache = memoryCache;
 	}
 
 	public async createOrUpdate(subscriptionData: TSubscription): Promise<TServiceReturn<Subscription>> {
@@ -47,7 +49,7 @@ export default class SubscriptionService {
 			},
 		});
 
-		memoryCache.set(`${subscription.courseSlug}:${subscription.userId}`, JSON.stringify(createdOrUpdatedSubscription));
+		SubscriptionService.cache.set(`${subscription.courseSlug}:${subscription.userId}`, JSON.stringify(createdOrUpdatedSubscription));
 
 		if (!createdOrUpdatedSubscription) {
 			throw new Error('Subscription not created');
