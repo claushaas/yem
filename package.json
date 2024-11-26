@@ -23,7 +23,7 @@
     "predev": "npx prisma migrate dev",
     "dev": "react-router dev",
     "prestart": "npx prisma migrate deploy",
-    "start": "node ./build/server/index.js",
+    "start": "react-router-serve ./build/server/index.js",
     "typecheck": "tsc --noEmit",
     "update": "npx npm-check-updates -i",
     "up": "docker compose up -d --build",
