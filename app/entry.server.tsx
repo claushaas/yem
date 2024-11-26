@@ -1,9 +1,8 @@
 import {PassThrough} from 'node:stream';
-import {createReadableStreamFromReadable, type EntryContext} from '@remix-run/node';
-import {RemixServer} from '@remix-run/react';
+import {createReadableStreamFromReadable} from '@react-router/node';
+import {type EntryContext, ServerRouter} from 'react-router';
 import {isbot} from 'isbot';
 import {renderToPipeableStream} from 'react-dom/server';
-import {createExpressApp} from 'remix-create-express-app';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import {IsBotProvider} from './hooks/use-is-bot.hook.js';
@@ -17,7 +16,7 @@ export default async function handleRequest(
 	request: Request,
 	responseStatusCode: number,
 	responseHeaders: Headers,
-	remixContext: EntryContext,
+	reactRouterContext: EntryContext,
 	// This is ignored so we can keep it in the template for visibility.  Feel
 	// free to delete this parameter in your app if you're not using it!
 
@@ -28,13 +27,13 @@ export default async function handleRequest(
 			request,
 			responseStatusCode,
 			responseHeaders,
-			remixContext,
+			reactRouterContext,
 		)
 		: handleBrowserRequest(
 			request,
 			responseStatusCode,
 			responseHeaders,
-			remixContext,
+			reactRouterContext,
 		);
 }
 
@@ -42,14 +41,14 @@ async function handleBotRequest(
 	request: Request,
 	responseStatusCode: number,
 	responseHeaders: Headers,
-	remixContext: EntryContext,
+	reactRouterContext: EntryContext,
 ) {
 	return new Promise((resolve, reject) => {
 		let shellRendered = false;
 		const {pipe, abort} = renderToPipeableStream(
 			<IsBotProvider isBot={isbot(request.headers.get('User-Agent') ?? '')}>
-				<RemixServer
-					context={remixContext}
+				<ServerRouter
+					context={reactRouterContext}
 					url={request.url}
 					abortDelay={ABORT_DELAY}
 				/>
@@ -98,14 +97,14 @@ async function handleBrowserRequest(
 	request: Request,
 	responseStatusCode: number,
 	responseHeaders: Headers,
-	remixContext: EntryContext,
+	reactRouterContext: EntryContext,
 ) {
 	return new Promise((resolve, reject) => {
 		let shellRendered = false;
 		const {pipe, abort} = renderToPipeableStream(
 			<IsBotProvider isBot={isbot(request.headers.get('User-Agent') ?? '')}>
-				<RemixServer
-					context={remixContext}
+				<ServerRouter
+					context={reactRouterContext}
 					url={request.url}
 					abortDelay={ABORT_DELAY}
 				/>
@@ -150,19 +149,19 @@ async function handleBrowserRequest(
 	});
 }
 
-export const app = createExpressApp({
-	configure(app) {
-		app.use(
-			helmet({
-				xPoweredBy: false,
-				referrerPolicy: {policy: 'same-origin'},
-				crossOriginEmbedderPolicy: false,
-				contentSecurityPolicy: false,
-			}),
-		);
-		app.use(morgan('tiny'));
-	},
-});
+// Export const app = createExpressApp({
+// 	configure(app) {
+// 		app.use(
+// 			helmet({
+// 				xPoweredBy: false,
+// 				referrerPolicy: {policy: 'same-origin'},
+// 				crossOriginEmbedderPolicy: false,
+// 				contentSecurityPolicy: false,
+// 			}),
+// 		);
+// 		app.use(morgan('tiny'));
+// 	},
+// });
 
 const ONE_DAY = 1000 * 60 * 60 * 24;
 // eslint-disable-next-line @typescript-eslint/no-floating-promises

@@ -1,5 +1,5 @@
 import {Separator} from '@radix-ui/react-separator';
-import {Link} from '@remix-run/react';
+import {Link} from 'react-router';
 
 export function Footer() {
 	return (

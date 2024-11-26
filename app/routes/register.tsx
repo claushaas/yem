@@ -2,18 +2,8 @@
 import {useState} from 'react';
 import * as RadixForm from '@radix-ui/react-form';
 import {
-	type ActionFunctionArgs,
-	type LoaderFunctionArgs,
-	data,
-} from '@remix-run/node';
-import {
-	Form,
-	Link,
-	type MetaArgs,
-	redirect,
-	useLoaderData,
-	useNavigation,
-} from '@remix-run/react';
+	type ActionFunctionArgs, type LoaderFunctionArgs, data, Form, Link, type MetaArgs, redirect, useLoaderData, useNavigation,
+} from 'react-router';
 import 'react-phone-number-input/style.css';
 import PhoneInput from 'react-phone-number-input';
 import {type E164Number} from 'libphonenumber-js/core'; // eslint-disable-line import/no-extraneous-dependencies

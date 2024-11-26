@@ -1,15 +1,8 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import * as Form from '@radix-ui/react-form';
 import {
-	type LoaderFunctionArgs,
-	type ActionFunctionArgs,
-	data,
-} from '@remix-run/node';
-import {
-	type MetaArgs,
-	redirect,
-	Form as RemixForm, useLoaderData, useNavigation,
-} from '@remix-run/react';
+	type LoaderFunctionArgs, type ActionFunctionArgs, data, type MetaArgs, redirect, Form as RemixForm, useLoaderData, useNavigation,
+} from 'react-router';
 import {SuccessOrErrorMessage} from '~/components/admin-success-or-error-message.js';
 import {Button, ButtonPreset, ButtonType} from '~/components/button.js';
 import {YemSpinner} from '~/components/yem-spinner.js';

@@ -1,4 +1,4 @@
-import {Await, Link} from '@remix-run/react';
+import {Await, Link} from 'react-router';
 import {Image} from '@unpic/react';
 import {motion} from 'framer-motion';
 import {Suspense} from 'react';

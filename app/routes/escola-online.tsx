@@ -1,5 +1,4 @@
-import {type LoaderFunctionArgs} from '@remix-run/node';
-import {Link, type MetaFunction} from '@remix-run/react';
+import {type LoaderFunctionArgs, Link, type MetaFunction} from 'react-router';
 import {
 	CheckCircleIcon,
 	HeartIcon,

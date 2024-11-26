@@ -1,7 +1,4 @@
-import {
-	type LoaderFunctionArgs,
-} from '@remix-run/node';
-import {useLoaderData, type MetaArgs} from '@remix-run/react';
+import {type LoaderFunctionArgs, useLoaderData, type MetaArgs} from 'react-router';
 import {NavigateBar} from '~/components/navigation-bar.js';
 import {type TypeUserSession} from '~/types/user-session.type';
 import {getUserSession} from '~/utils/session.server';
