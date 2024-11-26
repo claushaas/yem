@@ -1,5 +1,4 @@
-import {type LoaderFunctionArgs} from '@remix-run/node';
-import {useLoaderData} from '@remix-run/react';
+import {type LoaderFunctionArgs, useLoaderData} from 'react-router';
 import {AdminEntityCard} from '~/components/entities-cards';
 import {LessonService} from '~/services/lesson.service.server';
 import {type TypeUserSession} from '~/types/user-session.type';

@@ -2,8 +2,7 @@ import {Stream} from '@cloudflare/stream-react';
 import {
 	BookmarkIcon, CheckCircleIcon, HeartIcon, PlayIcon, UserGroupIcon, VideoCameraIcon,
 } from '@heroicons/react/24/outline';
-import {type LoaderFunctionArgs} from '@remix-run/node';
-import {Link, type MetaFunction} from '@remix-run/react';
+import {type LoaderFunctionArgs, Link, type MetaFunction} from 'react-router';
 import {Button, ButtonPreset, ButtonType} from '~/components/button.js';
 import {Testimonies} from '~/layouts/testimonies';
 

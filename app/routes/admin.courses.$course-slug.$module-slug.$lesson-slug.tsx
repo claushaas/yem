@@ -1,12 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import {
-	type ActionFunctionArgs,
-	type LoaderFunctionArgs,
-	data,
-} from '@remix-run/node';
-import {
-	Form, type MetaArgs, useLoaderData, useNavigation, useParams,
-} from '@remix-run/react';
+	Form, type MetaArgs, useLoaderData, useNavigation, useParams, type ActionFunctionArgs, type LoaderFunctionArgs, data,
+} from 'react-router';
 import {useEffect, useState} from 'react';
 import {type OpIterator} from 'quill/core';
 import {QuillDeltaToHtmlConverter} from 'quill-delta-to-html';

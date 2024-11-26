@@ -1,7 +1,7 @@
 import {Bars4Icon} from '@heroicons/react/24/outline';
 import * as NavigationMenu from '@radix-ui/react-navigation-menu';
 import * as Separator from '@radix-ui/react-separator';
-import {Link, useLocation} from '@remix-run/react';
+import {Link, useLocation} from 'react-router';
 import {type TypeUserSession} from '~/types/user-session.type';
 
 type NavigateLinkProprierties = {

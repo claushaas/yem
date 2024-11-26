@@ -1,12 +1,7 @@
 import {Stream} from '@cloudflare/stream-react';
-import {type LoaderFunctionArgs} from '@remix-run/node';
 import {
-	type MetaArgs,
-	useLoaderData,
-	Await,
-	useLocation,
-	useNavigate,
-} from '@remix-run/react';
+	type LoaderFunctionArgs, type MetaArgs, useLoaderData, Await, useLocation, useNavigate,
+} from 'react-router';
 import {QuillDeltaToHtmlConverter} from 'quill-delta-to-html';
 import {type OpIterator} from 'quill/core';
 import {Suspense, useState} from 'react';
@@ -119,10 +114,10 @@ export default function Module() {
 		}
 	};
 
-	const onAplyFilters = () => {
+	const onAplyFilters = async () => {
 		const newQueries = filterQueries.map(query => `&${query}`).join('');
 		setIsFilterMenuOpen(false);
-		navigate(`/courses/${course!.slug}/${module!.moduleSlug}?page=${actualPage ?? 1}${newQueries}`);
+		await navigate(`/courses/${course!.slug}/${module!.moduleSlug}?page=${actualPage ?? 1}${newQueries}`);
 	};
 
 	return module && (
@@ -160,7 +155,7 @@ export default function Module() {
 					<section id='content' className='p-1 sm:p-5 bg-mauvea-2 dark:bg-mauvedarka-2 rounded-2xl flex flex-col gap-6 mb-10'>
 						{module.module.content && (
 						// eslint-disable-next-line react/no-danger, @typescript-eslint/naming-convention
-							<section dangerouslySetInnerHTML={{__html: contentConverter.convert()}}/>
+							(<section dangerouslySetInnerHTML={{__html: contentConverter.convert()}}/>)
 						)}
 						<Suspense fallback={<YemSpinner/>}>
 							<Await resolve={moduleActivity}>

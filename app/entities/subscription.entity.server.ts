@@ -15,7 +15,7 @@ export class Subscription implements TSubscription {
 	private readonly _userId: string;
 	private readonly _courseSlug: string;
 	private readonly _expiresAt: Date;
-	private readonly _provider: 'hotmart' | 'iugu' | 'manual';
+	private readonly _provider: 'hotmart' | 'iugu' | 'manual' | 'hubla';
 	private readonly _providerSubscriptionId: string;
 	private readonly _providerSubscriptionStatus?: string;
 
