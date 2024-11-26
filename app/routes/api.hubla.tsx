@@ -1,7 +1,7 @@
 // X-hubla-token
 // 8Lui4amoPJRcDXCLN3MSiFZV9HcBiJAzxCcVynu7xcxF2RDBG9LIFopa8yDeodNz
 
-import {json, type LoaderFunctionArgs} from '@remix-run/node';
+import {type LoaderFunctionArgs, data} from 'react-router';
 import {HooksService} from '~/services/hooks.service.server';
 import {SlackService} from '~/services/slack.service.server';
 import {type THublaEvents} from '~/types/hubla.type';
@@ -15,14 +15,14 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
 	try {
 		await new SlackService().sendMessage(await request.json() as Record<string, any>);
 
-		return json({
+		return data({
 			message: 'OK',
 		}, {
 			status: 200,
 		});
 	} catch (error) {
 		logger.logError(`Error sending message on hotmart loader: ${(error as Error).message}`);
-		return json({error: 'An error occurred'});
+		return {error: 'An error occurred'};
 	}
 };
 
@@ -35,20 +35,20 @@ export const action = async ({request}: LoaderFunctionArgs) => {
 			const body = await request.json() as THublaEvents;
 			await new HooksService().handleHublaWebhook(body);
 
-			return json({
+			return data({
 				message: 'OK',
 			}, {
 				status: 200,
 			});
 		}
 
-		return json({
+		return data({
 			message: 'Unauthorized',
 		}, {
 			status: 401,
 		});
 	} catch (error) {
 		logger.logError(`Error sending message on hotmart action: ${(error as Error).message}`);
-		return json({error: 'An error occurred'});
+		return {error: 'An error occurred'};
 	}
 };

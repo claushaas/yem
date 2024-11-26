@@ -1,5 +1,4 @@
-import {type LoaderFunctionArgs} from '@remix-run/node';
-import {type MetaArgs} from '@remix-run/react';
+import {type LoaderFunctionArgs, type MetaArgs} from 'react-router';
 
 export const meta = ({data}: MetaArgs<typeof loader>) => [
 	{title: 'Comentários - Yoga em Movimento'},

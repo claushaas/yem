@@ -1,8 +1,6 @@
 import {XMarkIcon} from '@heroicons/react/24/outline';
 import * as Dialog from '@radix-ui/react-dialog';
-import {
-	Form, useLoaderData, useNavigation,
-} from '@remix-run/react';
+import {Form, useLoaderData, useNavigation} from 'react-router';
 import * as RadixForm from '@radix-ui/react-form';
 import {useEffect, useState} from 'react';
 import * as Switch from '@radix-ui/react-switch';

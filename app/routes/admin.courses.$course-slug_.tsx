@@ -1,16 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import {
-	type MetaArgs,
-	type ActionFunctionArgs,
-	type LoaderFunctionArgs,
-} from '@remix-run/node';
-import {
-	data,
-	Form,
-	useLoaderData,
-	useNavigation,
-	useParams,
-} from '@remix-run/react';
+	data, Form, useLoaderData, useNavigation, useParams, type MetaArgs, type ActionFunctionArgs, type LoaderFunctionArgs,
+} from 'react-router';
 import * as Dialog from '@radix-ui/react-dialog';
 import * as RadixForm from '@radix-ui/react-form';
 import {useEffect, useState} from 'react';
