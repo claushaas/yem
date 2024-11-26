@@ -3,6 +3,9 @@ import {type AppLoadContext, type EntryContext, ServerRouter} from 'react-router
 import {createReadableStreamFromReadable} from '@react-router/node';
 import {isbot} from 'isbot';
 import {type RenderToPipeableStreamOptions, renderToPipeableStream} from 'react-dom/server';
+import {executeAndRepeat} from './utils/background-task.js';
+import {logger} from './utils/logger.util.js';
+import {populateCache} from './cache/initial-cache-population.js';
 
 const ABORT_DELAY = 5000;
 
@@ -64,3 +67,11 @@ export default async function handleRequest( // eslint-disable-line max-params
 		setTimeout(abort, ABORT_DELAY);
 	});
 }
+
+const ONE_DAY = 1000 * 60 * 60 * 24;
+
+executeAndRepeat(async () => { // eslint-disable-line @typescript-eslint/no-floating-promises
+	logger.logInfo('Populate cache task started');
+	await populateCache();
+	logger.logInfo('Populate cache task finished');
+}, ONE_DAY);
