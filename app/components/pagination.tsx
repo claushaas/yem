@@ -1,5 +1,5 @@
 import {ChevronLeftIcon, ChevronRightIcon} from '@heroicons/react/24/outline';
-import {Link, useLocation} from '@remix-run/react';
+import {Link, useLocation} from 'react-router';
 
 type PaginationProperties = {
 	readonly pages?: number;

@@ -1,10 +1,7 @@
 import * as RadixForm from '@radix-ui/react-form';
 import {
-	type LoaderFunctionArgs,
-} from '@remix-run/node';
-import {
-	Form, type MetaArgs, useActionData, useNavigation,
-} from '@remix-run/react';
+	type LoaderFunctionArgs, Form, type MetaArgs, useActionData, useNavigation,
+} from 'react-router';
 import {populateCache} from '~/cache/initial-cache-population.js';
 import {SuccessOrErrorMessage} from '~/components/admin-success-or-error-message.js';
 import {Button, ButtonPreset, ButtonType} from '~/components/button.js';

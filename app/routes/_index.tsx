@@ -1,6 +1,7 @@
-import {type LoaderFunctionArgs} from '@remix-run/node';
+import {
+	type LoaderFunctionArgs, Link, type MetaArgs, useLoaderData,
+} from 'react-router';
 import {Image} from '@unpic/react';
-import {Link, type MetaArgs, useLoaderData} from '@remix-run/react';
 import {buildImgSource} from '~/utils/build-cloudflare-image-source.js';
 import {Testimonies} from '~/layouts/testimonies.js';
 import {History} from '~/layouts/yem-history.js';

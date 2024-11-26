@@ -6,8 +6,8 @@ import {
 	ScrollRestoration,
 	useFetchers,
 	useNavigation,
-} from '@remix-run/react';
-import {type LinksFunction} from '@remix-run/node';
+	type LinksFunction,
+} from 'react-router';
 import NProgress from 'nprogress';
 import nProgressStyles from 'nprogress/nprogress.css?url';
 import {useEffect, useMemo} from 'react';

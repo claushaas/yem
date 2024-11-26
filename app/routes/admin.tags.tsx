@@ -1,12 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import {
-	type ActionFunctionArgs,
-	type LoaderFunctionArgs,
-	data,
-} from '@remix-run/node';
-import {
-	Form, type MetaArgs, useLoaderData, useNavigation,
-} from '@remix-run/react';
+	Form, type MetaArgs, useLoaderData, useNavigation, type ActionFunctionArgs, type LoaderFunctionArgs, data,
+} from 'react-router';
 import * as Dialog from '@radix-ui/react-dialog';
 import * as RadixForm from '@radix-ui/react-form';
 import {XMarkIcon} from '@heroicons/react/24/outline';

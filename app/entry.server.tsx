@@ -1,61 +1,38 @@
 import {PassThrough} from 'node:stream';
-import {createReadableStreamFromReadable, type EntryContext} from '@remix-run/node';
-import {RemixServer} from '@remix-run/react';
+import {type AppLoadContext, type EntryContext, ServerRouter} from 'react-router';
+import {createReadableStreamFromReadable} from '@react-router/node';
 import {isbot} from 'isbot';
-import {renderToPipeableStream} from 'react-dom/server';
-import {createExpressApp} from 'remix-create-express-app';
-import helmet from 'helmet';
-import morgan from 'morgan';
-import {IsBotProvider} from './hooks/use-is-bot.hook.js';
+import {type RenderToPipeableStreamOptions, renderToPipeableStream} from 'react-dom/server';
 import {executeAndRepeat} from './utils/background-task.js';
 import {logger} from './utils/logger.util.js';
 import {populateCache} from './cache/initial-cache-population.js';
 
 const ABORT_DELAY = 5000;
 
-export default async function handleRequest(
+export default async function handleRequest( // eslint-disable-line max-params
 	request: Request,
 	responseStatusCode: number,
 	responseHeaders: Headers,
-	remixContext: EntryContext,
-	// This is ignored so we can keep it in the template for visibility.  Feel
-	// free to delete this parameter in your app if you're not using it!
-
-	// loadContext: AppLoadContext,
-) {
-	return isbot(request.headers.get('user-agent') ?? '')
-		? handleBotRequest(
-			request,
-			responseStatusCode,
-			responseHeaders,
-			remixContext,
-		)
-		: handleBrowserRequest(
-			request,
-			responseStatusCode,
-			responseHeaders,
-			remixContext,
-		);
-}
-
-async function handleBotRequest(
-	request: Request,
-	responseStatusCode: number,
-	responseHeaders: Headers,
-	remixContext: EntryContext,
+	routerContext: EntryContext,
+	loadContext: AppLoadContext,
 ) {
 	return new Promise((resolve, reject) => {
 		let shellRendered = false;
+		const userAgent = request.headers.get('user-agent');
+
+		// Ensure requests from bots and SPA Mode renders wait for all content to load before responding
+		// https://react.dev/reference/react-dom/server/renderToPipeableStream#waiting-for-all-content-to-load-for-crawlers-and-static-generation
+		const readyOption: keyof RenderToPipeableStreamOptions
+      = (userAgent && isbot(userAgent)) || routerContext.isSpaMode ? 'onAllReady' : 'onShellReady'; // eslint-disable-line @typescript-eslint/prefer-nullish-coalescing
+
 		const {pipe, abort} = renderToPipeableStream(
-			<IsBotProvider isBot={isbot(request.headers.get('User-Agent') ?? '')}>
-				<RemixServer
-					context={remixContext}
-					url={request.url}
-					abortDelay={ABORT_DELAY}
-				/>
-			</IsBotProvider>,
+			<ServerRouter
+				context={routerContext}
+				url={request.url}
+				abortDelay={ABORT_DELAY}
+			/>,
 			{
-				onAllReady() {
+				[readyOption]() {
 					shellRendered = true;
 					const body = new PassThrough();
 					const stream = createReadableStreamFromReadable(body);
@@ -72,11 +49,8 @@ async function handleBotRequest(
 					pipe(body);
 				},
 				onShellError(error: unknown) {
-					if (error instanceof Error) {
-						reject(error);
-					} else {
-						reject(new Error(String(error)));
-					}
+					// eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
+					reject(error);
 				},
 				onError(error: unknown) {
 					responseStatusCode = 500;
@@ -93,80 +67,10 @@ async function handleBotRequest(
 		setTimeout(abort, ABORT_DELAY);
 	});
 }
-
-async function handleBrowserRequest(
-	request: Request,
-	responseStatusCode: number,
-	responseHeaders: Headers,
-	remixContext: EntryContext,
-) {
-	return new Promise((resolve, reject) => {
-		let shellRendered = false;
-		const {pipe, abort} = renderToPipeableStream(
-			<IsBotProvider isBot={isbot(request.headers.get('User-Agent') ?? '')}>
-				<RemixServer
-					context={remixContext}
-					url={request.url}
-					abortDelay={ABORT_DELAY}
-				/>
-			</IsBotProvider>,
-			{
-				onShellReady() {
-					shellRendered = true;
-					const body = new PassThrough();
-					const stream = createReadableStreamFromReadable(body);
-
-					responseHeaders.set('Content-Type', 'text/html');
-
-					resolve(
-						new Response(stream, {
-							headers: responseHeaders,
-							status: responseStatusCode,
-						}),
-					);
-
-					pipe(body);
-				},
-				onShellError(error: unknown) {
-					if (error instanceof Error) {
-						reject(error);
-					} else {
-						reject(new Error(String(error)));
-					}
-				},
-				onError(error: unknown) {
-					responseStatusCode = 500;
-					// Log streaming rendering errors from inside the shell.  Don't log
-					// errors encountered during initial shell rendering since they'll
-					// reject and get logged in handleDocumentRequest.
-					if (shellRendered) {
-						console.error(error);
-					}
-				},
-			},
-		);
-
-		setTimeout(abort, ABORT_DELAY);
-	});
-}
-
-export const app = createExpressApp({
-	configure(app) {
-		app.use(
-			helmet({
-				xPoweredBy: false,
-				referrerPolicy: {policy: 'same-origin'},
-				crossOriginEmbedderPolicy: false,
-				contentSecurityPolicy: false,
-			}),
-		);
-		app.use(morgan('tiny'));
-	},
-});
 
 const ONE_DAY = 1000 * 60 * 60 * 24;
-// eslint-disable-next-line @typescript-eslint/no-floating-promises
-executeAndRepeat(async () => {
+
+executeAndRepeat(async () => { // eslint-disable-line @typescript-eslint/no-floating-promises
 	logger.logInfo('Populate cache task started');
 	await populateCache();
 	logger.logInfo('Populate cache task finished');

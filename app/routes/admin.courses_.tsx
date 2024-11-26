@@ -1,10 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import {
-	type ActionFunctionArgs,
-	type LoaderFunctionArgs,
-	data,
-} from '@remix-run/node';
-import {type MetaArgs, useLoaderData} from '@remix-run/react';
+	type ActionFunctionArgs, type LoaderFunctionArgs, data, type MetaArgs, useLoaderData,
+} from 'react-router';
 import {CourseService} from '~/services/course.service.server';
 import {commitUserSession, getUserSession} from '~/utils/session.server.js';
 import {logger} from '~/utils/logger.util.js';

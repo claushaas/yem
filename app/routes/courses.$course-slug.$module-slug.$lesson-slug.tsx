@@ -1,11 +1,7 @@
 import {Stream} from '@cloudflare/stream-react';
 import {
-	type LoaderFunctionArgs,
-	type ActionFunctionArgs,
-} from '@remix-run/node';
-import {
-	Await, Form, redirect, useLoaderData, type MetaFunction,
-} from '@remix-run/react';
+	type LoaderFunctionArgs, type ActionFunctionArgs, Await, Form, redirect, useLoaderData, type MetaFunction,
+} from 'react-router';
 import {QuillDeltaToHtmlConverter} from 'quill-delta-to-html';
 import {type OpIterator} from 'quill/core';
 import {Suspense} from 'react';
@@ -217,7 +213,7 @@ export default function Lesson() {
 
 					{lesson.lesson.content && (
 					/* eslint-disable-next-line react/no-danger, @typescript-eslint/naming-convention */
-						<section dangerouslySetInnerHTML={{__html: contentConverter.convert()}} id='content' className='p-1 sm:p-5 bg-mauvea-2 dark:bg-mauvedarka-2 rounded-2xl flex flex-col gap-6'/>
+						(<section dangerouslySetInnerHTML={{__html: contentConverter.convert()}} id='content' className='p-1 sm:p-5 bg-mauvea-2 dark:bg-mauvedarka-2 rounded-2xl flex flex-col gap-6'/>)
 					)}
 				</div>
 			</main>

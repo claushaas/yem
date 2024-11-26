@@ -1,6 +1,7 @@
 import {Stream} from '@cloudflare/stream-react';
-import {type LoaderFunctionArgs} from '@remix-run/node';
-import {Await, type MetaArgs, useLoaderData} from '@remix-run/react';
+import {
+	type LoaderFunctionArgs, Await, type MetaArgs, useLoaderData,
+} from 'react-router';
 import {QuillDeltaToHtmlConverter} from 'quill-delta-to-html';
 import {type OpIterator} from 'quill/core';
 import {Suspense} from 'react';
@@ -99,7 +100,7 @@ export default function Course() {
 					<section id='content' className='p-1 sm:p-5 bg-mauvea-2 dark:bg-mauvedarka-2 rounded-3xl flex flex-col gap-6 mb-10'>
 						{course.content && (
 						// eslint-disable-next-line react/no-danger, @typescript-eslint/naming-convention
-							<div dangerouslySetInnerHTML={{__html: contentConverter.convert()}}/>
+							(<div dangerouslySetInnerHTML={{__html: contentConverter.convert()}}/>)
 						)}
 						<Suspense fallback={<YemSpinner/>}>
 							<Await resolve={courseActivity}>

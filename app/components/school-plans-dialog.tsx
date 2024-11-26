@@ -3,7 +3,7 @@ import {
 	CheckCircleIcon,
 } from '@heroicons/react/24/outline';
 import * as Dialog from '@radix-ui/react-dialog';
-import {Link, useLocation} from '@remix-run/react';
+import {Link, useLocation} from 'react-router';
 import {Button, ButtonPreset, ButtonType} from './button.js';
 
 type SchoolPlansDialogProperties = {

@@ -1,12 +1,7 @@
-import {expressDevServer} from 'remix-express-dev-server';
-import {vitePlugin as remix} from '@remix-run/dev';
+import {reactRouter} from '@react-router/dev/vite';
 import {defineConfig} from 'vite';
 import tsconfigPaths from 'vite-tsconfig-paths';
 import svgr from 'vite-plugin-svgr';
-import {remixDevTools} from 'remix-development-tools';
-import {installGlobals} from '@remix-run/node';
-
-installGlobals({nativeFetch: true});
 
 export default defineConfig({
 	build: {
@@ -24,23 +19,10 @@ export default defineConfig({
 		exclude: ['newrelic', '@newrelic'],
 	},
 	plugins: [
-		expressDevServer(),
-		remixDevTools(),
-		remix({
-			future: {
-				v3_relativeSplatPath: true, // eslint-disable-line @typescript-eslint/naming-convention
-				v3_singleFetch: true, // eslint-disable-line @typescript-eslint/naming-convention
-			},
-		}),
+		reactRouter(),
 		tsconfigPaths(),
 		svgr({
 			include: '**/*.svg?react',
 		}),
 	],
 });
-
-declare module '@remix-run/server-runtime' {
-	interface Future { // eslint-disable-line @typescript-eslint/consistent-type-definitions
-		v3_singleFetch: true; // eslint-disable-line @typescript-eslint/naming-convention
-	}
-}

@@ -1,5 +1,6 @@
-import {type LoaderFunctionArgs} from '@remix-run/node';
-import {Link, type MetaArgs, useLoaderData} from '@remix-run/react';
+import {
+	type LoaderFunctionArgs, Link, type MetaArgs, useLoaderData,
+} from 'react-router';
 import {GenericEntityCard} from '~/components/entities-cards.js';
 import {NavigateBar} from '~/components/navigation-bar.js';
 import {CourseService} from '~/services/course.service.server';
