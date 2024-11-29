@@ -4,6 +4,7 @@ import {
 } from '@heroicons/react/24/outline';
 import {type LoaderFunctionArgs, Link, type MetaFunction} from 'react-router';
 import {Button, ButtonPreset, ButtonType} from '~/components/button.js';
+import {FormationBonusCard} from '~/components/formation-bonus-card';
 import {Testimonies} from '~/layouts/testimonies';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => [
@@ -49,124 +50,183 @@ export default function Formacao() {
 
 				<Testimonies/>
 
-				<section>
-					<h2>Conheça a sua Escola de Yoga</h2>
-					<p>A Yoga em Movimento surgiu em 2010 no interior de São Paulo do sonho de seus fundadores de espargir esse estilo de vida baseado na saúde e no autoconhecimento para cada vez mais pessoas através do yoga.</p>
-					<p>Em 2015 Nossa Escola migrou 100% para o formato online, pois percebemos que essa é a melhor forma de chegar a mais pessoas e de forma acessível!</p>
-					<p>Desde então, nossa equipe de professores, que conta com décadas de experiência na formação de instrutores de yoga, já formou mais de MIL professores. Somando nossa Escola Online, já passaram mais de 14 mil alunos pela nossa escola.</p>
-					<p>Hoje entendemos que a melhor forma de dar continuidade a nossa missão é formar mais professores de sucesso, pois assim multiplicamos a nossa capacidade de divulgar e transmitir essa filosofia de vida tão bela.</p>
-					<p>Nós conhecemos todos os desafios que envolvem essa carreira e por isso apresentamos este curso de Formação em Yoga, e dividimos a estrutura do curso em 3 pilares essenciais para qualquer professor, que já se dedica a esta carreira ou que ainda vai começar: a Filosofia, o Magistério e a Profissão.</p>
+				<section className='2xl:max-w-screen-xl max-w-[90%] mx-auto my-20 sm:my-40'>
+					<h2 className='text-purple-11 text-3xl xs:text-5xl md:text-6xl lg:text-7xl mb-5 text-center'>Conheça a sua Escola</h2>
+					<p className='my-3 font-gothamMedium'>A Yoga em Movimento surgiu em 2010 no interior de São Paulo do sonho de seus fundadores de espargir esse estilo de vida baseado na saúde e no autoconhecimento para cada vez mais pessoas através do yoga.</p>
+					<p className='my-3 font-gothamMedium'>Em 2015 Nossa Escola migrou 100% para o formato online, pois percebemos que essa é a melhor forma de chegar a mais pessoas e de forma acessível!</p>
+					<p className='my-3 font-gothamMedium'>Desde então, nossa equipe de professores, que conta com décadas de experiência na formação de instrutores de yoga, já formou mais de MIL professores. Somando nossa Escola Online, já passaram mais de 14 mil alunos pela nossa escola.</p>
+					<p className='my-3 font-gothamMedium'>Hoje entendemos que a melhor forma de dar continuidade a nossa missão é formar mais professores de sucesso, pois assim multiplicamos a nossa capacidade de divulgar e transmitir essa filosofia de vida tão bela.</p>
+					<p className='my-3 font-gothamMedium'>Nós conhecemos todos os desafios que envolvem essa carreira e por isso apresentamos este curso de Formação em Yoga, e dividimos a estrutura do curso em 3 pilares essenciais para qualquer professor, que já se dedica a esta carreira ou que ainda vai começar: a Filosofia, o Magistério e a Profissão.</p>
 				</section>
 
-				<section>
-					<h2>Formação em Yoga</h2>
-					<h3>Não em uma Modalidade de Yoga</h3>
-					<p>Antes de se especializar em alguma modalidade, é fundamental conhecer os fundamentos gerais do Yoga, sua origem, todas as técnicas e as diversas modalidades (antigas e modernas) que existem</p>
-					<p>Nossa Formação em Yoga conta com os 3 piolares fundamentais para ter sucesso nessa carreira:</p>
+				<section className='2xl:max-w-screen-xl max-w-[90%] mx-auto my-20 sm:my-40'>
+					<h2 className='text-purple-11 text-3xl xs:text-5xl md:text-6xl lg:text-7xl text-left mb-5'>Formação em Yoga!!</h2>
+					<h3 className='text-xl xs:text-2xl md:text-3xl lg:text-4xl text-purple-8 mb-4'>Não em uma Modalidade de Yoga</h3>
+					<p className='my-3 font-gothamMedium'>Antes de se especializar em alguma modalidade de yoga, é fundamental conhecer os fundamentos gerais do Yoga, sua origem, todas as técnicas e as diversas modalidades (antigas e modernas) que existem.</p>
+					<p className='my-3 font-gothamMedium'>Nossa Formação em Yoga conta com os 3 piolares fundamentais para ter sucesso nessa carreira:</p>
 
-					<h3>Filosofia</h3>
-					<p>Conhecimento profundo sobre a filosofia do Yoga, suas origens, os textos sagrados, os conceitos fundamentais, as técnicas de meditação, os chakras, a prática de pranayamas, entre outros.</p>
+					<div className='flex justify-evenly flex-wrap gap-4 my-10'>
+						<div className='max-w-80 px-7 py-5 rounded-3xl shadow-sm shadow-mauve-11 dark:shadow-mauvedark-3 bg-mauve-4 dark:bg-mauvedark-3 flex flex-col justify-evenly'>
+							<h3 className='text-center text-purple-11'>1 - Filosofia</h3>
+							<p className='font-gothamMedium'>Como surgiu o Yoga e suas modalidades, os textos sagrados, os conceitos fundamentais, as técnicas de meditação, os chakras, a prática de pranayamas, e muito mais.</p>
+						</div>
 
-					<h3>Magistério</h3>
-					<p>Conhecimento sobre a didática do Yoga, como montar uma aula, como corrigir os alunos, como lidar com as dificuldades, como lidar com os alunos, como lidar com as emoções, entre outros.</p>
+						<div className='max-w-80 px-7 py-5 rounded-3xl shadow-sm shadow-mauve-11 dark:shadow-mauvedark-3 bg-mauve-4 dark:bg-mauvedark-3 flex flex-col justify-evenly'>
+							<h3 className='text-center text-purple-11'>2 - Magistério</h3>
+							<p className='font-gothamMedium'>Seja a ponte entre o Yoga e seu aluno: como montar uma aula, como corrigir os alunos, como lidar com as dificuldades, como lidar com os alunos, como lidar com as emoções, ou seja, como ministrar aulas.</p>
+						</div>
 
-					<h3>Profissão</h3>
-					<p>Conhecimento sobre como se tornar um profissional de sucesso, como montar um estúdio, como divulgar seu trabalho, como se tornar um professor de Yoga online, entre outros.</p>
+						<div className='max-w-80 px-7 py-5 rounded-3xl shadow-sm shadow-mauve-11 dark:shadow-mauvedark-3 bg-mauve-4 dark:bg-mauvedark-3 flex flex-col justify-evenly'>
+							<h3 className='text-center text-purple-11'>3 - Profissão</h3>
+							<p className='font-gothamMedium'>Trabalhar com Yoga: como se tornar um profissional de sucesso, montar um estúdio, divulgar seu trabalho; como se tornar um professor de Yoga online... Como planejar, divulgar e matricular os seus alunos.</p>
+						</div>
+					</div>
 				</section>
 
-				<section>
-					<h2>Para quem é?</h2>
+				<section className='2xl:max-w-screen-xl max-w-[90%] mx-auto my-20 sm:my-40'>
+					<h2 className='text-purple-11 text-3xl xs:text-5xl md:text-6xl lg:text-7xl text-left mb-5'>Para quem é?</h2>
 
-					<p>Para quem quer ser Professor de Yoga e entende a importância de não só aprender sobre a filosofia e o magistério do Yoga, mas também quer ter sucesso nesta carreira</p>
-
-					<p>Para quem já é Professor de alguma Modalidade de Yoga, mas sente que a sua formação não foi completa. A maioria dos cursos de formação abordam apenas uma modalidade e muitas vezes não contemplam nem mesmo todas as técnicas do Yoga. Neste curso você poderá aprender o panorama geral e completo</p>
-
-					<p>Para quem não quer ser Professor de Yoga, e percebeu que chegou num estágio da prática em que sente necessidade de se aprofundar na filosofia do Yoga para consolidar o aprendizado que obteve através da prática</p>
+					<p className='my-3 font-gothamMedium'><span className='font-gothamBold text-purple-8'>Para quem quer ser Professor de Yoga</span> e entende a importância de não só aprender sobre a filosofia e o magistério do Yoga, mas também quer ter sucesso nesta carreira</p>
+					<p className='my-3 font-gothamMedium'><span className='font-gothamBold text-purple-8'>Para quem já é Professor de alguma Modalidade de Yoga</span> e sente que a sua formação não foi completa. A maioria dos cursos de formação abordam apenas uma modalidade e muitas vezes não contemplam nem mesmo todas as técnicas do Yoga. Neste curso você poderá aprender o panorama geral e completo</p>
+					<p className='my-3 font-gothamMedium'><span className='font-gothamBold text-purple-8'>Para quem não quer ser Professor de Yoga</span> e percebeu que chegou num estágio da prática em que sente necessidade de se aprofundar na filosofia do Yoga para consolidar o aprendizado que obteve através da prática</p>
 				</section>
 
-				<section>
-					<h2>Quais são os Pré-Requisitos para Participar?</h2>
+				<section className='2xl:max-w-screen-xl max-w-[90%] mx-auto my-20 sm:my-40'>
+					<h2 className='text-purple-11 text-3xl xs:text-5xl md:text-6xl lg:text-7xl text-left mb-5'>Quais são os Pré-Requisitos para Participar?</h2>
 
-					<p>Apenas a vontade de aprender e compartilhar esta incrível Filosofia de Vida Prática.</p>
-					<p>Você não precisa ter experiência prévia no Yoga para iniciar a Nossa Formação.</p>
-					<p>Embora a experiência prática seja muito importante para o professor, você terá acesso a mais de 1500 aulas práticas da nossa escola (mais informações abaixo nos bônus) para começar a sua trilha no Yoga e acumular bastante experiência prática ao longo do curso!</p>
+					<p className='my-3 font-gothamMedium'>Apenas a vontade de aprender e compartilhar esta incrível Filosofia de Vida Prática.</p>
+					<p className='my-3 font-gothamMedium'>Você não precisa ter experiência prévia no Yoga para iniciar a Nossa Formação.</p>
+					<p className='my-3 font-gothamMedium'>Embora a experiência prática seja muito importante para o professor, você terá acesso a mais de 1500 aulas práticas da nossa escola (mais informações abaixo nos bônus) para começar a sua trilha no Yoga e acumular bastante experiência prática ao longo do curso!</p>
 				</section>
 
-				<section>
-					<h2>Bônus Gratuitos</h2>
+				<section className='2xl:max-w-screen-xl max-w-[90%] mx-auto my-20 sm:my-40'>
+					<h2 className='text-purple-11 text-3xl xs:text-5xl md:text-6xl lg:text-7xl text-left mb-5'>Bônus Gratuitos</h2>
 
 					<p>Diversos conteúdos e conhecimentos são enriquecedores para o Professor de Yoga, embora não sejam fundamentais na sua formação. Para formar profissionais completos e que possam entrar no mercado de trabalho com segurança, oferecemos diversos bônus inteiramente gratuitos em nosso curso. Estes conteúdos são acessíveis apenas através deste curso e não estão disponíveis de nenhuma outra forma</p>
 
-					Escola Online
-					Diversos Professores
-					Acesse mais de 1500 aulas práticas de Yoga para manter sua prática em dia e se inspirar para suas aulas.
+					<div className='flex flex-wrap gap-5 justify-evenly my-10'>
+						<FormationBonusCard
+							title='Escola Online'
+							image='1a71c32c-8ef4-46e4-5e89-445d50c2ae00'
+							teacher='Diversos Professores'
+							description='Acesse mais de 1500 aulas práticas de Yoga para manter sua prática em dia e se inspirar para suas aulas.'
+						/>
 
-					Yoga Personalizado
-					Prof. Daniel Borges
-					Engajado na valorização do profissão de profissional de yoga, Daniel tráz excelentes reflexões sobre o tema e ainda auxilia seus alunos a se posicionarem melhor no mercado de trabalho.
+						<FormationBonusCard
+							title='Yoga Personalizado'
+							image='e49ddc48-921f-4c28-84d5-b43b39919e00'
+							teacher='Prof. Daniel Borges'
+							description='Daniel tráz excelentes reflexões sobre a valorização da profissão e ainda como se posicionar melhor no mercado de trabalho.'
+						/>
 
-					Realize-se e Realize Mais
-					Prof. Ricardo Mallet
-					Desvende o seu propósito de vida sob uma ótica empreendedora com este curso.
+						<FormationBonusCard
+							title='Realize-se e Realize Mais'
+							image='1e1539d9-3d84-4706-653b-d14890926600'
+							teacher='Prof. Ricardo Mallet'
+							description='Desvende o seu propósito de vida sob uma ótica empreendedora com este curso.'
+						/>
 
-					Yoga para Gestantes
-					Profa. Susana Lopes
-					Neste curso descubra como ministrar Aulas de Yoga adaptadas para todas as etapas da gestação, desde a concecpção até o nascimento.
+						<FormationBonusCard
+							title='Yoga para Gestantes'
+							image='8a3cf1ee-a013-4851-506b-bd2c13247c00'
+							teacher='Profa. Susana Lopes'
+							description='Neste curso descubra como ministrar Aulas de Yoga adaptadas para todas as etapas da gestação, desde a concecpção até o nascimento.'
+						/>
 
-					Yoga para Crianças
-					Profa. Sandra Santana
-					Como adaptar a Metodologia do Yoga para as Crianças. Praticar Yoga ajuda a desenvolver o potencial físico e intelectual dos pimpolhos desde cedo.
+						<FormationBonusCard
+							title='Yoga para Crianças'
+							image='2d004e91-1986-4165-4394-c53553a69b00'
+							teacher='Profa. Sandra Santana'
+							description='Como adaptar a Metodologia do Yoga para as Crianças. Praticar Yoga ajuda a desenvolver o potencial físico e intelectual dos pimpolhos desde cedo.'
+						/>
 
-					Anatomia dos Ásanas
-					Prof. Ricardo Souza
-					Ensinar ásanas exige também conhecimentos de anatomia e fisiologia. Descubra como ensinar as técnicas corporais com segurança e competência.
+						<FormationBonusCard
+							title='Anatomia dos Ásanas'
+							image='c506441d-57b3-493a-5fad-5c7288e03700'
+							teacher='Prof. Ricardo Souza'
+							description='Ensinar ásanas exige também conhecimentos de anatomia e fisiologia. Descubra como ensinar as técnicas corporais com segurança e competência.'
+						/>
 
-					Anatomia Aplicada ao Yoga
-					Prof. Fernanda Rangel
-					O conhecimento de anatomia, principalmente da coluna vertebral, é fundamental para o Prof. de Yoga ensinar seus alunos con confiança e segurança.
+						<FormationBonusCard
+							title='Anatomia Aplicada ao Yoga'
+							image='917e0302-bebe-47d5-cc0f-35fb6a0a9000'
+							teacher='Prof. Fernanda Rangel'
+							description='O conhecimento de anatomia, principalmente da coluna vertebral, é fundamental para o Prof. de Yoga ensinar seus alunos con confiança e segurança.'
+						/>
 
-					Nutrição Vegetariana
-					Nutri Shila Minari
-					Entenda o fundamental para poder orientar seus alunos de forma correta sobre o sistema alimentar mais recomendado para a prática do Yoga.
+						<FormationBonusCard
+							title='Nutrição Vegetariana'
+							image='a590f3bd-be86-418b-8c7f-444598056100'
+							teacher='Nutri Shila Minari'
+							description='Entenda o fundamental para poder orientar seus alunos de forma correta sobre o sistema alimentar mais recomendado para a prática do Yoga.'
+						/>
 
-					Meditação Guiada
-					Profa. Liana Linhares
-					Considerada uma das técnicas mais modernas e eficazes de se praticar a meditação. Entenda os princípios dessa técnica e como aplicar em suas aulas.
+						<FormationBonusCard
+							title='Meditação Guiada'
+							image='891e5f4a-4ddd-45b1-62d3-7cd75303df00'
+							teacher='Profa. Liana Linhares'
+							description='Considerada uma das técnicas mais modernas e eficazes de se praticar a meditação. Entenda os princípios dessa técnica e como aplicar em suas aulas.'
+						/>
 
-					Saúde e Longevidade
-					Dr. Alexandre Garcia
-					Integrar o yoga como uma rotina saudável é o princípio deste curso. Descubra coo ajudar seus alunos a terem mais saúde, e viverem com mais plenitude em todos os âmbitos de suas vidas.
+						<FormationBonusCard
+							title='Saúde e Longevidade'
+							image='08518c99-983d-4b38-4d6b-da2c7056df00'
+							teacher='Dr. Alexandre Garcia'
+							description='Como ajudar seus alunos a terem mais saúde, e viverem com mais plenitude em todos os âmbitos de suas vidas.'
+						/>
 
-					Introdução ao Vedanta
-					Prof. Luciano Giorgio
-					Vedanta é um dos 6 principais pontos de vista do Hinduísmo. Uma forma se compreender a vida através de uma ótica espiritualista. Conteúdo fundamental para todo professor.
+						<FormationBonusCard
+							title='Introdução ao Vedanta'
+							image='09be8860-9e64-45b0-d120-39e531ea9400'
+							teacher='Prof. Luciano Giorgio'
+							description='Um dos 6 principais pontos de vista do Hinduísmo. Uma forma se compreender a vida através de uma ótica espiritualista.'
+						/>
 
-					Introdução ao Sânscrito
-					Prof. Carlos Cardoso
-					É a língua oficial do yoga, utilizada para nominar técnicas e conceitos do Yoga. Estudar e compreender esta língua, originária de muitas outras, faz parte do estudo do Professor de Yoga.
+						<FormationBonusCard
+							title='Introdução ao Sânscrito'
+							image='b0528ba6-fb40-4aa2-1ea1-e47b9bf2bf00'
+							teacher='Prof. Carlos Cardoso'
+							description='A língua oficial do yoga, utilizada para nominar técnicas e conceitos do Yoga. Estudar e compreender esta língua faz parte do estudo do Professor de Yoga.'
+						/>
 
-					Movimentação Sutil
-					Profa. Cherrine Cardoso
-					Shiva, criador do Yoga é o Rei do Bailarinos. Nos inspiramos na sua figura para praticar yoga com consciência e beleza. Descubra como aprimorar sua movimentação e explorar a consciência ao encadear os ásanas.
+						<FormationBonusCard
+							title='Movimentação Sutil'
+							image='a199dc6e-3375-4c4e-91fd-7a45be223200'
+							teacher='Profa. Cherrine Cardoso'
+							description='Shiva, criador do Yoga é o Rei do Bailarinos. Descubra como aprimorar sua movimentação e explorar a consciência ao encadear os ásanas.'
+						/>
 
-					Bhuta Shuddi
-					Profa. Ro de Castro
-					Técnicas de limpeza do corpo, da mente e das emoções. Como experimentar períodos de purificação destes elementos e ensinar seus alunos.
+						<FormationBonusCard
+							title='Bhuta Shuddi'
+							image='2805891e-72d9-4d17-b275-bde925b34100'
+							teacher='Profa. Ro de Castro'
+							description='Técnicas de limpeza do corpo, da mente e das emoções. Como experimentar períodos de purificação destes elementos e ensinar seus alunos.'
+						/>
 
-					Histórias do Hinduismo
-					Prof. André DeRose
-					Com décadas de magistérios e muitas referências e estudos da cultura hindu, prof. André DeRose tráz neste curso aspectos reais sobre o Yoga e a cultura onde ele surgiu.
+						<FormationBonusCard
+							title='Histórias do Hinduismo'
+							image='f2e10ade-95b4-45fa-435c-02bfe5833b00'
+							teacher='Prof. André DeRose'
+							description='O Prof. André DeRose tráz neste curso aspectos reais sobre o Yoga e a cultura onde ele surgiu.'
+						/>
 
-					Congresso Semana Sem Carne
-					Diversos Professores
-					Assista a gravação do congresso sobre alimentação vegetariana que reuniu mais de 35 mil participantes.
+						<FormationBonusCard
+							title='Congresso Semana Sem Carne'
+							image='db3d856d-b594-43ef-4c24-1e5c75cd7500'
+							teacher='Diversos Professores'
+							description='Assista a gravação do congresso sobre alimentação vegetariana que reuniu mais de 35 mil participantes.'
+						/>
 
-					Culinária Vegetariana
-					Prof. Claus Haas
-					Aprenda a cozinhar pratos deliciosos da culinária vegetariana inspirados em diversas culturas culinárias diferentes: caipira, chinesa, indiana, italiana...
+						<FormationBonusCard
+							title='Culinária Vegetariana'
+							image='9945c6c6-dd54-4163-5b41-d5fcf6152d00'
+							teacher='Prof. Claus Haas'
+							description='Aprenda a cozinhar pratos deliciosos da culinária vegetariana inspirados em diversas culturas culinárias diferentes.'
+						/>
+					</div>
 				</section>
 
-				<section id='platform' className='max-w-[95%] sm:max-w-[90%] lg:max-w-screen-lg mx-auto my-20 sm:my-56 flex flex-col items-center gap-12'>
+				<section id='platform' className='max-w-[95%] sm:max-w-[90%] lg:max-w-screen-lg mx-auto my-20 sm:my-40 flex flex-col items-center gap-12'>
 					<h1 className='text-center text-amber-11 text-3xl xs:text-5xl'>A Plataforma da Yoga em Movimento evoluiu e foi repensada especialmente para a prática do Yoga</h1>
 
 					<div className='flex justify-center gap-4 flex-wrap'>
@@ -197,13 +257,13 @@ export default function Formacao() {
 					</div>
 				</section>
 
-				<section id='support' className='max-w-[95%] sm:max-w-[90%] lg:max-w-screen-lg mx-auto my-20 sm:my-56'>
+				<section id='support' className='max-w-[95%] sm:max-w-[90%] lg:max-w-screen-lg mx-auto my-20 sm:my-40'>
 					<h1 className='text-sky-12 dark:text-sky-10 mb-5 text-3xl xs:text-5xl md:text-6xl lg:text-7xl'>Você sempre terá acompanhamento!</h1>
 					<h2 className='text-sky-11 text-2xl xs:text-4xl md:text-5xl lg:text-6xl'>Você pode conversar diretamente com nossos professores pelo whatsapp ou telegram para tirar suas dúvidas</h2>
 					<p>Além disso, você contará com o feedback dos professores em todas as suas tarefas até o momento em que estiver pronta para as avaliações finais.</p>
 				</section>
 
-				<section>
+				<section className='2xl:max-w-screen-xl max-w-[90%] mx-auto my-20 sm:my-40'>
 					<h2>O Que Você Vai Receber ao se Matricular</h2>
 					Módulos de Filosofia
 					com tudo o que você precisa entender sobre Yoga
@@ -236,7 +296,7 @@ export default function Formacao() {
 					mostrados na página inteiramente gratuitos e com acesso vitalício
 				</section>
 
-				<section>
+				<section className='2xl:max-w-screen-xl max-w-[90%] mx-auto my-20 sm:my-40'>
 					<h2>Investimento</h2>
 					De R$ 5.980,00 por apenas
 
@@ -247,12 +307,12 @@ export default function Formacao() {
 					<p>Você pode cancelar a renovação da anuidade quando quiser.</p>
 				</section>
 
-				<section>
+				<section className='2xl:max-w-screen-xl max-w-[90%] mx-auto my-20 sm:my-40'>
 					<h2>Garantia Incondicional de 7 Dias</h2>
 					<p>Você pode entrar, acessar todo o conteúdo e bônus e, se não se adaptar, entender que não é para você ou até mesmo se arrepender nos primeiros 7 dias, devolvemos 100% do seu dinheiro investido. Simples assim, sem complicações ou letras miúdas.</p>
 				</section>
 
-				<section>
+				<section className='2xl:max-w-screen-xl max-w-[90%] mx-auto my-20 sm:my-40'>
 					<h2>Conteúdo do Curso</h2>
 
 					Filosofia
@@ -328,7 +388,7 @@ export default function Formacao() {
 					Como fazer a matrícula de um aluno novo
 				</section>
 
-				<section>
+				<section className='2xl:max-w-screen-xl max-w-[90%] mx-auto my-20 sm:my-40'>
 					Perguntas Frequentes
 					O curso é baseado em alguma modalidade específica de Yoga?
 					É um curso de Formação em Yoga, não de uma modalidade específica. Estudaremos os elementos que constituem todas as principais modalidades da atualidade. (Hatha Yogam Ashtánga Yoga, Yoga integral, Swásthya Yoga…). No final do curso você poderá ministrar aulas de uma modalidade com a qual se identifique mais ou, assim como nós, ministrar aulas simplesmente de Yoga. Sem nomes ou rótulos.
