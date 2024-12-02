@@ -36,16 +36,18 @@ export default function Formacao() {
 				</div>
 			</header>
 			<main>
-				<section id='welcome' className='2xl:max-w-screen-xl max-w-[90%] mx-auto mt-10'>
-					<h1 className='text-center mb-5'>Tudo o que você precisa para se tornar uma Instrutora de Yoga, do Zero aos Primeiros Alunos</h1>
-					<Stream
-						controls
-						autoplay
-						preload='auto'
-						className='pt-[56.25%] relative *:absolute *:w-full *:h-full *:top-0 *:left-0 *:inset-0'
-						src='6a99796454a960470c8fd444af82b9fe'
-						responsive={false}
-					/>
+				<section id='welcome' className='2xl:max-w-screen-xl max-w-[90%] mx-auto mt-5 flex flex-col items-center'>
+					<h1 className='text-purple-12 text-xl sm:text-3xl md:text-4xl xl:text-5xl text-center mb-5'>Tudo o que você precisa para se tornar uma Instrutora de Yoga, do Zero aos Primeiros Alunos</h1>
+					<div className='max-w-screen-lg w-full'>
+						<Stream
+							controls
+							autoplay
+							preload='auto'
+							className='pt-[56.25%] relative *:absolute *:w-full *:h-full *:top-0 *:left-0 *:inset-0'
+							src='6a99796454a960470c8fd444af82b9fe'
+							responsive={false}
+						/>
+					</div>
 				</section>
 
 				<Testimonies/>
@@ -102,9 +104,9 @@ export default function Formacao() {
 				<section className='2xl:max-w-screen-xl max-w-[90%] mx-auto my-20 sm:my-40'>
 					<h2 className='text-purple-11 text-3xl xs:text-5xl md:text-6xl lg:text-7xl text-left mb-5'>Bônus Gratuitos</h2>
 
-					<p>Diversos conteúdos e conhecimentos são enriquecedores para o Professor de Yoga, embora não sejam fundamentais na sua formação. Para formar profissionais completos e que possam entrar no mercado de trabalho com segurança, oferecemos diversos bônus inteiramente gratuitos em nosso curso. Estes conteúdos são acessíveis apenas através deste curso e não estão disponíveis de nenhuma outra forma</p>
+					<p className='font-gothamMedium'>Diversos conteúdos e conhecimentos são enriquecedores para o Professor de Yoga, embora não sejam fundamentais na sua formação. Para formar profissionais completos e que possam entrar no mercado de trabalho com segurança, oferecemos diversos bônus inteiramente gratuitos em nosso curso. Estes conteúdos são acessíveis apenas através deste curso e não estão disponíveis de nenhuma outra forma</p>
 
-					<div className='flex flex-wrap gap-5 justify-evenly my-10'>
+					<div className='flex flex-wrap gap-8 justify-center my-10'>
 						<FormationBonusCard
 							title='Escola Online'
 							image='1a71c32c-8ef4-46e4-5e89-445d50c2ae00'
@@ -260,7 +262,7 @@ export default function Formacao() {
 				<section id='support' className='max-w-[95%] sm:max-w-[90%] lg:max-w-screen-lg mx-auto my-20 sm:my-40'>
 					<h1 className='text-sky-12 dark:text-sky-10 mb-5 text-3xl xs:text-5xl md:text-6xl lg:text-7xl'>Você sempre terá acompanhamento!</h1>
 					<h2 className='text-sky-11 text-2xl xs:text-4xl md:text-5xl lg:text-6xl'>Você pode conversar diretamente com nossos professores pelo whatsapp ou telegram para tirar suas dúvidas</h2>
-					<p>Além disso, você contará com o feedback dos professores em todas as suas tarefas até o momento em que estiver pronta para as avaliações finais.</p>
+					<p className='font-gothamMedium'>Além disso, você contará com o feedback dos professores em todas as suas tarefas até o momento em que estiver pronta para as avaliações finais.</p>
 				</section>
 
 				<section className='2xl:max-w-screen-xl max-w-[90%] mx-auto my-20 sm:my-40'>
