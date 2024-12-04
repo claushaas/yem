@@ -2,10 +2,13 @@ import {Stream} from '@cloudflare/stream-react';
 import {
 	BookmarkIcon, CheckCircleIcon, HeartIcon, PlayIcon, UserGroupIcon, VideoCameraIcon,
 } from '@heroicons/react/24/outline';
+import {Image} from '@unpic/react';
 import {type LoaderFunctionArgs, Link, type MetaFunction} from 'react-router';
 import {Button, ButtonPreset, ButtonType} from '~/components/button.js';
 import {FormationBonusCard} from '~/components/formation-bonus-card';
+import {FormationContentCard} from '~/components/formation-content-card';
 import {Testimonies} from '~/layouts/testimonies';
+import {buildImgSource} from '~/utils/build-cloudflare-image-source';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => [
 	{title: 'Formação em Yoga - Yoga em Movimento'},
@@ -266,128 +269,272 @@ export default function Formacao() {
 				</section>
 
 				<section className='2xl:max-w-screen-xl max-w-[90%] mx-auto my-20 sm:my-40'>
-					<h2>O Que Você Vai Receber ao se Matricular</h2>
-					Módulos de Filosofia
-					com tudo o que você precisa entender sobre Yoga
+					<h2 className='text-purple-11 text-3xl xs:text-5xl md:text-6xl lg:text-7xl mb-5 text-center'>O Que Você Vai Receber ao se Matricular</h2>
 
-					Módulos de Magistério
-					para aprender a ministrar aulas cativantes e eficientes
+					<div className='max-w-screen-md w-full mx-auto px-7 py-5 rounded-3xl shadow-sm shadow-mauve-11 dark:shadow-mauvedark-3 bg-mauve-4 dark:bg-mauvedark-3 flex flex-col justify-evenly gap-5'>
+						<FormationContentCard
+							title='Módulos de Filosofia'
+							description='com tudo o que você precisa entender sobre Yoga'
+						/>
 
-					Módulos de Profissão
-					para planejar sua carreira e conquistar o sucesso
+						<FormationContentCard
+							title='Módulos de Magistério'
+							description='para aprender a ministrar aulas cativantes e eficientes'
+						/>
 
-					Suporte com Equipe de Professores
-					para te ajudar em cada etapa dos estudos
+						<FormationContentCard
+							title='Módulos de Profissão'
+							description='para planejar sua carreira e conquistar o sucesso'
+						/>
 
-					Acesso à Escola Online
-					com mais de 1500 aulas práticas para manter sua prática em dia e inspirar suas aulas.
+						<FormationContentCard
+							title='Suporte com Equipe de Professores'
+							description='para te ajudar em cada etapa dos estudos'
+						/>
 
-					Todo o Material Didático Incluso
-					Você não precisa adquirir nenhum material extra para completar sua formação e receber seu certificado
+						<FormationContentCard
+							title='Acesso à Escola Online'
+							description='com mais de 1500 aulas práticas para manter sua prática em dia e inspirar suas aulas.'
+						/>
 
-					Certificado Emitido Gratuitamente
-					para aprender a ministrar aulas cativantes e eficientes
+						<FormationContentCard
+							title='Todo o Material Didático Incluso'
+							description='Você não precisa adquirir nenhum material extra para completar sua formação e receber seu certificado'
+						/>
 
-					Ebook de Ásanas
-					com ilustrações, nomes, variações e explicações das técnicas corporais do Yoga. Novas posições são adicionadas mensalmente
+						<FormationContentCard
+							title='Certificado Emitido Gratuitamente'
+							description='para aprender a ministrar aulas cativantes e eficientes'
+						/>
 
-					Todos os Cursos Bônus
-					mostrados na página inteiramente gratuitos e com acesso vitalício
+						<FormationContentCard
+							title='Ebook de Ásanas'
+							description='com ilustrações, nomes, variações e explicações das técnicas corporais do Yoga. Novas posições são adicionadas mensalmente'
+						/>
 
-					Bibliografia recomendada
-					mostrados na página inteiramente gratuitos e com acesso vitalício
+						<FormationContentCard
+							title='Todos os Cursos Bônus'
+							description='mostrados na página inteiramente gratuitos'
+						/>
+
+						<FormationContentCard
+							title='Bibliografia recomendada'
+							description='as melhores indicações de livros para ampliar os estudos'
+						/>
+					</div>
 				</section>
 
 				<section className='2xl:max-w-screen-xl max-w-[90%] mx-auto my-20 sm:my-40'>
-					<h2>Investimento</h2>
-					De R$ 5.980,00 por apenas
+					<h1 className='text-purple-11 dark:text-purpledark-11 text-3xl xs:text-5xl md:text-6xl lg:text-7xl mb-5 text-center'>Investimento</h1>
 
-					12x de 97,00 por ano
+					<h2 className='text-purple-12 dark:text-purpledark-12 text-center'>De R$ <span className='line-through'>5.980,00</span> por apenas 12x de 97,00 por ano</h2>
 
-					<p>A matrícula em nosso curso curso custa R$ 5.980,00. Mas entendemos que o momento atual não permite que muitas pessoas possam participar de cursos tão completos como o nosso.</p>
-					<p>Por isso resolvemos criar uma alternativa de matrícula no formato de assinatura, com duração de 1 ano e valor anual de R$ 1.164,00, ou seja, R$ 97,00 por mês.</p>
-					<p>Você pode cancelar a renovação da anuidade quando quiser.</p>
+					<div className='max-w-screen-md mx-auto'>
+						<p className='font-gothamMedium mb-3'>O valor da matrícula em nosso curso curso é R$ 5.980,00. Entendemos que o momento atual não permite que muitas pessoas possam participar de cursos tão completos como o nosso.</p>
+						<p className='font-gothamMedium mb-3'>Por isso resolvemos criar uma alternativa de matrícula no formato de assinatura, com duração de 1 ano e valor anual de R$ 1.164,00, ou seja, R$ 97,00 por mês.</p>
+						<p className='font-gothamMedium mb-3 text-center'>Você pode cancelar a renovação da anuidade quando quiser.</p>
+					</div>
 				</section>
 
 				<section className='2xl:max-w-screen-xl max-w-[90%] mx-auto my-20 sm:my-40'>
-					<h2>Garantia Incondicional de 7 Dias</h2>
-					<p>Você pode entrar, acessar todo o conteúdo e bônus e, se não se adaptar, entender que não é para você ou até mesmo se arrepender nos primeiros 7 dias, devolvemos 100% do seu dinheiro investido. Simples assim, sem complicações ou letras miúdas.</p>
+					<div className='flex max-w-screen-md gap-4 items-center mx-auto flex-wrap sm:flex-nowrap justify-center'>
+						<div className='shrink-0'>
+							<Image
+								className='w-full h-full'
+								src={buildImgSource('6dab2385-3610-4d32-35d4-75f1a9bc2c00')}
+								cdn='cloudflare_images'
+								layout='constrained'
+								width={200}
+								height={200}
+								alt='Garantia Incondicional de 7 Dias'
+							/>
+						</div>
+						<div className='shrink'>
+							<h2 className='text-purple-11 dark:text-purpledark-11 text-center sm:text-left'>Garantia Incondicional de 7 Dias</h2>
+							<p className='text-purple-12 dark:text-purpledark-12 font-gothamMedium'>Você pode entrar, acessar todo o conteúdo e bônus e, se não se adaptar, entender que não é para você ou até mesmo se arrepender nos primeiros 7 dias, devolvemos 100% do seu dinheiro investido. Simples assim, sem complicações ou letras miúdas.</p>
+						</div>
+					</div>
 				</section>
 
 				<section className='2xl:max-w-screen-xl max-w-[90%] mx-auto my-20 sm:my-40'>
-					<h2>Conteúdo do Curso</h2>
+					<h2 className='text-purple-11 dark:text-purpledark-11 text-3xl xs:text-5xl md:text-6xl lg:text-7xl mb-5 text-center'>Conteúdo do Curso</h2>
 
-					Filosofia
-					Em primeiro lugar, para ser um bom professor, você precisa conhecer a filosofia do Yoga. Isso significa conhecer o contexto cronológico e cultural do Yoga, quando e onde surgiu, como evelouiu e mudou ao longo dos milênios. Precisa entender os conceitos filosóficos e práticos das técnicas, como funcionam, o que proporcionam ao praticante. Nesse pilar você vai encontrar os seguintes conteúdos:
-					1. Introdução
-					1.1. O que é o Yoga e as suas definições
-					1.2 Qual é a meta e os objetivos do Yoga
-					1.3 Origens do Yoga
-					1.4. Técnicas do Yoga
-					1.5. Sistema Clássico de Patáñjáli
-					1.6. As diversas modalidades de Yoga
-					1.7. Modalidades de Yoga da atualidade
-					2. Chakras e Nadís
-					2.1. O que são os Chakras
-					2.2. As 3 principais Nadís
-					2.3 Estimulando os Chakras
-					2.4. Granthis
-					3. Yoga Sutra de Patáñjáli
-					3.1. Introdução ao Yoga Sutra
-					3.2. Resumo das trilhas
-					4. Alimentação no Yoga
-					5. Técnicas do Yoga
-					5.1. Mudrá
-					5.2. Pújá
-					5.3. Mantra
-					5.4. Kriyá
-					5.5. Ásana
-					5.6. Pránáyáma
-					5.7. Yoganidrá
-					5.8. Samyama
-					4.9. Os 4 últimos angas
-					6. O Código de Ética do Yoga
-					6.1. Yamas
-					6.2. Nyamas
-					6.3. Yamas e Nyamas como ferramentas de evolução
-					7. Hinduismo
-					7.1. Karma e Dharma
-					7.2. Sámkhya e Vedanta
-					7.3. Literatura
-					7.4. Sânscrito
-					7.5. Tantra e Brahmachárya
+					<p className='text-center font-gothamMedium'>Nosso Curso está divido em 3 pilares fundamentais, que são 3 grandes módulos, abaixo estão o conteúdo e o motivo de cada um:</p>
 
-					Magistério
-					Entender, praticar e aplicar a Filosofia do Yoga na sua vida é muito importante como professor, afinal nada melhor do que a própria experiência para que os seus ensinamentos sejam realmente impactantes. No entanto nada adianta saber tudo sobre Yoga, ser o melhor e mais assíduo praticante, se você não souber como transmitir estes conhecimentos aos seus alunos. Apenas com uma boa didática e pedagogia, aliados ao conhecimento e à empatia para entender o momento de vida de cada aluno seu, suas vontades e objetivos, é que você conseguirá ser a ponte entre o seu aluno e a filosofia do Yoga. Não basta conhecer o Yoga, precisa saber ensinar o Yoga. E é isso que você vai aprender nesse pilar:
-					- Objetivos dos Alunos
-					- Como introduzir o aluno novo
-					- Como acompanhar a evolução dos seus alunos
-					- Como montar a sua sala de práticas
-					- As diversas variações das técnicas
-					- Opções e tipos de aulas de Yoga
-					- Aprimorando a execução das técnicas
-					- Yoga em círculo
-					- Yoga em duplas
-					- A melhor forma de demonstrar as técnicas
-					- Como ensinar seus alunos a praticarem com segurança
-					- Como encadear as técnicas
-					- Combinação de técnicas
-					- Músicas nas aulas
-					- Como aprimorar a sua locução
-					- Como corrigir os seus alunos
+					<div className='flex gap-5 flex-wrap mt-5 justify-center'>
+						<div className='w-96 rounded-3xl shadow-sm shadow-mauve-11 dark:shadow-mauvedark-3 bg-mauve-4 dark:bg-mauvedark-3 py-4 px-5'>
+							<h3 className='text-purple-11 dark:text-purpledark-11 text-center'>I - Filosofia</h3>
 
-					Profissão
-					Conhecer, vivenciar e saber transmitir a filosofia do Yoga de forma profunda vai lhe tornar um ótimo professor, mas não um professor de sucesso! Pode soar estranho ler isso numa página divulgando um curso de formação, mas não queremos apenas te formar, queremos que você tenha sucesso nesta carreira. E para isso você precisa ter alunos, muitos alunos! Nós vamos pegar na sua mão e te ensinar como iniciar esta carreira, como se formalizar, como planejar, divulgar e matricular os seus alunos, e por aí vai:
-					Como é a regulamentação da profissão
-					Como se formalizar e atuar como professor de yoga
-					Como e que tipo de conteúdos produzir
-					Entender a jornada dos seus alunos
-					Como divulgar o seu trabalho
-					Como precificar o seu trabalho
-					Como planejar as receitas e as despesas
-					Como usar as redes sociais para divulgação
-					Como fazer o atendimento de um interessado
-					Como fazer a matrícula de um aluno novo
+							<p className='mb-4 font-gothamMedium'>Você precisa conhecer a filosofia do Yoga. Isso significa conhecer o contexto cronológico e cultural do Yoga. Entender os conceitos filosóficos e práticos das técnicas, como funcionam, o que proporcionam ao praticante:</p>
+
+							<div className='ml-6'>
+								<ol className='list-decimal'>
+									<li className='mb-2'>
+										<p>Introdução</p>
+										<ul className='list-disc'>
+											<li><p>O que é o Yoga</p></li>
+											<li><p>Meta e objetivos do Yoga</p></li>
+											<li><p>Origens do Yoga</p></li>
+											<li><p>Técnicas do Yoga</p></li>
+											<li><p>Sistema Clássico de Patáñjáli</p></li>
+											<li><p>Modalidades de Yoga</p></li>
+											<li><p>Modalidades de Yoga da atualidade</p></li>
+										</ul>
+									</li>
+									<li className='mb-2'>
+										<p>Chakras e Nadís</p>
+										<ul className='list-disc'>
+											<li><p>O que são os Chakras</p></li>
+											<li><p>As 3 principais Nadís</p></li>
+											<li><p>Estimulando os Chakras</p></li>
+											<li><p>Granthis</p></li>
+										</ul>
+									</li>
+									<li className='mb-2'>
+										<p>Yoga Sutra de Patáñjáli</p>
+										<ul className='list-disc'>
+											<li><p>Introdução ao Yoga Sutra</p></li>
+											<li><p>Resumo das trilhas</p></li>
+										</ul>
+									</li>
+									<li className='mb-2'>
+										<p>Alimentação no Yoga</p>
+									</li>
+									<li className='mb-2'>
+										<p>Técnicas do Yoga</p>
+										<ul className='list-disc'>
+											<li><p>Mudrá</p></li>
+											<li><p>Pújá</p></li>
+											<li><p>Mantra</p></li>
+											<li><p>Kriyá</p></li>
+											<li><p>Ásana</p></li>
+											<li><p>Pránáyáma</p></li>
+											<li><p>Yoganidrá</p></li>
+											<li><p>Samyama</p></li>
+										</ul>
+									</li>
+									<li className='mb-2'>
+										<p>O Código de Ética do Yoga</p>
+										<ul className='list-disc'>
+											<li><p>Yamas</p></li>
+											<li><p>Nyamas</p></li>
+											<li><p>Ferramentas de evolução</p></li>
+										</ul>
+									</li>
+									<li className='mb-2'>
+										<p>Hinduísmo</p>
+										<ul className='list-disc'>
+											<li><p>Karma e Dharma</p></li>
+											<li><p>Sámkhya e Vedanta</p></li>
+											<li><p>Literatura</p></li>
+											<li><p>Sânscrito</p></li>
+											<li><p>Tantra e Brahmachárya</p></li>
+										</ul>
+									</li>
+								</ol>
+							</div>
+						</div>
+
+						<div className='w-96 rounded-3xl shadow-sm shadow-mauve-11 dark:shadow-mauvedark-3 bg-mauve-4 dark:bg-mauvedark-3 py-4 px-5'>
+							<h3 className='text-purple-11 dark:text-purpledark-11 text-center'>II - Magistério</h3>
+
+							<p className='mb-4 font-gothamMedium'>Se você não souber como transmitir seus conhecimentos aos seus alunos, seu futuro como Professora não será muito bom. Apenas com uma boa didática e pedagogia é que você conseguirá ser a ponte entre o seu aluno e a filosofia do Yoga. Precisa saber ensinar o Yoga:</p>
+
+							<div className='ml-6'>
+								<ul className='list-disc'>
+									<li>
+										<p>Objetivos dos Alunos</p>
+									</li>
+									<li>
+										<p>Como introduzir o aluno novo</p>
+									</li>
+									<li>
+										<p>Como acompanhar a evolução dos seus alunos</p>
+									</li>
+									<li>
+										<p>Como montar a sua sala de práticas</p>
+									</li>
+									<li>
+										<p>As diversas variações das técnicas</p>
+									</li>
+									<li>
+										<p>Opções e tipos de aulas de Yoga</p>
+									</li>
+									<li>
+										<p>Aprimorando a execução das técnicas</p>
+									</li>
+									<li>
+										<p>Yoga em círculo</p>
+									</li>
+									<li>
+										<p>Yoga em duplas</p>
+									</li>
+									<li>
+										<p>A melhor forma de demonstrar as técnicas</p>
+									</li>
+									<li>
+										<p>Como ensinar seus alunos a praticarem com segurança</p>
+									</li>
+									<li>
+										<p>Como encadear as técnicas</p>
+									</li>
+									<li>
+										<p>Combinação de técnicas</p>
+									</li>
+									<li>
+										<p>Músicas nas aulas</p>
+									</li>
+									<li>
+										<p>Como aprimorar a sua locução</p>
+									</li>
+									<li>
+										<p>Como corrigir os seus alunos</p>
+									</li>
+								</ul>
+							</div>
+						</div>
+
+						<div className='w-96 rounded-3xl shadow-sm shadow-mauve-11 dark:shadow-mauvedark-3 bg-mauve-4 dark:bg-mauvedark-3 py-4 px-5'>
+							<h3 className='text-purple-11 dark:text-purpledark-11 text-center'>III - Profissão</h3>
+
+							<p className='mb-4 font-gothamMedium'>Não queremos apenas te formar, queremos que você tenha sucesso nesta carreira. Vamos te ensinar como iniciar esta carreira, como se formalizar, como planejar, divulgar e matricular os seus alunos, e por aí vai:</p>
+
+							<div className='ml-6'>
+								<ul className='list-disc'>
+									<li>
+										<p>Como é a regulamentação da profissão</p>
+									</li>
+									<li>
+										<p>Como se formalizar e atuar como professor de yoga</p>
+									</li>
+									<li>
+										<p>Como e que tipo de conteúdos produzir</p>
+									</li>
+									<li>
+										<p>Entender a jornada dos seus alunos</p>
+									</li>
+									<li>
+										<p>Como divulgar o seu trabalho</p>
+									</li>
+									<li>
+										<p>Como precificar o seu trabalho</p>
+									</li>
+									<li>
+										<p>Como planejar as receitas e as despesas</p>
+									</li>
+									<li>
+										<p>Como usar as redes sociais para divulgação</p>
+									</li>
+									<li>
+										<p>Como fazer o atendimento de um interessado</p>
+									</li>
+									<li>
+										<p>Como fazer a matrícula de um aluno novo</p>
+									</li>
+								</ul>
+							</div>
+						</div>
+					</div>
 				</section>
 
 				<section className='2xl:max-w-screen-xl max-w-[90%] mx-auto my-20 sm:my-40'>
