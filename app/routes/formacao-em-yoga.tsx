@@ -2,8 +2,10 @@ import {Stream} from '@cloudflare/stream-react';
 import {
 	BookmarkIcon, CheckCircleIcon, HeartIcon, PlayIcon, UserGroupIcon, VideoCameraIcon,
 } from '@heroicons/react/24/outline';
+import * as Accordion from '@radix-ui/react-accordion';
 import {Image} from '@unpic/react';
 import {type LoaderFunctionArgs, Link, type MetaFunction} from 'react-router';
+import {AccordionItem} from '~/components/accordion';
 import {Button, ButtonPreset, ButtonType} from '~/components/button.js';
 import {FormationBonusCard} from '~/components/formation-bonus-card';
 import {FormationContentCard} from '~/components/formation-content-card';
@@ -538,21 +540,76 @@ export default function Formacao() {
 				</section>
 
 				<section className='2xl:max-w-screen-xl max-w-[90%] mx-auto my-20 sm:my-40'>
-					Perguntas Frequentes
-					O curso é baseado em alguma modalidade específica de Yoga?
-					É um curso de Formação em Yoga, não de uma modalidade específica. Estudaremos os elementos que constituem todas as principais modalidades da atualidade. (Hatha Yogam Ashtánga Yoga, Yoga integral, Swásthya Yoga…). No final do curso você poderá ministrar aulas de uma modalidade com a qual se identifique mais ou, assim como nós, ministrar aulas simplesmente de Yoga. Sem nomes ou rótulos.
-					Como são as provas de avaliação?
-					A avaliação final é feita em duas etapas. A primeira é uma prova teórica, baseada no conteúdo estudado ao longo do curso, feita diretamente na área de alunos da formação no nosso site. A segunda é uma aula prática ministrada pelo aluno, com duração entre 30 e 45 minutos. Essa aula deverá ser gravada em vídeo (pode ser pelo celular, notebook ou qualquer outra câmera) e enviada para os professores avaliarem e posteriormente enviarem o feedback.
-					E se eu não puder participar das aulas ao vivo?
-					Nenhum problema! As aulas transmitidas por videoconferência serão gravadas e disponibilizadas para os alunos assistirem quantas vezes quiserem, assim como todas as outras.
-					O curso oferece um certificado? Poderei dar aulas de Yoga na minha cidade? Mesmo morando em outro país?
-					Ao término do curso, os alunos aprovados na avaliação final receberão o certificado internacional de instrutor de Yoga e poderão ministrar aulas em todo o território nacional e até mesmo no exterior.
-					Terei que comprar algum livro ou outro material didático?
-					Não, você não precisará investir nada além do valor do curso. Oferecemos a nossos alunos um material de apoio já incluído no valor do curso. São vários e-books que facilitarão os estudos e se tornarão excelentes fontes de consulta ao longo de toda a carreira de Instrutor de Yoga. Também temos uma bibliografia recomendada com muitos títulos de autores sérios e renomados do mundo do Yoga
-					Quanto tempo terei para fazer o curso?
-					O acesso ao curso é vitalício, ou seja, você pode estudar no seu ritmo e finalizar ele quando quiser. Enquanto o Yoga em Moivmento existir, garantimos esta condição.
-					Qual o valor do curso?
-					O valor do curso é de R$ 5.980,00. Sem dúvidas um investimento muito baixo para um curso tão completo e que proporcionará a você a oportunidade de ministrar aulas de Yoga, realizar um sonho e ainda ser remunerado por isso. Mas atenção, inscritos nos primeiros lotes tem desconto por antecedência, confira o lote atual e não perca esta oportunidade.
+					<h2 className='text-purple-11 dark:text-purpledark-11 text-3xl xs:text-5xl md:text-6xl lg:text-7xl mb-5 text-center'>Perguntas Frequentes</h2>
+
+					<Accordion.Root collapsible type='single' defaultValue='1' className='rounded-xl'>
+						<AccordionItem value='1'>
+							<Accordion.Header>
+								<Accordion.Trigger>
+									<p>O curso é baseado em alguma modalidade específica de Yoga?</p>
+								</Accordion.Trigger>
+							</Accordion.Header>
+							<Accordion.Content>
+								<p>É um curso de Formação em Yoga, não de uma modalidade específica. Estudaremos os elementos que constituem todas as principais modalidades da atualidade. (Hatha Yogam Ashtánga Yoga, Yoga integral, Swásthya Yoga…). No final do curso você poderá ministrar aulas de uma modalidade com a qual se identifique mais ou, assim como nós, ministrar aulas simplesmente de Yoga. Sem nomes ou rótulos.</p>
+								<p><a href='https://wa.me/551149359150' target='_blank' rel='noreferrer'>WhatsApp (11) 4935-9150</a></p>
+							</Accordion.Content>
+						</AccordionItem>
+
+						<AccordionItem value='2'>
+							<Accordion.Header>
+								<Accordion.Trigger>
+									<p>Como é feito o acesso?</p>
+								</Accordion.Trigger>
+							</Accordion.Header>
+							<Accordion.Content>
+								<p>Caso ainda não possua cadastro em nossa plataforma, imediatamente após a confirmação da matrícula você receberá um email com a senha de acesso, exclusiva para você.</p>
+							</Accordion.Content>
+						</AccordionItem>
+
+						<AccordionItem value='3'>
+							<Accordion.Header>
+								<Accordion.Trigger>
+									<p>Como são as provas de avaliação?</p>
+								</Accordion.Trigger>
+							</Accordion.Header>
+							<Accordion.Content>
+								<p>A avaliação final é feita em duas etapas. A primeira é uma prova teórica, baseada no conteúdo estudado ao longo do curso, feita diretamente na área de alunos da formação no nosso site. A segunda é uma aula prática ministrada pelo aluno, com duração entre 30 e 45 minutos. Essa aula deverá ser gravada em vídeo (pode ser pelo celular, notebook ou qualquer outra câmera) e enviada para os professores avaliarem e posteriormente enviarem o feedback.</p>
+							</Accordion.Content>
+						</AccordionItem>
+
+						<AccordionItem value='4'>
+							<Accordion.Header>
+								<Accordion.Trigger>
+									<p>O curso oferece um certificado? Posso dar aulas em outros países?</p>
+								</Accordion.Trigger>
+							</Accordion.Header>
+							<Accordion.Content>
+								<p>Ao término do curso, os alunos aprovados na avaliação final receberão o certificado internacional de instrutor de Yoga e poderão ministrar aulas em todo o território nacional e até mesmo no exterior.</p>
+							</Accordion.Content>
+						</AccordionItem>
+
+						<AccordionItem value='5'>
+							<Accordion.Header>
+								<Accordion.Trigger>
+									<p>Terei que comprar algum livro ou outro material didático?</p>
+								</Accordion.Trigger>
+							</Accordion.Header>
+							<Accordion.Content>
+								<p>Não, você não precisará investir nada além do valor do curso. Oferecemos a nossos alunos um material de apoio já incluído no valor do curso. São vários e-books que facilitarão os estudos e se tornarão excelentes fontes de consulta ao longo de toda a carreira de Instrutor de Yoga. Também temos uma bibliografia recomendada com muitos títulos de autores sérios e renomados do mundo do Yoga.</p>
+							</Accordion.Content>
+						</AccordionItem>
+
+						<AccordionItem value='6'>
+							<Accordion.Header>
+								<Accordion.Trigger>
+									<p>Posso cancelar a assinatura quando quiser?</p>
+								</Accordion.Trigger>
+							</Accordion.Header>
+							<Accordion.Content>
+								<p>Sim! Esse formato de assinatura da nossa formação permite que você faça o cancelamento da renovação da anuidade quando você quiser. Ao cancelar, são interrompidas as próximas renovações da anuidade e o seu acesso continua funcionando normalmente até o final da anuidade atual.</p>
+							</Accordion.Content>
+						</AccordionItem>
+					</Accordion.Root>
 				</section>
 			</main>
 		</>
