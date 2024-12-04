@@ -727,7 +727,7 @@ export class HooksService {
 
 		const isBillet = data.purchase.payment.type === 'BILLET';
 		const isPix = data.purchase.payment.type === 'PIX';
-		const isCreditCard = data.purchase.payment.type === 'CREDIT_CARD';
+		const isCreditCard = data.purchase.payment.type === 'CREDIT_CARD' || data.purchase.payment.type === 'PAYPAL' || data.purchase.payment.type === 'WALLET';
 
 		const {data: {userData: user}} = await this._userService.createOrUpdate({
 			email: data.buyer.email.toLowerCase(),
