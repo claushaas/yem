@@ -4,7 +4,9 @@ import {
 } from '@heroicons/react/24/outline';
 import * as Accordion from '@radix-ui/react-accordion';
 import {Image} from '@unpic/react';
-import {type LoaderFunctionArgs, Link, type MetaFunction} from 'react-router';
+import {
+	type LoaderFunctionArgs, Link, type MetaFunction, useLocation,
+} from 'react-router';
 import {AccordionItem} from '~/components/accordion';
 import {Button, ButtonPreset, ButtonType} from '~/components/button.js';
 import {FormationBonusCard} from '~/components/formation-bonus-card';
@@ -23,6 +25,10 @@ export const loader = ({request}: LoaderFunctionArgs) => ({
 });
 
 export default function Formacao() {
+	const {search} = useLocation();
+	const searchParameters = search ? search.split('?')[1].split('&') : [];
+	const marketingSearchParameters = searchParameters.filter(searchParameter => searchParameter.includes('utm_'));
+
 	return (
 		<>
 			<header className='max-xs:max-w-[95%] max-w-[90%] mx-auto my-4 flex justify-between items-center w-[-webkit-fill-available]'>
@@ -326,7 +332,7 @@ export default function Formacao() {
 					</div>
 				</section>
 
-				<section className='2xl:max-w-screen-xl max-w-[90%] mx-auto my-20 sm:my-40'>
+				<section id='investment' className='2xl:max-w-screen-xl max-w-[90%] mx-auto my-20 sm:mt-40'>
 					<h1 className='text-purple-11 dark:text-purpledark-11 text-3xl xs:text-5xl md:text-6xl lg:text-7xl mb-5 text-center'>Investimento</h1>
 
 					<h2 className='text-purple-12 dark:text-purpledark-12 text-center'>De R$ <span className='line-through'>5.980,00</span> por apenas 12x de 97,00 por ano</h2>
@@ -336,9 +342,20 @@ export default function Formacao() {
 						<p className='font-gothamMedium mb-3'>Por isso resolvemos criar uma alternativa de matrícula no formato de assinatura, com duração de 1 ano e valor anual de R$ 1.164,00, ou seja, R$ 97,00 por mês.</p>
 						<p className='font-gothamMedium mb-3 text-center'>Você pode cancelar a renovação da anuidade quando quiser.</p>
 					</div>
+
+					<div className='mx-auto w-fit my-20'>
+						<Link to={`https://pay.hotmart.com/G96565416C?${marketingSearchParameters.join('&')}`} target='_blank'>
+							<Button
+								type={ButtonType.Button}
+								preset={ButtonPreset.Primary}
+								text='Fazer Minha Matrícula'
+								className='text-2xl'
+							/>
+						</Link>
+					</div>
 				</section>
 
-				<section className='2xl:max-w-screen-xl max-w-[90%] mx-auto my-20 sm:my-40'>
+				<section className='2xl:max-w-screen-xl max-w-[90%] mx-auto my-20 sm:mb-40'>
 					<div className='flex max-w-screen-md gap-4 items-center mx-auto flex-wrap sm:flex-nowrap justify-center'>
 						<div className='shrink-0'>
 							<Image
@@ -346,14 +363,14 @@ export default function Formacao() {
 								src={buildImgSource('6dab2385-3610-4d32-35d4-75f1a9bc2c00')}
 								cdn='cloudflare_images'
 								layout='constrained'
-								width={200}
-								height={200}
+								width={100}
+								height={100}
 								alt='Garantia Incondicional de 7 Dias'
 							/>
 						</div>
 						<div className='shrink'>
-							<h2 className='text-purple-11 dark:text-purpledark-11 text-center sm:text-left'>Garantia Incondicional de 7 Dias</h2>
-							<p className='text-purple-12 dark:text-purpledark-12 font-gothamMedium'>Você pode entrar, acessar todo o conteúdo e bônus e, se não se adaptar, entender que não é para você ou até mesmo se arrepender nos primeiros 7 dias, devolvemos 100% do seu dinheiro investido. Simples assim, sem complicações ou letras miúdas.</p>
+							<h2 className='text-purple-11 dark:text-purpledark-11 text-center sm:text-left text-lg'>Garantia Incondicional de 7 Dias</h2>
+							<p className='text-purple-12 dark:text-purpledark-12 font-gothamMedium text-xs'>Você pode entrar, acessar todo o conteúdo e bônus e, se não se adaptar, entender que não é para você ou até mesmo se arrepender nos primeiros 7 dias, devolvemos 100% do seu dinheiro investido. Simples assim, sem complicações ou letras miúdas.</p>
 						</div>
 					</div>
 				</section>
