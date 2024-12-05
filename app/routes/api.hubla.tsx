@@ -1,7 +1,7 @@
 // X-hubla-token
 // 8Lui4amoPJRcDXCLN3MSiFZV9HcBiJAzxCcVynu7xcxF2RDBG9LIFopa8yDeodNz
 
-import {type LoaderFunctionArgs, data} from 'react-router';
+import {type LoaderFunctionArgs} from 'react-router';
 import {HooksService} from '~/services/hooks.service.server';
 import {SlackService} from '~/services/slack.service.server';
 import {type THublaEvents} from '~/types/hubla.type';
@@ -15,7 +15,7 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
 	try {
 		await new SlackService().sendMessage(await request.json() as Record<string, any>);
 
-		return data({
+		return Response.json({
 			message: 'OK',
 		}, {
 			status: 200,
@@ -35,14 +35,14 @@ export const action = async ({request}: LoaderFunctionArgs) => {
 			const body = await request.json() as THublaEvents;
 			await new HooksService().handleHublaWebhook(body);
 
-			return data({
+			return Response.json({
 				message: 'OK',
 			}, {
 				status: 200,
 			});
 		}
 
-		return data({
+		return Response.json({
 			message: 'Unauthorized',
 		}, {
 			status: 401,
