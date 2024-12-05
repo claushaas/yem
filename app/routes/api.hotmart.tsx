@@ -1,4 +1,4 @@
-import {type LoaderFunctionArgs, data} from 'react-router';
+import {type LoaderFunctionArgs} from 'react-router';
 import {HooksService} from '~/services/hooks.service.server';
 import {SlackService} from '~/services/slack.service.server';
 import {type TIncommingHotmartWebhook} from '~/types/subscription.type';
@@ -13,7 +13,7 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
 	try {
 		await new SlackService().sendMessage(await request.json() as Record<string, any>);
 
-		return data({
+		return Response.json({
 			message: 'OK',
 		}, {
 			status: 200,
@@ -45,14 +45,14 @@ export const action = async ({request}: LoaderFunctionArgs) => {
 				},
 			});
 
-			return data({
+			return Response.json({
 				message: 'OK',
 			}, {
 				status: 200,
 			});
 		}
 
-		return data({
+		return Response.json({
 			message: 'Unauthorized',
 		}, {
 			status: 401,

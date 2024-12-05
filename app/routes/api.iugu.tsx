@@ -1,4 +1,4 @@
-import {type ActionFunctionArgs, data} from 'react-router';
+import {type ActionFunctionArgs} from 'react-router';
 import {parse} from 'qs';
 import {HooksService} from '~/services/hooks.service.server';
 import {logger} from '~/utils/logger.util';
@@ -9,7 +9,7 @@ export const meta = () => [
 
 export const loader = async () => {
 	try {
-		return data({
+		return Response.json({
 			message: 'OK',
 		}, {
 			status: 200,
@@ -30,13 +30,13 @@ export const action = async ({request}: ActionFunctionArgs) => {
 
 		await new HooksService().handleIuguWebhook(body);
 
-		return data({
+		return Response.json({
 			message: 'OK',
 		}, {
 			status: 200,
 		});
 	} catch (error) {
 		logger.logError(`Error sending message on iugu action: ${(error as Error).message}`);
-		return data({error: 'An error occurred'}, {status: 200});
+		return Response.json({error: 'An error occurred'}, {status: 200});
 	}
 };
