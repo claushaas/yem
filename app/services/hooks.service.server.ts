@@ -5,6 +5,7 @@ import {IuguService} from './iugu.service.server.js';
 import {SlackService} from './slack.service.server.js';
 import {BotmakerService} from './botmaker.service.server.js';
 import {MailService} from './mail.service.server.js';
+import {MauticService} from './mautic.service.server.js';
 import {type TServiceReturn} from '~/types/service-return.type';
 import {convertSubscriptionIdentifierToCourseSlug} from '~/utils/subscription-identifier-to-course-id.js';
 import {logger} from '~/utils/logger.util';
@@ -33,6 +34,7 @@ export class HooksService {
 	private readonly _iuguService: IuguService;
 	private readonly _botMakerService: BotmakerService;
 	private readonly _mailService: MailService;
+	private readonly _mauticService: MauticService;
 
 	constructor() {
 		this._userService = new UserService();
@@ -41,6 +43,7 @@ export class HooksService {
 		this._iuguService = new IuguService();
 		this._botMakerService = new BotmakerService();
 		this._mailService = new MailService();
+		this._mauticService = new MauticService();
 	}
 
 	public async handleHublaWebhook(body: THublaEvents): Promise<TServiceReturn<string>> {
@@ -91,6 +94,7 @@ export class HooksService {
 							},
 							body: JSON.stringify({text: `Novo Aluno na Formação\nNome: ${user.firstName} ${user.lastName}\nEmail: ${user.email}\nTelefone: ${user.phoneNumber}`}),
 						}),
+						this._mauticService.addContactToSegment(user.email, 2),
 					]);
 
 					const rolesToAdd = ['iniciantes', 'escolaOnline', 'escolaAnual', 'novaFormacao'];
@@ -345,6 +349,7 @@ export class HooksService {
 								provider: 'iugu',
 								providerSubscriptionId: subscription.id,
 							}),
+							this._mauticService.addContactToSegment(user.email, 6),
 						]);
 					} catch {
 						await this._slackService.sendMessage({message: 'Error handling iugu invoice status changed (paid)', ...body});
@@ -513,6 +518,7 @@ export class HooksService {
 								},
 								body: JSON.stringify({text: `Novo Aluno na Formação\nNome: ${userData.firstName} ${userData.lastName}\nEmail: ${userData.email}\nTelefone: ${userData.phoneNumber}`}),
 							}),
+							this._mauticService.addContactToSegment(userData.email, 2),
 						]);
 					}
 
@@ -561,6 +567,7 @@ export class HooksService {
 								},
 								body: JSON.stringify({text: `Novo Aluno na Formação\nNome: ${userData.firstName} ${userData.lastName}\nEmail: ${userData.email}\nTelefone: ${userData.phoneNumber}`}),
 							}),
+							this._mauticService.addContactToSegment(userData.email, 2),
 						]);
 					}
 
@@ -594,6 +601,7 @@ export class HooksService {
 									linkDaFichaMedica: 'https://img.amo.yoga/ficha-medica.pdf',
 								},
 							),
+							this._mauticService.addContactToSegment(userData.email, 6),
 						]);
 					}
 
