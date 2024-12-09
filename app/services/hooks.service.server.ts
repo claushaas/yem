@@ -340,6 +340,12 @@ export class HooksService {
 							rolesToAdd = ['iniciantes'];
 						}
 
+						await this._mauticService.createContact({
+							email: user.email,
+							firstname: user.firstName,
+							lastname: user.lastName,
+						});
+
 						await Promise.all([
 							this._userService.addRolesToUser(user, rolesToAdd), // Should be deleted when old site stops being suported
 							this._subscriptionService.createOrUpdate({
@@ -349,7 +355,7 @@ export class HooksService {
 								provider: 'iugu',
 								providerSubscriptionId: subscription.id,
 							}),
-							this._mauticService.addContactToSegment(user.email, 6),
+							this._mauticService.addContactToSegmentByEmail(user.email, 6),
 						]);
 					} catch {
 						await this._slackService.sendMessage({message: 'Error handling iugu invoice status changed (paid)', ...body});
@@ -492,6 +498,12 @@ export class HooksService {
 			document: data.buyer.document,
 			phoneNumber: data.buyer.checkout_phone,
 			roles: ['iniciantes'],
+		});
+
+		await this._mauticService.createContact({
+			email: userData.email,
+			firstname: userData.firstName,
+			lastname: userData.lastName,
 		});
 
 		try {
