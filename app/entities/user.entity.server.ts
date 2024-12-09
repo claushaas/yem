@@ -57,8 +57,8 @@ export class MauticUserForCreation extends BasicUser {
 	constructor(user: TMauticUserCreationAttributes) {
 		super({
 			email: user.email,
-			firstName: user.firstname,
-			lastName: user.lastname,
+			firstName: user.firstName,
+			lastName: user.lastName,
 		});
 
 		const {error} = mauticUserSchema.validate(user);
