@@ -342,8 +342,8 @@ export class HooksService {
 
 						await this._mauticService.createContact({
 							email: user.email,
-							firstname: user.firstName,
-							lastname: user.lastName,
+							firstName: user.firstName,
+							lastName: user.lastName,
 						});
 
 						await Promise.all([
@@ -500,11 +500,17 @@ export class HooksService {
 			roles: ['iniciantes'],
 		});
 
-		await this._mauticService.createContact({
-			email: userData.email,
-			firstname: userData.firstName,
-			lastname: userData.lastName,
-		});
+		console.log(userData);
+
+		try {
+			await this._mauticService.createContact({
+				email: userData.email,
+				firstName: userData.firstName,
+				lastName: userData.lastName,
+			});
+		} catch (error) {
+			console.log(error);
+		}
 
 		try {
 			switch (data.product.id) {

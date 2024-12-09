@@ -21,6 +21,6 @@ export type TUserCreationAttributes = TBasicUser & {
 
 export type TMauticUserCreationAttributes = {
 	email: string;
-	firstname: string;
-	lastname: string;
+	firstName: string;
+	lastName: string;
 };
