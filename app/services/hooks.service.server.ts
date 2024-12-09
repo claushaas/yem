@@ -536,7 +536,6 @@ export class HooksService {
 								},
 								body: JSON.stringify({text: `Novo Aluno na Formação\nNome: ${userData.firstName} ${userData.lastName}\nEmail: ${userData.email}\nTelefone: ${userData.phoneNumber}`}),
 							}),
-							this._mauticService.addContactToSegment(userData.email, 2),
 						]);
 					}
 
@@ -558,6 +557,7 @@ export class HooksService {
 							provider: 'hotmart',
 							providerSubscriptionId: data.subscription?.subscriber.code ?? data.purchase.transaction,
 						}),
+						this._mauticService.addContactToSegmentByEmail(userData.email, 2),
 					]);
 
 					break;
@@ -585,7 +585,6 @@ export class HooksService {
 								},
 								body: JSON.stringify({text: `Novo Aluno na Formação\nNome: ${userData.firstName} ${userData.lastName}\nEmail: ${userData.email}\nTelefone: ${userData.phoneNumber}`}),
 							}),
-							this._mauticService.addContactToSegment(userData.email, 2),
 						]);
 					}
 
@@ -600,6 +599,7 @@ export class HooksService {
 							provider: 'hotmart',
 							providerSubscriptionId: data.subscription?.subscriber.code ?? data.purchase.transaction,
 						}),
+						this._mauticService.addContactToSegmentByEmail(userData.email, 2),
 					]);
 
 					break;
@@ -619,7 +619,6 @@ export class HooksService {
 									linkDaFichaMedica: 'https://img.amo.yoga/ficha-medica.pdf',
 								},
 							),
-							this._mauticService.addContactToSegment(userData.email, 6),
 						]);
 					}
 
@@ -642,6 +641,7 @@ export class HooksService {
 							provider: 'hotmart',
 							providerSubscriptionId: data.subscription?.subscriber.code ?? data.purchase.transaction,
 						}),
+						this._mauticService.addContactToSegmentByEmail(userData.email, 6),
 					]);
 
 					break;
