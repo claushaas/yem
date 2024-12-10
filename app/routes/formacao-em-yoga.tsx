@@ -50,7 +50,7 @@ export default function Formacao() {
 			</header>
 			<main>
 				<section id='welcome' className='2xl:max-w-screen-xl max-w-[90%] mx-auto mt-5 flex flex-col items-center'>
-					<h1 className='text-purple-12 text-xl sm:text-3xl md:text-4xl xl:text-5xl text-center mb-5'>Tudo o que você precisa para se tornar uma Instrutora de Yoga, do Zero aos Primeiros Alunos</h1>
+					<h1 className='text-purple-12 dark:text-purpledark-12 text-xl sm:text-3xl md:text-4xl xl:text-5xl text-center mb-5'>Tudo o que você precisa para se tornar uma Instrutora de Yoga, do Zero aos Primeiros Alunos</h1>
 					<div className='max-w-screen-lg w-full'>
 						<Stream
 							controls
@@ -60,6 +60,17 @@ export default function Formacao() {
 							src='6a99796454a960470c8fd444af82b9fe'
 							responsive={false}
 						/>
+					</div>
+					<div className='mt-10'>
+						<Link to='#investment' aria-label='Fazer matrícula no curso de Formação em Yoga'>
+							<Button
+								className='text-2xl mb-3'
+								type={ButtonType.Button}
+								preset={ButtonPreset.Primary}
+								text='Começar Agora'
+							/>
+						</Link>
+						<p className='text-center text-xs'>cancele quando quiser</p>
 					</div>
 				</section>
 
@@ -96,10 +107,22 @@ export default function Formacao() {
 							<p className='font-gothamMedium'>Trabalhar com Yoga: como se tornar um profissional de sucesso, montar um estúdio, divulgar seu trabalho; como se tornar um professor de Yoga online... Como planejar, divulgar e matricular os seus alunos.</p>
 						</div>
 					</div>
+
+					<div className='mt-10 w-fit mx-auto flex flex-col items-center'>
+						<Link to='#investment' aria-label='Fazer matrícula no curso de Formação em Yoga'>
+							<Button
+								className='text-2xl mb-3'
+								type={ButtonType.Button}
+								preset={ButtonPreset.Primary}
+								text='Começar Agora'
+							/>
+						</Link>
+						<p className='text-center text-xs'>cancele quando quiser</p>
+					</div>
 				</section>
 
 				<section id='target' className='2xl:max-w-screen-xl max-w-[90%] mx-auto my-20 sm:my-40'>
-					<h2 className='text-purple-11 text-3xl xs:text-5xl md:text-6xl lg:text-7xl text-left mb-5'>Para quem é?</h2>
+					<h2 className='text-purple-11 text-3xl xs:text-5xl md:text-6xl lg:text-7xl mb-5 text-center'>Para quem é?</h2>
 
 					<p className='my-3 font-gothamMedium'><span className='font-gothamBold text-purple-8'>Para quem quer ser Professor de Yoga</span> e entende a importância de não só aprender sobre a filosofia e o magistério do Yoga, mas também quer ter sucesso nesta carreira</p>
 					<p className='my-3 font-gothamMedium'><span className='font-gothamBold text-purple-8'>Para quem já é Professor de alguma Modalidade de Yoga</span> e sente que a sua formação não foi completa. A maioria dos cursos de formação abordam apenas uma modalidade e muitas vezes não contemplam nem mesmo todas as técnicas do Yoga. Neste curso você poderá aprender o panorama geral e completo</p>
@@ -107,15 +130,27 @@ export default function Formacao() {
 				</section>
 
 				<section id='prerequisites' className='2xl:max-w-screen-xl max-w-[90%] mx-auto my-20 sm:my-40'>
-					<h2 className='text-purple-11 text-3xl xs:text-5xl md:text-6xl lg:text-7xl text-left mb-5'>Quais são os Pré-Requisitos para Participar?</h2>
+					<h2 className='text-purple-11 text-3xl xs:text-5xl md:text-6xl lg:text-7xl mb-5 text-center'>Quais são os Pré-Requisitos para Participar?</h2>
 
 					<p className='my-3 font-gothamMedium'>Apenas a vontade de aprender e compartilhar esta incrível Filosofia de Vida Prática.</p>
 					<p className='my-3 font-gothamMedium'>Você não precisa ter experiência prévia no Yoga para iniciar a Nossa Formação.</p>
 					<p className='my-3 font-gothamMedium'>Embora a experiência prática seja muito importante para o professor, você terá acesso a mais de 1500 aulas práticas da nossa escola (mais informações abaixo nos bônus) para começar a sua trilha no Yoga e acumular bastante experiência prática ao longo do curso!</p>
+
+					<div className='mt-10 w-fit mx-auto flex flex-col items-center'>
+						<Link to='#investment' aria-label='Fazer matrícula no curso de Formação em Yoga'>
+							<Button
+								className='text-2xl mb-3'
+								type={ButtonType.Button}
+								preset={ButtonPreset.Primary}
+								text='Quero Me Matricular'
+							/>
+						</Link>
+						<p className='text-center text-xs'>cancele quando quiser</p>
+					</div>
 				</section>
 
 				<section id='bonus' className='2xl:max-w-screen-xl max-w-[90%] mx-auto my-20 sm:my-40'>
-					<h2 className='text-purple-11 text-3xl xs:text-5xl md:text-6xl lg:text-7xl text-left mb-5'>Bônus Gratuitos</h2>
+					<h2 className='text-purple-11 text-3xl xs:text-5xl md:text-6xl lg:text-7xl mb-5 text-center'>Bônus Gratuitos</h2>
 
 					<p className='font-gothamMedium'>Diversos conteúdos e conhecimentos são enriquecedores para o Professor de Yoga, embora não sejam fundamentais na sua formação. Para formar profissionais completos e que possam entrar no mercado de trabalho com segurança, oferecemos diversos bônus inteiramente gratuitos em nosso curso. Estes conteúdos são acessíveis apenas através deste curso e não estão disponíveis de nenhuma outra forma</p>
 
@@ -270,6 +305,18 @@ export default function Formacao() {
 							<h2 className='text-center'>Mais de 15.000 alunos</h2>
 						</div>
 					</div>
+
+					<div className='mt-10 w-fit mx-auto flex flex-col items-center'>
+						<Link to='#investment' aria-label='Fazer matrícula no curso de Formação em Yoga'>
+							<Button
+								className='text-2xl mb-3'
+								type={ButtonType.Button}
+								preset={ButtonPreset.Primary}
+								text='Fazer Minha Matrícula'
+							/>
+						</Link>
+						<p className='text-center text-xs'>cancele quando quiser</p>
+					</div>
 				</section>
 
 				<section id='support' className='max-w-[95%] sm:max-w-[90%] lg:max-w-screen-lg mx-auto my-20 sm:my-40'>
@@ -334,18 +381,18 @@ export default function Formacao() {
 					</div>
 				</section>
 
-				<section id='investment' className='2xl:max-w-screen-xl max-w-[90%] mx-auto my-20 sm:mt-40'>
+				<section id='investment' className='2xl:max-w-screen-xl max-w-[90%] mx-auto mt-20 mb-10 sm:mt-40'>
 					<h1 className='text-purple-11 dark:text-purpledark-11 text-3xl xs:text-5xl md:text-6xl lg:text-7xl mb-5 text-center'>Investimento</h1>
 
 					<h2 className='text-purple-12 dark:text-purpledark-12 text-center'>De R$ <span className='line-through'>5.980,00</span> por apenas 12x de 97,00 por ano</h2>
 
 					<div className='max-w-screen-md mx-auto'>
-						<p className='font-gothamMedium mb-3'>O valor da matrícula em nosso curso curso é R$ 5.980,00. Entendemos que o momento atual não permite que muitas pessoas possam participar de cursos tão completos como o nosso.</p>
-						<p className='font-gothamMedium mb-3'>Por isso resolvemos criar uma alternativa de matrícula no formato de assinatura, com duração de 1 ano e valor anual de R$ 1.164,00, ou seja, R$ 97,00 por mês.</p>
+						<p className='font-gothamMedium mb-3 text-center'>O valor da matrícula em nosso curso curso é R$ 5.980,00. Entendemos que o momento atual não permite que muitas pessoas possam participar de cursos tão completos como o nosso.</p>
+						<p className='font-gothamMedium mb-3 text-center'>Por isso resolvemos criar uma alternativa de matrícula no formato de assinatura, com duração de 1 ano e valor anual de R$ 1.164,00, ou seja, R$ 97,00 por mês.</p>
 						<p className='font-gothamMedium mb-3 text-center'>Você pode cancelar a renovação da anuidade quando quiser.</p>
 					</div>
 
-					<div className='mx-auto w-fit my-20'>
+					<div className='mx-auto w-fit my-10'>
 						<Link to={`https://pay.hotmart.com/G96565416C?${marketingSearchParameters.join('&')}`} target='_blank'>
 							<Button
 								type={ButtonType.Button}
@@ -354,10 +401,14 @@ export default function Formacao() {
 								className='text-2xl'
 							/>
 						</Link>
+						<div className='text-xs text-center mt-3'>
+							<p>Compra segura com 7 dias de garantia</p>
+							<p>Hotmart - Cartão - Pix - Paypal</p>
+						</div>
 					</div>
 				</section>
 
-				<section id='guarantee' className='2xl:max-w-screen-xl max-w-[90%] mx-auto my-20 sm:mb-40'>
+				<section id='guarantee' className='2xl:max-w-screen-xl max-w-[90%] mx-auto mt-10 mb-20 sm:mb-40'>
 					<div className='flex max-w-screen-md gap-4 items-center mx-auto flex-wrap sm:flex-nowrap justify-center'>
 						<div className='shrink-0'>
 							<Image
@@ -633,6 +684,18 @@ export default function Formacao() {
 				<section>
 					<h1 className='text-purple-11 dark:text-purpledark-11 text-3xl xs:text-5xl md:text-6xl lg:text-7xl mb-5 text-center'>Ficou alguma dúvida?</h1>
 					<h2 className='text-purple-12 dark:text-purpledark-12 text-xl xs:text-3xl md:text-4xl mb-5 text-center'>Entre em contato no <a href='https://wa.me/551149359150' target='_blank' rel='noreferrer'>WhatsApp (11) 4935-9150</a></h2>
+
+					<div className='mt-10 w-fit mx-auto flex flex-col items-center'>
+						<Link to='#investment' aria-label='Fazer matrícula no curso de Formação em Yoga'>
+							<Button
+								className='text-2xl mb-3'
+								type={ButtonType.Button}
+								preset={ButtonPreset.Primary}
+								text='Iniciar Agora'
+							/>
+						</Link>
+						<p className='text-center text-xs'>cancele quando quiser</p>
+					</div>
 				</section>
 			</main>
 		</>

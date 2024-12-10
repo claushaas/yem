@@ -7,6 +7,7 @@ import {logger} from '../utils/logger.util.js';
 import {database} from '../database/database.server.js';
 import {HotmartService} from './hotmart.service.server.js';
 import {IuguService} from './iugu.service.server.js';
+import {MauticService} from './mautic.service.server.js';
 import {CustomError} from '~/utils/custom-error.js';
 import {convertSubscriptionIdentifierToCourseSlug} from '~/utils/subscription-identifier-to-course-id.js';
 import {memoryCache} from '~/cache/memory-cache.js';
@@ -17,12 +18,14 @@ export default class SubscriptionService {
 	private readonly _model: PrismaClient;
 	private readonly _hotmartService: HotmartService;
 	private readonly _iuguService: IuguService;
+	private readonly _mauticService: MauticService;
 
 	constructor(model: PrismaClient = database) {
 		this._model = model;
 		this._hotmartService = new HotmartService();
 		this._iuguService = new IuguService();
 		SubscriptionService.cache = memoryCache;
+		this._mauticService = new MauticService();
 	}
 
 	public async createOrUpdate(subscriptionData: TSubscription): Promise<TServiceReturn<Subscription>> {
@@ -151,11 +154,12 @@ export default class SubscriptionService {
 			const {data: iuguSubscriptions} = await this._iuguService.getUserSubscriptions(user);
 
 			if (iuguSubscriptions.length > 0) {
-				await Promise.all(
+				await Promise.all([
 					iuguSubscriptions.map(async subscription => {
 						await this.createOrUpdate(subscription);
 					}),
-				);
+					this._mauticService.addContactToSegmentByEmail(user.email, 6),
+				]);
 			} else if (iuguSubscriptions.length === 0) {
 				await this.createOrUpdate({
 					userId: user.id,
@@ -175,11 +179,12 @@ export default class SubscriptionService {
 			const {data: hotmartSubscriptions} = await this._hotmartService.getUserSchoolSubscriptions(user);
 
 			if (hotmartSubscriptions.length > 0) {
-				await Promise.all(
+				await Promise.all([
 					hotmartSubscriptions.map(async subscription => {
 						await this.createOrUpdate(subscription);
 					}),
-				);
+					this._mauticService.addContactToSegmentByEmail(user.email, 6),
+				]);
 			} else if (hotmartSubscriptions.length === 0) {
 				await this.createOrUpdate({
 					userId: user.id,
@@ -210,6 +215,7 @@ export default class SubscriptionService {
 						providerSubscriptionId: `no-hotmart-formation-${user.id}`,
 						expiresAt: new Date(2_556_113_460_000),
 					}),
+					this._mauticService.addContactToSegmentByEmail(user.email, 2),
 				]);
 			} else if (hotmartSubscriptions.length === 0 && !user.roles?.includes('novaFormacao')) {
 				await this.createOrUpdate({
@@ -237,13 +243,16 @@ export default class SubscriptionService {
 
 	private async _createOrUpdateOldFormationSubscription(user: TUser): Promise<void> {
 		if (userHasOldFormationRoles(user)) {
-			await this.createOrUpdate({
-				userId: user.id,
-				courseSlug: convertSubscriptionIdentifierToCourseSlug('oldFormation'),
-				provider: 'manual',
-				providerSubscriptionId: `old-formation-${user.id}`,
-				expiresAt: new Date(2_556_113_460_000),
-			});
+			await Promise.all([
+				this.createOrUpdate({
+					userId: user.id,
+					courseSlug: convertSubscriptionIdentifierToCourseSlug('oldFormation'),
+					provider: 'manual',
+					providerSubscriptionId: `old-formation-${user.id}`,
+					expiresAt: new Date(2_556_113_460_000),
+				}),
+				this._mauticService.addContactToSegmentByEmail(user.email, 5),
+			]);
 		} else {
 			await this.createOrUpdate({
 				userId: user.id,

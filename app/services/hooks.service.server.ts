@@ -5,6 +5,7 @@ import {IuguService} from './iugu.service.server.js';
 import {SlackService} from './slack.service.server.js';
 import {BotmakerService} from './botmaker.service.server.js';
 import {MailService} from './mail.service.server.js';
+import {MauticService} from './mautic.service.server.js';
 import {type TServiceReturn} from '~/types/service-return.type';
 import {convertSubscriptionIdentifierToCourseSlug} from '~/utils/subscription-identifier-to-course-id.js';
 import {logger} from '~/utils/logger.util';
@@ -33,6 +34,7 @@ export class HooksService {
 	private readonly _iuguService: IuguService;
 	private readonly _botMakerService: BotmakerService;
 	private readonly _mailService: MailService;
+	private readonly _mauticService: MauticService;
 
 	constructor() {
 		this._userService = new UserService();
@@ -41,6 +43,7 @@ export class HooksService {
 		this._iuguService = new IuguService();
 		this._botMakerService = new BotmakerService();
 		this._mailService = new MailService();
+		this._mauticService = new MauticService();
 	}
 
 	public async handleHublaWebhook(body: THublaEvents): Promise<TServiceReturn<string>> {
@@ -91,6 +94,7 @@ export class HooksService {
 							},
 							body: JSON.stringify({text: `Novo Aluno na Formação\nNome: ${user.firstName} ${user.lastName}\nEmail: ${user.email}\nTelefone: ${user.phoneNumber}`}),
 						}),
+						this._mauticService.addContactToSegment(user.email, 2),
 					]);
 
 					const rolesToAdd = ['iniciantes', 'escolaOnline', 'escolaAnual', 'novaFormacao'];
@@ -336,6 +340,12 @@ export class HooksService {
 							rolesToAdd = ['iniciantes'];
 						}
 
+						await this._mauticService.createContact({
+							email: user.email,
+							firstName: user.firstName,
+							lastName: user.lastName,
+						});
+
 						await Promise.all([
 							this._userService.addRolesToUser(user, rolesToAdd), // Should be deleted when old site stops being suported
 							this._subscriptionService.createOrUpdate({
@@ -345,6 +355,7 @@ export class HooksService {
 								provider: 'iugu',
 								providerSubscriptionId: subscription.id,
 							}),
+							this._mauticService.addContactToSegmentByEmail(user.email, 6),
 						]);
 					} catch {
 						await this._slackService.sendMessage({message: 'Error handling iugu invoice status changed (paid)', ...body});
@@ -489,6 +500,18 @@ export class HooksService {
 			roles: ['iniciantes'],
 		});
 
+		console.log(userData);
+
+		try {
+			await this._mauticService.createContact({
+				email: userData.email,
+				firstName: userData.firstName,
+				lastName: userData.lastName,
+			});
+		} catch (error) {
+			console.log(error);
+		}
+
 		try {
 			switch (data.product.id) {
 				case 1_392_822: { // Formation
@@ -534,6 +557,7 @@ export class HooksService {
 							provider: 'hotmart',
 							providerSubscriptionId: data.subscription?.subscriber.code ?? data.purchase.transaction,
 						}),
+						this._mauticService.addContactToSegmentByEmail(userData.email, 2),
 					]);
 
 					break;
@@ -575,6 +599,7 @@ export class HooksService {
 							provider: 'hotmart',
 							providerSubscriptionId: data.subscription?.subscriber.code ?? data.purchase.transaction,
 						}),
+						this._mauticService.addContactToSegmentByEmail(userData.email, 2),
 					]);
 
 					break;
@@ -616,6 +641,7 @@ export class HooksService {
 							provider: 'hotmart',
 							providerSubscriptionId: data.subscription?.subscriber.code ?? data.purchase.transaction,
 						}),
+						this._mauticService.addContactToSegmentByEmail(userData.email, 6),
 					]);
 
 					break;

@@ -256,8 +256,8 @@ export class UserService {
 			await Promise.all([
 				this._awsClient.send(command),
 				this._mauticService.updateContact(email, {
-					firstname: firstName,
-					lastname: lastName,
+					firstName,
+					lastName,
 				}),
 			]);
 		} catch (error) {
@@ -463,8 +463,8 @@ export class UserService {
 			logger.logDebug(`Creating contact in Mautic for user ${email}`);
 			const response = await this._mauticService.createContact({
 				email,
-				firstname: firstName,
-				lastname: lastName,
+				firstName,
+				lastName,
 			});
 
 			const mauticUserId = response.data.contact.id;

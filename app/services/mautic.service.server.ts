@@ -68,6 +68,25 @@ export class MauticService {
 		}
 	}
 
+	public async addContactToSegmentByEmail(email: string, segmentId: number): Promise<TServiceReturn<string>> {
+		const response = await this._getContactIdByEmail(email);
+		const contactId = response.data;
+
+		const url = `/segments/${segmentId}/contact/${contactId}/add`;
+
+		try {
+			await this._request.post(url);
+
+			return {
+				status: 'NO_CONTENT',
+				data: 'Contact added to segment successfully',
+			};
+		} catch (error) {
+			logger.logError(`Error adding contact ${contactId} to segment ${segmentId}: ${(error as Error).message}`);
+			throw new CustomError('INVALID_DATA', `Error adding contact ${contactId} to segment ${segmentId}`);
+		}
+	}
+
 	public async updateContact(email: string, data: Partial<TMauticUserCreationAttributes>): Promise<TServiceReturn<string>> {
 		logger.logDebug(`Updating contact ${email}`);
 		const response = await this._getContactIdByEmail(email);
