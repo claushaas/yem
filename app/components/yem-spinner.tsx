@@ -1,4 +1,4 @@
-import {motion, AnimatePresence} from 'framer-motion';
+import {motion, AnimatePresence} from 'motion/react';
 import YemReducerLogo from '~/assets/logo/logo-reduzido2-lilas.svg?react';
 
 export function YemSpinner() {
