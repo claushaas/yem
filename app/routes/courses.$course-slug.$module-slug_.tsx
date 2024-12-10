@@ -6,7 +6,7 @@ import {QuillDeltaToHtmlConverter} from 'quill-delta-to-html';
 import {type OpIterator} from 'quill/core';
 import {Suspense, useState} from 'react';
 import {AdjustmentsHorizontalIcon} from '@heroicons/react/24/outline';
-import {motion} from 'framer-motion';
+import {motion} from 'motion/react';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import * as Switch from '@radix-ui/react-switch';
 import {type TLessonDataForCache} from '~/cache/populate-lessons-to-cache.js';
