@@ -614,7 +614,7 @@ export class HooksService {
 								'escola_boas_vindas_2',
 								{
 									nome: userData.firstName,
-									linkDaAreaDosAlunos: 'https://escola.yogaemmovimento.com',
+									linkDaAreaDosAlunos: 'https://yogaemmovimento.com',
 									linkDoGrupoDeRecados: 'https://t.me/+_-lrXmqVqD1mMDk5',
 									linkDaFichaMedica: 'https://img.amo.yoga/ficha-medica.pdf',
 								},

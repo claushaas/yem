@@ -141,7 +141,7 @@ export const formationWelcomeEmailTemplate = (firstName: string, to: string): TE
 																		<p style="margin: 0; margin-bottom: 16px;">Recomendamos que você comece assistindo este vídeo que está em nosso YouTube, onde a Prof. Milena explica como dar os seus primeiros passos em nosso curso de Formação em Yoga:</p>
 																		<p style="margin: 0; margin-bottom: 16px;"><a href="https://youtu.be/eY6ULiGTWUM" target="_blank" style="text-decoration: underline; color: #7747FF;" rel="noopener">https://youtu.be/eY6ULiGTWUM</a></p>
 																		<p style="margin: 0; margin-bottom: 16px;">Na aula inaugural explicamos todo o funcionamento do curso e as dúvidas dos alunos que estavam presente. Assista para você conhecer os professores e equipe técnica e fazer um tour pelo site e se familiarizar.</p>
-																		<p style="margin: 0; margin-bottom: 16px;">Você pode acessar a aula inaugural diretamente neste link: <a href="https://yogaemmovimento.com/aluno/wawsdkK488xTBDfNM" target="_blank" style="text-decoration: underline; color: #7747FF;" rel="noopener">https://yogaemmovimento.com/aluno/wawsdkK488xTBDfNM</a></p>
+																		<p style="margin: 0; margin-bottom: 16px;">Você pode acessar a aula inaugural diretamente neste link: <a href="https://yogaemmovimento.com/courses/formacao-em-yoga-introducao/comecando-o-curso/aula-inaugural" target="_blank" style="text-decoration: underline; color: #7747FF;" rel="noopener">https://yogaemmovimento.com/courses/formacao-em-yoga-introducao/comecando-o-curso/aula-inaugural</a></p>
 																		<p style="margin: 0; margin-bottom: 16px;">Além disso teremos um canal de avisos no Telegram, e um grupo de integração. Seguem os link abaixo:</p>
 																		<p style="margin: 0; margin-bottom: 16px;">Canal para Recados: <a href="https://t.me/joinchat/_2UwTcWJ5to3MTAx" target="_blank" style="text-decoration: underline; color: #7747FF;" rel="noopener">https://t.me/joinchat/_2UwTcWJ5to3MTAx</a></p>
 																		<p style="margin: 0; margin-bottom: 16px;">Grupo para interação entre os alunos: <a href="https://t.me/joinchat/gxazJsQTmwI5YzYx" target="_blank" style="text-decoration: underline; color: #7747FF;" rel="noopener">https://t.me/joinchat/gxazJsQTmwI5YzYx</a></p>
@@ -186,7 +186,7 @@ https://youtu.be/eY6ULiGTWUM
 
 Na aula inaugural explicamos todo o funcionamento do curso e as dúvidas dos alunos que estavam presente. Assista para você conhecer os professores e equipe técnica e fazer um tour pelo site e se familiarizar.
 
-Você pode acessar a aula inaugural diretamente neste link: https://yogaemmovimento.com/aluno/wawsdkK488xTBDfNM
+Você pode acessar a aula inaugural diretamente neste link: https://yogaemmovimento.com/courses/formacao-em-yoga-introducao/comecando-o-curso/aula-inaugural
 
 Além disso teremos um canal de avisos no Telegram, e um grupo de integração. Seguem os link abaixo:
 

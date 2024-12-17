@@ -138,7 +138,7 @@ export const welcomeEmailTemplate = (firstName: string, to: string, password: st
                                   <div style="color:#101112;direction:ltr;font-family:Arial, Helvetica, sans-serif;font-size:16px;font-weight:400;letter-spacing:0px;line-height:120%;text-align:left;mso-line-height-alt:19.2px;">
                                     <p style="margin: 0; margin-bottom: 16px;">Olá, ${firstName}, estou aqui para te dar as boas vindas a Yoga em Movimento.</p>
                                     <p style="margin: 0; margin-bottom: 16px;">Abaixo estão os dados para acessar a área dos alunos:</p>
-                                    <p style="margin: 0; margin-bottom: 16px;">Link: <a href="https://escola.yogaemmovimento.com" target="_blank" title="Área dos Alunos" style="text-decoration: underline; color: #7747FF;" rel="noopener">https://escola.yogaemmovimento.com</a></p>
+                                    <p style="margin: 0; margin-bottom: 16px;">Link: <a href="https://yogaemmovimento.com" target="_blank" title="Área dos Alunos" style="text-decoration: underline; color: #7747FF;" rel="noopener">https://yogaemmovimento.com</a></p>
                                     <p style="margin: 0; margin-bottom: 16px;">Usuário: ${to}</p>
                                     <p style="margin: 0; margin-bottom: 16px;">Senha: ${password}</p>
                                     <p style="margin: 0; margin-bottom: 16px;">Espero que este seja o primeiro passo de uma vida com mais propósito, saúde e autoconhecimento.</p>
@@ -172,7 +172,7 @@ export const welcomeEmailTemplate = (firstName: string, to: string, password: st
 
   Abaixo estão os dados para acessar a área dos alunos:
 
-  Link: https://escola.yogaemmovimento.com
+  Link: https://yogaemmovimento.com
   Usuário: ${to}
   Senha: ${password}
 

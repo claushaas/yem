@@ -138,7 +138,7 @@ export const schoolWelcomeEmailTemplate = (firstName: string, to: string): TEmai
 																<div style="color:#101112;direction:ltr;font-family:Arial, Helvetica, sans-serif;font-size:16px;font-weight:400;letter-spacing:0px;line-height:120%;text-align:left;mso-line-height-alt:19.2px;">
 																	<p style="margin: 0; margin-bottom: 16px;">Sua matrícula foi confirmada.</p>
 																	<p style="margin: 0; margin-bottom: 16px;">Eu e toda a equipe do Yoga em Movimento faz questão de lhe dar as boas vindas à nossa Escola de Yoga Online.</p>
-																	<p style="margin: 0; margin-bottom: 16px;">Para acessar a área dos alunos, basta entrar em <a href="https://escola.yogaemmovimento.com" target="_blank" style="text-decoration: underline; color: #7747FF;" rel="noopener">escola.yogaemmovimento.com</a> e clicar no link "Entrar" na barra superior para fazer o login com o email e senha que você utilizou para fazer o seu cadastro.</p>
+																	<p style="margin: 0; margin-bottom: 16px;">Para acessar a área dos alunos, basta entrar em <a href="https://yogaemmovimento.com" target="_blank" style="text-decoration: underline; color: #7747FF;" rel="noopener">yogaemmovimento.com</a> e clicar no link "Entrar" na barra superior para fazer o login com o email e senha que você utilizou para fazer o seu cadastro.</p>
 																	<p style="margin: 0; margin-bottom: 16px;">Caso tenha esquecido sua senha, basta clicar em "Esqueci Minha Senha" abaixo do formulário de login e seguir as orientações para criar uma nova senha de acesso.</p>
 																	<p style="margin: 0; margin-bottom: 16px;">Observação: se o link "Entrar" não aparecer, significa que seu login já foi feito. Então basta clicar no link "Área dos Alunos" para acessar as aulas.</p>
 																	<p style="margin: 0; margin-bottom: 16px;">Uma vez na área de alunos, acreditamos que você não terá qualquer dificuldade para selecionar suas aulas.</p>
@@ -175,7 +175,7 @@ export const schoolWelcomeEmailTemplate = (firstName: string, to: string): TEmai
 
   Eu e toda a equipe do Yoga em Movimento faz questão de lhe dar as boas vindas à nossa Escola de Yoga Online.
   
-  Para acessar a área dos alunos, basta entrar em escola.yogaemmovimento.com e clicar no link "Entrar" na barra superior para fazer o login com o email e senha que você utilizou para fazer o seu cadastro.
+  Para acessar a área dos alunos, basta entrar em yogaemmovimento.com e clicar no link "Entrar" na barra superior para fazer o login com o email e senha que você utilizou para fazer o seu cadastro.
   
   Caso tenha esquecido sua senha, basta clicar em "Esqueci Minha Senha" abaixo do formulário de login e seguir as orientações para criar uma nova senha de acesso.
   
