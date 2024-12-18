@@ -153,7 +153,7 @@ export class UserService {
 				),
 				this._botmakerService.sendWhatsappTemplateMessate(
 					user.phoneNumber,
-					'new_password',
+					'new_password_2',
 					{
 						primeiroNome: user.firstName,
 						emailAluno: user.email,
@@ -496,7 +496,7 @@ export class UserService {
 					'senha',
 					{
 						nome: firstName,
-						linkDaAreaDosAlunos: 'https://escola.yogaemmovimento.com',
+						linkDaAreaDosAlunos: 'https://yogaemmovimento.com',
 						usuario: email,
 						senha: password,
 					},

@@ -137,7 +137,7 @@ export const newPassWordEmailTemplate = (firstName: string, to: string, password
 															<td class="pad">
 																<div style="color:#101112;direction:ltr;font-family:Arial, Helvetica, sans-serif;font-size:16px;font-weight:400;letter-spacing:0px;line-height:120%;text-align:left;mso-line-height-alt:19.2px;">
 																	<p style="margin: 0; margin-bottom: 16px;">Olá, ${firstName}, utilize os dados abaixo para acessar a área dos aluno:</p>
-																	<p style="margin: 0; margin-bottom: 16px;">Link: <a href="https://escola.yogaemmovimento.com" target="_blank" title="Área dos Alunos" style="text-decoration: underline; color: #7747FF;" rel="noopener">https://escola.yogaemmovimento.com</a></p>
+																	<p style="margin: 0; margin-bottom: 16px;">Link: <a href="https://yogaemmovimento.com" target="_blank" title="Área dos Alunos" style="text-decoration: underline; color: #7747FF;" rel="noopener">https://yogaemmovimento.com</a></p>
 																	<p style="margin: 0; margin-bottom: 16px;">Usuário: ${to}</p>
 																	<p style="margin: 0; margin-bottom: 16px;">Senha: ${password}</p>
 																	<p style="margin: 0; margin-bottom: 16px;">Caso precise de qualquer ajuda, não hesite em nos chamar no WhatsApp: <a href="https://wa.me/551149359150" target="_blank" title="WhatsApp da Yoga em Movimento" style="text-decoration: underline; color: #7747FF;" rel="noopener">+55 11 4935-9150</a></p>
@@ -168,7 +168,7 @@ export const newPassWordEmailTemplate = (firstName: string, to: string, password
 
   Abaixo estão os dados para acessar a área dos alunos:
 
-  Link: https://escola.yogaemmovimento.com
+  Link: https://yogaemmovimento.com
   Usuário: ${to}
   Senha: ${password}
 
