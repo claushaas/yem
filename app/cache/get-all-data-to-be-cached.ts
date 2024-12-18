@@ -35,7 +35,13 @@ export const allDataToBeCached = async (): Promise<TAllDataToBeCached[]> => data
 		{name: 'asc'},
 	],
 	include: {
-		subscriptions: true,
+		subscriptions: {
+			where: {
+				expiresAt: {
+					gt: new Date(),
+				},
+			},
+		},
 		delegateAuthTo: {
 			select: {
 				slug: true,
