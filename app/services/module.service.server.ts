@@ -259,7 +259,7 @@ export class ModuleService {
 				}
 
 				const {expiresAt} = JSON.parse(subscription) as TSubscription;
-				return expiresAt >= new Date();
+				return new Date(expiresAt) >= new Date();
 			});
 
 			const actualPage = page ?? 1;

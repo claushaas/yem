@@ -279,7 +279,7 @@ export class CourseService {
 			}
 
 			const {expiresAt} = JSON.parse(subscription) as TSubscription;
-			return expiresAt >= new Date();
+			return new Date(expiresAt) >= new Date();
 		});
 
 		const modules = course.modules.map(module => {
