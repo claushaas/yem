@@ -94,7 +94,7 @@ export class HotmartService {
 			logger.logDebug(`Got response: ${JSON.stringify(response.data)}`);
 
 			const {data: {items}} = response;
-			console.log(items);
+
 			if (items.length > 1) {
 				items.sort((a, b) => new Date(b.purchase.approved_date).getTime() - new Date(a.purchase.approved_date).getTime());
 			}

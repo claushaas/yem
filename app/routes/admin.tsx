@@ -22,7 +22,6 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
 	const userData = userSession.data as TypeUserSession;
 
 	if (!userData.roles?.includes('admin')) {
-		console.log('User is not an admin');
 		return replace('/');
 	}
 

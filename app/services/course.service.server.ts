@@ -111,8 +111,6 @@ export class CourseService {
 			const hasActiveSubscription = user.roles?.includes('admin') || course.delegateAuthTo.some(courseSlug => { // eslint-disable-line @typescript-eslint/prefer-nullish-coalescing
 				const subscription = CourseService.cache.get(`${courseSlug}:${user.id}`);
 
-				console.log('assinatura', subscription);
-
 				if (!subscription) {
 					return false;
 				}
