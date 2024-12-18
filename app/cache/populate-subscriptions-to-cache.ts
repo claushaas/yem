@@ -4,7 +4,9 @@ import {memoryCache} from './memory-cache.js';
 export const populateSubscriptionsToCache = (allDataToBeCached: TAllDataToBeCached[]) => {
 	for (const course of allDataToBeCached) {
 		for (const subscription of course.subscriptions) {
-			memoryCache.set(`${subscription.courseSlug}:${subscription.userId}`, JSON.stringify(subscription));
+			if (new Date(subscription.expiresAt) > new Date()) {
+				memoryCache.set(`${subscription.courseSlug}:${subscription.userId}`, JSON.stringify(subscription));
+			}
 		}
 	}
 };
