@@ -4,10 +4,10 @@ import {createReadableStreamFromReadable} from '@react-router/node';
 import {isbot} from 'isbot';
 import {type RenderToPipeableStreamOptions, renderToPipeableStream} from 'react-dom/server';
 import {executeAndRepeat} from './utils/background-task.js';
-import {logger} from './utils/logger.util.js';
+import {logger} from './utils/logger.util';
 import {populateCache} from './cache/initial-cache-population.js';
 
-const ABORT_DELAY = 5000;
+export const streamTimeout = 5000;
 
 export default async function handleRequest( // eslint-disable-line max-params
 	request: Request,
@@ -26,11 +26,7 @@ export default async function handleRequest( // eslint-disable-line max-params
       = (userAgent && isbot(userAgent)) || routerContext.isSpaMode ? 'onAllReady' : 'onShellReady'; // eslint-disable-line @typescript-eslint/prefer-nullish-coalescing
 
 		const {pipe, abort} = renderToPipeableStream(
-			<ServerRouter
-				context={routerContext}
-				url={request.url}
-				abortDelay={ABORT_DELAY}
-			/>,
+			<ServerRouter context={routerContext} url={request.url}/>,
 			{
 				[readyOption]() {
 					shellRendered = true;
@@ -49,8 +45,7 @@ export default async function handleRequest( // eslint-disable-line max-params
 					pipe(body);
 				},
 				onShellError(error: unknown) {
-					// eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
-					reject(error);
+					reject(error); // eslint-disable-line @typescript-eslint/prefer-promise-reject-errors
 				},
 				onError(error: unknown) {
 					responseStatusCode = 500;
@@ -64,7 +59,9 @@ export default async function handleRequest( // eslint-disable-line max-params
 			},
 		);
 
-		setTimeout(abort, ABORT_DELAY);
+		// Abort the rendering stream after the `streamTimeout` so it has tine to
+		// flush down the rejected boundaries
+		setTimeout(abort, streamTimeout + 1000);
 	});
 }
 
