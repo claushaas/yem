@@ -500,8 +500,6 @@ export class HooksService {
 			roles: ['iniciantes'],
 		});
 
-		console.log(userData);
-
 		try {
 			await this._mauticService.createContact({
 				email: userData.email,
