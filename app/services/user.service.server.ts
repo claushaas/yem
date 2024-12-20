@@ -8,6 +8,7 @@ import {
 	type MessageActionType,
 	AdminSetUserPasswordCommand,
 	AdminUpdateUserAttributesCommand,
+	AdminDeleteUserCommand,
 } from '@aws-sdk/client-cognito-identity-provider';
 import {CustomError} from '../utils/custom-error.js';
 import {type TServiceReturn} from '../types/service-return.type.js';
@@ -141,6 +142,7 @@ export class UserService {
 
 	public async getNewPassword(email: string): Promise<TServiceReturn<string>> {
 		try {
+			console.log('Getting new password for user', email);
 			const {data: user} = await this.getUserData(email);
 
 			const password = generateSecurePassword();
@@ -392,6 +394,30 @@ export class UserService {
 		} catch (error) {
 			logger.logError(`Error removing roles from user ${(error as Error).message}`);
 			throw new CustomError('UNKNOWN', `Error removing roles from user ${(error as Error).message}`);
+		}
+	}
+
+	public async deleteUser(id: string) {
+		try {
+			const {data: userData} = await this.getUserData(id);
+
+			await this._mauticService.deleteContact(userData.email);
+
+			const parameters = {
+				UserPoolId: process.env.COGNITO_USER_POOL_ID,
+				Username: id,
+			};
+
+			const command = new AdminDeleteUserCommand(parameters);
+
+			await this._awsClient.send(command);
+
+			return {
+				status: 'SUCCESSFUL',
+				data: `User ${id} deleted successfully`,
+			};
+		} catch (error) {
+			logger.logError(`Error deleting user: ${(error as Error).message}`);
 		}
 	}
 
