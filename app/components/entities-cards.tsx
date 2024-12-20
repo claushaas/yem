@@ -1,6 +1,6 @@
 import {Await, Link} from 'react-router';
 import {Image} from '@unpic/react';
-import {motion} from 'framer-motion';
+import {motion} from 'motion/react';
 import {Suspense} from 'react';
 import {CheckCircleIcon, BookmarkIcon, HeartIcon} from '@heroicons/react/24/outline';
 import {CheckCircleIcon as SolidCheckCircleIcon, BookmarkIcon as SolidBookmarkIcon, HeartIcon as SolidHeartIcon} from '@heroicons/react/24/solid';

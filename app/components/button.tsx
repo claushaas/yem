@@ -1,6 +1,6 @@
 /* eslint-disable react/require-default-props */
 import {type LegacyRef, forwardRef} from 'react';
-import {motion} from 'framer-motion';
+import {motion} from 'motion/react';
 
 export enum ButtonPreset {
 	Primary = 'primary',

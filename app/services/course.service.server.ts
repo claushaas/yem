@@ -111,8 +111,6 @@ export class CourseService {
 			const hasActiveSubscription = user.roles?.includes('admin') || course.delegateAuthTo.some(courseSlug => { // eslint-disable-line @typescript-eslint/prefer-nullish-coalescing
 				const subscription = CourseService.cache.get(`${courseSlug}:${user.id}`);
 
-				console.log('assinatura', subscription);
-
 				if (!subscription) {
 					return false;
 				}
@@ -279,7 +277,7 @@ export class CourseService {
 			}
 
 			const {expiresAt} = JSON.parse(subscription) as TSubscription;
-			return expiresAt >= new Date();
+			return new Date(expiresAt) >= new Date();
 		});
 
 		const modules = course.modules.map(module => {

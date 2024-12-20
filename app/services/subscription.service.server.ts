@@ -52,7 +52,9 @@ export default class SubscriptionService {
 			},
 		});
 
-		SubscriptionService.cache.set(`${subscription.courseSlug}:${subscription.userId}`, JSON.stringify(createdOrUpdatedSubscription));
+		if (new Date(createdOrUpdatedSubscription.expiresAt) > new Date()) {
+			SubscriptionService.cache.set(`${subscription.courseSlug}:${subscription.userId}`, JSON.stringify(createdOrUpdatedSubscription));
+		}
 
 		if (!createdOrUpdatedSubscription) {
 			throw new Error('Subscription not created');

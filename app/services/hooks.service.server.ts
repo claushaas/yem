@@ -500,8 +500,6 @@ export class HooksService {
 			roles: ['iniciantes'],
 		});
 
-		console.log(userData);
-
 		try {
 			await this._mauticService.createContact({
 				email: userData.email,
@@ -614,7 +612,7 @@ export class HooksService {
 								'escola_boas_vindas_2',
 								{
 									nome: userData.firstName,
-									linkDaAreaDosAlunos: 'https://escola.yogaemmovimento.com',
+									linkDaAreaDosAlunos: 'https://yogaemmovimento.com',
 									linkDoGrupoDeRecados: 'https://t.me/+_-lrXmqVqD1mMDk5',
 									linkDaFichaMedica: 'https://img.amo.yoga/ficha-medica.pdf',
 								},
