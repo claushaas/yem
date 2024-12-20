@@ -133,6 +133,24 @@ export const action = async ({request, params}: ActionFunctionArgs) => {
 				break;
 			}
 
+			case 'getNewPassword': {
+				await userService.getNewPassword(username!);
+
+				userSession.flash('success', 'Nova senha enviada para o email do aluno');
+
+				break;
+			}
+
+			case 'delete': {
+				const id = formData.get('id') as string;
+
+				await userService.deleteUser(id);
+
+				userSession.flash('success', 'Aluno deletado com sucesso');
+
+				break;
+			}
+
 			default: {
 				userSession.flash('error', 'Tipo de formulário inválido');
 				break;
@@ -177,7 +195,7 @@ export default function Student() {
 		<>
 			<SuccessOrErrorMessage success={success} error={error}/>
 
-			<div>
+			<div className='flex gap-4 mb-10'>
 				<h1>{`${studentData.firstName} ${studentData.lastName}`}</h1>
 				<Dialog.Root open={nameDialogIsOpen} onOpenChange={setNameDialogIsOpen}>
 					<Dialog.Trigger asChild>
@@ -284,14 +302,32 @@ export default function Student() {
 						</Dialog.Content>
 					</Dialog.Portal>
 				</Dialog.Root>
+
+				<RadixForm.Root asChild>
+					<Form method='post' action={`/admin/students/${username}`} className='flex flex-col gap-3'>
+						<RadixForm.Field name='type' className='hidden'>
+							<RadixForm.Control asChild>
+								<input
+									disabled={isSubmittingAnyForm}
+									type='text'
+									value='getNewPassword'
+								/>
+							</RadixForm.Control>
+						</RadixForm.Field>
+
+						<RadixForm.Submit asChild>
+							<Button isDisabled={isSubmittingAnyForm} text='Enviar Nova Senha' type={ButtonType.Submit} preset={ButtonPreset.Primary}/>
+						</RadixForm.Submit>
+					</Form>
+				</RadixForm.Root>
 			</div>
 
-			<div>
-				<h3>{studentData.id}</h3>
+			<div className='mb-10'>
+				<h3>ID: {studentData.id}</h3>
 			</div>
 
-			<div>
-				<h3>{studentData.email}</h3>
+			<div className='flex gap-4 mb-10'>
+				<h3>email: {studentData.email}</h3>
 				<Dialog.Root open={emailDialogIsOpen} onOpenChange={setEmailDialogIsOpen}>
 					<Dialog.Trigger asChild>
 						<div>
@@ -381,8 +417,8 @@ export default function Student() {
 				</Dialog.Root>
 			</div>
 
-			<div>
-				<h3>{studentData.phoneNumber}</h3>
+			<div className='flex gap-4 mb-10'>
+				<h3>Telefone: {studentData.phoneNumber}</h3>
 				<Dialog.Root open={phoneNumberDialogIsOpen} onOpenChange={setPhoneNumberDialogIsOpen}>
 					<Dialog.Trigger asChild>
 						<div>
@@ -462,9 +498,8 @@ export default function Student() {
 				</Dialog.Root>
 			</div>
 
-			<div>
-				{ }
-				<h3>{studentData.document && studentData.document.length > 3 ? studentData.document : 'Pedir para cadastrar CPF'}</h3>
+			<div className='flex gap-4 mb-10'>
+				<h3>CPF: {studentData.document && studentData.document.length > 3 ? studentData.document : 'Pedir para cadastrar CPF'}</h3>
 				<Dialog.Root open={documentDialogIsOpen} onOpenChange={setDocumentDialogIsOpen}>
 					<Dialog.Trigger asChild>
 						<div>
@@ -545,38 +580,40 @@ export default function Student() {
 			</div>
 
 			<div>
-				<h2>Matrículas</h2>
+				<div className='flex gap-4 mb-10'>
+					<h2>Matrículas</h2>
 
-				<RadixForm.Root asChild>
-					<Form method='post' action={`/admin/students/${username}`}>
+					<RadixForm.Root asChild>
+						<Form method='post' action={`/admin/students/${username}`}>
 
-						<RadixForm.Field name='id' className='hidden'>
-							<RadixForm.Control asChild>
-								<input
-									disabled={isSubmittingAnyForm}
-									type='text'
-									value={studentData.id}
-								/>
-							</RadixForm.Control>
-						</RadixForm.Field>
+							<RadixForm.Field name='id' className='hidden'>
+								<RadixForm.Control asChild>
+									<input
+										disabled={isSubmittingAnyForm}
+										type='text'
+										value={studentData.id}
+									/>
+								</RadixForm.Control>
+							</RadixForm.Field>
 
-						<RadixForm.Field name='type' className='hidden'>
-							<RadixForm.Control asChild>
-								<input
-									disabled={isSubmittingAnyForm}
-									type='text'
-									value='subscriptions'
-								/>
-							</RadixForm.Control>
-						</RadixForm.Field>
+							<RadixForm.Field name='type' className='hidden'>
+								<RadixForm.Control asChild>
+									<input
+										disabled={isSubmittingAnyForm}
+										type='text'
+										value='subscriptions'
+									/>
+								</RadixForm.Control>
+							</RadixForm.Field>
 
-						<RadixForm.Submit asChild>
-							<Button isDisabled={isSubmittingAnyForm} text='Resetar Matrículas' preset={ButtonPreset.Secondary} type={ButtonType.Submit}/>
-						</RadixForm.Submit>
+							<RadixForm.Submit asChild>
+								<Button isDisabled={isSubmittingAnyForm} text='Resetar Matrículas' preset={ButtonPreset.Secondary} type={ButtonType.Submit}/>
+							</RadixForm.Submit>
 
-						{isSubmittingAnyForm && <YemSpinner/>}
-					</Form>
-				</RadixForm.Root>
+							{isSubmittingAnyForm && <YemSpinner/>}
+						</Form>
+					</RadixForm.Root>
+				</div>
 
 				{subscriptions && (
 					<ul>
@@ -588,6 +625,74 @@ export default function Student() {
 						))}
 					</ul>
 				)}
+			</div>
+
+			<div className='mt-44'>
+				<h2>ATENÇÃO: o botão abaixo vai deletar o usuário atual:</h2>
+
+				<div className='w-fit'>
+					<Dialog.Root open={documentDialogIsOpen} onOpenChange={setDocumentDialogIsOpen}>
+						<Dialog.Trigger asChild>
+							<div>
+								<Button text='Deletar Cadastro' type={ButtonType.Button} preset={ButtonPreset.Secondary}/>
+							</div>
+						</Dialog.Trigger>
+
+						<Dialog.Portal>
+							<Dialog.Overlay className='bg-mauvea-12 fixed inset-0'/>
+
+							<Dialog.Content className='fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] p-4 max-w-screen-lg w-[90%] bg-mauve-2 dark:bg-mauvedark-2 rounded-xl overflow-y-auto max-h-[90%]'>
+								<Dialog.Title asChild>
+									<h1 className='mb-4'>
+										Deletar o Aluno {studentData.firstName} {studentData.lastName}
+									</h1>
+								</Dialog.Title>
+
+								<RadixForm.Root asChild>
+									<Form method='post' action={`/admin/students/${username}`} className='flex flex-col gap-3'>
+										<RadixForm.Field name='id' className='hidden'>
+											<RadixForm.Control asChild>
+												<input
+													disabled={isSubmittingAnyForm}
+													type='text'
+													value={studentData.id}
+												/>
+											</RadixForm.Control>
+										</RadixForm.Field>
+
+										<RadixForm.Field name='type' className='hidden'>
+											<RadixForm.Control asChild>
+												<input
+													disabled={isSubmittingAnyForm}
+													type='text'
+													value='delete'
+												/>
+											</RadixForm.Control>
+										</RadixForm.Field>
+
+										<div className='w-fit'>
+											<RadixForm.Submit asChild>
+												<Button isDisabled={isSubmittingAnyForm} text='Deletar Cadastro' preset={ButtonPreset.Primary} type={ButtonType.Submit}/>
+											</RadixForm.Submit>
+										</div>
+
+										{isSubmittingAnyForm && <YemSpinner/>}
+									</Form>
+								</RadixForm.Root>
+
+								<Dialog.Close asChild>
+									<button
+										type='button'
+										className='absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center outline-none'
+										aria-label='Close'
+									>
+										<XMarkIcon aria-label='Close' className='hover:pointer absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px]'/>
+									</button>
+								</Dialog.Close>
+							</Dialog.Content>
+						</Dialog.Portal>
+					</Dialog.Root>
+				</div>
 			</div>
 		</>
 	);
