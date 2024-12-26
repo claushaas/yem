@@ -13,7 +13,7 @@ FROM node:22-alpine3.20 AS base
 
     COPY --link package*.json ./
 
-    RUN npm ci --legacy-peer-deps
+    RUN npm ci
 
 FROM base AS prod-deps
 
