@@ -1,6 +1,7 @@
 import {reactRouter} from '@react-router/dev/vite';
 import {defineConfig} from 'vite';
 import tsconfigPaths from 'vite-tsconfig-paths';
+import tailwindcss from 'tailwindcss';
 import svgr from 'vite-plugin-svgr';
 
 export default defineConfig({
@@ -11,12 +12,6 @@ export default defineConfig({
 	server: {
 		host: true,
 		port: Number(process.env.APP_PORT) || 3001,
-		watch: {
-			ignored: ['!**/node_modules/@newrelic/**'],
-		},
-	},
-	optimizeDeps: {
-		exclude: ['newrelic', '@newrelic'],
 	},
 	plugins: [
 		reactRouter(),
@@ -25,4 +20,9 @@ export default defineConfig({
 			include: '**/*.svg?react',
 		}),
 	],
+	css: {
+		postcss: {
+			plugins: [tailwindcss],
+		},
+	},
 });
