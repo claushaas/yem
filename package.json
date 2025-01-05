@@ -32,10 +32,10 @@
     "db:reset": "npx prisma migrate reset"
   },
   "dependencies": {
-    "@aws-sdk/client-cognito-identity-provider": "^3.716.0",
-    "@aws-sdk/client-secrets-manager": "^3.716.0",
-    "@aws-sdk/client-sesv2": "^3.716.0",
-    "@aws-sdk/credential-providers": "^3.716.0",
+    "@aws-sdk/client-cognito-identity-provider": "^3.721.0",
+    "@aws-sdk/client-secrets-manager": "^3.721.0",
+    "@aws-sdk/client-sesv2": "^3.721.0",
+    "@aws-sdk/credential-providers": "^3.721.0",
     "@cloudflare/stream-react": "^1.9.1",
     "@epic-web/remember": "^1.1.0",
     "@heroicons/react": "^2.2.0",
@@ -79,7 +79,7 @@
     "@react-router/dev": "^7.1.1",
     "@react-router/fs-routes": "^7.1.1",
     "@tailwindcss/forms": "^0.5.9",
-    "@types/node": "^22.10.3",
+    "@types/node": "^22.10.5",
     "@types/nprogress": "^0.2.3",
     "@types/qs": "^6.9.17",
     "@types/react": "^18.3.13",
@@ -94,7 +94,7 @@
     "tailwindcss-radix-colors": "^1.4.1",
     "tsx": "^4.19.2",
     "typescript": "^5.7.2",
-    "vite": "^6.0.6",
+    "vite": "^6.0.7",
     "vite-plugin-svgr": "^4.3.0",
     "vite-tsconfig-paths": "^5.1.4",
     "xo": "^0.60.0"
