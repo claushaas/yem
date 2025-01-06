@@ -32,10 +32,10 @@
     "db:reset": "npx prisma migrate reset"
   },
   "dependencies": {
-    "@aws-sdk/client-cognito-identity-provider": "^3.721.0",
-    "@aws-sdk/client-secrets-manager": "^3.721.0",
-    "@aws-sdk/client-sesv2": "^3.721.0",
-    "@aws-sdk/credential-providers": "^3.721.0",
+    "@aws-sdk/client-cognito-identity-provider": "^3.723.0",
+    "@aws-sdk/client-secrets-manager": "^3.723.0",
+    "@aws-sdk/client-sesv2": "^3.723.0",
+    "@aws-sdk/credential-providers": "^3.723.0",
     "@cloudflare/stream-react": "^1.9.1",
     "@epic-web/remember": "^1.1.0",
     "@heroicons/react": "^2.2.0",
@@ -60,7 +60,7 @@
     "hls.js": "^1.5.18",
     "isbot": "^5.1.20",
     "joi": "^17.13.3",
-    "motion": "^11.15.0",
+    "motion": "^11.16.0",
     "nprogress": "^0.2.0",
     "prisma": "^6.1.0",
     "qs": "^6.13.1",
