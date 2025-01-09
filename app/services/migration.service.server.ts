@@ -45,7 +45,6 @@ export class MigrationService {
 				if (favoritedLessons && favoritedLessons.length > 0) {
 					await Promise.all(favoritedLessons.map(async dynamoLesson => {
 						const newLesson = await this._model.lesson.findUnique({where: {oldId: dynamoLesson.aula as string}});
-						console.log(newLesson);
 
 						if (newLesson) {
 							await this._model.favoritedLessons.create({
@@ -62,7 +61,6 @@ export class MigrationService {
 				if (completedLessons && completedLessons.length > 0) {
 					await Promise.all(completedLessons.map(async dynamoLesson => {
 						const newLesson = await this._model.lesson.findUnique({where: {oldId: dynamoLesson.aula as string}});
-						console.log(newLesson);
 
 						if (newLesson) {
 							await this._model.favoritedLessons.upsert({
