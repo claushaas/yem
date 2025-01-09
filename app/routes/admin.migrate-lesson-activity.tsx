@@ -20,7 +20,7 @@ export const meta = ({data}: MetaArgs<typeof loader>) => [
 ];
 
 export const loader = ({request}: LoaderFunctionArgs) => ({
-	meta: [{tagName: 'link', rel: 'canonical', href: new URL('/admin/repopulate-cache', request.url).toString()}],
+	meta: [{tagName: 'link', rel: 'canonical', href: new URL('/admin/migrate-lesson-activity', request.url).toString()}],
 });
 
 export const action = async () => {
@@ -35,7 +35,7 @@ export const action = async () => {
 
 export default function AdminRepopulateCache() {
 	const navigation = useNavigation();
-	const isSubmittingAnyForm = navigation.formAction === '/admin/repopulate-cache';
+	const isSubmittingAnyForm = navigation.formAction === '/admin/migrate-lesson-activity';
 
 	const actionData = useActionData<TActionData>();
 	const success = actionData?.success;
@@ -46,7 +46,7 @@ export default function AdminRepopulateCache() {
 			<SuccessOrErrorMessage success={success} error={error}/>
 
 			<RadixForm.Root asChild>
-				<Form method='post' action='/admin/repopulate-cache'>
+				<Form method='post' action='/admin/migrate-lesson-activity'>
 					<RadixForm.Submit asChild>
 						<Button isDisabled={isSubmittingAnyForm} className='m-auto mt-2' text='Migrar atividade das aulas' preset={ButtonPreset.Primary} type={ButtonType.Submit}/>
 					</RadixForm.Submit>
