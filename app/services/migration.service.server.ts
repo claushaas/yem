@@ -5,15 +5,12 @@ import {
 import {fromEnv} from '@aws-sdk/credential-providers';
 import {DynamoDB} from '@aws-sdk/client-dynamodb';
 import {DynamoDBDocument, type QueryCommandOutput} from '@aws-sdk/lib-dynamodb';
-import {p} from 'node_modules/@react-router/dev/dist/routes-DHIOx0R9';
-import {LessonActivityService} from './lesson-activity.service.server';
 import {database} from '~/database/database.server';
 import {type TServiceReturn} from '~/types/service-return.type';
 import {logger} from '~/utils/logger.util';
 
 export class MigrationService {
 	private readonly _model: PrismaClient;
-	private readonly _lessonActivityService: LessonActivityService;
 	private readonly _awsClient: CognitoIdentityProviderClient;
 
 	constructor(
@@ -25,7 +22,6 @@ export class MigrationService {
 	) {
 		this._awsClient = awsClient;
 		this._model = model;
-		this._lessonActivityService = new LessonActivityService();
 	}
 
 	public async migrateSavedAndFavoritedLessons(): Promise<TServiceReturn<string>> {
