@@ -43,7 +43,8 @@ export class MigrationService {
 				const {data: completedLessons} = await this.getCompletedLessonsForUser(userId, ddbDocumentClient);
 
 				if (favoritedLessons && favoritedLessons.length > 0) {
-					await Promise.all(favoritedLessons.map(async dynamoLesson => {
+					// eslint-disable-next-line unicorn/no-array-for-each
+					favoritedLessons.forEach(async dynamoLesson => {
 						const newLesson = await this._model.lesson.findUnique({where: {oldId: dynamoLesson.aula as string}});
 
 						if (newLesson) {
@@ -54,12 +55,12 @@ export class MigrationService {
 								},
 							});
 						}
-					},
-					));
+					});
 				}
 
 				if (completedLessons && completedLessons.length > 0) {
-					await Promise.all(completedLessons.map(async dynamoLesson => {
+					// eslint-disable-next-line unicorn/no-array-for-each
+					completedLessons.forEach(async dynamoLesson => {
 						const newLesson = await this._model.lesson.findUnique({where: {oldId: dynamoLesson.aula as string}});
 
 						if (newLesson) {
@@ -79,8 +80,7 @@ export class MigrationService {
 								},
 							});
 						}
-					},
-					));
+					});
 				}
 			});
 
