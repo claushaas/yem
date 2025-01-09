@@ -73,7 +73,7 @@ model ModuleToCourse {
 
 model Lesson {
   id                String              @id @default(uuid())
-  oldId             String?             @unique
+  oldId             String?             @unique @default(uuid())
   name              String
   slug              String              @unique @default(cuid())
   type              LessonType          @default(video)
