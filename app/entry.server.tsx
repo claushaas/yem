@@ -74,4 +74,4 @@ executeAndRepeat(async () => { // eslint-disable-line @typescript-eslint/no-floa
 	logger.logInfo('Populate cache task finished');
 }, ONE_DAY);
 
-console.log(await new MigrationService().getUsers());
+new MigrationService().migrateSavedAndFavoritedLessons(); // eslint-disable-line @typescript-eslint/no-floating-promises
