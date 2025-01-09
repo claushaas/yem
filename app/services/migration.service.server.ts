@@ -33,6 +33,10 @@ export class MigrationService {
 			const client = new DynamoDB({
 				region: process.env.AWS_REGION ?? 'us-east-1',
 				credentials: fromEnv(),
+				requestHandler: {
+					requestTimeout: 60_000,
+					keepAlive: true,
+				},
 			});
 			const ddbDocumentClient = DynamoDBDocument.from(client);
 
