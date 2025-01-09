@@ -33,9 +33,11 @@
   },
   "dependencies": {
     "@aws-sdk/client-cognito-identity-provider": "^3.723.0",
+    "@aws-sdk/client-dynamodb": "^3.724.0",
     "@aws-sdk/client-secrets-manager": "^3.723.0",
     "@aws-sdk/client-sesv2": "^3.723.0",
     "@aws-sdk/credential-providers": "^3.723.0",
+    "@aws-sdk/lib-dynamodb": "^3.724.0",
     "@cloudflare/stream-react": "^1.9.1",
     "@epic-web/remember": "^1.1.0",
     "@heroicons/react": "^2.2.0",
