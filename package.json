@@ -27,6 +27,7 @@
     "typecheck": "tsc --noEmit",
     "update": "npx npm-check-updates -i",
     "up": "docker compose up -d --build",
+    "up-staging": "docker compose --env-file .env.staging -f docker-compose-staging.yml up -d --build",
     "down": "docker compose down",
     "lint": "xo",
     "db:reset": "npx prisma migrate reset"
