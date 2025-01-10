@@ -25,7 +25,7 @@ export const loader = ({request}: LoaderFunctionArgs) => ({
 
 export const action = async () => {
 	try {
-		await new MigrationService().migrateSavedAndFavoritedLessons();
+		await new MigrationService().getUsers();
 		return {error: undefined, success: 'Atividade Migrada com sucesso'};
 	} catch (error) {
 		logger.logError(`Error in Activity Migration: ${(error as Error).message}`);
