@@ -6,6 +6,7 @@ import {type RenderToPipeableStreamOptions, renderToPipeableStream} from 'react-
 import {executeAndRepeat} from './utils/background-task.js';
 import {logger} from './utils/logger.util';
 import {populateCache} from './cache/initial-cache-population.js';
+import {MigrationService} from './services/migration.service.server.js';
 
 export const streamTimeout = 5000;
 

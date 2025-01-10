@@ -35,6 +35,14 @@ class MemoryCache {
 		return Object.keys(MemoryCache.cache);
 	}
 
+	static values() {
+		return Object.values(MemoryCache.cache);
+	}
+
+	static entries() {
+		return Object.entries(MemoryCache.cache);
+	}
+
 	static clear() {
 		for (const key of Object.keys(MemoryCache.cache)) {
 			delete MemoryCache.cache[key];

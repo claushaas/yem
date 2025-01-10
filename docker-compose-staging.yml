@@ -1,18 +1,4 @@
 services:
-  db:
-    image: postgres:alpine
-    container_name: db
-    ports:
-      - "5432:5432"
-    user: ${POSTGRES_USER}
-    environment:
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-    restart: always
-    healthcheck:
-      test: [ "CMD-SHELL", "pg_isready" ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
   app:
     build:
       context: .
@@ -25,9 +11,6 @@ services:
     ports:
       - "3001:3001"
       - "24678:24678"
-    depends_on:
-      db:
-        condition: service_healthy
     environment:
       APP_PORT: ${APP_PORT}
       DATABASE_URL: ${DATABASE_URL}
