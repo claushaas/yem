@@ -116,10 +116,6 @@ export class MigrationService {
 							},
 						});
 					});
-
-					// Await this._model.completedLessons.createMany({
-					// 	data: completedLessonsArray.filter(element => element !== null),
-					// });
 				}
 			});
 
