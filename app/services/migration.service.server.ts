@@ -38,6 +38,8 @@ export class MigrationService {
 
 	public async migrateSavedAndFavoritedLessonsForUsers(users: UserType[]): Promise<TServiceReturn<string>> {
 		try {
+			process.setMaxListeners(0);
+
 			users.forEach(async user => { // eslint-disable-line unicorn/no-array-for-each
 				const userId = user.Attributes?.find(attribute => attribute.Name === 'custom:id')?.Value ?? user.Attributes!.find(attribute => attribute.Name === 'sub')!.Value!;
 				const newUserId = user.Attributes!.find(attribute => attribute.Name === 'sub')!.Value!;
@@ -137,7 +139,7 @@ export class MigrationService {
 			PaginationToken: paginationToken ?? undefined,
 		});
 
-		const addUsersToList = async (paginationToken: string | undefined, pages = 0) => {
+		const addUsersToList = async (paginationToken: string | undefined) => {
 			try {
 				const result = await this._awsClient.send(listUsersCommand(paginationToken));
 
@@ -145,8 +147,8 @@ export class MigrationService {
 					await this.migrateSavedAndFavoritedLessonsForUsers(result.Users);
 				}
 
-				if (result.PaginationToken && pages < 150) {
-					await addUsersToList(result.PaginationToken, pages + 1);
+				if (result.PaginationToken) {
+					await addUsersToList(result.PaginationToken);
 				}
 			} catch (error) {
 				logger.logError((error as Error).message);
