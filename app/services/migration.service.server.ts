@@ -69,19 +69,17 @@ export class MigrationService {
 						};
 					});
 
-					// eslint-disable-next-line unicorn/no-array-for-each
-					favoritedLessonsArray.filter(element => element !== null).forEach(async element => {
-						await this._model.favoritedLessons.upsert({
+					const array = favoritedLessonsArray.filter(element => element !== null);
+
+					await Promise.all(array.map(async element =>
+						this._model.favoritedLessons.upsert({
 							create: element,
 							update: element,
 							where: {
-								userId_lessonSlug: { // eslint-disable-line @typescript-eslint/naming-convention
-									lessonSlug: element.lessonSlug,
-									userId: element.userId,
-								},
+								userId_lessonSlug: element, // eslint-disable-line @typescript-eslint/naming-convention
 							},
-						});
-					});
+						}),
+					));
 				}
 
 				if (completedLessons && completedLessons.length > 0) {
@@ -104,19 +102,17 @@ export class MigrationService {
 						};
 					});
 
-					// eslint-disable-next-line unicorn/no-array-for-each
-					completedLessonsArray.filter(element => element !== null).forEach(async element => {
+					const array = completedLessonsArray.filter(element => element !== null);
+
+					await Promise.all(array.map(async element => {
 						await this._model.completedLessons.upsert({
 							create: element,
 							update: element,
 							where: {
-								lessonSlug_userId: { // eslint-disable-line @typescript-eslint/naming-convention
-									lessonSlug: element.lessonSlug,
-									userId: element.userId,
-								},
+								lessonSlug_userId: element, // eslint-disable-line @typescript-eslint/naming-convention
 							},
 						});
-					});
+					}));
 				}
 			});
 
