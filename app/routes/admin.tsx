@@ -59,9 +59,6 @@ export default function Admin() {
 					<Link to='/admin/repopulate-cache'>
 						<p>Repopular cache</p>
 					</Link>
-					<Link to='/admin/migrate-lesson-activity'>
-						<p>Migrar atividade de aulas</p>
-					</Link>
 				</aside>
 				<main className='flex-grow flex-shrink p-3'>
 					{(pathname === '/admin' || pathname === '/admin/') && (

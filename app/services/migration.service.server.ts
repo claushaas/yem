@@ -38,6 +38,8 @@ export class MigrationService {
 
 	public async migrateSavedAndFavoritedLessonsForUsers(users: UserType[]): Promise<TServiceReturn<string>> {
 		try {
+			process.setMaxListeners(0);
+
 			users.forEach(async user => { // eslint-disable-line unicorn/no-array-for-each
 				const userId = user.Attributes?.find(attribute => attribute.Name === 'custom:id')?.Value ?? user.Attributes!.find(attribute => attribute.Name === 'sub')!.Value!;
 				const newUserId = user.Attributes!.find(attribute => attribute.Name === 'sub')!.Value!;
@@ -69,19 +71,17 @@ export class MigrationService {
 						};
 					});
 
-					// eslint-disable-next-line unicorn/no-array-for-each
-					favoritedLessonsArray.filter(element => element !== null).forEach(async element => {
-						await this._model.favoritedLessons.upsert({
+					const array = favoritedLessonsArray.filter(element => element !== null);
+
+					await Promise.all(array.map(async element =>
+						this._model.favoritedLessons.upsert({
 							create: element,
 							update: element,
 							where: {
-								userId_lessonSlug: { // eslint-disable-line @typescript-eslint/naming-convention
-									lessonSlug: element.lessonSlug,
-									userId: element.userId,
-								},
+								userId_lessonSlug: element, // eslint-disable-line @typescript-eslint/naming-convention
 							},
-						});
-					});
+						}),
+					));
 				}
 
 				if (completedLessons && completedLessons.length > 0) {
@@ -104,19 +104,17 @@ export class MigrationService {
 						};
 					});
 
-					// eslint-disable-next-line unicorn/no-array-for-each
-					completedLessonsArray.filter(element => element !== null).forEach(async element => {
+					const array = completedLessonsArray.filter(element => element !== null);
+
+					await Promise.all(array.map(async element => {
 						await this._model.completedLessons.upsert({
 							create: element,
 							update: element,
 							where: {
-								lessonSlug_userId: { // eslint-disable-line @typescript-eslint/naming-convention
-									lessonSlug: element.lessonSlug,
-									userId: element.userId,
-								},
+								lessonSlug_userId: element, // eslint-disable-line @typescript-eslint/naming-convention
 							},
 						});
-					});
+					}));
 				}
 			});
 
@@ -141,7 +139,7 @@ export class MigrationService {
 			PaginationToken: paginationToken ?? undefined,
 		});
 
-		const addUsersToList = async (paginationToken: string | undefined, pages = 0) => {
+		const addUsersToList = async (paginationToken: string | undefined) => {
 			try {
 				const result = await this._awsClient.send(listUsersCommand(paginationToken));
 
@@ -149,8 +147,8 @@ export class MigrationService {
 					await this.migrateSavedAndFavoritedLessonsForUsers(result.Users);
 				}
 
-				if (result.PaginationToken && pages < 150) {
-					await addUsersToList(result.PaginationToken, pages + 1);
+				if (result.PaginationToken) {
+					await addUsersToList(result.PaginationToken);
 				}
 			} catch (error) {
 				logger.logError((error as Error).message);
