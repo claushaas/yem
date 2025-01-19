@@ -141,7 +141,7 @@ export function LessonEntityCard({course, to, activity}: LessonEntityCardPropier
 						<p className='text-mauve-5 text-xs text-ellipsis line-clamp-3'>{course.description}</p>
 						<Suspense fallback={<YemSpinner/>}>
 							<Await resolve={activity}>
-								{activity => activity?.data.completed !== undefined && (
+								{activity => activity?.data && (
 									<div className='flex justify-end'>
 										<div className='flex gap-3 items-center w-fit p-1 bg-mauvea-10 rounded-xl'>
 											{activity.data.completed ? <SolidCheckCircleIcon className='size-4 stroke-purple-11 fill-purple-11'/> : <CheckCircleIcon className='size-4'/>}

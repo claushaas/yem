@@ -18,9 +18,11 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
 
 	const favoritedLessons = await new LessonService().getFavoritedLessonsByUser(userData);
 
+	const lessonActivityService = new LessonActivityService();
+
 	const favoritedLessonsWithActivity = favoritedLessons.data.map(lesson => ({
 		...lesson,
-		activity: new LessonActivityService().getLessonActivityForUser(lesson.lessonSlug, userData.id),
+		activity: lessonActivityService.getLessonActivityForUser(lesson.lessonSlug, userData.id),
 	}));
 
 	return {
