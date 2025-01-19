@@ -26,9 +26,11 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
 
 	const savedLessons = await new LessonService().getSavedLessonsByUser(userData);
 
+	const lessonActivityService = new LessonActivityService();
+
 	const savedLessonsWithActivity = savedLessons.data.map(lesson => ({
 		...lesson,
-		activity: new LessonActivityService().getLessonActivityForUser(lesson.lessonSlug, userData.id),
+		activity: lessonActivityService.getLessonActivityForUser(lesson.lessonSlug, userData.id),
 	}));
 
 	return {
