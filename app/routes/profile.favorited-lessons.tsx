@@ -1,5 +1,5 @@
 import {type LoaderFunctionArgs, useLoaderData, type MetaArgs} from 'react-router';
-import {LessonEntityCard} from '~/components/entities-cards';
+import {LessonWithoutSuspenseEntityCard} from '~/components/entities-cards';
 import {LessonService} from '~/services/lesson.service.server';
 import {type TypeUserSession} from '~/types/user-session.type';
 import {getUserSession} from '~/utils/session.server';
@@ -51,7 +51,7 @@ export default function FavoritedLessons() {
 
 			<div className='flex gap-4 my-4 flex-wrap'>
 				{favoritedLessonsWithActivity.map(lesson => (
-					<LessonEntityCard key={lesson.id} course={lesson.lesson} to={lesson.link} activity={lesson.activity}/>
+					<LessonWithoutSuspenseEntityCard key={lesson.id} course={lesson.lesson} to={lesson.link} activity={lesson.activity}/>
 				))}
 			</div>
 		</div>
