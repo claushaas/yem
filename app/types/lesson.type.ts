@@ -129,6 +129,8 @@ export type TPrismaPayloadGetCompletedLessons = Array<Prisma.CompletedLessonsGet
 						};
 					};
 				};
+				favoritedBy: true;
+				savedBy: true;
 			};
 		};
 	};
@@ -169,6 +171,8 @@ export type TPrismaPayloadGetSavedLessons = Array<Prisma.SavedLessonsGetPayload<
 						};
 					};
 				};
+				favoritedBy: true;
+				completedBy: true;
 			};
 		};
 	};
@@ -209,6 +213,8 @@ export type TPrismaPayloadGetFavoritedLessons = Array<Prisma.FavoritedLessonsGet
 						};
 					};
 				};
+				savedBy: true;
+				completedBy: true;
 			};
 		};
 	};
