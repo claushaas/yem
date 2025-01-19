@@ -578,6 +578,18 @@ export class LessonService {
 								},
 							},
 						},
+						favoritedBy: {
+							where: {
+								userId: user.id,
+								isFavorited: true,
+							},
+						},
+						savedBy: {
+							where: {
+								userId: user.id,
+								isSaved: true,
+							},
+						},
 					},
 				},
 			},
@@ -644,6 +656,18 @@ export class LessonService {
 								},
 							},
 						},
+						favoritedBy: {
+							where: {
+								userId: user.id,
+								isFavorited: true,
+							},
+						},
+						completedBy: {
+							where: {
+								userId: user.id,
+								isCompleted: true,
+							},
+						},
 					},
 				},
 			},
@@ -708,6 +732,18 @@ export class LessonService {
 										},
 									},
 								},
+							},
+						},
+						savedBy: {
+							where: {
+								userId: user.id,
+								isSaved: true,
+							},
+						},
+						completedBy: {
+							where: {
+								userId: user.id,
+								isCompleted: true,
 							},
 						},
 					},
