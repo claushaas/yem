@@ -1,6 +1,5 @@
 import {type LoaderFunctionArgs, useLoaderData, type MetaArgs} from 'react-router';
-import {LessonEntityCard} from '~/components/entities-cards';
-import {LessonActivityService} from '~/services/lesson-activity.service.server';
+import {LessonWithoutSuspenseEntityCard} from '~/components/entities-cards';
 import {LessonService} from '~/services/lesson.service.server';
 import {type TypeUserSession} from '~/types/user-session.type';
 import {getUserSession} from '~/utils/session.server';
@@ -18,11 +17,13 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
 
 	const completedLessons = await new LessonService().getCompletedLessonsByUser(userData);
 
-	const lessonActivityService = new LessonActivityService();
-
 	const completedLessonsWithActivity = completedLessons.data.map(lesson => ({
 		...lesson,
-		activity: lessonActivityService.getLessonActivityForUser(lesson.lessonSlug, userData.id),
+		activity: {
+			completed: true,
+			saved: lesson.lesson.savedBy[0]?.isSaved ?? false,
+			favorited: lesson.lesson.favoritedBy[0]?.isFavorited ?? false,
+		},
 	}));
 
 	return {
@@ -50,7 +51,7 @@ export default function CompletedLessons() {
 
 			<div className='flex gap-4 my-4 flex-wrap'>
 				{completedLessonsWithActivity?.map(lesson => (
-					<LessonEntityCard key={lesson.id} course={lesson.lesson} to={lesson.link} activity={lesson.activity}/>
+					<LessonWithoutSuspenseEntityCard key={lesson.id} course={lesson.lesson} to={lesson.link} activity={lesson.activity}/>
 				))}
 			</div>
 		</div>

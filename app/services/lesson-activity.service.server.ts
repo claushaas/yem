@@ -274,5 +274,3 @@ export class LessonActivityService {
 		}
 	}
 }
-
-type test = Prisma.LessonToModuleWhereInput;
