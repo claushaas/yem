@@ -34,12 +34,12 @@
     "db:reset": "npx prisma migrate reset"
   },
   "dependencies": {
-    "@aws-sdk/client-cognito-identity-provider": "^3.732.0",
-    "@aws-sdk/client-dynamodb": "^3.733.0",
-    "@aws-sdk/client-secrets-manager": "^3.731.1",
-    "@aws-sdk/client-sesv2": "^3.733.0",
-    "@aws-sdk/credential-providers": "^3.733.0",
-    "@aws-sdk/lib-dynamodb": "^3.733.0",
+    "@aws-sdk/client-cognito-identity-provider": "^3.734.0",
+    "@aws-sdk/client-dynamodb": "^3.734.0",
+    "@aws-sdk/client-secrets-manager": "^3.734.0",
+    "@aws-sdk/client-sesv2": "^3.734.0",
+    "@aws-sdk/credential-providers": "^3.734.0",
+    "@aws-sdk/lib-dynamodb": "^3.734.0",
     "@cloudflare/stream-react": "^1.9.1",
     "@epic-web/remember": "^1.1.0",
     "@heroicons/react": "^2.2.0",
@@ -83,19 +83,16 @@
     "@react-router/dev": "^7.1.3",
     "@react-router/fs-routes": "^7.1.3",
     "@tailwindcss/forms": "^0.5.10",
-    "@types/node": "^22.10.9",
+    "@types/node": "^22.10.10",
     "@types/nprogress": "^0.2.3",
     "@types/qs": "^6.9.18",
     "@types/react": "^18.3.13",
     "@types/react-dom": "^18.3.1",
-    "eslint": "^9.18.0",
-    "eslint-config-xo-react": "^0.28.0",
-    "eslint-plugin-react": "^7.37.4",
-    "eslint-plugin-react-hooks": "^5.1.0",
+    "eslint-config-xo": "^0.46.0",
+    "eslint-config-xo-react": "^0.27.0",
     "lightningcss": "^1.29.1",
     "postcss": "^8.5.1",
     "tailwindcss": "^3.4.17",
-    "tailwindcss-radix": "^3.0.5",
     "tailwindcss-radix-colors": "^1.4.1",
     "tsx": "^4.19.2",
     "typescript": "^5.7.3",
@@ -141,12 +138,11 @@
             ".*_.*tsx"
           ]
         }
-      ]
+      ],
+      "unicorn/expiring-todo-comments": "off"
     },
     "ignores": [
-      "postcss.config.js",
-      "remix-handler.js",
-      "server.js"
+      "postcss.config.js"
     ]
   }
 }
