@@ -34,37 +34,37 @@
     "db:reset": "npx prisma migrate reset"
   },
   "dependencies": {
-    "@aws-sdk/client-cognito-identity-provider": "^3.731.1",
-    "@aws-sdk/client-dynamodb": "^3.731.1",
-    "@aws-sdk/client-secrets-manager": "^3.731.1",
-    "@aws-sdk/client-sesv2": "^3.731.1",
-    "@aws-sdk/credential-providers": "^3.731.1",
-    "@aws-sdk/lib-dynamodb": "^3.731.1",
+    "@aws-sdk/client-cognito-identity-provider": "^3.734.0",
+    "@aws-sdk/client-dynamodb": "^3.734.0",
+    "@aws-sdk/client-secrets-manager": "^3.734.0",
+    "@aws-sdk/client-sesv2": "^3.734.0",
+    "@aws-sdk/credential-providers": "^3.734.0",
+    "@aws-sdk/lib-dynamodb": "^3.734.0",
     "@cloudflare/stream-react": "^1.9.1",
     "@epic-web/remember": "^1.1.0",
     "@heroicons/react": "^2.2.0",
     "@prisma/client": "^6.2.1",
     "@radix-ui/react-accordion": "^1.2.2",
-    "@radix-ui/react-dialog": "^1.1.4",
-    "@radix-ui/react-dropdown-menu": "^2.1.4",
+    "@radix-ui/react-dialog": "^1.1.5",
+    "@radix-ui/react-dropdown-menu": "^2.1.5",
     "@radix-ui/react-form": "^0.1.1",
-    "@radix-ui/react-navigation-menu": "^1.2.3",
-    "@radix-ui/react-select": "^2.1.4",
+    "@radix-ui/react-navigation-menu": "^1.2.4",
+    "@radix-ui/react-select": "^2.1.5",
     "@radix-ui/react-separator": "^1.1.1",
     "@radix-ui/react-switch": "^1.1.2",
-    "@radix-ui/react-tooltip": "^1.1.6",
+    "@radix-ui/react-tooltip": "^1.1.7",
     "@react-router/node": "^7.1.3",
     "@react-router/serve": "^7.1.3",
     "@tailwindcss/container-queries": "^0.1.1",
-    "@unpic/react": "^0.1.15",
+    "@unpic/react": "^1.0.0",
     "@vidstack/react": "^1.11.21",
     "axios": "^1.7.9",
     "clipboard-copy": "^4.0.1",
     "fuse.js": "^7.0.0",
-    "hls.js": "^1.5.19",
+    "hls.js": "^1.5.20",
     "isbot": "^5.1.21",
     "joi": "^17.13.3",
-    "motion": "^11.18.1",
+    "motion": "^12.0.3",
     "nprogress": "^0.2.0",
     "prisma": "^6.2.1",
     "qs": "^6.14.0",
@@ -75,7 +75,7 @@
     "react-phone-number-input": "^3.4.11",
     "react-router": "^7.1.3",
     "react-select": "^5.9.0",
-    "remix-utils": "^8.0.0",
+    "remix-utils": "^8.1.0",
     "winston": "^3.17.0"
   },
   "devDependencies": {
@@ -83,14 +83,13 @@
     "@react-router/dev": "^7.1.3",
     "@react-router/fs-routes": "^7.1.3",
     "@tailwindcss/forms": "^0.5.10",
-    "@types/node": "^22.10.7",
+    "@types/node": "^22.10.10",
     "@types/nprogress": "^0.2.3",
     "@types/qs": "^6.9.18",
     "@types/react": "^18.3.13",
     "@types/react-dom": "^18.3.1",
+    "eslint-config-xo": "^0.46.0",
     "eslint-config-xo-react": "^0.27.0",
-    "eslint-plugin-react": "^7.37.4",
-    "eslint-plugin-react-hooks": "^5.1.0",
     "lightningcss": "^1.29.1",
     "postcss": "^8.5.1",
     "tailwindcss": "^3.4.17",
@@ -98,7 +97,7 @@
     "tailwindcss-radix-colors": "^1.4.1",
     "tsx": "^4.19.2",
     "typescript": "^5.7.3",
-    "vite": "^6.0.7",
+    "vite": "^6.0.11",
     "vite-plugin-svgr": "^4.3.0",
     "vite-tsconfig-paths": "^5.1.4",
     "xo": "^0.60.0"
@@ -140,12 +139,11 @@
             ".*_.*tsx"
           ]
         }
-      ]
+      ],
+      "unicorn/expiring-todo-comments": "off"
     },
     "ignores": [
-      "postcss.config.js",
-      "remix-handler.js",
-      "server.js"
+      "postcss.config.js"
     ]
   }
 }
