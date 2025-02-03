@@ -49,7 +49,7 @@ export default function EscolaOnline() {
 				</div>
 			</header>
 			<main>
-				<section id='welcome' className='max-w-[95%] sm:max-w-[90%] lg:max-w-screen-lg mx-auto my-20 sm:my-32'>
+				<section id='welcome' className='max-w-[95%] sm:max-w-[90%] lg:max-w-(--breakpoint-lg) mx-auto my-20 sm:my-32'>
 					<div className='w-full mb-4'>
 						<h1 className='xs:text-5xl lg:text-7xl'><span className='text-tomato-11'>A Maior Escola de Yoga do Brasil.</span> <span className='text-pink-11'>Na Hora Que Você Quiser.</span> <span className='text-purple-11'>Onde Você Estiver.</span></h1>
 					</div>
@@ -71,7 +71,7 @@ export default function EscolaOnline() {
 				<Testimonies/>
 
 				<section id='history' className='my-20 sm:my-40 max-w-[95%] sm:max-w-[90%] mx-auto flex flex-col items-center justify-center gap-12'>
-					<div className='max-w-screen-lg w-full'>
+					<div className='max-w-(--breakpoint-lg) w-full'>
 						<h1 className='text-purple-11 text-3xl xs:text-5xl md:text-6xl lg:text-7xl text-left mb-5'>Yoga é para Todas Pessoas!</h1>
 						<h2 className='text-xl xs:text-2xl md:text-3xl lg:text-4xl text-purple-8 mb-4'>É nisso que acreditamos. É por isso que existimos.</h2>
 						<p className='my-3 font-gothamMedium'>O Yoga em Movimento surgiu em 2010 no interior de São Paulo, do sonho de seus fundadores de espargir esse estilo de vida baseado na saúde e no autoconhecimento para cada vez mais pessoas.</p>
@@ -91,7 +91,7 @@ export default function EscolaOnline() {
 					</div>
 				</section>
 
-				<section id='platform' className='max-w-[95%] sm:max-w-[90%] lg:max-w-screen-lg mx-auto my-20 sm:my-56 flex flex-col items-center gap-12'>
+				<section id='platform' className='max-w-[95%] sm:max-w-[90%] lg:max-w-(--breakpoint-lg) mx-auto my-20 sm:my-56 flex flex-col items-center gap-12'>
 					<h1 className='text-center text-amber-11 text-3xl xs:text-5xl'>A Plataforma da Yoga em Movimento evoluiu e foi repensada especialmente para a prática do Yoga</h1>
 
 					<div className='flex justify-center gap-4 flex-wrap'>
@@ -133,12 +133,12 @@ export default function EscolaOnline() {
 					</div>
 				</section>
 
-				<section id='support' className='max-w-[95%] sm:max-w-[90%] lg:max-w-screen-lg mx-auto my-20 sm:my-56'>
+				<section id='support' className='max-w-[95%] sm:max-w-[90%] lg:max-w-(--breakpoint-lg) mx-auto my-20 sm:my-56'>
 					<h1 className='text-sky-12 dark:text-sky-10 mb-5 text-3xl xs:text-5xl md:text-6xl lg:text-7xl'>Você sempre terá acompanhamento!</h1>
 					<h2 className='text-sky-11 text-2xl xs:text-4xl md:text-5xl lg:text-6xl'>Você pode conversar diretamente com nossos professores pelo whatsapp ou telegram para tirar suas dúvidas</h2>
 				</section>
 
-				<section id='duration' className='max-w-[95%] sm:max-w-[90%] lg:max-w-screen-lg mx-auto my-20 sm:my-56 flex flex-col items-center gap-12'>
+				<section id='duration' className='max-w-[95%] sm:max-w-[90%] lg:max-w-(--breakpoint-lg) mx-auto my-20 sm:my-56 flex flex-col items-center gap-12'>
 					<div>
 						<h1 className='text-grass-12 dark:text-grass-11 mb-5 text-3xl xs:text-5xl md:text-6xl lg:text-7xl'>Fica fácil inserir o Yoga na sua rotina diária</h1>
 						<h2 className='text-grass-9 text-2xl xs:text-4xl md:text-5xl lg:text-6xl'>Pratique em qualquer horário e escolha aula de acordo com o tempo disponível</h2>
@@ -157,16 +157,16 @@ export default function EscolaOnline() {
 					</div>
 				</section>
 
-				<section id='objectives' className='max-w-[95%] sm:max-w-[90%] lg:max-w-screen-lg mx-auto mt-20 sm:mt-56 mb-10'>
+				<section id='objectives' className='max-w-[95%] sm:max-w-[90%] lg:max-w-(--breakpoint-lg) mx-auto mt-20 sm:mt-56 mb-10'>
 					<h1 className='text-orange-9 text-3xl xs:text-5xl md:text-6xl lg:text-7xl'>Alcance seus objetivos no Yoga</h1>
 				</section>
 
-				<section id='filters' className='max-w-[95%] sm:max-w-[90%] lg:max-w-screen-lg mx-auto mb-32'>
+				<section id='filters' className='max-w-[95%] sm:max-w-[90%] lg:max-w-(--breakpoint-lg) mx-auto mb-32'>
 					<h2 className='text-orange-11 text-2xl xs:text-4xl'>Filtre as aulas de acordo com sua meta</h2>
 
 					<div className='flex flex-wrap gap-3'>
-						<div className='grid grid-rows-[3fr_1fr_1fr_2fr_2fr_3fr] grid-cols-[3fr_1fr_2fr] gap-3 flex-grow basis-80 h-[500px]'>
-							<div className='bg-mauve-10 rounded-3xl px-1 py-3 w-full h-full row-span-2 col-span-full -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center relative'>
+						<div className='grid grid-rows-[3fr_1fr_1fr_2fr_2fr_3fr] grid-cols-[3fr_1fr_2fr] gap-3 grow basis-80 h-[500px]'>
+							<div className='bg-mauve-10 rounded-3xl px-1 py-3 w-full h-full row-span-2 col-span-full -z-20 shadow-xs shadow-mauve-11 @container-[size] flex items-center relative'>
 								<Image
 									className='absolute top-0 left-0 w-full h-full rounded-3xl mix-blend-multiply -z-10'
 									src={buildImgSource('dd4a873b-972a-48b7-4c4f-666353046c00')}
@@ -178,7 +178,7 @@ export default function EscolaOnline() {
 								/>
 								<h3 className='text-white text-[60cqb] @sm:text-[75cqb] @md:text-[100cqb] leading-none break-words w-full'>Força</h3>
 							</div>
-							<div className='bg-mauve-10 rounded-3xl px-1 py-3 w-full h-full row-span-2 -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center relative'>
+							<div className='bg-mauve-10 rounded-3xl px-1 py-3 w-full h-full row-span-2 -z-20 shadow-xs shadow-mauve-11 @container-[size] flex items-center relative'>
 								<Image
 									className='absolute top-0 left-0 w-full h-full rounded-3xl mix-blend-multiply -z-10'
 									src={buildImgSource('68646074-356d-4ce7-5eba-de3afd57af00')}
@@ -190,7 +190,7 @@ export default function EscolaOnline() {
 								/>
 								<h3 className='text-white text-[40cqmin] leading-none break-words w-full'>Equilíbrio</h3>
 							</div>
-							<div className='bg-mauve-10 rounded-3xl px-1 py-3 w-full h-full row-span-2 col-span-2 -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center relative'>
+							<div className='bg-mauve-10 rounded-3xl px-1 py-3 w-full h-full row-span-2 col-span-2 -z-20 shadow-xs shadow-mauve-11 @container-[size] flex items-center relative'>
 								<Image
 									className='absolute top-0 left-0 w-full h-full rounded-3xl mix-blend-multiply -z-10'
 									src={buildImgSource('91094bcd-1439-4b8b-d762-4ff5b6db0900')}
@@ -202,7 +202,7 @@ export default function EscolaOnline() {
 								/>
 								<h3 className='text-white text-[40cqmin] leading-none break-words w-full'>Introspecção</h3>
 							</div>
-							<div className='bg-mauve-10 rounded-3xl px-1 py-3 w-full h-full col-span-full -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center relative'>
+							<div className='bg-mauve-10 rounded-3xl px-1 py-3 w-full h-full col-span-full -z-20 shadow-xs shadow-mauve-11 @container-[size] flex items-center relative'>
 								<Image
 									className='absolute top-0 left-0 w-full h-full rounded-3xl mix-blend-multiply -z-10'
 									src={buildImgSource('f77a1f17-1aa4-4966-de10-732db9f2b900')}
@@ -214,7 +214,7 @@ export default function EscolaOnline() {
 								/>
 								<h3 className='text-white text-[80cqb] @md:text-[100cqb] leading-none break-words w-full'>Restaurativa</h3>
 							</div>
-							<div className='bg-mauve-10 rounded-3xl px-1 py-3 w-full h-full col-span-2 -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center relative'>
+							<div className='bg-mauve-10 rounded-3xl px-1 py-3 w-full h-full col-span-2 -z-20 shadow-xs shadow-mauve-11 @container-[size] flex items-center relative'>
 								<Image
 									className='absolute top-0 left-0 w-full h-full rounded-3xl mix-blend-multiply -z-10'
 									src={buildImgSource('4dc99a7c-d456-45d9-d787-ef744aea6c00')}
@@ -226,7 +226,7 @@ export default function EscolaOnline() {
 								/>
 								<h3 className='text-white text-[50cqb] @[15rem]:text-[60cqb] leading-none break-words w-full'>Purificação</h3>
 							</div>
-							<div className='bg-mauve-10 rounded-3xl px-1 py-3 w-full h-full -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center relative'>
+							<div className='bg-mauve-10 rounded-3xl px-1 py-3 w-full h-full -z-20 shadow-xs shadow-mauve-11 @container-[size] flex items-center relative'>
 								<Image
 									className='absolute top-0 left-0 w-full h-full rounded-3xl mix-blend-multiply -z-10'
 									src={buildImgSource('1f6021aa-333c-4f2b-470f-4349252e2600')}
@@ -239,8 +239,8 @@ export default function EscolaOnline() {
 								<h3 className='text-white text-[30cqb] leading-none break-words w-full'>Respiração</h3>
 							</div>
 						</div>
-						<div className='grid grid-rows-[3fr_1fr_1fr_2fr_2fr_3fr] grid-cols-[2fr_3fr_1fr_2fr] gap-3 flex-grow basis-80 h-[500px]'>
-							<div className='bg-mauve-10 rounded-3xl px-1 py-3 w-full h-full col-span-2 -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center relative'>
+						<div className='grid grid-rows-[3fr_1fr_1fr_2fr_2fr_3fr] grid-cols-[2fr_3fr_1fr_2fr] gap-3 grow basis-80 h-[500px]'>
+							<div className='bg-mauve-10 rounded-3xl px-1 py-3 w-full h-full col-span-2 -z-20 shadow-xs shadow-mauve-11 @container-[size] flex items-center relative'>
 								<Image
 									className='absolute top-0 left-0 w-full h-full rounded-3xl mix-blend-multiply -z-10'
 									src={buildImgSource('71e20f1e-2f19-48dc-d1c3-bab403dc4300')}
@@ -252,7 +252,7 @@ export default function EscolaOnline() {
 								/>
 								<h3 className='text-white text-[50cqb] @[15rem]:text-[60cqb] leading-none break-words w-full'>Meditação</h3>
 							</div>
-							<div className='bg-mauve-10 rounded-3xl px-1 py-3 w-full h-full col-span-2 -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center relative'>
+							<div className='bg-mauve-10 rounded-3xl px-1 py-3 w-full h-full col-span-2 -z-20 shadow-xs shadow-mauve-11 @container-[size] flex items-center relative'>
 								<Image
 									className='absolute top-0 left-0 w-full h-full rounded-3xl mix-blend-multiply -z-10'
 									src={buildImgSource('289f609f-5233-41f7-445c-838d4c5c0600')}
@@ -264,7 +264,7 @@ export default function EscolaOnline() {
 								/>
 								<h3 className='text-white text-[35cqb] @[10rem]:text-[50cqb] leading-none break-words w-full'>Relaxamento</h3>
 							</div>
-							<div className='bg-mauve-10 rounded-3xl px-1 py-3 w-full h-full row-span-4 col-span-full -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center relative'>
+							<div className='bg-mauve-10 rounded-3xl px-1 py-3 w-full h-full row-span-4 col-span-full -z-20 shadow-xs shadow-mauve-11 @container-[size] flex items-center relative'>
 								<Image
 									className='absolute top-0 left-0 w-full h-full rounded-3xl mix-blend-multiply -z-10'
 									src={buildImgSource('a78cfa8f-da25-4b3c-5bfa-1204f404c800')}
@@ -276,7 +276,7 @@ export default function EscolaOnline() {
 								/>
 								<h3 className='text-white text-[30cqmin] @md:text-[50cqmin] leading-none break-words w-full'>Flexibilidade</h3>
 							</div>
-							<div className='bg-mauve-10 rounded-3xl px-1 py-3 w-full h-full -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center relative'>
+							<div className='bg-mauve-10 rounded-3xl px-1 py-3 w-full h-full -z-20 shadow-xs shadow-mauve-11 @container-[size] flex items-center relative'>
 								<Image
 									className='absolute top-0 left-0 w-full h-full rounded-3xl mix-blend-multiply -z-10'
 									src={buildImgSource('d95f2201-7e07-4a0b-02b2-b23f8c6ee300')}
@@ -288,7 +288,7 @@ export default function EscolaOnline() {
 								/>
 								<h3 className='text-white text-[45cqmin] leading-none break-words w-full'>Vinyasa</h3>
 							</div>
-							<div className='bg-mauve-10 rounded-3xl px-1 py-3 w-full h-full col-span-2 -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center relative'>
+							<div className='bg-mauve-10 rounded-3xl px-1 py-3 w-full h-full col-span-2 -z-20 shadow-xs shadow-mauve-11 @container-[size] flex items-center relative'>
 								<Image
 									className='absolute top-0 left-0 w-full h-full rounded-3xl mix-blend-multiply -z-10'
 									src={buildImgSource('dfcb9015-a642-4699-095b-53fabdf84e00')}
@@ -300,7 +300,7 @@ export default function EscolaOnline() {
 								/>
 								<h3 className='text-white text-[45cqmin] leading-none break-words w-full'>Sem Ásanas</h3>
 							</div>
-							<div className='bg-mauve-10 rounded-3xl px-1 py-3 w-full h-full -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center relative'>
+							<div className='bg-mauve-10 rounded-3xl px-1 py-3 w-full h-full -z-20 shadow-xs shadow-mauve-11 @container-[size] flex items-center relative'>
 								<Image
 									className='absolute top-0 left-0 w-full h-full rounded-3xl mix-blend-multiply -z-10'
 									src={buildImgSource('d9d57548-85b0-4362-e6b7-6dc6adbc8e00')}
@@ -317,7 +317,7 @@ export default function EscolaOnline() {
 				</section>
 
 				<section id='playlists' className='mb-32'>
-					<h2 className='pl-4 text-orange-11 max-w-[95%] sm:max-w-[90%] lg:max-w-screen-lg mx-auto'>Playlist de aulas prontas e voltadas para objetivos específicos</h2>
+					<h2 className='pl-4 text-orange-11 max-w-[95%] sm:max-w-[90%] lg:max-w-(--breakpoint-lg) mx-auto'>Playlist de aulas prontas e voltadas para objetivos específicos</h2>
 
 					<div className='mx-auto max-w-max'>
 						<div className='flex gap-4 overflow-x-scroll p-4'>
@@ -369,11 +369,11 @@ export default function EscolaOnline() {
 					</div>
 				</section>
 
-				<section id='tecnics' className='max-w-[95%] sm:max-w-[90%] lg:max-w-screen-lg mx-auto mb-20'>
+				<section id='tecnics' className='max-w-[95%] sm:max-w-[90%] lg:max-w-(--breakpoint-lg) mx-auto mb-20'>
 					<h2 className='text-orange-11'>Filtre as aulas de acordo com as técnicas que você quer executar</h2>
 
-					<div className='grid grid-rows-[1fr_1fr_1fr_1fr] grid-cols-[1fr_1fr_1fr_1fr_1fr_1fr] gap-3 flex-grow basis-80 h-[350px]'>
-						<div className='bg-mauve-10 rounded-3xl px-1 py-3 w-full h-full -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center col-span-3 relative'>
+					<div className='grid grid-rows-[1fr_1fr_1fr_1fr] grid-cols-[1fr_1fr_1fr_1fr_1fr_1fr] gap-3 grow basis-80 h-[350px]'>
+						<div className='bg-mauve-10 rounded-3xl px-1 py-3 w-full h-full -z-20 shadow-xs shadow-mauve-11 @container-[size] flex items-center col-span-3 relative'>
 							<Image
 								className='absolute top-0 left-0 w-full h-full rounded-3xl mix-blend-multiply -z-10'
 								src={buildImgSource('1f6021aa-333c-4f2b-470f-4349252e2600')}
@@ -385,7 +385,7 @@ export default function EscolaOnline() {
 							/>
 							<h3 className='text-white text-[30cqb] leading-none break-words w-full text-center'>Pránáyáma</h3>
 						</div>
-						<div className='bg-mauve-10 rounded-3xl px-1 py-3 w-full h-full -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center col-span-3 relative'>
+						<div className='bg-mauve-10 rounded-3xl px-1 py-3 w-full h-full -z-20 shadow-xs shadow-mauve-11 @container-[size] flex items-center col-span-3 relative'>
 							<Image
 								className='absolute top-0 left-0 w-full h-full rounded-3xl mix-blend-multiply -z-10'
 								src={buildImgSource('862763a1-6025-444f-51e5-efe126137600')}
@@ -397,7 +397,7 @@ export default function EscolaOnline() {
 							/>
 							<h3 className='text-white text-[30cqb] leading-none break-words w-full text-center'>Ásana</h3>
 						</div>
-						<div className='bg-mauve-10 rounded-3xl px-1 py-3 w-full h-full -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center col-span-2 relative'>
+						<div className='bg-mauve-10 rounded-3xl px-1 py-3 w-full h-full -z-20 shadow-xs shadow-mauve-11 @container-[size] flex items-center col-span-2 relative'>
 							<Image
 								className='absolute top-0 left-0 w-full h-full rounded-3xl mix-blend-multiply -z-10'
 								src={buildImgSource('5aca9649-da6c-496c-7478-1dc1476a2f00')}
@@ -409,7 +409,7 @@ export default function EscolaOnline() {
 							/>
 							<h3 className='text-white text-[30cqb] leading-none break-words w-full text-center'>Yoganidrá</h3>
 						</div>
-						<div className='bg-mauve-10 rounded-3xl px-1 py-3 w-full h-full -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center col-span-2 relative'>
+						<div className='bg-mauve-10 rounded-3xl px-1 py-3 w-full h-full -z-20 shadow-xs shadow-mauve-11 @container-[size] flex items-center col-span-2 relative'>
 							<Image
 								className='absolute top-0 left-0 w-full h-full rounded-3xl mix-blend-multiply -z-10'
 								src={buildImgSource('3c5abf6b-d446-4075-d589-b310357d2600')}
@@ -421,7 +421,7 @@ export default function EscolaOnline() {
 							/>
 							<h3 className='text-white text-[30cqb] leading-none break-words w-full text-center'>Meditação</h3>
 						</div>
-						<div className='bg-mauve-10 rounded-3xl px-1 py-3 w-full h-full -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center col-span-2 relative'>
+						<div className='bg-mauve-10 rounded-3xl px-1 py-3 w-full h-full -z-20 shadow-xs shadow-mauve-11 @container-[size] flex items-center col-span-2 relative'>
 							<Image
 								className='absolute top-0 left-0 w-full h-full rounded-3xl mix-blend-multiply -z-10'
 								src={buildImgSource('aaa856b4-aa6e-4e62-3124-852e36192200')}
@@ -433,7 +433,7 @@ export default function EscolaOnline() {
 							/>
 							<h3 className='text-white text-[30cqb] leading-none break-words w-full text-center'>Kriyá</h3>
 						</div>
-						<div className='bg-mauve-10 rounded-3xl px-1 py-3 w-full h-full -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center col-span-3 relative'>
+						<div className='bg-mauve-10 rounded-3xl px-1 py-3 w-full h-full -z-20 shadow-xs shadow-mauve-11 @container-[size] flex items-center col-span-3 relative'>
 							<Image
 								className='absolute top-0 left-0 w-full h-full rounded-3xl mix-blend-multiply -z-10'
 								src={buildImgSource('f88fe433-0f60-499a-51a6-1ed0bf2c4000')}
@@ -445,7 +445,7 @@ export default function EscolaOnline() {
 							/>
 							<h3 className='text-white text-[30cqb] leading-none break-words w-full text-center'>Japa Mantra</h3>
 						</div>
-						<div className='bg-mauve-10 rounded-3xl px-1 py-3 w-full h-full -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center col-span-3 relative'>
+						<div className='bg-mauve-10 rounded-3xl px-1 py-3 w-full h-full -z-20 shadow-xs shadow-mauve-11 @container-[size] flex items-center col-span-3 relative'>
 							<Image
 								className='absolute top-0 left-0 w-full h-full rounded-3xl mix-blend-multiply -z-10'
 								src={buildImgSource('8e99bdf5-5efb-49bf-8259-4617dc754600')}
@@ -457,7 +457,7 @@ export default function EscolaOnline() {
 							/>
 							<h3 className='text-white text-[30cqb] leading-none break-words w-full text-center'>Kirtan Mantra</h3>
 						</div>
-						<div className='bg-mauve-10 rounded-3xl px-1 py-3 w-full h-full -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center col-span-2 relative'>
+						<div className='bg-mauve-10 rounded-3xl px-1 py-3 w-full h-full -z-20 shadow-xs shadow-mauve-11 @container-[size] flex items-center col-span-2 relative'>
 							<Image
 								className='absolute top-0 left-0 w-full h-full rounded-3xl mix-blend-multiply -z-10'
 								src={buildImgSource('bf16acad-239a-4d9d-b99b-ab6e18865900')}
@@ -469,7 +469,7 @@ export default function EscolaOnline() {
 							/>
 							<h3 className='text-white text-[30cqb] leading-none break-words w-full text-center'>Mudrá</h3>
 						</div>
-						<div className='bg-mauve-10 rounded-3xl px-1 py-3 w-full h-full -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center col-span-2 relative'>
+						<div className='bg-mauve-10 rounded-3xl px-1 py-3 w-full h-full -z-20 shadow-xs shadow-mauve-11 @container-[size] flex items-center col-span-2 relative'>
 							<Image
 								className='absolute top-0 left-0 w-full h-full rounded-3xl mix-blend-multiply -z-10'
 								src={buildImgSource('b011e480-1a94-4815-e535-4388ea7ea900')}
@@ -481,7 +481,7 @@ export default function EscolaOnline() {
 							/>
 							<h3 className='text-white text-[30cqb] leading-none break-words w-full text-center'>Pújá</h3>
 						</div>
-						<div className='bg-mauve-10 rounded-3xl px-1 py-3 w-full h-full -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center col-span-2 relative'>
+						<div className='bg-mauve-10 rounded-3xl px-1 py-3 w-full h-full -z-20 shadow-xs shadow-mauve-11 @container-[size] flex items-center col-span-2 relative'>
 							<Image
 								className='absolute top-0 left-0 w-full h-full rounded-3xl mix-blend-multiply -z-10'
 								src={buildImgSource('2f0bda40-8d0e-448c-a5d8-f73d73728c00')}
@@ -547,7 +547,7 @@ export default function EscolaOnline() {
 					</div>
 					<div className='sm:basis-5/12'>
 						<Image
-							className='sm:rounded-s-xl shadow-sm shadow-mauve-11 max-h-96 sm:max-h-[800px]'
+							className='sm:rounded-s-xl shadow-xs shadow-mauve-11 max-h-96 sm:max-h-[800px]'
 							src={buildImgSource('4e9069b2-0a43-45f8-4e62-09d6899c9600')}
 							cdn='cloudflare_images'
 							layout='fullWidth'
@@ -559,7 +559,7 @@ export default function EscolaOnline() {
 				<section id='theoretical classes' className='my-20 sm:my-56 flex flex-col sm:flex-row'>
 					<div className='sm:basis-5/12'>
 						<Image
-							className='sm:rounded-e-xl shadow-sm shadow-mauve-11 max-h-96 sm:max-h-[800px]'
+							className='sm:rounded-e-xl shadow-xs shadow-mauve-11 max-h-96 sm:max-h-[800px]'
 							src={buildImgSource('c74dc1e1-0609-45b4-025f-9dc083ead200')}
 							cdn='cloudflare_images'
 							layout='fullWidth'
@@ -591,8 +591,8 @@ export default function EscolaOnline() {
 					</div>
 
 					<div className='flex flex-wrap flex-col gap-3 sm:basis-1/2 lg:basis-5/12 w-full'>
-						<div className='grid grid-rows-[1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] grid-cols-[1fr_1fr_1fr_1fr_1fr_1fr] gap-3 flex-grow h-[450px]'>
-							<div className='bg-mauve-10 md:rounded-3xl rounded-e-3xl px-1 py-3 w-full h-full row-span-3 col-span-3 -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center relative'>
+						<div className='grid grid-rows-[1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] grid-cols-[1fr_1fr_1fr_1fr_1fr_1fr] gap-3 grow h-[450px]'>
+							<div className='bg-mauve-10 md:rounded-3xl rounded-e-3xl px-1 py-3 w-full h-full row-span-3 col-span-3 -z-20 shadow-xs shadow-mauve-11 @container-[size] flex items-center relative'>
 								<Image
 									className='absolute top-0 left-0 w-full h-full md:rounded-3xl rounded-e-3xl mix-blend-multiply -z-10'
 									src={buildImgSource('25223356-ae05-4b82-0467-473b742ed600')}
@@ -604,7 +604,7 @@ export default function EscolaOnline() {
 								/>
 								<h3 className='text-white text-[20cqb] leading-none break-words w-full'>Alimentação Vegetariana</h3>
 							</div>
-							<div className='bg-mauve-10 rounded-s-3xl px-1 py-3 w-full h-full row-span-3 col-span-3 -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center relative'>
+							<div className='bg-mauve-10 rounded-s-3xl px-1 py-3 w-full h-full row-span-3 col-span-3 -z-20 shadow-xs shadow-mauve-11 @container-[size] flex items-center relative'>
 								<Image
 									className='absolute top-0 left-0 w-full h-full rounded-s-3xl mix-blend-multiply -z-10'
 									src={buildImgSource('ef0eef53-cc56-40b5-05fc-9d263e98d800')}
@@ -616,7 +616,7 @@ export default function EscolaOnline() {
 								/>
 								<h3 className='text-white text-[20cqb] leading-none break-words w-full'>Anatomia Aplicada ao Yoga</h3>
 							</div>
-							<div className='bg-mauve-10 md:rounded-s-3xl px-1 py-3 w-full h-full row-span-2 col-span-6 -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center relative'>
+							<div className='bg-mauve-10 md:rounded-s-3xl px-1 py-3 w-full h-full row-span-2 col-span-6 -z-20 shadow-xs shadow-mauve-11 @container-[size] flex items-center relative'>
 								<Image
 									className='absolute top-0 left-0 w-full h-full md:rounded-s-3xl mix-blend-multiply -z-10'
 									src={buildImgSource('421a7c7a-4676-48fe-fa2a-7133b0e38d00')}
@@ -628,7 +628,7 @@ export default function EscolaOnline() {
 								/>
 								<h3 className='text-white text-[35cqb] leading-none break-words w-full'>Caminhos para o Orgasmo e a Feminilidade</h3>
 							</div>
-							<div className='bg-mauve-10 md:rounded-3xl rounded-e-3xl px-1 py-3 w-full h-full row-span-4 col-span-2 -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center relative'>
+							<div className='bg-mauve-10 md:rounded-3xl rounded-e-3xl px-1 py-3 w-full h-full row-span-4 col-span-2 -z-20 shadow-xs shadow-mauve-11 @container-[size] flex items-center relative'>
 								<Image
 									className='absolute top-0 left-0 w-full h-full md:rounded-3xl rounded-e-3xl mix-blend-multiply -z-10'
 									src={buildImgSource('eee7cc3a-49c9-481a-a5a4-bc7fd47e1700')}
@@ -640,7 +640,7 @@ export default function EscolaOnline() {
 								/>
 								<h3 className='text-white text-[11cqb] leading-none break-words w-full'>Congresso Semana Sem Carnes</h3>
 							</div>
-							<div className='bg-mauve-10 rounded-3xl px-1 py-3 w-full h-full row-span-4 col-span-2 -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center relative'>
+							<div className='bg-mauve-10 rounded-3xl px-1 py-3 w-full h-full row-span-4 col-span-2 -z-20 shadow-xs shadow-mauve-11 @container-[size] flex items-center relative'>
 								<Image
 									className='absolute top-0 left-0 w-full h-full rounded-3xl mix-blend-multiply -z-10'
 									src={buildImgSource('5052cea8-8294-4a0f-678c-21b1c10b5700')}
@@ -652,7 +652,7 @@ export default function EscolaOnline() {
 								/>
 								<h3 className='text-white text-[9cqb] leading-none break-words w-full'>Culinária Vegetariana</h3>
 							</div>
-							<div className='bg-mauve-10 rounded-s-3xl px-1 py-3 w-full h-full row-span-4 col-span-2 -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center relative'>
+							<div className='bg-mauve-10 rounded-s-3xl px-1 py-3 w-full h-full row-span-4 col-span-2 -z-20 shadow-xs shadow-mauve-11 @container-[size] flex items-center relative'>
 								<Image
 									className='absolute top-0 left-0 w-full h-full rounded-s-3xl mix-blend-multiply -z-10'
 									src={buildImgSource('e5f0c092-57e1-4b59-b6cd-8b1f3e3ce200')}
@@ -665,8 +665,8 @@ export default function EscolaOnline() {
 								<h3 className='text-white text-[9cqb] leading-none break-words w-full'>Jejum Intermitente</h3>
 							</div>
 						</div>
-						<div className='grid grid-rows-[1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] grid-cols-[1fr_1fr_1fr_1fr_1fr_1fr] gap-3 flex-grow h-[450px]'>
-							<div className='bg-mauve-10 md:rounded-s-3xl px-1 py-3 w-full h-full row-span-2 col-span-6 -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center relative'>
+						<div className='grid grid-rows-[1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] grid-cols-[1fr_1fr_1fr_1fr_1fr_1fr] gap-3 grow h-[450px]'>
+							<div className='bg-mauve-10 md:rounded-s-3xl px-1 py-3 w-full h-full row-span-2 col-span-6 -z-20 shadow-xs shadow-mauve-11 @container-[size] flex items-center relative'>
 								<Image
 									className='absolute top-0 left-0 w-full h-full md:rounded-s-3xl mix-blend-multiply -z-10'
 									src={buildImgSource('2f52be6e-481f-4c60-5ddc-71192ddf4800')}
@@ -678,7 +678,7 @@ export default function EscolaOnline() {
 								/>
 								<h3 className='text-white text-[40cqb] leading-none break-words w-full'>Pránáyáma - A Respiração do Yoga</h3>
 							</div>
-							<div className='bg-mauve-10 md:rounded-3xl rounded-e-3xl px-1 py-3 w-full h-full row-span-4 col-span-2 -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center relative'>
+							<div className='bg-mauve-10 md:rounded-3xl rounded-e-3xl px-1 py-3 w-full h-full row-span-4 col-span-2 -z-20 shadow-xs shadow-mauve-11 @container-[size] flex items-center relative'>
 								<Image
 									className='absolute top-0 left-0 w-full h-full md:rounded-3xl rounded-e-3xl mix-blend-multiply -z-10'
 									src={buildImgSource('4f3379ea-9092-472e-8bc5-93c088191b00')}
@@ -690,7 +690,7 @@ export default function EscolaOnline() {
 								/>
 								<h3 className='text-white text-[8cqb] leading-none break-words w-full'>Saúde e Longevidade</h3>
 							</div>
-							<div className='bg-mauve-10 rounded-3xl px-1 py-3 w-full h-full row-span-4 col-span-2 -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center relative'>
+							<div className='bg-mauve-10 rounded-3xl px-1 py-3 w-full h-full row-span-4 col-span-2 -z-20 shadow-xs shadow-mauve-11 @container-[size] flex items-center relative'>
 								<Image
 									className='absolute top-0 left-0 w-full h-full rounded-3xl mix-blend-multiply -z-10'
 									src={buildImgSource('139567ab-6bd1-4b43-dacf-51fa8623ec00')}
@@ -702,7 +702,7 @@ export default function EscolaOnline() {
 								/>
 								<h3 className='text-white text-[12cqb] leading-none break-words w-full'>Sámkhya</h3>
 							</div>
-							<div className='bg-mauve-10 rounded-s-3xl px-1 py-3 w-full h-full row-span-4 col-span-2 -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center relative'>
+							<div className='bg-mauve-10 rounded-s-3xl px-1 py-3 w-full h-full row-span-4 col-span-2 -z-20 shadow-xs shadow-mauve-11 @container-[size] flex items-center relative'>
 								<Image
 									className='absolute top-0 left-0 w-full h-full rounded-s-3xl mix-blend-multiply -z-10'
 									src={buildImgSource('ff1ab7b4-3266-4328-1577-6b02510d8a00')}
@@ -714,7 +714,7 @@ export default function EscolaOnline() {
 								/>
 								<h3 className='text-white text-[13cqb] leading-none break-words w-full'>Yoga Sútra de Patáñjali</h3>
 							</div>
-							<div className='bg-mauve-10 md:rounded-3xl rounded-e-3xl px-1 py-3 w-full h-full row-span-3 col-span-3 -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center relative'>
+							<div className='bg-mauve-10 md:rounded-3xl rounded-e-3xl px-1 py-3 w-full h-full row-span-3 col-span-3 -z-20 shadow-xs shadow-mauve-11 @container-[size] flex items-center relative'>
 								<Image
 									className='absolute top-0 left-0 w-full h-full md:rounded-3xl mix-blend-multiply -z-10'
 									src={buildImgSource('07fbb938-af71-4033-c324-5fb028d37200')}
@@ -726,7 +726,7 @@ export default function EscolaOnline() {
 								/>
 								<h3 className='text-white text-[23cqb] leading-none break-words w-full'>Yoga e Hinduismo</h3>
 							</div>
-							<div className='bg-mauve-10 rounded-s-3xl px-1 py-3 w-full h-full row-span-3 col-span-3 -z-20 shadow-sm shadow-mauve-11 @container-[size] flex items-center relative'>
+							<div className='bg-mauve-10 rounded-s-3xl px-1 py-3 w-full h-full row-span-3 col-span-3 -z-20 shadow-xs shadow-mauve-11 @container-[size] flex items-center relative'>
 								<Image
 									className='absolute top-0 left-0 w-full h-full rounded-s-3xl mix-blend-multiply -z-10'
 									src={buildImgSource('d8ec5f16-d3b6-4a96-5494-fe70baf8fa00')}
@@ -742,7 +742,7 @@ export default function EscolaOnline() {
 					</div>
 				</section>
 
-				<section id='faq' className='max-w-[95%] sm:max-w-[90%] lg:max-w-screen-lg mx-auto my-20 sm:my-56'>
+				<section id='faq' className='max-w-[95%] sm:max-w-[90%] lg:max-w-(--breakpoint-lg) mx-auto my-20 sm:my-56'>
 					<h1 className='text-purple-11 mb-24 text-3xl xs:text-5xl md:text-6xl lg:text-7xl text-center'>
 						Perguntas Frequentes
 					</h1>

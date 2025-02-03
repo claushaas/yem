@@ -16,7 +16,7 @@ function NavigateLink({to, children, ...properties}: NavigateLinkProprierties) {
 	return (
 		<NavigationMenu.Link asChild active={isActive}>
 			<Link to={to} {...properties}>
-				<li className='text-mauve-11 dark:text-mauvedark-11 bg-mauve-4 dark:bg-mauvedark-4 hover:bg-mauve-5 hover:dark:bg-mauvedark-5 rounded-lg p-3 shadow-sm shadow-mauve-11 dark:shadow-mauvedark-3'>
+				<li className='text-mauve-11 dark:text-mauvedark-11 bg-mauve-4 dark:bg-mauvedark-4 hover:bg-mauve-5 dark:hover:bg-mauvedark-5 rounded-lg p-3 shadow-xs shadow-mauve-11 dark:shadow-mauvedark-3'>
 					{children}
 				</li>
 			</Link>
@@ -38,7 +38,7 @@ export function NavigateBar({userData}: {readonly userData: TypeUserSession | un
 			<NavigationMenu.Root
 				className='relative flex justify-center'
 			>
-				<NavigationMenu.List className='gap-3 center flex list-none items-center px-4 py-2 rounded-md shadow-sm shadow-mauve-11 dark:shadow-mauvedark-3 bg-mauve-4 dark:bg-mauvedark-3'>
+				<NavigationMenu.List className='gap-3 center flex list-none items-center px-4 py-2 rounded-md shadow-xs shadow-mauve-11 dark:shadow-mauvedark-3 bg-mauve-4 dark:bg-mauvedark-3'>
 					{!userData?.id && pathname !== '/login' && (
 						<>
 							<NavigationMenu.Item>
@@ -73,7 +73,7 @@ export function NavigateBar({userData}: {readonly userData: TypeUserSession | un
 						</NavigationMenu.Content>
 					</NavigationMenu.Item>
 
-					<NavigationMenu.Indicator className='radix-state-visible:animate-fadeIn radix-state-hidden:animate-fadeOut top-full z-[1] flex h-[10px] items-end justify-center overflow-hidden transition-[width,transform_250ms_ease]'>
+					<NavigationMenu.Indicator className='radix-state-visible:animate-fadeIn radix-state-hidden:animate-fadeOut top-full z-1 flex h-[10px] items-end justify-center overflow-hidden transition-[width,transform_250ms_ease]'>
 						<div className='relative top-[70%] h-[10px] w-[10px] rotate-[45deg] rounded-tl-[2px] bg-mauve-4 dark:bg-mauvedark-6'/>
 					</NavigationMenu.Indicator>
 				</NavigationMenu.List>
