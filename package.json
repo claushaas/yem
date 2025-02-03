@@ -34,12 +34,12 @@
     "db:reset": "npx prisma migrate reset"
   },
   "dependencies": {
-    "@aws-sdk/client-cognito-identity-provider": "^3.734.0",
-    "@aws-sdk/client-dynamodb": "^3.734.0",
-    "@aws-sdk/client-secrets-manager": "^3.734.0",
-    "@aws-sdk/client-sesv2": "^3.734.0",
-    "@aws-sdk/credential-providers": "^3.734.0",
-    "@aws-sdk/lib-dynamodb": "^3.734.0",
+    "@aws-sdk/client-cognito-identity-provider": "^3.738.0",
+    "@aws-sdk/client-dynamodb": "^3.738.0",
+    "@aws-sdk/client-secrets-manager": "^3.738.0",
+    "@aws-sdk/client-sesv2": "^3.740.0",
+    "@aws-sdk/credential-providers": "^3.738.0",
+    "@aws-sdk/lib-dynamodb": "^3.738.0",
     "@cloudflare/stream-react": "^1.9.1",
     "@epic-web/remember": "^1.1.0",
     "@heroicons/react": "^2.2.0",
@@ -53,18 +53,17 @@
     "@radix-ui/react-separator": "^1.1.1",
     "@radix-ui/react-switch": "^1.1.2",
     "@radix-ui/react-tooltip": "^1.1.7",
-    "@react-router/node": "^7.1.3",
-    "@react-router/serve": "^7.1.3",
+    "@react-router/node": "^7.1.5",
+    "@react-router/serve": "^7.1.5",
     "@tailwindcss/container-queries": "^0.1.1",
     "@unpic/react": "^1.0.0",
     "@vidstack/react": "^1.11.21",
     "axios": "^1.7.9",
     "clipboard-copy": "^4.0.1",
-    "fuse.js": "^7.0.0",
-    "hls.js": "^1.5.20",
-    "isbot": "^5.1.21",
+    "fuse.js": "^7.1.0",
+    "isbot": "^5.1.22",
     "joi": "^17.13.3",
-    "motion": "^12.0.6",
+    "motion": "^12.0.11",
     "nprogress": "^0.2.0",
     "prisma": "^6.3.0",
     "qs": "^6.14.0",
@@ -73,25 +72,22 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-phone-number-input": "^3.4.11",
-    "react-router": "^7.1.3",
+    "react-router": "^7.1.5",
     "react-select": "^5.10.0",
     "remix-utils": "^8.1.0",
     "winston": "^3.17.0"
   },
   "devDependencies": {
-    "@radix-ui/colors": "^3.0.0",
-    "@react-router/dev": "^7.1.3",
-    "@react-router/fs-routes": "^7.1.3",
+    "@react-router/dev": "^7.1.5",
+    "@react-router/fs-routes": "^7.1.5",
     "@tailwindcss/forms": "^0.5.10",
-    "@types/node": "^22.12.0",
+    "@types/node": "^22.13.0",
     "@types/nprogress": "^0.2.3",
     "@types/qs": "^6.9.18",
     "@types/react": "^18.3.13",
     "@types/react-dom": "^18.3.1",
-    "eslint-config-xo": "^0.46.0",
     "eslint-config-xo-react": "^0.27.0",
     "lightningcss": "^1.29.1",
-    "postcss": "^8.5.1",
     "tailwindcss": "^3.4.17",
     "tailwindcss-radix": "^3.0.5",
     "tailwindcss-radix-colors": "^1.4.1",
@@ -141,9 +137,6 @@
         }
       ],
       "unicorn/expiring-todo-comments": "off"
-    },
-    "ignores": [
-      "postcss.config.js"
-    ]
+    }
   }
 }
