@@ -60,11 +60,10 @@
     "@vidstack/react": "^1.11.21",
     "axios": "^1.7.9",
     "clipboard-copy": "^4.0.1",
-    "fuse.js": "^7.0.0",
-    "hls.js": "^1.5.20",
+    "fuse.js": "^7.1.0",
     "isbot": "^5.1.22",
     "joi": "^17.13.3",
-    "motion": "^12.0.6",
+    "motion": "^12.0.11",
     "nprogress": "^0.2.0",
     "prisma": "^6.3.0",
     "qs": "^6.14.0",
@@ -88,10 +87,8 @@
     "@types/qs": "^6.9.18",
     "@types/react": "^18.3.13",
     "@types/react-dom": "^18.3.1",
-    "eslint-config-xo": "^0.46.0",
     "eslint-config-xo-react": "^0.27.0",
     "lightningcss": "^1.29.1",
-    "postcss": "^8.5.1",
     "tailwindcss": "^3.4.17",
     "tailwindcss-radix": "^3.0.5",
     "tailwindcss-radix-colors": "^1.4.1",
@@ -141,9 +138,6 @@
         }
       ],
       "unicorn/expiring-todo-comments": "off"
-    },
-    "ignores": [
-      "postcss.config.js"
-    ]
+    }
   }
 }
