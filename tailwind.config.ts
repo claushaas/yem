@@ -1,6 +1,4 @@
 import type {Config} from 'tailwindcss';
-import tailwindForms from '@tailwindcss/forms';
-import tailwindContainerQueries from '@tailwindcss/container-queries';
 import defaultTheme from 'tailwindcss/defaultTheme';
 
 export default {
@@ -64,8 +62,4 @@ export default {
 			},
 		},
 	},
-	plugins: [
-		tailwindContainerQueries,
-		tailwindForms,
-	],
 } satisfies Config;
