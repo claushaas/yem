@@ -47,7 +47,7 @@ export function AdminEntityCard({course, to}: ClassCardPropierties) {
 				scale: 1.05,
 				transition: {duration: 0.5},
 			}}
-			className='portrait:w-48 w-72 portrait:h-80 h-48 relative rounded-xl shadow-sm shadow-mauve-11 dark:shadow-mauvedark-3 flex-shrink-0'
+			className='portrait:w-48 w-72 portrait:h-80 h-48 relative rounded-xl shadow-xs shadow-mauve-11 dark:shadow-mauvedark-3 shrink-0'
 		>
 			<Image
 				className='absolute top-0 left-0 w-full h-full rounded-xl -z-10'
@@ -79,7 +79,7 @@ export function GenericEntityCard({course, to, activity}: GenericEntityCardPropi
 				scale: 1.05,
 				transition: {duration: 0.5},
 			}}
-			className='portrait:w-48 w-72 portrait:h-80 h-48 relative rounded-xl shadow-sm shadow-mauve-11 dark:shadow-mauvedark-3 flex-shrink-0'
+			className='portrait:w-48 w-72 portrait:h-80 h-48 relative rounded-xl shadow-xs shadow-mauve-11 dark:shadow-mauvedark-3 shrink-0'
 		>
 			<Image
 				className='absolute top-0 left-0 w-full h-full rounded-xl -z-10'
@@ -129,7 +129,7 @@ export function LessonEntityCard({course, to, activity}: LessonEntityCardPropier
 				scale: 1.05,
 				transition: {duration: 0.5},
 			}}
-			className='portrait:w-48 w-72 portrait:h-80 h-48 relative rounded-xl shadow-sm shadow-mauve-11 dark:shadow-mauvedark-3 flex-shrink-0'
+			className='portrait:w-48 w-72 portrait:h-80 h-48 relative rounded-xl shadow-xs shadow-mauve-11 dark:shadow-mauvedark-3 shrink-0'
 		>
 			<Image
 				className='absolute top-0 left-0 w-full h-full rounded-xl -z-10'
@@ -174,7 +174,7 @@ export function LessonWithoutSuspenseEntityCard({course: lesson, to, activity}: 
 				scale: 1.05,
 				transition: {duration: 0.5},
 			}}
-			className='portrait:w-48 w-72 portrait:h-80 h-48 relative rounded-xl shadow-sm shadow-mauve-11 dark:shadow-mauvedark-3 flex-shrink-0'
+			className='portrait:w-48 w-72 portrait:h-80 h-48 relative rounded-xl shadow-xs shadow-mauve-11 dark:shadow-mauvedark-3 shrink-0'
 		>
 			<Image
 				className='absolute top-0 left-0 w-full h-full rounded-xl -z-10'

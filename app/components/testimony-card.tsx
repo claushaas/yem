@@ -16,7 +16,7 @@ export function Testimony({
 	return (
 		<Dialog.Root>
 			<Dialog.Trigger asChild>
-				<div className='flex-shrink-0 w-56 sm:w-72 h-48 sm:h-60 p-4 sm:p-6 rounded-3xl shadow-sm shadow-mauve-11 dark:shadow-mauvedark-3 bg-mauve-4 dark:bg-mauvedark-3 hover:cursor-pointer flex flex-col justify-center gap-2'>
+				<div className='shrink-0 w-56 sm:w-72 h-48 sm:h-60 p-4 sm:p-6 rounded-3xl shadow-xs shadow-mauve-11 dark:shadow-mauvedark-3 bg-mauve-4 dark:bg-mauvedark-3 hover:cursor-pointer flex flex-col justify-center gap-2'>
 					<h1 className='text-center text-xl'>{name}</h1>
 					<p className='text-center italic'>{description}</p>
 					<PlayIcon className='size-10 mx-auto'/>
@@ -48,7 +48,7 @@ export function Testimony({
 					<Dialog.Close asChild>
 						<button
 							type='button'
-							className='absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center outline-none'
+							className='absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center outline-hidden'
 							aria-label='Close'
 						>
 							<XMarkIcon aria-label='Close' className='hover:pointer absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px]'/>

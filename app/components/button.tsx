@@ -30,19 +30,20 @@ const baseButtonClasses = `
 	transition-colors
 	duration-200
 	ease-in-out
-	focus:outline-none
+	focus:outline-hidden
 	focus:ring-2
 	focus:ring-opacity-50
 	disabled:bg-gray-5
-	disabled:dark:bg-graydark-5
+	dark:disabled:bg-graydark-5
 	disabled:cursor-not-allowed
 	disabled:hover:bg-gray-5
-	disabled:hover:dark:bg-graydark-5
+	dark:disabled:hover:bg-graydark-5
 	disabled:active:bg-gray-5
-	disabled:active:dark:bg-graydark-5
+	dark:disabled:active:bg-graydark-5
 	disabled:text-gray-7
-	disabled:dark:text-graydark-7
+	dark:disabled:text-graydark-7
 	disabled:shadow-none
+	hover:cursor-pointer
 `;
 
 const classNames = (preset: ButtonPreset) => {
@@ -53,9 +54,9 @@ const classNames = (preset: ButtonPreset) => {
 				dark:bg-purpledark-9
 				text-whitea-11
 				hover:bg-purple-10
-				hover:dark:bg-purpledark-10
+				dark:hover:bg-purpledark-10
 				active:bg-purple-12
-				active:dark:bg-purpledark-12
+				dark:active:bg-purpledark-12
 				focus:ring-purple-9
 				shadow-purple-12
 			`;
@@ -68,9 +69,9 @@ const classNames = (preset: ButtonPreset) => {
 				text-blacka-7
 				dark:text-whitea-7
 				hover:bg-purple-4
-				hover:dark:bg-purpledark-4
+				dark:hover:bg-purpledark-4
 				active:bg-purple-5
-				active:dark:bg-purpledark-5
+				dark:active:bg-purpledark-5
 				focus:ring-purple-3
 			`;
 		}
@@ -100,6 +101,6 @@ export const Button = forwardRef(({
 		type={type ?? ButtonType.Button}
 		onClick={onClick}
 	>
-		<span className='font-gothamBold leading-none drop-shadow-sm'>{text}</span>
+		<span className='font-gotham-bold leading-none drop-shadow-xs'>{text}</span>
 	</motion.button>
 ));

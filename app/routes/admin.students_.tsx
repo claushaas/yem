@@ -83,7 +83,7 @@ export default function Students() {
 								disabled={isSubmittingForm}
 								type='text'
 								min={8}
-								className='w-full max-w-72 bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
+								className='w-full max-w-72 bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-hidden'
 							/>
 						</Form.Control>
 					</Form.Field>

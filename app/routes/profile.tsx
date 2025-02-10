@@ -31,7 +31,7 @@ export default function Profile() {
 			<NavigateBar userData={userData}/>
 
 			<div className='flex max-w-[95%] w-full mx-auto flex-col sm:flex-row gap-4'>
-				<aside className='w-64 p-3 bg-mauve-3 dark:bg-mauvedark-3 shadow-sm shadow-mauve-11 dark:shadow-mauvedark-3 rounded-lg h-fit flex flex-col gap-3'>
+				<aside className='w-64 p-3 bg-mauve-3 dark:bg-mauvedark-3 shadow-xs shadow-mauve-11 dark:shadow-mauvedark-3 rounded-lg h-fit flex flex-col gap-3'>
 					<Link to='/profile/completed-lessons'>
 						<p>Aulas Assistidas</p>
 					</Link>
@@ -42,7 +42,7 @@ export default function Profile() {
 						<p>Aulas Favoritadas</p>
 					</Link>
 				</aside>
-				<main className='flex-grow flex-shrink p-3'>
+				<main className='grow shrink p-3'>
 					{(pathname === '/profile' || pathname === '/profile/') && (
 						<p>Selecione a opção no menu ao lado</p>
 					)}

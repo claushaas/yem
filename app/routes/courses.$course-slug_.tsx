@@ -75,7 +75,7 @@ export default function Course() {
 
 			<main className='w-full max-w-[95%] sm:max-w-[90%] mx-auto'>
 				<Breadcrumbs data={[[`/${course.slug}`, course.name]]}/>
-				<div className='w-full max-w-screen-lg mx-auto'>
+				<div className='w-full max-w-(--breakpoint-lg) mx-auto'>
 					{course.videoSourceUrl && (
 						<section id='video' className='h-fit rounded-2xl mb-10'>
 							{!course.videoSourceUrl.startsWith('https://') && (

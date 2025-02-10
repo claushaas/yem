@@ -224,7 +224,7 @@ export default function Course() {
 				<Dialog.Portal>
 					<Dialog.Overlay className='bg-mauvea-12 fixed inset-0'/>
 
-					<Dialog.Content className='fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] p-4 max-w-screen-lg w-[90%] bg-mauve-2 dark:bg-mauvedark-2 rounded-xl overflow-y-auto max-h-[90%]'>
+					<Dialog.Content className='fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] p-4 max-w-(--breakpoint-lg) w-[90%] bg-mauve-2 dark:bg-mauvedark-2 rounded-xl overflow-y-auto max-h-[90%]'>
 						<div>
 							<Dialog.Title asChild>
 								<h1 className='mb-4'>
@@ -247,7 +247,7 @@ export default function Course() {
 												disabled={isSubmittingAnyForm}
 												type='text'
 												min={8}
-												className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
+												className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-hidden'
 											/>
 										</RadixForm.Control>
 									</RadixForm.Field>
@@ -265,7 +265,7 @@ export default function Course() {
 												disabled={isSubmittingAnyForm}
 												type='text'
 												min={8}
-												className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
+												className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-hidden'
 											/>
 										</RadixForm.Control>
 									</RadixForm.Field>
@@ -283,7 +283,7 @@ export default function Course() {
 												disabled={isSubmittingAnyForm}
 												type='text'
 												min={8}
-												className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
+												className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-hidden'
 											/>
 										</RadixForm.Control>
 									</RadixForm.Field>
@@ -299,7 +299,7 @@ export default function Course() {
 												defaultValue={course.order ?? ''}
 												disabled={isSubmittingAnyForm}
 												type='number'
-												className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
+												className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-hidden'
 											/>
 										</RadixForm.Control>
 									</RadixForm.Field>
@@ -354,7 +354,7 @@ export default function Course() {
 												disabled={isSubmittingAnyForm}
 												type='text'
 												min={3}
-												className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
+												className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-hidden'
 											/>
 										</RadixForm.Control>
 									</RadixForm.Field>
@@ -371,7 +371,7 @@ export default function Course() {
 												disabled={isSubmittingAnyForm}
 												type='text'
 												min={3}
-												className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
+												className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-hidden'
 											/>
 										</RadixForm.Control>
 									</RadixForm.Field>
@@ -389,7 +389,7 @@ export default function Course() {
 												disabled={isSubmittingAnyForm}
 												type='text'
 												min={3}
-												className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
+												className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-hidden'
 											/>
 										</RadixForm.Control>
 									</RadixForm.Field>
@@ -406,7 +406,7 @@ export default function Course() {
 												disabled={isSubmittingAnyForm}
 												type='datetime-local'
 												min={3}
-												className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
+												className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-hidden'
 											/>
 										</RadixForm.Control>
 									</RadixForm.Field>
@@ -421,7 +421,7 @@ export default function Course() {
 											<Switch.Root
 												defaultChecked={course.isPublished}
 												disabled={isSubmittingAnyForm}
-												className='w-[42px] h-[25px] bg-blacka-6 rounded-full relative shadow-[0_2px_10px] shadow-blacka-4 focus:shadow-[0_0_0_2px] focus:shadow-black data-[state=checked]:bg-black outline-none cursor-default'
+												className='w-[42px] h-[25px] bg-blacka-6 rounded-full relative shadow-[0_2px_10px] shadow-blacka-4 focus:shadow-[0_0_0_2px] focus:shadow-black data-[state=checked]:bg-black outline-hidden cursor-default'
 											>
 												<Switch.Thumb
 													className='block w-[21px] h-[21px] bg-white rounded-full shadow-[0_2px_2px] shadow-blackA4 transition-transform duration-100 translate-x-0.5 will-change-transform data-[state=checked]:translate-x-[19px]'
@@ -440,7 +440,7 @@ export default function Course() {
 											<Switch.Root
 												defaultChecked={course.isSelling}
 												disabled={isSubmittingAnyForm}
-												className='w-[42px] h-[25px] bg-blacka-6 rounded-full relative shadow-[0_2px_10px] shadow-blacka-4 focus:shadow-[0_0_0_2px] focus:shadow-black data-[state=checked]:bg-black outline-none cursor-default'
+												className='w-[42px] h-[25px] bg-blacka-6 rounded-full relative shadow-[0_2px_10px] shadow-blacka-4 focus:shadow-[0_0_0_2px] focus:shadow-black data-[state=checked]:bg-black outline-hidden cursor-default'
 											>
 												<Switch.Thumb
 													className='block w-[21px] h-[21px] bg-white rounded-full shadow-[0_2px_2px] shadow-blackA4 transition-transform duration-100 translate-x-0.5 will-change-transform data-[state=checked]:translate-x-[19px]'
@@ -482,7 +482,7 @@ export default function Course() {
 						<Dialog.Close asChild>
 							<button
 								type='button'
-								className='absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center outline-none'
+								className='absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center outline-hidden'
 								aria-label='Close'
 							>
 								<XMarkIcon aria-label='Close' className='hover:pointer absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px]'/>
@@ -502,7 +502,7 @@ export default function Course() {
 				{course.content && (
 					<>
 						<h2>Conteúdo do curso:</h2>
-						<ContentConverter content={course.content} className='p-4 rounded-lg border-2 border-mauve-6 dark:border-mauvedark-6 max-w-screen-lg'/>
+						<ContentConverter content={course.content} className='p-4 rounded-lg border-2 border-mauve-6 dark:border-mauvedark-6 max-w-(--breakpoint-lg)'/>
 					</>
 				)}
 
@@ -522,7 +522,7 @@ export default function Course() {
 						<Dialog.Portal>
 							<Dialog.Overlay className='bg-mauvea-12 fixed inset-0'/>
 
-							<Dialog.Content className='fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] p-4 max-w-screen-lg w-[90%] bg-mauve-2 dark:bg-mauvedark-2 rounded-xl overflow-y-auto max-h-[90%]'>
+							<Dialog.Content className='fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] p-4 max-w-(--breakpoint-lg) w-[90%] bg-mauve-2 dark:bg-mauvedark-2 rounded-xl overflow-y-auto max-h-[90%]'>
 								<Dialog.Title asChild>
 									<h1 className='mb-4'>
 										Adicionar Nova Autorização
@@ -659,7 +659,7 @@ export default function Course() {
 					<Dialog.Portal>
 						<Dialog.Overlay className='bg-mauvea-12 fixed inset-0'/>
 
-						<Dialog.Content className='fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] p-4 max-w-screen-lg w-[90%] bg-mauve-2 dark:bg-mauvedark-2 rounded-xl overflow-y-auto max-h-[90%]'>
+						<Dialog.Content className='fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] p-4 max-w-(--breakpoint-lg) w-[90%] bg-mauve-2 dark:bg-mauvedark-2 rounded-xl overflow-y-auto max-h-[90%]'>
 							<Dialog.Title asChild>
 								<h1 className='mb-4'>
 									Adicionar Novo Módulo
@@ -680,7 +680,7 @@ export default function Course() {
 												disabled={isSubmittingAnyForm}
 												type='text'
 												min={8}
-												className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
+												className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-hidden'
 											/>
 										</RadixForm.Control>
 									</RadixForm.Field>
@@ -697,7 +697,7 @@ export default function Course() {
 												disabled={isSubmittingAnyForm}
 												type='text'
 												min={8}
-												className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
+												className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-hidden'
 											/>
 										</RadixForm.Control>
 									</RadixForm.Field>
@@ -714,7 +714,7 @@ export default function Course() {
 												disabled={isSubmittingAnyForm}
 												type='text'
 												min={8}
-												className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
+												className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-hidden'
 											/>
 										</RadixForm.Control>
 									</RadixForm.Field>
@@ -768,7 +768,7 @@ export default function Course() {
 												disabled={isSubmittingAnyForm}
 												type='text'
 												min={3}
-												className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
+												className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-hidden'
 											/>
 										</RadixForm.Control>
 									</RadixForm.Field>
@@ -784,7 +784,7 @@ export default function Course() {
 												disabled={isSubmittingAnyForm}
 												type='text'
 												min={3}
-												className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
+												className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-hidden'
 											/>
 										</RadixForm.Control>
 									</RadixForm.Field>
@@ -801,7 +801,7 @@ export default function Course() {
 												disabled={isSubmittingAnyForm}
 												type='text'
 												min={3}
-												className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
+												className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-hidden'
 											/>
 										</RadixForm.Control>
 									</RadixForm.Field>
@@ -853,7 +853,7 @@ export default function Course() {
 												disabled={isSubmittingAnyForm}
 												type='datetime-local'
 												min={3}
-												className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
+												className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-hidden'
 											/>
 										</RadixForm.Control>
 									</RadixForm.Field>
@@ -867,7 +867,7 @@ export default function Course() {
 										<RadixForm.Control asChild>
 											<Switch.Root
 												disabled={isSubmittingAnyForm}
-												className='w-[42px] h-[25px] bg-blacka-6 rounded-full relative shadow-[0_2px_10px] shadow-blacka-4 focus:shadow-[0_0_0_2px] focus:shadow-black data-[state=checked]:bg-black outline-none cursor-default'
+												className='w-[42px] h-[25px] bg-blacka-6 rounded-full relative shadow-[0_2px_10px] shadow-blacka-4 focus:shadow-[0_0_0_2px] focus:shadow-black data-[state=checked]:bg-black outline-hidden cursor-default'
 											>
 												<Switch.Thumb
 													className='block w-[21px] h-[21px] bg-white rounded-full shadow-[0_2px_2px] shadow-blackA4 transition-transform duration-100 translate-x-0.5 will-change-transform data-[state=checked]:translate-x-[19px]'
@@ -885,7 +885,7 @@ export default function Course() {
 										<RadixForm.Control asChild>
 											<Switch.Root
 												disabled={isSubmittingAnyForm}
-												className='w-[42px] h-[25px] bg-blacka-6 rounded-full relative shadow-[0_2px_10px] shadow-blacka-4 focus:shadow-[0_0_0_2px] focus:shadow-black data-[state=checked]:bg-black outline-none cursor-default'
+												className='w-[42px] h-[25px] bg-blacka-6 rounded-full relative shadow-[0_2px_10px] shadow-blacka-4 focus:shadow-[0_0_0_2px] focus:shadow-black data-[state=checked]:bg-black outline-hidden cursor-default'
 											>
 												<Switch.Thumb
 													className='block w-[21px] h-[21px] bg-white rounded-full shadow-[0_2px_2px] shadow-blackA4 transition-transform duration-100 translate-x-0.5 will-change-transform data-[state=checked]:translate-x-[19px]'
@@ -903,7 +903,7 @@ export default function Course() {
 										<RadixForm.Control asChild>
 											<Switch.Root
 												disabled={isSubmittingAnyForm}
-												className='w-[42px] h-[25px] bg-blacka-6 rounded-full relative shadow-[0_2px_10px] shadow-blacka-4 focus:shadow-[0_0_0_2px] focus:shadow-black data-[state=checked]:bg-black outline-none cursor-default'
+												className='w-[42px] h-[25px] bg-blacka-6 rounded-full relative shadow-[0_2px_10px] shadow-blacka-4 focus:shadow-[0_0_0_2px] focus:shadow-black data-[state=checked]:bg-black outline-hidden cursor-default'
 											>
 												<Switch.Thumb
 													className='block w-[21px] h-[21px] bg-white rounded-full shadow-[0_2px_2px] shadow-blackA4 transition-transform duration-100 translate-x-0.5 will-change-transform data-[state=checked]:translate-x-[19px]'
@@ -923,7 +923,7 @@ export default function Course() {
 												required
 												disabled={isSubmittingAnyForm}
 												type='number'
-												className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
+												className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-hidden'
 											/>
 										</RadixForm.Control>
 									</RadixForm.Field>
@@ -940,7 +940,7 @@ export default function Course() {
 							<Dialog.Close asChild>
 								<button
 									type='button'
-									className='absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center outline-none'
+									className='absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center outline-hidden'
 									aria-label='Close'
 								>
 									<XMarkIcon aria-label='Close' className='hover:pointer absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px]'/>

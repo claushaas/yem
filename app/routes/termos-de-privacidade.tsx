@@ -26,7 +26,7 @@ export default function TermosDePrivacidade() {
 			<NavigateBar userData={userData}/>
 
 			<main className='my-20 max-w-[90%] mx-auto'>
-				<div className='max-w-screen-md'>
+				<div className='max-w-(--breakpoint-md)'>
 					<h1 className='text-3xl text-center'>Termos de Privacidade</h1>
 					<h2 className='text-2xl my-4'>Objetivo</h2>
 					<p className='my-4'>Esta página traz a Política de Privacidade da Yoga em Movimento Ltda, em seu site yogaemmovimento.com, compreendendo o acesso através de seus canais oficiais dentro do sítio eletrônico. Sua finalidade é estabelecer as regras de coleta, armazenamento, utilização, tratamento, compartilhamento e exclusão dos dados e informações eventualmente coletadas pela empresa em suas plataformas digitais, com a máxima transparência.</p>
