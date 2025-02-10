@@ -43,6 +43,7 @@ const baseButtonClasses = `
 	disabled:text-gray-7
 	dark:disabled:text-graydark-7
 	disabled:shadow-none
+	hover:cursor-pointer
 `;
 
 const classNames = (preset: ButtonPreset) => {
@@ -100,6 +101,6 @@ export const Button = forwardRef(({
 		type={type ?? ButtonType.Button}
 		onClick={onClick}
 	>
-		<span className='font-gothamBold leading-none drop-shadow-xs'>{text}</span>
+		<span className='font-gotham-bold leading-none drop-shadow-xs'>{text}</span>
 	</motion.button>
 ));

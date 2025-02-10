@@ -14,9 +14,9 @@ export default defineConfig({
 		port: Number(process.env.APP_PORT) || 3001,
 	},
 	plugins: [
+		tailwindcss(),
 		reactRouter(),
 		tsconfigPaths(),
-		tailwindcss(),
 		svgr({
 			include: '**/*.svg?react',
 		}),

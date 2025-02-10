@@ -1,0 +1,90 @@
+@import '@vidstack/react/player/styles/default/theme.css' layer(base);
+@import '@vidstack/react/player/styles/default/layouts/video.css' layer(base);
+
+@import 'tailwindcss';
+@import "tailwindcss-radix-colors/dist/all.css";
+
+@theme {
+  --font-gotham-light: 'GothamRoundedLight', sans-serif;
+  --font-gotham-book: 'GothamRoundedBook', sans-serif;
+  --font-gotham-medium: 'GothamRoundedMedium', sans-serif;
+  --font-gotham-bold: 'GothamRoundedBold', sans-serif;
+  --breakpoint-xs: 475px;
+  --breakpoint-portrait: (orientation:portrait)
+}
+
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentColor);
+  }
+}
+
+@font-face {
+  font-family: 'GothamRoundedBold';
+  font-style:  bold;
+  src: url('./assets/fonts/GothamRoundedBold.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'GothamRoundedBook';
+  font-style:  normal;
+  src: url('./assets/fonts/GothamRoundedBook.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'GothamRoundedLight';
+  font-style:  light;
+  src: url('./assets/fonts/GothamRoundedLight.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'GothamRoundedMedium';
+  font-style:  medium;
+  src: url('./assets/fonts/GothamRoundedMedium.ttf') format('truetype');
+  font-display: swap;
+}
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-gotham-bold;
+    @apply text-mauve-12;
+    @apply dark:text-mauvedark-11;
+  }
+  h1 {
+    @apply text-4xl;
+    @apply my-2;
+  }
+  h2 {
+    @apply text-3xl;
+    @apply my-2;
+  }
+  h3 {
+    @apply text-2xl;
+    @apply my-2;
+  }
+  h4 {
+    @apply text-xl;
+    @apply my-2;
+  }
+  p {
+    @apply font-gotham-book;
+    @apply text-mauve-11;
+    @apply dark:text-mauvedark-11;
+  }
+  svg {
+    @apply stroke-mauve-11;
+    @apply dark:stroke-mauvedark-11;
+  }
+
+  .quill > .ql-toolbar:first-child {
+    display: none !important;
+  }
+}

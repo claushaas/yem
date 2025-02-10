@@ -2,6 +2,7 @@ import {Bars4Icon} from '@heroicons/react/24/outline';
 import * as NavigationMenu from '@radix-ui/react-navigation-menu';
 import * as Separator from '@radix-ui/react-separator';
 import {Link, useLocation} from 'react-router';
+import {AnimatePresence, motion} from 'motion/react';
 import {type TypeUserSession} from '~/types/user-session.type';
 
 type NavigateLinkProprierties = {
@@ -56,21 +57,30 @@ export function NavigateBar({userData}: {readonly userData: TypeUserSession | un
 								orientation='vertical'/>
 						</>
 					)}
+
 					<NavigationMenu.Item>
-						<NavigationMenu.Trigger className='center m-0 flex list-none py-1 leading-none'>
+						<NavigationMenu.Trigger className='center m-0 flex list-none py-1 leading-none cursor-pointer'>
 							<p className='mr-1'>Menu</p>
-							<Bars4Icon
-								className='size-4'/>
+							<Bars4Icon className='size-4'/>
 						</NavigationMenu.Trigger>
-						<NavigationMenu.Content className='data-[motion=from-start]:animate-enterFromLeft data-[motion=from-end]:animate-enterFromRight data-[motion=to-start]:animate-exitToLeft data-[motion=to-end]:animate-exitToRight px-4 py-2 bg-mauve-3 dark:bg-mauvedark-3 absolute top-0 right-0 rounded-md max-xs:w-[calc(100vw_-_calc(100vw_*_5_/_100))] w-72'>
-							<ul className='grid grid-cols-2 gap-3'>
-								{pathname !== '/' && <NavigateLink to='/'>Home</NavigateLink>}
-								{userData?.roles?.includes('admin') && !pathname.startsWith('/admin') && <NavigateLink to='/admin'>Admin</NavigateLink>}
-								{pathname !== '/courses' && <NavigateLink to='/courses'>Cursos</NavigateLink>}
-								{!pathname.startsWith('/profile') && userData?.id && <NavigateLink to='/profile'>Minha Área</NavigateLink>}
-								{userData?.id && pathname !== '/logout' && <NavigateLink to='/logout'>Sair</NavigateLink>}
-							</ul>
-						</NavigationMenu.Content>
+
+						<AnimatePresence>
+							<NavigationMenu.Content asChild>
+								<motion.div
+									initial={{opacity: 0, scale: 0}}
+									animate={{opacity: 1, scale: 1}}
+									className='px-4 py-2 bg-mauve-3 dark:bg-mauvedark-3 absolute top-0 right-0 rounded-md max-xs:w-[calc(100vw_-_calc(100vw_*_5_/_100))] w-72'
+								>
+									<ul className='grid grid-cols-2 gap-3'>
+										{pathname !== '/' && <NavigateLink to='/'>Home</NavigateLink>}
+										{userData?.roles?.includes('admin') && !pathname.startsWith('/admin') && <NavigateLink to='/admin'>Admin</NavigateLink>}
+										{pathname !== '/courses' && <NavigateLink to='/courses'>Cursos</NavigateLink>}
+										{!pathname.startsWith('/profile') && userData?.id && <NavigateLink to='/profile'>Minha Área</NavigateLink>}
+										{userData?.id && pathname !== '/logout' && <NavigateLink to='/logout'>Sair</NavigateLink>}
+									</ul>
+								</motion.div>
+							</NavigationMenu.Content>
+						</AnimatePresence>
 					</NavigationMenu.Item>
 
 					<NavigationMenu.Indicator className='radix-state-visible:animate-fadeIn radix-state-hidden:animate-fadeOut top-full z-1 flex h-[10px] items-end justify-center overflow-hidden transition-[width,transform_250ms_ease]'>
