@@ -55,11 +55,11 @@ export default function Index() {
 				<Testimonies/>
 
 				<section id='services' className='my-20 sm:my-40 max-w-[95%] sm:max-w-[90%] mx-auto flex justify-center'>
-					<div className='max-w-screen-lg w-full'>
+					<div className='max-w-(--breakpoint-lg) w-full'>
 						<h1 className='text-purple-11 text-3xl xs:text-5xl md:text-6xl lg:text-7xl mb-5 text-center'>Conheça nossos Serviços</h1>
 
 						<div className='flex justify-center flex-wrap gap-10'>
-							<div className='w-60 shrink-0 p-5 shadow-sm shadow-mauve-11 dark:shadow-mauvedark-3 bg-mauve-4 dark:bg-mauvedark-3 rounded-2xl flex flex-col justify-center items-center gap-5'>
+							<div className='w-60 shrink-0 p-5 shadow-xs shadow-mauve-11 dark:shadow-mauvedark-3 bg-mauve-4 dark:bg-mauvedark-3 rounded-2xl flex flex-col justify-center items-center gap-5'>
 								<h2 className='text-center'>Escola Online</h2>
 								<p>Para praticar Yoga todos os dias, onde estiver e quando quiser.</p>
 								<Link to='/escola-online'>
@@ -67,7 +67,7 @@ export default function Index() {
 								</Link>
 							</div>
 
-							<div className='w-60 shrink-0 p-5 shadow-sm shadow-mauve-11 dark:shadow-mauvedark-3 bg-mauve-4 dark:bg-mauvedark-3 rounded-2xl flex flex-col justify-center items-center gap-5'>
+							<div className='w-60 shrink-0 p-5 shadow-xs shadow-mauve-11 dark:shadow-mauvedark-3 bg-mauve-4 dark:bg-mauvedark-3 rounded-2xl flex flex-col justify-center items-center gap-5'>
 								<h2 className='text-center'>Formação em Yoga</h2>
 								<p>Para se formar como Instrutor de Yoga certificado.</p>
 								<Link to='/formacao-em-yoga'>

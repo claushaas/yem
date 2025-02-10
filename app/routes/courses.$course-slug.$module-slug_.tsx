@@ -129,7 +129,7 @@ export default function Module() {
 					[`/courses/${course.slug}`, course.name], // Course
 					[`/courses/${course.slug}/${module.moduleSlug}`, module.module.name], // Module
 				]}/>
-				<div className='w-full max-w-screen-lg mx-auto'>
+				<div className='w-full max-w-(--breakpoint-lg) mx-auto'>
 
 					{module.module.videoSourceUrl && (
 						<section id='video' className='h-fit rounded-2xl mb-10'>
@@ -174,7 +174,7 @@ export default function Module() {
 								<DropdownMenu.Root open={isFilterMenuOpen} onOpenChange={setIsFilterMenuOpen}>
 									<DropdownMenu.Trigger asChild>
 										<motion.div
-											className='flex gap-3 items-center bg-mauve-6 dark:bg-mauvedark-6 h-fit px-3 py-2 rounded-xl shadow-sm shadow-mauve-10 dark:shadow-mauvedark-10 cursor-pointer'
+											className='flex gap-3 items-center bg-mauve-6 dark:bg-mauvedark-6 h-fit px-3 py-2 rounded-xl shadow-xs shadow-mauve-10 dark:shadow-mauvedark-10 cursor-pointer'
 											whileHover={{
 												scale: 1.05,
 												transition: {
@@ -200,7 +200,7 @@ export default function Module() {
 
 												<div className='flex gap-3 justify-start items-center mb-2 last:mb-0'>
 													<Switch.Root
-														className='w-[42px] h-[25px] bg-blacka-6 rounded-full relative shadow-[0_2px_10px] shadow-blacka-4 focus:shadow-[0_0_0_2px] focus:shadow-black data-[state=checked]:bg-black outline-none cursor-default'
+														className='w-[42px] h-[25px] bg-blacka-6 rounded-full relative shadow-[0_2px_10px] shadow-blacka-4 focus:shadow-[0_0_0_2px] focus:shadow-black data-[state=checked]:bg-black outline-hidden cursor-default'
 														defaultChecked={filterQueries.includes('Duração=1')}
 														onCheckedChange={(event => {
 															onFilterChange('Duração=1', event);
@@ -215,7 +215,7 @@ export default function Module() {
 
 												<div className='flex gap-3 justify-start items-center mb-2 last:mb-0'>
 													<Switch.Root
-														className='w-[42px] h-[25px] bg-blacka-6 rounded-full relative shadow-[0_2px_10px] shadow-blacka-4 focus:shadow-[0_0_0_2px] focus:shadow-black data-[state=checked]:bg-black outline-none cursor-default'
+														className='w-[42px] h-[25px] bg-blacka-6 rounded-full relative shadow-[0_2px_10px] shadow-blacka-4 focus:shadow-[0_0_0_2px] focus:shadow-black data-[state=checked]:bg-black outline-hidden cursor-default'
 														defaultChecked={filterQueries.includes('Duração=2')}
 														onCheckedChange={(event => {
 															onFilterChange('Duração=2', event);
@@ -230,7 +230,7 @@ export default function Module() {
 
 												<div className='flex gap-3 justify-start items-center mb-2 last:mb-0'>
 													<Switch.Root
-														className='w-[42px] h-[25px] bg-blacka-6 rounded-full relative shadow-[0_2px_10px] shadow-blacka-4 focus:shadow-[0_0_0_2px] focus:shadow-black data-[state=checked]:bg-black outline-none cursor-default'
+														className='w-[42px] h-[25px] bg-blacka-6 rounded-full relative shadow-[0_2px_10px] shadow-blacka-4 focus:shadow-[0_0_0_2px] focus:shadow-black data-[state=checked]:bg-black outline-hidden cursor-default'
 														defaultChecked={filterQueries.includes('Duração=3')}
 														onCheckedChange={(event => {
 															onFilterChange('Duração=3', event);
@@ -245,7 +245,7 @@ export default function Module() {
 
 												<div className='flex gap-3 justify-start items-center mb-2 last:mb-0'>
 													<Switch.Root
-														className='w-[42px] h-[25px] bg-blacka-6 rounded-full relative shadow-[0_2px_10px] shadow-blacka-4 focus:shadow-[0_0_0_2px] focus:shadow-black data-[state=checked]:bg-black outline-none cursor-default'
+														className='w-[42px] h-[25px] bg-blacka-6 rounded-full relative shadow-[0_2px_10px] shadow-blacka-4 focus:shadow-[0_0_0_2px] focus:shadow-black data-[state=checked]:bg-black outline-hidden cursor-default'
 														defaultChecked={filterQueries.includes('Duração=4')}
 														onCheckedChange={(event => {
 															onFilterChange('Duração=4', event);
@@ -266,7 +266,7 @@ export default function Module() {
 													{tag.tagValues.map(tagValue => (
 														<div key={tagValue} className='flex gap-3 justify-start items-center mb-2 last:mb-0'>
 															<Switch.Root
-																className='w-[42px] h-[25px] bg-blacka-6 rounded-full relative shadow-[0_2px_10px] shadow-blacka-4 focus:shadow-[0_0_0_2px] focus:shadow-black data-[state=checked]:bg-black outline-none cursor-default'
+																className='w-[42px] h-[25px] bg-blacka-6 rounded-full relative shadow-[0_2px_10px] shadow-blacka-4 focus:shadow-[0_0_0_2px] focus:shadow-black data-[state=checked]:bg-black outline-hidden cursor-default'
 																defaultChecked={filterQueries.includes(`${tag.tagOption}=${tagValue}`)}
 																onCheckedChange={(event => {
 																	onFilterChange(`${tag.tagOption}=${tagValue}`, event);

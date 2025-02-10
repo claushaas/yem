@@ -5,7 +5,7 @@ export function HelpButton() {
 	return (
 		<Dialog.Root>
 			<Dialog.Trigger>
-				<div className='fixed bottom-5 right-5 z-40 p-2 dark:bg-mauve-2 bg-mauvedark-2 rounded-full shadow-sm shadow-black dark:shadow-white'>
+				<div className='fixed bottom-5 right-5 z-40 p-2 dark:bg-mauve-2 bg-mauvedark-2 rounded-full shadow-xs shadow-black dark:shadow-white'>
 					<ChatBubbleLeftRightIcon className='size-12 stroke-purple-10'/>
 				</div>
 			</Dialog.Trigger>
@@ -35,7 +35,7 @@ export function HelpButton() {
 					<Dialog.Close asChild>
 						<button
 							type='button'
-							className='absolute top-[5px] right-[5px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center outline-none'
+							className='absolute top-[5px] right-[5px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center outline-hidden'
 							aria-label='Close'
 						>
 							<XMarkIcon aria-label='Close' className='hover:pointer absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px]'/>

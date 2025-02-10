@@ -26,7 +26,7 @@ export default function TermosDeUso() {
 			<NavigateBar userData={userData}/>
 
 			<main className='my-20 max-w-[90%] mx-auto'>
-				<div className='max-w-screen-md'>
+				<div className='max-w-(--breakpoint-md)'>
 					<h1 className='text-3xl text-center'>Termos de Uso</h1>
 					<h2 className='text-2xl my-4'>Objetivo</h2>
 					<p className='my-4'>IMPORTANTE! ESSES TERMOS DE SERVIÇO REGULAM O USO DESTE SITE DISPONIBILIZADO PELO YOGA EM MOVIMENTO. AO ACESSAR A ESSE SITE, VOCÊ ATESTA SEU CONHECIMENTO E CONCORDÂNCIA COM ESSES TERMOS DE USO. ESSES TERMOS DE USO PODEM SER ALTERADOS A QUALQUER TEMPO E SEM AVISO. A UTILIZAÇÃO DESTE SITE APÓS TAIS ALTERAÇÕES ENTREM EM VIGOR CONSTITUI SEU CONHECIMENTO E ACEITAÇÃO DAS MUDANÇAS. POR FAVOR, CONSULTE OS TERMOS DE USO ANTES DE CADA USO PARA AVERIGUAR MODIFICAÇÕES.</p>
