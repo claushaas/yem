@@ -9,7 +9,7 @@ export function Footer() {
 				className='bg-mauve-11 dark:bg-mauvedark-11 data-[orientation=horizontal]:h-px data-[orientation=horizontal]:w-full mb-10'
 				orientation='horizontal'
 			/>
-			<div className='max-w-screen-md flex flex-col justify-center gap-4 items-center'>
+			<div className='max-w-(--breakpoint-md) flex flex-col justify-center gap-4 items-center'>
 				<div className='w-40'>
 					<div className=' inline before:bg-[url("./assets/logo/logo-quadrado-colorido.svg")] before:h-40 before:block before:bg-no-repeat'/>
 				</div>

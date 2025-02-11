@@ -49,9 +49,9 @@ export default function Formacao() {
 				</div>
 			</header>
 			<main>
-				<section id='welcome' className='2xl:max-w-screen-xl max-w-[90%] mx-auto mt-5 flex flex-col items-center'>
+				<section id='welcome' className='2xl:max-w-(--breakpoint-xl) max-w-[90%] mx-auto mt-5 flex flex-col items-center'>
 					<h1 className='text-purple-12 dark:text-purpledark-12 text-xl sm:text-3xl md:text-4xl xl:text-5xl text-center mb-5'>Tudo o que você precisa para se tornar uma Instrutora de Yoga, do Zero aos Primeiros Alunos</h1>
-					<div className='max-w-screen-lg w-full'>
+					<div className='max-w-(--breakpoint-lg) w-full'>
 						<Stream
 							controls
 							autoplay
@@ -76,7 +76,7 @@ export default function Formacao() {
 
 				<Testimonies/>
 
-				<section id='school' className='2xl:max-w-screen-xl max-w-[90%] mx-auto my-20 sm:my-40'>
+				<section id='school' className='2xl:max-w-(--breakpoint-xl) max-w-[90%] mx-auto my-20 sm:my-40'>
 					<h2 className='text-purple-11 text-3xl xs:text-5xl md:text-6xl lg:text-7xl mb-5 text-center'>Conheça a sua Escola</h2>
 					<p className='my-3 font-gothamMedium'>A Yoga em Movimento surgiu em 2010 no interior de São Paulo do sonho de seus fundadores de espargir esse estilo de vida baseado na saúde e no autoconhecimento para cada vez mais pessoas através do yoga.</p>
 					<p className='my-3 font-gothamMedium'>Em 2015 Nossa Escola migrou 100% para o formato online, pois percebemos que essa é a melhor forma de chegar a mais pessoas e de forma acessível!</p>
@@ -85,24 +85,24 @@ export default function Formacao() {
 					<p className='my-3 font-gothamMedium'>Nós conhecemos todos os desafios que envolvem essa carreira e por isso apresentamos este curso de Formação em Yoga, e dividimos a estrutura do curso em 3 pilares essenciais para qualquer professor, que já se dedica a esta carreira ou que ainda vai começar: a Filosofia, o Magistério e a Profissão.</p>
 				</section>
 
-				<section id='summary' className='2xl:max-w-screen-xl max-w-[90%] mx-auto my-20 sm:my-40'>
+				<section id='summary' className='2xl:max-w-(--breakpoint-xl) max-w-[90%] mx-auto my-20 sm:my-40'>
 					<h2 className='text-purple-11 text-3xl xs:text-5xl md:text-6xl lg:text-7xl text-left mb-5'>Formação em Yoga!!</h2>
 					<h3 className='text-xl xs:text-2xl md:text-3xl lg:text-4xl text-purple-8 mb-4'>Não em uma Modalidade de Yoga</h3>
 					<p className='my-3 font-gothamMedium'>Antes de se especializar em alguma modalidade de yoga, é fundamental conhecer os fundamentos gerais do Yoga, sua origem, todas as técnicas e as diversas modalidades (antigas e modernas) que existem.</p>
 					<p className='my-3 font-gothamMedium'>Nossa Formação em Yoga conta com os 3 piolares fundamentais para ter sucesso nessa carreira:</p>
 
 					<div className='flex justify-evenly flex-wrap gap-4 my-10'>
-						<div className='max-w-80 px-7 py-5 rounded-3xl shadow-sm shadow-mauve-11 dark:shadow-mauvedark-3 bg-mauve-4 dark:bg-mauvedark-3 flex flex-col justify-evenly'>
+						<div className='max-w-80 px-7 py-5 rounded-3xl shadow-xs shadow-mauve-11 dark:shadow-mauvedark-3 bg-mauve-4 dark:bg-mauvedark-3 flex flex-col justify-evenly'>
 							<h3 className='text-center text-purple-11'>1 - Filosofia</h3>
 							<p className='font-gothamMedium'>Como surgiu o Yoga e suas modalidades, os textos sagrados, os conceitos fundamentais, as técnicas de meditação, os chakras, a prática de pranayamas, e muito mais.</p>
 						</div>
 
-						<div className='max-w-80 px-7 py-5 rounded-3xl shadow-sm shadow-mauve-11 dark:shadow-mauvedark-3 bg-mauve-4 dark:bg-mauvedark-3 flex flex-col justify-evenly'>
+						<div className='max-w-80 px-7 py-5 rounded-3xl shadow-xs shadow-mauve-11 dark:shadow-mauvedark-3 bg-mauve-4 dark:bg-mauvedark-3 flex flex-col justify-evenly'>
 							<h3 className='text-center text-purple-11'>2 - Magistério</h3>
 							<p className='font-gothamMedium'>Seja a ponte entre o Yoga e seu aluno: como montar uma aula, como corrigir os alunos, como lidar com as dificuldades, como lidar com os alunos, como lidar com as emoções, ou seja, como ministrar aulas.</p>
 						</div>
 
-						<div className='max-w-80 px-7 py-5 rounded-3xl shadow-sm shadow-mauve-11 dark:shadow-mauvedark-3 bg-mauve-4 dark:bg-mauvedark-3 flex flex-col justify-evenly'>
+						<div className='max-w-80 px-7 py-5 rounded-3xl shadow-xs shadow-mauve-11 dark:shadow-mauvedark-3 bg-mauve-4 dark:bg-mauvedark-3 flex flex-col justify-evenly'>
 							<h3 className='text-center text-purple-11'>3 - Profissão</h3>
 							<p className='font-gothamMedium'>Trabalhar com Yoga: como se tornar um profissional de sucesso, montar um estúdio, divulgar seu trabalho; como se tornar um professor de Yoga online... Como planejar, divulgar e matricular os seus alunos.</p>
 						</div>
@@ -121,7 +121,7 @@ export default function Formacao() {
 					</div>
 				</section>
 
-				<section id='target' className='2xl:max-w-screen-xl max-w-[90%] mx-auto my-20 sm:my-40'>
+				<section id='target' className='2xl:max-w-(--breakpoint-xl) max-w-[90%] mx-auto my-20 sm:my-40'>
 					<h2 className='text-purple-11 text-3xl xs:text-5xl md:text-6xl lg:text-7xl mb-5 text-center'>Para quem é?</h2>
 
 					<p className='my-3 font-gothamMedium'><span className='font-gothamBold text-purple-8'>Para quem quer ser Professor de Yoga</span> e entende a importância de não só aprender sobre a filosofia e o magistério do Yoga, mas também quer ter sucesso nesta carreira</p>
@@ -129,7 +129,7 @@ export default function Formacao() {
 					<p className='my-3 font-gothamMedium'><span className='font-gothamBold text-purple-8'>Para quem não quer ser Professor de Yoga</span> e percebeu que chegou num estágio da prática em que sente necessidade de se aprofundar na filosofia do Yoga para consolidar o aprendizado que obteve através da prática</p>
 				</section>
 
-				<section id='prerequisites' className='2xl:max-w-screen-xl max-w-[90%] mx-auto my-20 sm:my-40'>
+				<section id='prerequisites' className='2xl:max-w-(--breakpoint-xl) max-w-[90%] mx-auto my-20 sm:my-40'>
 					<h2 className='text-purple-11 text-3xl xs:text-5xl md:text-6xl lg:text-7xl mb-5 text-center'>Quais são os Pré-Requisitos para Participar?</h2>
 
 					<p className='my-3 font-gothamMedium'>Apenas a vontade de aprender e compartilhar esta incrível Filosofia de Vida Prática.</p>
@@ -149,7 +149,7 @@ export default function Formacao() {
 					</div>
 				</section>
 
-				<section id='bonus' className='2xl:max-w-screen-xl max-w-[90%] mx-auto my-20 sm:my-40'>
+				<section id='bonus' className='2xl:max-w-(--breakpoint-xl) max-w-[90%] mx-auto my-20 sm:my-40'>
 					<h2 className='text-purple-11 text-3xl xs:text-5xl md:text-6xl lg:text-7xl mb-5 text-center'>Bônus Gratuitos</h2>
 
 					<p className='font-gothamMedium'>Diversos conteúdos e conhecimentos são enriquecedores para o Professor de Yoga, embora não sejam fundamentais na sua formação. Para formar profissionais completos e que possam entrar no mercado de trabalho com segurança, oferecemos diversos bônus inteiramente gratuitos em nosso curso. Estes conteúdos são acessíveis apenas através deste curso e não estão disponíveis de nenhuma outra forma</p>
@@ -276,7 +276,7 @@ export default function Formacao() {
 					</div>
 				</section>
 
-				<section id='platform' className='max-w-[95%] sm:max-w-[90%] lg:max-w-screen-lg mx-auto my-20 sm:my-40 flex flex-col items-center gap-12'>
+				<section id='platform' className='max-w-[95%] sm:max-w-[90%] lg:max-w-(--breakpoint-lg) mx-auto my-20 sm:my-40 flex flex-col items-center gap-12'>
 					<h1 className='text-center text-amber-11 text-3xl xs:text-5xl'>A Plataforma da Yoga em Movimento evoluiu e foi repensada especialmente para a prática do Yoga</h1>
 
 					<div className='flex justify-center gap-4 flex-wrap'>
@@ -319,16 +319,16 @@ export default function Formacao() {
 					</div>
 				</section>
 
-				<section id='support' className='max-w-[95%] sm:max-w-[90%] lg:max-w-screen-lg mx-auto my-20 sm:my-40'>
+				<section id='support' className='max-w-[95%] sm:max-w-[90%] lg:max-w-(--breakpoint-lg) mx-auto my-20 sm:my-40'>
 					<h1 className='text-sky-12 dark:text-sky-10 mb-5 text-3xl xs:text-5xl md:text-6xl lg:text-7xl'>Você sempre terá acompanhamento!</h1>
 					<h2 className='text-sky-11 text-2xl xs:text-4xl md:text-5xl lg:text-6xl'>Você pode conversar diretamente com nossos professores pelo whatsapp ou telegram para tirar suas dúvidas</h2>
 					<p className='font-gothamMedium'>Além disso, você contará com o feedback dos professores em todas as suas tarefas até o momento em que estiver pronta para as avaliações finais.</p>
 				</section>
 
-				<section id='content' className='2xl:max-w-screen-xl max-w-[90%] mx-auto my-20 sm:my-40'>
+				<section id='content' className='2xl:max-w-(--breakpoint-xl) max-w-[90%] mx-auto my-20 sm:my-40'>
 					<h2 className='text-purple-11 text-3xl xs:text-5xl md:text-6xl lg:text-7xl mb-5 text-center'>O Que Você Vai Receber ao se Matricular</h2>
 
-					<div className='max-w-screen-md w-full mx-auto px-7 py-5 rounded-3xl shadow-sm shadow-mauve-11 dark:shadow-mauvedark-3 bg-mauve-4 dark:bg-mauvedark-3 flex flex-col justify-evenly gap-5'>
+					<div className='max-w-(--breakpoint-md) w-full mx-auto px-7 py-5 rounded-3xl shadow-xs shadow-mauve-11 dark:shadow-mauvedark-3 bg-mauve-4 dark:bg-mauvedark-3 flex flex-col justify-evenly gap-5'>
 						<FormationContentCard
 							title='Módulos de Filosofia'
 							description='com tudo o que você precisa entender sobre Yoga'
@@ -381,12 +381,12 @@ export default function Formacao() {
 					</div>
 				</section>
 
-				<section id='investment' className='2xl:max-w-screen-xl max-w-[90%] mx-auto mt-20 mb-10 sm:mt-40'>
+				<section id='investment' className='2xl:max-w-(--breakpoint-xl) max-w-[90%] mx-auto mt-20 mb-10 sm:mt-40'>
 					<h1 className='text-purple-11 dark:text-purpledark-11 text-3xl xs:text-5xl md:text-6xl lg:text-7xl mb-5 text-center'>Investimento</h1>
 
 					<h2 className='text-purple-12 dark:text-purpledark-12 text-center'>De R$ <span className='line-through'>5.980,00</span> por apenas 12x de 97,00 por ano</h2>
 
-					<div className='max-w-screen-md mx-auto'>
+					<div className='max-w-(--breakpoint-md) mx-auto'>
 						<p className='font-gothamMedium mb-3 text-center'>O valor da matrícula em nosso curso curso é R$ 5.980,00. Entendemos que o momento atual não permite que muitas pessoas possam participar de cursos tão completos como o nosso.</p>
 						<p className='font-gothamMedium mb-3 text-center'>Por isso resolvemos criar uma alternativa de matrícula no formato de assinatura, com duração de 1 ano e valor anual de R$ 1.164,00, ou seja, R$ 97,00 por mês.</p>
 						<p className='font-gothamMedium mb-3 text-center'>Você pode cancelar a renovação da anuidade quando quiser.</p>
@@ -408,8 +408,8 @@ export default function Formacao() {
 					</div>
 				</section>
 
-				<section id='guarantee' className='2xl:max-w-screen-xl max-w-[90%] mx-auto mt-10 mb-20 sm:mb-40'>
-					<div className='flex max-w-screen-md gap-4 items-center mx-auto flex-wrap sm:flex-nowrap justify-center'>
+				<section id='guarantee' className='2xl:max-w-(--breakpoint-xl) max-w-[90%] mx-auto mt-10 mb-20 sm:mb-40'>
+					<div className='flex max-w-(--breakpoint-md) gap-4 items-center mx-auto flex-wrap sm:flex-nowrap justify-center'>
 						<div className='shrink-0'>
 							<Image
 								className='w-full h-full'
@@ -428,13 +428,13 @@ export default function Formacao() {
 					</div>
 				</section>
 
-				<section id='curriculum' className='2xl:max-w-screen-xl max-w-[90%] mx-auto my-20 sm:my-40'>
+				<section id='curriculum' className='2xl:max-w-(--breakpoint-xl) max-w-[90%] mx-auto my-20 sm:my-40'>
 					<h2 className='text-purple-11 dark:text-purpledark-11 text-3xl xs:text-5xl md:text-6xl lg:text-7xl mb-5 text-center'>Conteúdo do Curso</h2>
 
 					<p className='text-center font-gothamMedium'>Nosso Curso está divido em 3 pilares fundamentais, que são 3 grandes módulos, abaixo estão o conteúdo e o motivo de cada um:</p>
 
 					<div className='flex gap-5 flex-wrap mt-5 justify-center'>
-						<div className='w-96 rounded-3xl shadow-sm shadow-mauve-11 dark:shadow-mauvedark-3 bg-mauve-4 dark:bg-mauvedark-3 py-4 px-5'>
+						<div className='w-96 rounded-3xl shadow-xs shadow-mauve-11 dark:shadow-mauvedark-3 bg-mauve-4 dark:bg-mauvedark-3 py-4 px-5'>
 							<h3 className='text-purple-11 dark:text-purpledark-11 text-center'>I - Filosofia</h3>
 
 							<p className='mb-4 font-gothamMedium'>Você precisa conhecer a filosofia do Yoga. Isso significa conhecer o contexto cronológico e cultural do Yoga. Entender os conceitos filosóficos e práticos das técnicas, como funcionam, o que proporcionam ao praticante:</p>
@@ -507,7 +507,7 @@ export default function Formacao() {
 							</div>
 						</div>
 
-						<div className='w-96 rounded-3xl shadow-sm shadow-mauve-11 dark:shadow-mauvedark-3 bg-mauve-4 dark:bg-mauvedark-3 py-4 px-5'>
+						<div className='w-96 rounded-3xl shadow-xs shadow-mauve-11 dark:shadow-mauvedark-3 bg-mauve-4 dark:bg-mauvedark-3 py-4 px-5'>
 							<h3 className='text-purple-11 dark:text-purpledark-11 text-center'>II - Magistério</h3>
 
 							<p className='mb-4 font-gothamMedium'>Se você não souber como transmitir seus conhecimentos aos seus alunos, seu futuro como Professora não será muito bom. Apenas com uma boa didática e pedagogia é que você conseguirá ser a ponte entre o seu aluno e a filosofia do Yoga. Precisa saber ensinar o Yoga:</p>
@@ -566,7 +566,7 @@ export default function Formacao() {
 							</div>
 						</div>
 
-						<div className='w-96 rounded-3xl shadow-sm shadow-mauve-11 dark:shadow-mauvedark-3 bg-mauve-4 dark:bg-mauvedark-3 py-4 px-5'>
+						<div className='w-96 rounded-3xl shadow-xs shadow-mauve-11 dark:shadow-mauvedark-3 bg-mauve-4 dark:bg-mauvedark-3 py-4 px-5'>
 							<h3 className='text-purple-11 dark:text-purpledark-11 text-center'>III - Profissão</h3>
 
 							<p className='mb-4 font-gothamMedium'>Não queremos apenas te formar, queremos que você tenha sucesso nesta carreira. Vamos te ensinar como iniciar esta carreira, como se formalizar, como planejar, divulgar e matricular os seus alunos, e por aí vai:</p>
@@ -609,7 +609,7 @@ export default function Formacao() {
 					</div>
 				</section>
 
-				<section id='faq' className='2xl:max-w-screen-xl max-w-[90%] mx-auto my-20 sm:my-40'>
+				<section id='faq' className='2xl:max-w-(--breakpoint-xl) max-w-[90%] mx-auto my-20 sm:my-40'>
 					<h2 className='text-purple-11 dark:text-purpledark-11 text-3xl xs:text-5xl md:text-6xl lg:text-7xl mb-5 text-center'>Perguntas Frequentes</h2>
 
 					<Accordion.Root collapsible type='single' defaultValue='1' className='rounded-xl'>

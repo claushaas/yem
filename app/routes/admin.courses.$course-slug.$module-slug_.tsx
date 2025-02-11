@@ -238,7 +238,7 @@ export default function Module() {
 				<Dialog.Portal>
 					<Dialog.Overlay className='bg-mauvea-12 fixed inset-0'/>
 
-					<Dialog.Content className='fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] p-4 max-w-screen-lg w-[90%] bg-mauve-2 dark:bg-mauvedark-2 rounded-xl overflow-y-auto max-h-[90%]'>
+					<Dialog.Content className='fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] p-4 max-w-(--breakpoint-lg) w-[90%] bg-mauve-2 dark:bg-mauvedark-2 rounded-xl overflow-y-auto max-h-[90%]'>
 						<Dialog.Title asChild>
 							<h1 className='mb-4'>
 								{`Editar o Módulo ${module.module.name}`}
@@ -260,7 +260,7 @@ export default function Module() {
 											disabled={isSubmittingAnyForm}
 											type='text'
 											min={8}
-											className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
+											className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-hidden'
 										/>
 									</RadixForm.Control>
 								</RadixForm.Field>
@@ -278,7 +278,7 @@ export default function Module() {
 											disabled={isSubmittingAnyForm}
 											type='text'
 											min={8}
-											className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
+											className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-hidden'
 										/>
 									</RadixForm.Control>
 								</RadixForm.Field>
@@ -296,7 +296,7 @@ export default function Module() {
 											disabled={isSubmittingAnyForm}
 											type='text'
 											min={8}
-											className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
+											className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-hidden'
 										/>
 									</RadixForm.Control>
 								</RadixForm.Field>
@@ -351,7 +351,7 @@ export default function Module() {
 											disabled={isSubmittingAnyForm}
 											type='text'
 											min={3}
-											className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
+											className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-hidden'
 										/>
 									</RadixForm.Control>
 								</RadixForm.Field>
@@ -368,7 +368,7 @@ export default function Module() {
 											disabled={isSubmittingAnyForm}
 											type='text'
 											min={3}
-											className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
+											className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-hidden'
 										/>
 									</RadixForm.Control>
 								</RadixForm.Field>
@@ -386,7 +386,7 @@ export default function Module() {
 											disabled={isSubmittingAnyForm}
 											type='text'
 											min={3}
-											className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
+											className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-hidden'
 										/>
 									</RadixForm.Control>
 								</RadixForm.Field>
@@ -401,7 +401,7 @@ export default function Module() {
 										<Switch.Root
 											defaultChecked={module.module.isLessonsOrderRandom}
 											disabled={isSubmittingAnyForm}
-											className='w-[42px] h-[25px] bg-blacka-6 rounded-full relative shadow-[0_2px_10px] shadow-blacka-4 focus:shadow-[0_0_0_2px] focus:shadow-black data-[state=checked]:bg-black outline-none cursor-default'
+											className='w-[42px] h-[25px] bg-blacka-6 rounded-full relative shadow-[0_2px_10px] shadow-blacka-4 focus:shadow-[0_0_0_2px] focus:shadow-black data-[state=checked]:bg-black outline-hidden cursor-default'
 										>
 											<Switch.Thumb
 												className='block w-[21px] h-[21px] bg-white rounded-full shadow-[0_2px_2px] shadow-blackA4 transition-transform duration-100 translate-x-0.5 will-change-transform data-[state=checked]:translate-x-[19px]'
@@ -420,7 +420,7 @@ export default function Module() {
 										<Switch.Root
 											defaultChecked={module.module.showTagsFilters}
 											disabled={isSubmittingAnyForm}
-											className='w-[42px] h-[25px] bg-blacka-6 rounded-full relative shadow-[0_2px_10px] shadow-blacka-4 focus:shadow-[0_0_0_2px] focus:shadow-black data-[state=checked]:bg-black outline-none cursor-default'
+											className='w-[42px] h-[25px] bg-blacka-6 rounded-full relative shadow-[0_2px_10px] shadow-blacka-4 focus:shadow-[0_0_0_2px] focus:shadow-black data-[state=checked]:bg-black outline-hidden cursor-default'
 										>
 											<Switch.Thumb
 												className='block w-[21px] h-[21px] bg-white rounded-full shadow-[0_2px_2px] shadow-blackA4 transition-transform duration-100 translate-x-0.5 will-change-transform data-[state=checked]:translate-x-[19px]'
@@ -461,7 +461,7 @@ export default function Module() {
 						<Dialog.Close asChild>
 							<button
 								type='button'
-								className='absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center outline-none'
+								className='absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center outline-hidden'
 								aria-label='Close'
 							>
 								<XMarkIcon aria-label='Close' className='hover:pointer absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px]'/>
@@ -478,7 +478,7 @@ export default function Module() {
 				{module.module.content && (
 					<>
 						<h2>Conteúdo do Módulo:</h2>
-						<ContentConverter content={module.module.content} className='p-4 rounded-lg border-2 border-mauve-6 dark:border-mauvedark-6 max-w-screen-lg'/>
+						<ContentConverter content={module.module.content} className='p-4 rounded-lg border-2 border-mauve-6 dark:border-mauvedark-6 max-w-(--breakpoint-lg)'/>
 					</>
 				)}
 			</div>
@@ -501,7 +501,7 @@ export default function Module() {
 						<Dialog.Portal>
 							<Dialog.Overlay className='bg-mauvea-12 fixed inset-0'/>
 
-							<Dialog.Content className='fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] p-4 max-w-screen-lg w-[90%] bg-mauve-2 dark:bg-mauvedark-2 rounded-xl overflow-y-auto max-h-[90%]'>
+							<Dialog.Content className='fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] p-4 max-w-(--breakpoint-lg) w-[90%] bg-mauve-2 dark:bg-mauvedark-2 rounded-xl overflow-y-auto max-h-[90%]'>
 								<Dialog.Title asChild>
 									<h1 className='mb-4'>
 										Adicionar Nova Aula
@@ -522,7 +522,7 @@ export default function Module() {
 													disabled={isSubmittingAnyForm}
 													type='text'
 													min={8}
-													className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
+													className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-hidden'
 												/>
 											</RadixForm.Control>
 										</RadixForm.Field>
@@ -539,7 +539,7 @@ export default function Module() {
 													disabled={isSubmittingAnyForm}
 													type='text'
 													min={8}
-													className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
+													className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-hidden'
 												/>
 											</RadixForm.Control>
 										</RadixForm.Field>
@@ -556,7 +556,7 @@ export default function Module() {
 													disabled={isSubmittingAnyForm}
 													type='text'
 													min={8}
-													className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
+													className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-hidden'
 												/>
 											</RadixForm.Control>
 										</RadixForm.Field>
@@ -569,7 +569,7 @@ export default function Module() {
 											</div>
 											<RadixSelect.Root name='type'>
 												<RadixSelect.Trigger
-													className='inline-flex items-center justify-center rounded px-[15px] text-[13px] leading-none h-[35px] gap-[5px] bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 shadow-[0_2px_10px] shadow-black/10 hover:bg-mauve3 focus:shadow-[0_0_0_2px] focus:shadow-black data-[placeholder]:text-violet9 outline-none'
+													className='inline-flex items-center justify-center rounded-sm px-[15px] text-[13px] leading-none h-[35px] gap-[5px] bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 shadow-[0_2px_10px] shadow-black/10 hover:bg-mauve3 focus:shadow-[0_0_0_2px] focus:shadow-black data-placeholder:text-violet9 outline-hidden'
 													aria-label='Tipo da aula'
 												>
 													<RadixSelect.Value placeholder='Escolha o tipo da aula'/>
@@ -587,7 +587,7 @@ export default function Module() {
 														<RadixSelect.Viewport className='p-[5px]'>
 															<RadixSelect.Group>
 
-																<RadixSelect.SelectItem value='video' className='text-[13px] leading-none text-violet11 rounded-[3px] flex items-center h-[25px] pr-[35px] pl-[25px] relative select-none data-[disabled]:text-mauve8 data-[disabled]:pointer-events-none data-[highlighted]:outline-none data-[highlighted]:bg-violet9 data-[highlighted]:text-violet1'>
+																<RadixSelect.SelectItem value='video' className='text-[13px] leading-none text-violet11 rounded-[3px] flex items-center h-[25px] pr-[35px] pl-[25px] relative select-none data-disabled:text-mauve8 data-disabled:pointer-events-none data-highlighted:outline-hidden data-highlighted:bg-violet9 data-highlighted:text-violet1'>
 																	<RadixSelect.SelectItemText>
 																		<p>Vídeo</p>
 																	</RadixSelect.SelectItemText>
@@ -596,7 +596,7 @@ export default function Module() {
 																	</RadixSelect.ItemIndicator>
 																</RadixSelect.SelectItem>
 
-																<RadixSelect.SelectItem value='text' className='text-[13px] leading-none text-violet11 rounded-[3px] flex items-center h-[25px] pr-[35px] pl-[25px] relative select-none data-[disabled]:text-mauve8 data-[disabled]:pointer-events-none data-[highlighted]:outline-none data-[highlighted]:bg-violet9 data-[highlighted]:text-violet1'>
+																<RadixSelect.SelectItem value='text' className='text-[13px] leading-none text-violet11 rounded-[3px] flex items-center h-[25px] pr-[35px] pl-[25px] relative select-none data-disabled:text-mauve8 data-disabled:pointer-events-none data-highlighted:outline-hidden data-highlighted:bg-violet9 data-highlighted:text-violet1'>
 																	<RadixSelect.SelectItemText>
 																		<p>Texto</p>
 																	</RadixSelect.SelectItemText>
@@ -605,7 +605,7 @@ export default function Module() {
 																	</RadixSelect.ItemIndicator>
 																</RadixSelect.SelectItem>
 
-																<RadixSelect.SelectItem value='courseWare' className='text-[13px] leading-none text-violet11 rounded-[3px] flex items-center h-[25px] pr-[35px] pl-[25px] relative select-none data-[disabled]:text-mauve8 data-[disabled]:pointer-events-none data-[highlighted]:outline-none data-[highlighted]:bg-violet9 data-[highlighted]:text-violet1'>
+																<RadixSelect.SelectItem value='courseWare' className='text-[13px] leading-none text-violet11 rounded-[3px] flex items-center h-[25px] pr-[35px] pl-[25px] relative select-none data-disabled:text-mauve8 data-disabled:pointer-events-none data-highlighted:outline-hidden data-highlighted:bg-violet9 data-highlighted:text-violet1'>
 																	<RadixSelect.SelectItemText>
 																		<p>Material Didático</p>
 																	</RadixSelect.SelectItemText>
@@ -674,7 +674,7 @@ export default function Module() {
 													disabled={isSubmittingAnyForm}
 													type='text'
 													min={3}
-													className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
+													className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-hidden'
 												/>
 											</RadixForm.Control>
 										</RadixForm.Field>
@@ -690,7 +690,7 @@ export default function Module() {
 													disabled={isSubmittingAnyForm}
 													type='text'
 													min={3}
-													className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
+													className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-hidden'
 												/>
 											</RadixForm.Control>
 										</RadixForm.Field>
@@ -705,7 +705,7 @@ export default function Module() {
 												<input
 													disabled={isSubmittingAnyForm}
 													type='number'
-													className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
+													className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-hidden'
 												/>
 											</RadixForm.Control>
 										</RadixForm.Field>
@@ -722,7 +722,7 @@ export default function Module() {
 													disabled={isSubmittingAnyForm}
 													type='text'
 													min={3}
-													className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
+													className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-hidden'
 												/>
 											</RadixForm.Control>
 										</RadixForm.Field>
@@ -784,7 +784,7 @@ export default function Module() {
 													disabled={isSubmittingAnyForm}
 													type='datetime-local'
 													min={3}
-													className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
+													className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-hidden'
 												/>
 											</RadixForm.Control>
 										</RadixForm.Field>
@@ -798,7 +798,7 @@ export default function Module() {
 											<RadixForm.Control asChild>
 												<Switch.Root
 													disabled={isSubmittingAnyForm}
-													className='w-[42px] h-[25px] bg-blacka-6 rounded-full relative shadow-[0_2px_10px] shadow-blacka-4 focus:shadow-[0_0_0_2px] focus:shadow-black data-[state=checked]:bg-black outline-none cursor-default'
+													className='w-[42px] h-[25px] bg-blacka-6 rounded-full relative shadow-[0_2px_10px] shadow-blacka-4 focus:shadow-[0_0_0_2px] focus:shadow-black data-[state=checked]:bg-black outline-hidden cursor-default'
 												>
 													<Switch.Thumb
 														className='block w-[21px] h-[21px] bg-white rounded-full shadow-[0_2px_2px] shadow-blackA4 transition-transform duration-100 translate-x-0.5 will-change-transform data-[state=checked]:translate-x-[19px]'
@@ -818,7 +818,7 @@ export default function Module() {
 													required
 													disabled={isSubmittingAnyForm}
 													type='text'
-													className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
+													className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-hidden'
 												/>
 											</RadixForm.Control>
 										</RadixForm.Field>
@@ -835,7 +835,7 @@ export default function Module() {
 								<Dialog.Close asChild>
 									<button
 										type='button'
-										className='absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center outline-none'
+										className='absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center outline-hidden'
 										aria-label='Close'
 									>
 										<XMarkIcon aria-label='Close' className='hover:pointer absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px]'/>
@@ -859,7 +859,7 @@ export default function Module() {
 						<Dialog.Portal>
 							<Dialog.Overlay className='bg-mauvea-12 fixed inset-0'/>
 
-							<Dialog.Content className='fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] p-4 max-w-screen-lg w-[90%] bg-mauve-2 dark:bg-mauvedark-2 rounded-xl overflow-y-auto max-h-[90%]'>
+							<Dialog.Content className='fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] p-4 max-w-(--breakpoint-lg) w-[90%] bg-mauve-2 dark:bg-mauvedark-2 rounded-xl overflow-y-auto max-h-[90%]'>
 								<Dialog.Title asChild>
 									<h1 className='mb-4'>
 										Adicionar Aula Existente
@@ -904,7 +904,7 @@ export default function Module() {
 													disabled={isSubmittingAnyForm}
 													type='datetime-local'
 													min={3}
-													className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
+													className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-hidden'
 												/>
 											</RadixForm.Control>
 										</RadixForm.Field>
@@ -918,7 +918,7 @@ export default function Module() {
 											<RadixForm.Control asChild>
 												<Switch.Root
 													disabled={isSubmittingAnyForm}
-													className='w-[42px] h-[25px] bg-blacka-6 rounded-full relative shadow-[0_2px_10px] shadow-blacka-4 focus:shadow-[0_0_0_2px] focus:shadow-black data-[state=checked]:bg-black outline-none cursor-default'
+													className='w-[42px] h-[25px] bg-blacka-6 rounded-full relative shadow-[0_2px_10px] shadow-blacka-4 focus:shadow-[0_0_0_2px] focus:shadow-black data-[state=checked]:bg-black outline-hidden cursor-default'
 												>
 													<Switch.Thumb
 														className='block w-[21px] h-[21px] bg-white rounded-full shadow-[0_2px_2px] shadow-blackA4 transition-transform duration-100 translate-x-0.5 will-change-transform data-[state=checked]:translate-x-[19px]'
@@ -938,7 +938,7 @@ export default function Module() {
 													required
 													disabled={isSubmittingAnyForm}
 													type='text'
-													className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
+													className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-hidden'
 												/>
 											</RadixForm.Control>
 										</RadixForm.Field>
@@ -975,7 +975,7 @@ export default function Module() {
 								<Dialog.Close asChild>
 									<button
 										type='button'
-										className='absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center outline-none'
+										className='absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center outline-hidden'
 										aria-label='Close'
 									>
 										<XMarkIcon aria-label='Close' className='hover:pointer absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px]'/>

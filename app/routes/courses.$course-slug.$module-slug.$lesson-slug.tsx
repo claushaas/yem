@@ -123,7 +123,7 @@ export default function Lesson() {
 					[`/courses/${course.slug}/${module.slug}`, module.name], // Module
 					[`/courses/${course.slug}/${module.slug}/${lesson.lessonSlug}`, lesson.lesson.name], // Lesson
 				]}/>
-				<div className='w-full max-w-screen-lg mx-auto'>
+				<div className='w-full max-w-(--breakpoint-lg) mx-auto'>
 					<Suspense fallback={<YemSpinner/>}>
 						<Await resolve={userLessonActivity}>
 							{userLessonActivity => userLessonActivity.data.completed !== undefined && (
@@ -142,7 +142,7 @@ export default function Lesson() {
 												</Tooltip.Trigger>
 
 												<Tooltip.Portal>
-													<Tooltip.Content sideOffset={5} className='bg-mauve-5 dark:bg-mauvedark-5 px-4 py-3 rounded-2xl shadow-sm shadow-mauve-8 dark:shadow-mauvedark-8'>
+													<Tooltip.Content sideOffset={5} className='bg-mauve-5 dark:bg-mauvedark-5 px-4 py-3 rounded-2xl shadow-xs shadow-mauve-8 dark:shadow-mauvedark-8'>
 														{userLessonActivity.data?.completed ? <p>Remover Aula Feita</p> : <p>Completar Aula</p>}
 														<Tooltip.Arrow className='fill-mauve-5 stroke-none'/>
 													</Tooltip.Content>
@@ -159,7 +159,7 @@ export default function Lesson() {
 												</Tooltip.Trigger>
 
 												<Tooltip.Portal>
-													<Tooltip.Content sideOffset={5} className='bg-mauve-5 dark:bg-mauvedark-5 px-4 py-3 rounded-2xl shadow-sm shadow-mauve-8 dark:shadow-mauvedark-8'>
+													<Tooltip.Content sideOffset={5} className='bg-mauve-5 dark:bg-mauvedark-5 px-4 py-3 rounded-2xl shadow-xs shadow-mauve-8 dark:shadow-mauvedark-8'>
 														{userLessonActivity.data?.saved ? <p>Remover Aula Salva</p> : <p>Salvar Aula</p>}
 														<Tooltip.Arrow className='fill-mauve-5 stroke-none'/>
 													</Tooltip.Content>
@@ -176,7 +176,7 @@ export default function Lesson() {
 												</Tooltip.Trigger>
 
 												<Tooltip.Portal>
-													<Tooltip.Content sideOffset={5} className='bg-mauve-5 dark:bg-mauvedark-5 px-4 py-3 rounded-2xl shadow-sm shadow-mauve-8 dark:shadow-mauvedark-8'>
+													<Tooltip.Content sideOffset={5} className='bg-mauve-5 dark:bg-mauvedark-5 px-4 py-3 rounded-2xl shadow-xs shadow-mauve-8 dark:shadow-mauvedark-8'>
 														{userLessonActivity.data?.favorited ? <p>Remover Aula Favorita</p> : <p>Favoritar Aula</p>}
 														<Tooltip.Arrow className='fill-mauve-5 stroke-none'/>
 													</Tooltip.Content>

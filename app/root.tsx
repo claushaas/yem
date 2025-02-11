@@ -13,7 +13,7 @@ import nProgressStyles from 'nprogress/nprogress.css?url';
 import {useEffect, useMemo} from 'react';
 import {useIsBot} from './hooks/use-is-bot.hook.js';
 import {HelpButton} from './components/help-button.js';
-import styles from '~/tailwind.css?url';
+import styles from '~/app.css?url';
 import {Footer} from '~/components/footer.js';
 
 export const links: LinksFunction = () => [

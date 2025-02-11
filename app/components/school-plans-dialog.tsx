@@ -21,12 +21,12 @@ export default function SchoolPlansDialog({isOpen, onOpenChange}: SchoolPlansDia
 			<Dialog.Portal>
 				<Dialog.Overlay className='bg-mauvea-12 fixed inset-0'/>
 
-				<Dialog.Content className='fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] p-4 max-w-screen-md w-[99%] xs:w-[95%] sm:w-[90%] bg-mauve-2 dark:bg-mauvedark-2 rounded-xl overflow-y-auto max-h-[90%]'>
+				<Dialog.Content className='fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] p-4 max-w-(--breakpoint-md) w-[99%] xs:w-[95%] sm:w-[90%] bg-mauve-2 dark:bg-mauvedark-2 rounded-xl overflow-y-auto max-h-[90%]'>
 					<div className='flex flex-col gap-5 items-center'>
 						<h1 className='text-center'>Escolha seu plano e comece agora mesmo:</h1>
 
 						<div className='flex justify-center gap-8 flex-wrap'>
-							<div className='basis-80 p-4 bg-purplea-4 rounded-2xl shadow-sm shadow-purple-12 dark:shadow-purpledark-12 flex flex-col justify-around'>
+							<div className='basis-80 p-4 bg-purplea-4 rounded-2xl shadow-xs shadow-purple-12 dark:shadow-purpledark-12 flex flex-col justify-around'>
 								<div>
 									<h2 className='text-center'>Mensal</h2>
 									<div className='flex justify-start gap-1 items-center mb-1'>
@@ -80,7 +80,7 @@ export default function SchoolPlansDialog({isOpen, onOpenChange}: SchoolPlansDia
 								</div>
 							</div>
 
-							<div className='basis-80 p-4 bg-purplea-4 rounded-2xl shadow-sm shadow-purple-12 dark:shadow-purpledark-12 flex flex-col justify-around gap-5'>
+							<div className='basis-80 p-4 bg-purplea-4 rounded-2xl shadow-xs shadow-purple-12 dark:shadow-purpledark-12 flex flex-col justify-around gap-5'>
 								<div>
 									<h1 className='text-center'>Anual</h1>
 
@@ -164,7 +164,7 @@ export default function SchoolPlansDialog({isOpen, onOpenChange}: SchoolPlansDia
 					<Dialog.Close asChild>
 						<button
 							type='button'
-							className='absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center outline-none'
+							className='absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center outline-hidden'
 							aria-label='Close'
 						>
 							<XMarkIcon aria-label='Close' className='hover:pointer absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px]'/>

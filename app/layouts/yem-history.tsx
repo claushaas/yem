@@ -1,7 +1,7 @@
 export function History() {
 	return (
 		<section id='history' className='my-20 sm:my-40 max-w-[95%] sm:max-w-[90%] mx-auto flex justify-center'>
-			<div className='max-w-screen-lg w-full'>
+			<div className='max-w-(--breakpoint-lg) w-full'>
 				<h1 className='text-purple-11 text-3xl xs:text-5xl md:text-6xl lg:text-7xl text-left mb-5'>Yoga é para Todas Pessoas!</h1>
 				<h2 className='text-xl xs:text-2xl md:text-3xl lg:text-4xl text-purple-8 mb-4'>É nisso que acreditamos. É por isso que existimos.</h2>
 				<p className='my-3 font-gothamMedium'>O Yoga em Movimento surgiu em 2010 no interior de São Paulo, do sonho de seus fundadores de espargir esse estilo de vida baseado na saúde e no autoconhecimento para cada vez mais pessoas.</p>

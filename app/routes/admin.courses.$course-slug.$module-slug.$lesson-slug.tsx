@@ -217,7 +217,7 @@ export default function Lesson() {
 				<Dialog.Portal>
 					<Dialog.Overlay className='bg-mauvea-12 fixed inset-0'/>
 
-					<Dialog.Content className='fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] p-4 max-w-screen-lg w-[90%] bg-mauve-2 dark:bg-mauvedark-2 rounded-xl overflow-y-auto max-h-[90%]'>
+					<Dialog.Content className='fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] p-4 max-w-(--breakpoint-lg) w-[90%] bg-mauve-2 dark:bg-mauvedark-2 rounded-xl overflow-y-auto max-h-[90%]'>
 						<Dialog.Title asChild>
 							<h1 className='mb-4'>
 								{`Editar a Aula ${lesson.lesson.name}`}
@@ -239,7 +239,7 @@ export default function Lesson() {
 											disabled={isSubmittingAnyForm}
 											type='text'
 											min={8}
-											className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
+											className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-hidden'
 										/>
 									</RadixForm.Control>
 								</RadixForm.Field>
@@ -257,7 +257,7 @@ export default function Lesson() {
 											disabled={isSubmittingAnyForm}
 											type='text'
 											min={8}
-											className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
+											className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-hidden'
 										/>
 									</RadixForm.Control>
 								</RadixForm.Field>
@@ -275,7 +275,7 @@ export default function Lesson() {
 											disabled={isSubmittingAnyForm}
 											type='text'
 											min={8}
-											className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
+											className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-hidden'
 										/>
 									</RadixForm.Control>
 								</RadixForm.Field>
@@ -288,7 +288,7 @@ export default function Lesson() {
 									</div>
 									<RadixSelect.Root name='type' defaultValue={lesson.lesson.type}>
 										<RadixSelect.Trigger
-											className='inline-flex items-center justify-center rounded px-[15px] text-[13px] leading-none h-[35px] gap-[5px] bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 shadow-[0_2px_10px] shadow-black/10 hover:bg-mauve3 focus:shadow-[0_0_0_2px] focus:shadow-black data-[placeholder]:text-violet9 outline-none'
+											className='inline-flex items-center justify-center rounded-sm px-[15px] text-[13px] leading-none h-[35px] gap-[5px] bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 shadow-[0_2px_10px] shadow-black/10 hover:bg-mauve3 focus:shadow-[0_0_0_2px] focus:shadow-black data-placeholder:text-violet9 outline-hidden'
 											aria-label='Tipo da aula'
 										>
 											<RadixSelect.Value placeholder='Escolha o tipo da aula'/>
@@ -306,7 +306,7 @@ export default function Lesson() {
 												<RadixSelect.Viewport className='p-[5px]'>
 													<RadixSelect.Group>
 
-														<RadixSelect.SelectItem value='video' className='text-[13px] leading-none text-violet11 rounded-[3px] flex items-center h-[25px] pr-[35px] pl-[25px] relative select-none data-[disabled]:text-mauve8 data-[disabled]:pointer-events-none data-[highlighted]:outline-none data-[highlighted]:bg-violet9 data-[highlighted]:text-violet1'>
+														<RadixSelect.SelectItem value='video' className='text-[13px] leading-none text-violet11 rounded-[3px] flex items-center h-[25px] pr-[35px] pl-[25px] relative select-none data-disabled:text-mauve8 data-disabled:pointer-events-none data-highlighted:outline-hidden data-highlighted:bg-violet9 data-highlighted:text-violet1'>
 															<RadixSelect.SelectItemText>
 																<p>Vídeo</p>
 															</RadixSelect.SelectItemText>
@@ -315,7 +315,7 @@ export default function Lesson() {
 															</RadixSelect.ItemIndicator>
 														</RadixSelect.SelectItem>
 
-														<RadixSelect.SelectItem value='text' className='text-[13px] leading-none text-violet11 rounded-[3px] flex items-center h-[25px] pr-[35px] pl-[25px] relative select-none data-[disabled]:text-mauve8 data-[disabled]:pointer-events-none data-[highlighted]:outline-none data-[highlighted]:bg-violet9 data-[highlighted]:text-violet1'>
+														<RadixSelect.SelectItem value='text' className='text-[13px] leading-none text-violet11 rounded-[3px] flex items-center h-[25px] pr-[35px] pl-[25px] relative select-none data-disabled:text-mauve8 data-disabled:pointer-events-none data-highlighted:outline-hidden data-highlighted:bg-violet9 data-highlighted:text-violet1'>
 															<RadixSelect.SelectItemText>
 																<p>Texto</p>
 															</RadixSelect.SelectItemText>
@@ -324,7 +324,7 @@ export default function Lesson() {
 															</RadixSelect.ItemIndicator>
 														</RadixSelect.SelectItem>
 
-														<RadixSelect.SelectItem value='courseWare' className='text-[13px] leading-none text-violet11 rounded-[3px] flex items-center h-[25px] pr-[35px] pl-[25px] relative select-none data-[disabled]:text-mauve8 data-[disabled]:pointer-events-none data-[highlighted]:outline-none data-[highlighted]:bg-violet9 data-[highlighted]:text-violet1'>
+														<RadixSelect.SelectItem value='courseWare' className='text-[13px] leading-none text-violet11 rounded-[3px] flex items-center h-[25px] pr-[35px] pl-[25px] relative select-none data-disabled:text-mauve8 data-disabled:pointer-events-none data-highlighted:outline-hidden data-highlighted:bg-violet9 data-highlighted:text-violet1'>
 															<RadixSelect.SelectItemText>
 																<p>Material Didático</p>
 															</RadixSelect.SelectItemText>
@@ -394,7 +394,7 @@ export default function Lesson() {
 											disabled={isSubmittingAnyForm}
 											type='text'
 											min={3}
-											className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
+											className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-hidden'
 										/>
 									</RadixForm.Control>
 								</RadixForm.Field>
@@ -411,7 +411,7 @@ export default function Lesson() {
 											disabled={isSubmittingAnyForm}
 											type='text'
 											min={3}
-											className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
+											className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-hidden'
 										/>
 									</RadixForm.Control>
 								</RadixForm.Field>
@@ -427,7 +427,7 @@ export default function Lesson() {
 											defaultValue={Number(lesson.lesson.duration)}
 											disabled={isSubmittingAnyForm}
 											type='number'
-											className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
+											className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-hidden'
 										/>
 									</RadixForm.Control>
 								</RadixForm.Field>
@@ -445,7 +445,7 @@ export default function Lesson() {
 											disabled={isSubmittingAnyForm}
 											type='text'
 											min={3}
-											className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
+											className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-hidden'
 										/>
 									</RadixForm.Control>
 								</RadixForm.Field>
@@ -482,7 +482,7 @@ export default function Lesson() {
 						<Dialog.Close asChild>
 							<button
 								type='button'
-								className='absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center outline-none'
+								className='absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center outline-hidden'
 								aria-label='Close'
 							>
 								<XMarkIcon aria-label='Close' className='hover:pointer absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px]'/>
@@ -520,7 +520,7 @@ export default function Lesson() {
 						<Dialog.Portal>
 							<Dialog.Overlay className='bg-mauvea-12 fixed inset-0'/>
 
-							<Dialog.Content className='fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] p-4 max-w-screen-lg w-[90%] bg-mauve-2 dark:bg-mauvedark-2 rounded-xl overflow-y-auto max-h-[90%] min-h-[50%]'>
+							<Dialog.Content className='fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] p-4 max-w-(--breakpoint-lg) w-[90%] bg-mauve-2 dark:bg-mauvedark-2 rounded-xl overflow-y-auto max-h-[90%] min-h-[50%]'>
 								<Dialog.Title asChild>
 									<h1 className='mb-4'>
 										{`Adicionar tags à Aula ${lesson.lesson.name}`}
@@ -585,7 +585,7 @@ export default function Lesson() {
 								<Dialog.Close asChild>
 									<button
 										type='button'
-										className='absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center outline-none'
+										className='absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center outline-hidden'
 										aria-label='Close'
 									>
 										<XMarkIcon aria-label='Close' className='hover:pointer absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px]'/>
@@ -647,7 +647,7 @@ export default function Lesson() {
 					<>
 						<h2>Conteúdo da Aula:</h2>
 						{/* eslint-disable-next-line react/no-danger */}
-						<div dangerouslySetInnerHTML={{__html: contentConverter.convert()}} className='p-4 rounded-lg border-2 border-mauve-6 dark:border-mauvedark-6 max-w-screen-lg'/>
+						<div dangerouslySetInnerHTML={{__html: contentConverter.convert()}} className='p-4 rounded-lg border-2 border-mauve-6 dark:border-mauvedark-6 max-w-(--breakpoint-lg)'/>
 					</>
 				)}
 			</div>

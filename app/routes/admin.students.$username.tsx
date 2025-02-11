@@ -207,7 +207,7 @@ export default function Student() {
 					<Dialog.Portal>
 						<Dialog.Overlay className='bg-mauvea-12 fixed inset-0'/>
 
-						<Dialog.Content className='fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] p-4 max-w-screen-lg w-[90%] bg-mauve-2 dark:bg-mauvedark-2 rounded-xl overflow-y-auto max-h-[90%]'>
+						<Dialog.Content className='fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] p-4 max-w-(--breakpoint-lg) w-[90%] bg-mauve-2 dark:bg-mauvedark-2 rounded-xl overflow-y-auto max-h-[90%]'>
 							<Dialog.Title asChild>
 								<h1 className='mb-4'>
 									Editar o Nome do Aluno
@@ -229,7 +229,7 @@ export default function Student() {
 												disabled={isSubmittingAnyForm}
 												type='text'
 												min={3}
-												className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
+												className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-hidden'
 											/>
 										</RadixForm.Control>
 									</RadixForm.Field>
@@ -247,7 +247,7 @@ export default function Student() {
 												disabled={isSubmittingAnyForm}
 												type='text'
 												min={3}
-												className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
+												className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-hidden'
 											/>
 										</RadixForm.Control>
 									</RadixForm.Field>
@@ -293,7 +293,7 @@ export default function Student() {
 							<Dialog.Close asChild>
 								<button
 									type='button'
-									className='absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center outline-none'
+									className='absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center outline-hidden'
 									aria-label='Close'
 								>
 									<XMarkIcon aria-label='Close' className='hover:pointer absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px]'/>
@@ -338,7 +338,7 @@ export default function Student() {
 					<Dialog.Portal>
 						<Dialog.Overlay className='bg-mauvea-12 fixed inset-0'/>
 
-						<Dialog.Content className='fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] p-4 max-w-screen-lg w-[90%] bg-mauve-2 dark:bg-mauvedark-2 rounded-xl overflow-y-auto max-h-[90%]'>
+						<Dialog.Content className='fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] p-4 max-w-(--breakpoint-lg) w-[90%] bg-mauve-2 dark:bg-mauvedark-2 rounded-xl overflow-y-auto max-h-[90%]'>
 							<Dialog.Title asChild>
 								<h1 className='mb-4'>
 									Editar o Email do Aluno
@@ -360,7 +360,7 @@ export default function Student() {
 												disabled={isSubmittingAnyForm}
 												type='email'
 												min={3}
-												className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
+												className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-hidden'
 											/>
 										</RadixForm.Control>
 									</RadixForm.Field>
@@ -406,7 +406,7 @@ export default function Student() {
 							<Dialog.Close asChild>
 								<button
 									type='button'
-									className='absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center outline-none'
+									className='absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center outline-hidden'
 									aria-label='Close'
 								>
 									<XMarkIcon aria-label='Close' className='hover:pointer absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px]'/>
@@ -429,7 +429,7 @@ export default function Student() {
 					<Dialog.Portal>
 						<Dialog.Overlay className='bg-mauvea-12 fixed inset-0'/>
 
-						<Dialog.Content className='fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] p-4 max-w-screen-lg w-[90%] bg-mauve-2 dark:bg-mauvedark-2 rounded-xl overflow-y-auto max-h-[90%]'>
+						<Dialog.Content className='fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] p-4 max-w-(--breakpoint-lg) w-[90%] bg-mauve-2 dark:bg-mauvedark-2 rounded-xl overflow-y-auto max-h-[90%]'>
 							<Dialog.Title asChild>
 								<h1 className='mb-4'>
 									Editar o Telefone do Aluno
@@ -451,7 +451,7 @@ export default function Student() {
 												disabled={isSubmittingAnyForm}
 												type='text'
 												min={3}
-												className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
+												className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-hidden'
 											/>
 										</RadixForm.Control>
 									</RadixForm.Field>
@@ -487,7 +487,7 @@ export default function Student() {
 							<Dialog.Close asChild>
 								<button
 									type='button'
-									className='absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center outline-none'
+									className='absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center outline-hidden'
 									aria-label='Close'
 								>
 									<XMarkIcon aria-label='Close' className='hover:pointer absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px]'/>
@@ -510,7 +510,7 @@ export default function Student() {
 					<Dialog.Portal>
 						<Dialog.Overlay className='bg-mauvea-12 fixed inset-0'/>
 
-						<Dialog.Content className='fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] p-4 max-w-screen-lg w-[90%] bg-mauve-2 dark:bg-mauvedark-2 rounded-xl overflow-y-auto max-h-[90%]'>
+						<Dialog.Content className='fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] p-4 max-w-(--breakpoint-lg) w-[90%] bg-mauve-2 dark:bg-mauvedark-2 rounded-xl overflow-y-auto max-h-[90%]'>
 							<Dialog.Title asChild>
 								<h1 className='mb-4'>
 									Editar o Documento do Aluno
@@ -532,7 +532,7 @@ export default function Student() {
 												disabled={isSubmittingAnyForm}
 												type='text'
 												min={3}
-												className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-none'
+												className='w-full bg-mauve-5 dark:bg-mauvedark-5 text-mauve-12 dark:text-mauvedark-11 inline-flex h-[35px] appearance-none items-center justify-center rounded-md px-[10px] text-[15px] leading-none outline-hidden'
 											/>
 										</RadixForm.Control>
 									</RadixForm.Field>
@@ -568,7 +568,7 @@ export default function Student() {
 							<Dialog.Close asChild>
 								<button
 									type='button'
-									className='absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center outline-none'
+									className='absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center outline-hidden'
 									aria-label='Close'
 								>
 									<XMarkIcon aria-label='Close' className='hover:pointer absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px]'/>
@@ -641,7 +641,7 @@ export default function Student() {
 						<Dialog.Portal>
 							<Dialog.Overlay className='bg-mauvea-12 fixed inset-0'/>
 
-							<Dialog.Content className='fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] p-4 max-w-screen-lg w-[90%] bg-mauve-2 dark:bg-mauvedark-2 rounded-xl overflow-y-auto max-h-[90%]'>
+							<Dialog.Content className='fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] p-4 max-w-(--breakpoint-lg) w-[90%] bg-mauve-2 dark:bg-mauvedark-2 rounded-xl overflow-y-auto max-h-[90%]'>
 								<Dialog.Title asChild>
 									<h1 className='mb-4'>
 										Deletar o Aluno {studentData.firstName} {studentData.lastName}
@@ -683,7 +683,7 @@ export default function Student() {
 								<Dialog.Close asChild>
 									<button
 										type='button'
-										className='absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center outline-none'
+										className='absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center outline-hidden'
 										aria-label='Close'
 									>
 										<XMarkIcon aria-label='Close' className='hover:pointer absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px]'/>

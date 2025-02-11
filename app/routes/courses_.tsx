@@ -57,7 +57,7 @@ export default function Courses() {
 
 			<main>
 				{userData.id && (
-					<div className='max-w-screen-lg w-[95%] sm:w-[90%] mx-auto bg-purplea-4 p-5 rounded-2xl my-10'>
+					<div className='max-w-(--breakpoint-lg) w-[95%] sm:w-[90%] mx-auto bg-purplea-4 p-5 rounded-2xl my-10'>
 						<p className='mb-4'>Querido(a) aluno(a), recentemente iniciamos a transição para a nova versão da plataforma da Yoga em Movimento, que você está acessando neste momento. Nem todas aulas e cursos estão publicadas na plataforma nova ainda, mas você pode encontrá-las na plataforma antiga, acessando através do link abaixo</p>
 						<p className='text-center'><Link to='https://escola.yogaemmovimento.com' target='_blank'>https://escola.yogaemmovimento.com</Link></p>
 					</div>
