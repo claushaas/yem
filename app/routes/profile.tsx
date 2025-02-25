@@ -32,6 +32,9 @@ export default function Profile() {
 
 			<div className='flex max-w-[95%] w-full mx-auto flex-col sm:flex-row gap-4'>
 				<aside className='w-64 p-3 bg-mauve-3 dark:bg-mauvedark-3 shadow-xs shadow-mauve-11 dark:shadow-mauvedark-3 rounded-lg h-fit flex flex-col gap-3'>
+					<Link to='/profile/personal-profile'>
+						<p>Perfil Pessoal</p>
+					</Link>
 					<Link to='/profile/completed-lessons'>
 						<p>Aulas Assistidas</p>
 					</Link>
