@@ -56,7 +56,7 @@
     "@react-router/node": "^7.4.1",
     "@react-router/serve": "^7.4.1",
     "@unpic/react": "^1.0.1",
-    "@vidstack/react": "^1.11.21",
+    "@vidstack/react": "^1.12.13",
     "axios": "^1.8.4",
     "clipboard-copy": "^4.0.1",
     "fuse.js": "^7.1.0",
