@@ -6,7 +6,7 @@ import {type RenderToPipeableStreamOptions, renderToPipeableStream} from 'react-
 import {executeAndRepeat} from './utils/background-task.js';
 import {logger} from './utils/logger.util';
 import {populateCache} from './cache/initial-cache-population.js';
-import {MigrationService} from './services/migration.service.server.js';
+import {IsBotProvider} from './hooks/use-is-bot.hook.js';
 
 export const streamTimeout = 5000;
 
@@ -27,7 +27,9 @@ export default async function handleRequest( // eslint-disable-line max-params
       = (userAgent && isbot(userAgent)) || routerContext.isSpaMode ? 'onAllReady' : 'onShellReady'; // eslint-disable-line @typescript-eslint/prefer-nullish-coalescing
 
 		const {pipe, abort} = renderToPipeableStream(
-			<ServerRouter context={routerContext} url={request.url}/>,
+			<IsBotProvider isBot={isbot(request.headers.get('user-agent') ?? '')}>
+				<ServerRouter context={routerContext} url={request.url}/>
+			</IsBotProvider>,
 			{
 				[readyOption]() {
 					shellRendered = true;
