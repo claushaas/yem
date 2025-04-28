@@ -72,8 +72,9 @@ export default function SchoolPlansDialog({
 								</div>
 
 								<div className="flex justify-center flex-col items-center gap-3">
-									<p>R$ 77,00/mês</p>
-									<Link
+									<p>Inscrições Encerradas</p>
+									{/* <p>R$ 77,00/mês</p> */}
+									{/* <Link
 										target="_blank"
 										to={`https://pay.hotmart.com/Y5414825L?off=z0k6km14&hideBillet=1&hidePix=1&showOnlyTrial=1&${marketingSearchParameters.join('&')}`}
 									>
@@ -82,10 +83,10 @@ export default function SchoolPlansDialog({
 											text="Assinar"
 											type={ButtonType.Button}
 										/>
-									</Link>
-									<p className="text-xs">
+									</Link> */}
+									{/* <p className="text-xs">
 										7 dias grátis - cancele quando quiser
-									</p>
+									</p> */}
 								</div>
 							</div>
 
@@ -149,13 +150,14 @@ export default function SchoolPlansDialog({
 
 								<div className="flex justify-center flex-col items-center gap-3">
 									<div className="text-center">
-										<p className="text-2xl font-gothamMedium">
+										<p>Inscrições Encerradas</p>
+										{/* <p className="text-2xl font-gothamMedium">
 											12 x R$ 41,42/mês
 										</p>
 										<p className="text-xs">pago anualmente</p>
-										<p>ou R$ 497,00 por ano</p>
+										<p>ou R$ 497,00 por ano</p> */}
 									</div>
-									<Link
+									{/* <Link
 										target="_blank"
 										to={`https://pay.hotmart.com/Y5414825L?off=0dc69b6z&hideBillet=1&hidePix=1&showOnlyTrial=1&${marketingSearchParameters.join('&')}`}
 									>
@@ -167,7 +169,7 @@ export default function SchoolPlansDialog({
 									</Link>
 									<p className="text-xs">
 										7 dias grátis - cancele quando quiser
-									</p>
+									</p> */}
 								</div>
 							</div>
 						</div>

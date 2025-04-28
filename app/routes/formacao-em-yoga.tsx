@@ -598,7 +598,7 @@ export default function Formacao() {
 					</div>
 
 					<div className="mx-auto w-fit my-10">
-						<Link
+						{/* <Link
 							target="_blank"
 							to={`https://pay.hotmart.com/G96565416C?${marketingSearchParameters.join('&')}`}
 						>
@@ -608,10 +608,11 @@ export default function Formacao() {
 								text="Fazer Minha Matrícula"
 								type={ButtonType.Button}
 							/>
-						</Link>
+						</Link> */}
 						<div className="text-xs text-center mt-3">
-							<p>Compra segura com 7 dias de garantia</p>
-							<p>Hotmart - Cartão - Pix - Paypal</p>
+							{/* <p>Compra segura com 7 dias de garantia</p>
+							<p>Hotmart - Cartão - Pix - Paypal</p> */}
+							<p>Inscrições Encerradas</p>
 						</div>
 					</div>
 				</section>
@@ -1044,7 +1045,7 @@ export default function Formacao() {
 					</Accordion.Root>
 				</section>
 
-				<section>
+				{/* <section>
 					<h1 className="text-purple-11 dark:text-purpledark-11 text-3xl xs:text-5xl md:text-6xl lg:text-7xl mb-5 text-center">
 						Ficou alguma dúvida?
 					</h1>
@@ -1073,7 +1074,7 @@ export default function Formacao() {
 						</Link>
 						<p className="text-center text-xs">cancele quando quiser</p>
 					</div>
-				</section>
+				</section> */}
 			</main>
 		</>
 	);
