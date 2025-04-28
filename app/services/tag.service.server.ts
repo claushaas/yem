@@ -1,10 +1,14 @@
-import {type PrismaClient} from '@prisma/client';
-import {type TServiceReturn} from '../types/service-return.type.js';
-import {logger} from '../utils/logger.util.js';
-import {database} from '../database/database.server.js';
-import {type TPrismaPayloadGetAllTags, type TPrismaPayloadCreateTag, type TTag} from '~/types/tag.type.js';
-import {CustomError} from '~/utils/custom-error.js';
-import {memoryCache} from '~/cache/memory-cache.js';
+import { type PrismaClient } from '@prisma/client';
+import { memoryCache } from '~/cache/memory-cache.js';
+import {
+	type TPrismaPayloadCreateTag,
+	type TPrismaPayloadGetAllTags,
+	type TTag,
+} from '~/types/tag.type.js';
+import { CustomError } from '~/utils/custom-error.js';
+import { database } from '../database/database.server.js';
+import { type TServiceReturn } from '../types/service-return.type.js';
+import { logger } from '../utils/logger.util.js';
 
 export class TagService {
 	private static cache: typeof memoryCache;
@@ -15,26 +19,28 @@ export class TagService {
 		TagService.cache = memoryCache;
 	}
 
-	public async create(tagData: TTag): Promise<TServiceReturn<TPrismaPayloadCreateTag>> {
+	public async create(
+		tagData: TTag,
+	): Promise<TServiceReturn<TPrismaPayloadCreateTag>> {
 		try {
 			const createdTag = await this._model.tagOptionTagValue.create({
 				data: {
 					tagOption: {
 						connectOrCreate: {
-							where: {
+							create: {
 								name: tagData[0],
 							},
-							create: {
+							where: {
 								name: tagData[0],
 							},
 						},
 					},
 					tagValue: {
 						connectOrCreate: {
-							where: {
+							create: {
 								name: tagData[1],
 							},
-							create: {
+							where: {
 								name: tagData[1],
 							},
 						},
@@ -43,12 +49,15 @@ export class TagService {
 			});
 
 			return {
-				status: 'SUCCESSFUL',
 				data: createdTag,
+				status: 'SUCCESSFUL',
 			};
 		} catch (error) {
 			logger.logError(`Error creating tag: ${(error as Error).message}`);
-			throw new CustomError('UNKNOWN', `Error creating tag: ${(error as Error).message}`);
+			throw new CustomError(
+				'UNKNOWN',
+				`Error creating tag: ${(error as Error).message}`,
+			);
 		}
 	}
 
@@ -57,42 +66,52 @@ export class TagService {
 			const tags = await this._model.tagOptionTagValue.findMany();
 
 			return {
-				status: 'SUCCESSFUL',
 				data: tags,
+				status: 'SUCCESSFUL',
 			};
 		} catch (error) {
 			logger.logError(`Error getting all tags: ${(error as Error).message}`);
-			throw new CustomError('UNKNOWN', `Error getting all tags: ${(error as Error).message}`);
+			throw new CustomError(
+				'UNKNOWN',
+				`Error getting all tags: ${(error as Error).message}`,
+			);
 		}
 	}
 
-	public getTagsFromCache(): TServiceReturn<Array<{tagOption: string; tagValues: string[]}> | undefined> {
+	public getTagsFromCache(): TServiceReturn<
+		Array<{ tagOption: string; tagValues: string[] }> | undefined
+	> {
 		const tagsFromCache = TagService.cache.get('tags');
 
 		if (!tagsFromCache) {
 			return {
-				status: 'NO_CONTENT',
 				data: undefined,
+				status: 'NO_CONTENT',
 			};
 		}
 
-		const parsedTags = JSON.parse(tagsFromCache) as Array<{tagOption: string; tagValue: string}>;
+		const parsedTags = JSON.parse(tagsFromCache) as Array<{
+			tagOption: string;
+			tagValue: string;
+		}>;
 
 		const tags = [];
 
 		for (const tag of parsedTags) {
-			const tagIndex = tags.findIndex(({tagOption}) => tagOption === tag.tagOption);
+			const tagIndex = tags.findIndex(
+				({ tagOption }) => tagOption === tag.tagOption,
+			);
 
 			if (tagIndex === -1) {
-				tags.push({tagOption: tag.tagOption, tagValues: [tag.tagValue]});
+				tags.push({ tagOption: tag.tagOption, tagValues: [tag.tagValue] });
 			} else if (!tags[tagIndex].tagValues.includes(tag.tagValue)) {
 				tags[tagIndex].tagValues.push(tag.tagValue);
 			}
 		}
 
 		return {
-			status: 'SUCCESSFUL',
 			data: tags,
+			status: 'SUCCESSFUL',
 		};
 	}
 }

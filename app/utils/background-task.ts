@@ -1,11 +1,18 @@
-import {remember} from '@epic-web/remember';
+import { remember } from '@epic-web/remember';
 
-const executeAndRepeatFunction = async (targetPromise: () => Promise<any>, milliseconds: number) => {
+const executeAndRepeatFunction = async (
+	targetPromise: () => Promise<any>,
+	milliseconds: number,
+) => {
 	if (process.env.NODE_ENV === 'test') {
 		return targetPromise();
 	}
 
-	const scheduleNextExecution = () => setTimeout(async () => executeAndRepeat(targetPromise, milliseconds), milliseconds);
+	const scheduleNextExecution = () =>
+		setTimeout(
+			async () => executeAndRepeat(targetPromise, milliseconds),
+			milliseconds,
+		);
 
 	try {
 		const result = await targetPromise(); // eslint-disable-line @typescript-eslint/no-unsafe-assignment
@@ -17,4 +24,7 @@ const executeAndRepeatFunction = async (targetPromise: () => Promise<any>, milli
 	}
 };
 
-export const executeAndRepeat = remember('executeAndRepeat', () => executeAndRepeatFunction);
+export const executeAndRepeat = remember(
+	'executeAndRepeat',
+	() => executeAndRepeatFunction,
+);

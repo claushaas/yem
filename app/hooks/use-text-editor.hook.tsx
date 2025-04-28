@@ -1,9 +1,11 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import type Quill from 'quill';
-import {type Delta} from 'quill/core';
-import {useEffect, useState} from 'react';
+import { type Delta } from 'quill/core';
+import { useEffect, useState } from 'react';
 
-export const useTextEditor = (initialContent?: string | null): [string, React.Dispatch<React.SetStateAction<Quill | null>>] => {
+export const useTextEditor = (
+	initialContent?: string | null,
+): [string, React.Dispatch<React.SetStateAction<Quill | null>>] => {
 	const [quill, setQuill] = useState<Quill | null>(null);
 	const [content, setContent] = useState<string>(initialContent ?? '');
 

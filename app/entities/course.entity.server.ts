@@ -1,23 +1,25 @@
 import Joi from 'joi';
-import {type TCourse} from '../types/course.type.js';
-import {CustomError} from '../utils/custom-error.js';
-import {convertNameToSlug} from '~/utils/convert-name-to-slug.js';
+import { convertNameToSlug } from '~/utils/convert-name-to-slug.js';
+import { type TCourse } from '../types/course.type.js';
+import { CustomError } from '../utils/custom-error.js';
 
 const courseSchema = Joi.object({
-	oldId: Joi.string().allow(''),
-	name: Joi.string().required().min(3).max(50),
-	description: Joi.string().min(3).max(154).required(),
-	order: Joi.number().integer().min(0),
 	content: Joi.string().allow(''),
-	marketingContent: Joi.string().allow(''),
-	videoSourceUrl: Joi.string().allow(''),
-	marketingVideoUrl: Joi.string().allow(''),
-	thumbnailUrl: Joi.string().required(),
-	publicationDate: Joi.date().required().default(new Date()),
+	delegateAuthTo: Joi.array().items(Joi.string().allow('')),
+	description: Joi.string().min(3).max(154).required(),
 	isPublished: Joi.boolean().required().default(false),
 	isSelling: Joi.boolean().required().default(false),
-	tags: Joi.array().items(Joi.array().items(Joi.string()).min(2).max(2)).unique(),
-	delegateAuthTo: Joi.array().items(Joi.string().allow('')),
+	marketingContent: Joi.string().allow(''),
+	marketingVideoUrl: Joi.string().allow(''),
+	name: Joi.string().required().min(3).max(50),
+	oldId: Joi.string().allow(''),
+	order: Joi.number().integer().min(0),
+	publicationDate: Joi.date().required().default(new Date()),
+	tags: Joi.array()
+		.items(Joi.array().items(Joi.string()).min(2).max(2))
+		.unique(),
+	thumbnailUrl: Joi.string().required(),
+	videoSourceUrl: Joi.string().allow(''),
 });
 
 export class Course implements TCourse {
@@ -37,10 +39,13 @@ export class Course implements TCourse {
 	private readonly _delegateAuthTo?: string[];
 
 	constructor(course: TCourse) {
-		const {error} = courseSchema.validate(course);
+		const { error } = courseSchema.validate(course);
 
 		if (error) {
-			throw new CustomError('UNPROCESSABLE_ENTITY', `Invalid course data: ${error.message}`);
+			throw new CustomError(
+				'UNPROCESSABLE_ENTITY',
+				`Invalid course data: ${error.message}`,
+			);
 		}
 
 		this._oldId = course.oldId;
@@ -56,7 +61,9 @@ export class Course implements TCourse {
 		this._publicationDate = course.publicationDate;
 		this._isPublished = course.isPublished;
 		this._isSelling = course.isSelling;
-		this._delegateAuthTo = course.delegateAuthTo?.some(Boolean) ? course.delegateAuthTo : [];
+		this._delegateAuthTo = course.delegateAuthTo?.some(Boolean)
+			? course.delegateAuthTo
+			: [];
 	}
 
 	get oldId() {

@@ -1,14 +1,23 @@
-import {type LoaderFunctionArgs, type MetaArgs} from 'react-router';
+import { type LoaderFunctionArgs, type MetaArgs } from 'react-router';
 
-export const meta = ({data}: MetaArgs<typeof loader>) => [
-	{title: 'Comentários - Yoga em Movimento'},
-	{name: 'description', content: 'Comentários sobre os cursos oferecidos pela Yoga em Movimento'},
-	{name: 'robots', content: 'noindex, nofollow'},
+export const meta = ({ data }: MetaArgs<typeof loader>) => [
+	{ title: 'Comentários - Yoga em Movimento' },
+	{
+		content: 'Comentários sobre os cursos oferecidos pela Yoga em Movimento',
+		name: 'description',
+	},
+	{ content: 'noindex, nofollow', name: 'robots' },
 	...data!.meta,
 ];
 
-export const loader = ({request}: LoaderFunctionArgs) => ({
-	meta: [{tagName: 'link', rel: 'canonical', href: new URL('/admin/comments', request.url).toString()}],
+export const loader = ({ request }: LoaderFunctionArgs) => ({
+	meta: [
+		{
+			href: new URL('/admin/comments', request.url).toString(),
+			rel: 'canonical',
+			tagName: 'link',
+		},
+	],
 });
 
 export default function Comments() {

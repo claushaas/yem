@@ -1,19 +1,20 @@
-import {type PrismaClient} from '@prisma/client';
-import {type TUser, type TUserRoles} from '../types/user.type.js';
-import {Course} from '../entities/course.entity.server.js';
+import { type PrismaClient } from '@prisma/client';
+import { memoryCache } from '~/cache/memory-cache.js';
+import { type TCourseDataForCache } from '~/cache/populate-courses-to-cache.js';
+import { type TModuleDataForCache } from '~/cache/populate-modules-to-cache.js';
+import { type TSubscription } from '~/types/subscription.type.js';
+import { logger } from '~/utils/logger.util.js';
+import { database } from '../database/database.server.js';
+import { Course } from '../entities/course.entity.server.js';
 import {
-	type TPrismaPayloadGetCourseBySlug,
-	type TCourse, type TPrismaPayloadGetAllCourses,
+	type TCourse,
 	type TPrismaPayloadCreateOrUpdateCourse,
+	type TPrismaPayloadGetAllCourses,
+	type TPrismaPayloadGetCourseBySlug,
 } from '../types/course.type.js';
-import {CustomError} from '../utils/custom-error.js';
-import {type TServiceReturn} from '../types/service-return.type.js';
-import {database} from '../database/database.server.js';
-import {logger} from '~/utils/logger.util.js';
-import {memoryCache} from '~/cache/memory-cache.js';
-import {type TCourseDataForCache} from '~/cache/populate-courses-to-cache.js';
-import {type TModuleDataForCache} from '~/cache/populate-modules-to-cache.js';
-import {type TSubscription} from '~/types/subscription.type.js';
+import { type TServiceReturn } from '../types/service-return.type.js';
+import { type TUser, type TUserRoles } from '../types/user.type.js';
+import { CustomError } from '../utils/custom-error.js';
 
 export class CourseService {
 	private static cache: typeof memoryCache;
@@ -24,58 +25,59 @@ export class CourseService {
 		CourseService.cache = memoryCache;
 	}
 
-	public async create(courseData: TCourse): Promise<TServiceReturn<TPrismaPayloadCreateOrUpdateCourse>> {
+	public async create(
+		courseData: TCourse,
+	): Promise<TServiceReturn<TPrismaPayloadCreateOrUpdateCourse>> {
 		const newCourse = new Course(courseData);
 
 		const createdCourse = await this._model.course.create({
 			data: {
-				oldId: newCourse.oldId,
-				name: newCourse.name,
-				slug: newCourse.slug,
-				description: newCourse.description,
-				order: newCourse.order,
 				content: newCourse.content,
-				marketingContent: newCourse.marketingContent,
-				videoSourceUrl: newCourse.videoSourceUrl,
-				marketingVideoUrl: newCourse.marketingVideoUrl,
-				thumbnailUrl: newCourse.thumbnailUrl,
-				publicationDate: newCourse.publicationDate,
+				delegateAuthTo: {
+					connect: newCourse.delegateAuthTo?.map((slug) => ({ slug })),
+				},
+				description: newCourse.description,
 				isPublished: newCourse.isPublished,
 				isSelling: newCourse.isSelling,
-				delegateAuthTo: {
-					connect: newCourse.delegateAuthTo?.map(slug => ({slug})),
-				},
+				marketingContent: newCourse.marketingContent,
+				marketingVideoUrl: newCourse.marketingVideoUrl,
+				name: newCourse.name,
+				oldId: newCourse.oldId,
+				order: newCourse.order,
+				publicationDate: newCourse.publicationDate,
+				slug: newCourse.slug,
+				thumbnailUrl: newCourse.thumbnailUrl,
+				videoSourceUrl: newCourse.videoSourceUrl,
 			},
 		});
 
 		return {
-			status: 'CREATED',
 			data: createdCourse,
+			status: 'CREATED',
 		};
 	}
 
-	public async getAll(userRoles: TUserRoles = []): Promise<TServiceReturn<TPrismaPayloadGetAllCourses>> {
+	public async getAll(
+		userRoles: TUserRoles = [],
+	): Promise<TServiceReturn<TPrismaPayloadGetAllCourses>> {
 		const courses = await this._model.course.findMany({
+			orderBy: [{ order: 'asc' }, { name: 'asc' }],
+			select: {
+				description: true,
+				id: true,
+				isPublished: true,
+				isSelling: true,
+				name: true,
+				order: true,
+				publicationDate: true,
+				slug: true,
+				thumbnailUrl: true,
+			},
 			where: {
 				isPublished: userRoles.includes('admin') ? undefined : true,
 				publicationDate: {
 					lte: userRoles.includes('admin') ? undefined : new Date(),
 				},
-			},
-			orderBy: [
-				{order: 'asc'},
-				{name: 'asc'},
-			],
-			select: {
-				id: true,
-				name: true,
-				slug: true,
-				order: true,
-				description: true,
-				thumbnailUrl: true,
-				publicationDate: true,
-				isPublished: true,
-				isSelling: true,
 			},
 		});
 
@@ -96,38 +98,56 @@ export class CourseService {
 		});
 
 		return {
-			status: 'SUCCESSFUL',
 			data: courses,
+			status: 'SUCCESSFUL',
 		};
 	}
 
 	public getAllFromCache(user: TUser): TServiceReturn<TCourseDataForCache[]> {
-		const allCoursesKeys = CourseService.cache.keys().filter(key => key.startsWith('course:'));
+		const allCoursesKeys = CourseService.cache
+			.keys()
+			.filter((key) => key.startsWith('course:'));
 		logger.logDebug(`All courses keys: ${JSON.stringify(allCoursesKeys)}`);
 
-		const allCourses = allCoursesKeys.map(key => {
-			const course = JSON.parse(CourseService.cache.get(key) ?? '{}') as TCourseDataForCache;
+		const allCourses = allCoursesKeys.map((key) => {
+			const course = JSON.parse(
+				CourseService.cache.get(key) ?? '{}',
+			) as TCourseDataForCache;
 
-			const hasActiveSubscription = user.roles?.includes('admin') || course.delegateAuthTo.some(courseSlug => { // eslint-disable-line @typescript-eslint/prefer-nullish-coalescing
-				const subscription = CourseService.cache.get(`${courseSlug}:${user.id}`);
+			const hasActiveSubscription =
+				user.roles?.includes('admin') ||
+				course.delegateAuthTo.some((courseSlug) => {
+					// eslint-disable-line @typescript-eslint/prefer-nullish-coalescing
+					const subscription = CourseService.cache.get(
+						`${courseSlug}:${user.id}`,
+					);
 
-				if (!subscription) {
-					return false;
-				}
+					if (!subscription) {
+						return false;
+					}
 
-				const {expiresAt} = JSON.parse(subscription) as TSubscription;
-				return expiresAt >= new Date();
-			});
+					const { expiresAt } = JSON.parse(subscription) as TSubscription;
+					return expiresAt >= new Date();
+				});
 
 			return {
 				...course,
-				content: hasActiveSubscription ? course.content : course.marketingContent,
-				videoSourceUrl: hasActiveSubscription ? course.videoSourceUrl : course.marketingVideoUrl,
+				content: hasActiveSubscription
+					? course.content
+					: course.marketingContent,
 				hasActiveSubscription,
+				videoSourceUrl: hasActiveSubscription
+					? course.videoSourceUrl
+					: course.marketingVideoUrl,
 			};
 		});
 
-		const filteredCourses = allCourses.filter(course => user.roles?.includes('admin') || (course.isPublished && course.hasActiveSubscription) || course.isSelling); // eslint-disable-line @typescript-eslint/prefer-nullish-coalescing
+		const filteredCourses = allCourses.filter(
+			(course) =>
+				user.roles?.includes('admin') ||
+				(course.isPublished && course.hasActiveSubscription) ||
+				course.isSelling,
+		); // eslint-disable-line @typescript-eslint/prefer-nullish-coalescing
 
 		filteredCourses.sort((a, b) => {
 			if (!a.order && !b.order) {
@@ -146,88 +166,92 @@ export class CourseService {
 		});
 
 		return {
-			status: 'SUCCESSFUL',
 			data: filteredCourses,
+			status: 'SUCCESSFUL',
 		};
 	}
 
-	public async getBySlug(slug: string, user: TUser): Promise<TServiceReturn<TPrismaPayloadGetCourseBySlug | undefined>> {
+	public async getBySlug(
+		slug: string,
+		user: TUser,
+	): Promise<TServiceReturn<TPrismaPayloadGetCourseBySlug | undefined>> {
 		try {
 			const course = await this._model.course.findUnique({
-				where: {
-					slug,
-					isPublished: user.roles?.includes('admin') ? undefined : true,
-					publicationDate: {
-						lte: user.roles?.includes('admin') ? undefined : new Date(),
-					},
-				},
 				include: {
+					comments: {
+						include: {
+							responses: {
+								orderBy: {
+									createdAt: 'asc',
+								},
+								where: {
+									OR: [
+										{
+											published: user.roles?.includes('admin')
+												? undefined
+												: true,
+										},
+										{ userId: user.id },
+									],
+								},
+							},
+						},
+						orderBy: {
+							createdAt: 'desc',
+						},
+						where: {
+							OR: [
+								{ published: user.roles?.includes('admin') ? undefined : true },
+								{ userId: user.id },
+							],
+						},
+					},
+					delegateAuthTo: {
+						select: {
+							id: true,
+							name: true,
+							slug: true,
+							subscriptions: {
+								where: {
+									expiresAt: {
+										gte: new Date(),
+									},
+									userId: user.id ?? '',
+								},
+							},
+						},
+					},
 					modules: {
+						orderBy: [{ order: 'asc' }, { publicationDate: 'asc' }],
+						select: {
+							id: true,
+							isPublished: true,
+							module: {
+								select: {
+									description: true,
+									id: true,
+									name: true,
+									slug: true,
+									thumbnailUrl: true,
+								},
+							},
+							order: true,
+							publicationDate: true,
+						},
 						where: {
 							isPublished: user.roles?.includes('admin') ? undefined : true,
 							publicationDate: {
 								lte: user.roles?.includes('admin') ? undefined : new Date(),
 							},
 						},
-						orderBy: [
-							{order: 'asc'},
-							{publicationDate: 'asc'},
-						],
-						select: {
-							id: true,
-							order: true,
-							isPublished: true,
-							publicationDate: true,
-							module: {
-								select: {
-									id: true,
-									slug: true,
-									name: true,
-									description: true,
-									thumbnailUrl: true,
-								},
-							},
-						},
 					},
-					comments: {
-						where: {
-							OR: [
-								{published: user.roles?.includes('admin') ? undefined : true},
-								{userId: user.id},
-							],
-						},
-						orderBy: {
-							createdAt: 'desc',
-						},
-						include: {
-							responses: {
-								where: {
-									OR: [
-										{published: user.roles?.includes('admin') ? undefined : true},
-										{userId: user.id},
-									],
-								},
-								orderBy: {
-									createdAt: 'asc',
-								},
-							},
-						},
+				},
+				where: {
+					isPublished: user.roles?.includes('admin') ? undefined : true,
+					publicationDate: {
+						lte: user.roles?.includes('admin') ? undefined : new Date(),
 					},
-					delegateAuthTo: {
-						select: {
-							id: true,
-							slug: true,
-							name: true,
-							subscriptions: {
-								where: {
-									userId: user.id ?? '',
-									expiresAt: {
-										gte: new Date(),
-									},
-								},
-							},
-						},
-					},
+					slug,
 				},
 			});
 
@@ -235,33 +259,48 @@ export class CourseService {
 				throw new CustomError('NOT_FOUND', 'Course not found');
 			}
 
-			const hasActiveSubscription = user.roles?.includes('admin') || course.delegateAuthTo?.some(course => ( // eslint-disable-line @typescript-eslint/prefer-nullish-coalescing
-				course.subscriptions.length > 0
-			));
+			const hasActiveSubscription =
+				user.roles?.includes('admin') ||
+				course.delegateAuthTo?.some(
+					(
+						course, // eslint-disable-line @typescript-eslint/prefer-nullish-coalescing
+					) => course.subscriptions.length > 0,
+				);
 
 			const returnableCourse = {
 				...course,
-				content: hasActiveSubscription ? course?.content : course.marketingContent,
-				videoSourceUrl: hasActiveSubscription ? course?.videoSourceUrl : course.marketingVideoUrl,
+				content: hasActiveSubscription
+					? course?.content
+					: course.marketingContent,
+				videoSourceUrl: hasActiveSubscription
+					? course?.videoSourceUrl
+					: course.marketingVideoUrl,
 			};
 
 			return {
-				status: 'SUCCESSFUL',
 				data: returnableCourse,
+				status: 'SUCCESSFUL',
 			};
 		} catch (error) {
-			logger.logError(`Error getting course by slug: ${(error as Error).message}`);
+			logger.logError(
+				`Error getting course by slug: ${(error as Error).message}`,
+			);
 			return {
-				status: 'UNKNOWN',
 				data: undefined,
+				status: 'UNKNOWN',
 			};
 		}
 	}
 
-	public getBySlugFromCache(slug: string, user: TUser): TServiceReturn<TCourseDataForCache> {
+	public getBySlugFromCache(
+		slug: string,
+		user: TUser,
+	): TServiceReturn<TCourseDataForCache> {
 		const isAdmin = user.roles?.includes('admin');
 
-		const course = JSON.parse(CourseService.cache.get(`course:${slug}`) ?? '{}') as TCourseDataForCache;
+		const course = JSON.parse(
+			CourseService.cache.get(`course:${slug}`) ?? '{}',
+		) as TCourseDataForCache;
 
 		if (!course) {
 			logger.logError(`Course with slug ${slug} not found in cache`);
@@ -269,56 +308,73 @@ export class CourseService {
 		}
 
 		// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-		const hasActiveSubscription = isAdmin || course.delegateAuthTo.some(courseSlug => {
-			const subscription = CourseService.cache.get(`${courseSlug}:${user.id}`);
+		const hasActiveSubscription =
+			isAdmin ||
+			course.delegateAuthTo.some((courseSlug) => {
+				const subscription = CourseService.cache.get(
+					`${courseSlug}:${user.id}`,
+				);
 
-			if (!subscription) {
-				return false;
-			}
+				if (!subscription) {
+					return false;
+				}
 
-			const {expiresAt} = JSON.parse(subscription) as TSubscription;
-			return new Date(expiresAt) >= new Date();
-		});
+				const { expiresAt } = JSON.parse(subscription) as TSubscription;
+				return new Date(expiresAt) >= new Date();
+			});
 
-		const modules = course.modules.map(module => {
-			const moduleData = JSON.parse(CourseService.cache.get(`${course.slug}:${module as string}`) ?? '{}') as TModuleDataForCache;
+		const modules = course.modules.map((module) => {
+			const moduleData = JSON.parse(
+				CourseService.cache.get(`${course.slug}:${module as string}`) ?? '{}',
+			) as TModuleDataForCache;
 
-			moduleData.module.content = hasActiveSubscription ? moduleData.module.content : moduleData.module.marketingContent;
-			moduleData.module.videoSourceUrl = hasActiveSubscription ? moduleData.module.videoSourceUrl : moduleData.module.marketingVideoUrl;
+			moduleData.module.content = hasActiveSubscription
+				? moduleData.module.content
+				: moduleData.module.marketingContent;
+			moduleData.module.videoSourceUrl = hasActiveSubscription
+				? moduleData.module.videoSourceUrl
+				: moduleData.module.marketingVideoUrl;
 
 			return moduleData;
 		});
 		course.modules = modules;
-		course.content = hasActiveSubscription ? course.content : course.marketingContent;
-		course.videoSourceUrl = hasActiveSubscription ? course.videoSourceUrl : course.marketingVideoUrl;
+		course.content = hasActiveSubscription
+			? course.content
+			: course.marketingContent;
+		course.videoSourceUrl = hasActiveSubscription
+			? course.videoSourceUrl
+			: course.marketingVideoUrl;
 
 		return {
-			status: 'SUCCESSFUL',
 			data: course,
+			status: 'SUCCESSFUL',
 		};
 	}
 
-	public async update(id: string, courseData: TCourse): Promise<TServiceReturn<TPrismaPayloadCreateOrUpdateCourse>> {
+	public async update(
+		id: string,
+		courseData: TCourse,
+	): Promise<TServiceReturn<TPrismaPayloadCreateOrUpdateCourse>> {
 		const courseToUpdate = new Course(courseData);
 
 		const updatedCourse = await this._model.course.update({
-			where: {
-				id,
-			},
 			data: {
-				oldId: courseToUpdate.oldId,
-				name: courseToUpdate.name,
-				slug: courseToUpdate.slug,
-				order: courseToUpdate.order,
-				description: courseToUpdate.description,
 				content: courseToUpdate.content,
-				marketingContent: courseToUpdate.marketingContent,
-				videoSourceUrl: courseToUpdate.videoSourceUrl,
-				marketingVideoUrl: courseToUpdate.marketingVideoUrl,
-				thumbnailUrl: courseToUpdate.thumbnailUrl,
-				publicationDate: courseToUpdate.publicationDate,
+				description: courseToUpdate.description,
 				isPublished: courseToUpdate.isPublished,
 				isSelling: courseToUpdate.isSelling,
+				marketingContent: courseToUpdate.marketingContent,
+				marketingVideoUrl: courseToUpdate.marketingVideoUrl,
+				name: courseToUpdate.name,
+				oldId: courseToUpdate.oldId,
+				order: courseToUpdate.order,
+				publicationDate: courseToUpdate.publicationDate,
+				slug: courseToUpdate.slug,
+				thumbnailUrl: courseToUpdate.thumbnailUrl,
+				videoSourceUrl: courseToUpdate.videoSourceUrl,
+			},
+			where: {
+				id,
 			},
 		});
 
@@ -327,38 +383,44 @@ export class CourseService {
 		}
 
 		return {
-			status: 'SUCCESSFUL',
 			data: updatedCourse,
+			status: 'SUCCESSFUL',
 		};
 	}
 
-	public async addDelegateAuthTo(courseId: string, delegateAuthTo: string[]): Promise<TServiceReturn<TPrismaPayloadCreateOrUpdateCourse>> {
+	public async addDelegateAuthTo(
+		courseId: string,
+		delegateAuthTo: string[],
+	): Promise<TServiceReturn<TPrismaPayloadCreateOrUpdateCourse>> {
 		const updatedCourse = await this._model.course.update({
-			where: {
-				id: courseId,
-			},
 			data: {
 				delegateAuthTo: {
-					connect: delegateAuthTo.map(slug => ({slug})),
+					connect: delegateAuthTo.map((slug) => ({ slug })),
 				},
+			},
+			where: {
+				id: courseId,
 			},
 		});
 
 		if (!updatedCourse) {
-			throw new CustomError('NOT_FOUND', `Course with id ${courseId} not found`);
+			throw new CustomError(
+				'NOT_FOUND',
+				`Course with id ${courseId} not found`,
+			);
 		}
 
 		return {
-			status: 'SUCCESSFUL',
 			data: updatedCourse,
+			status: 'SUCCESSFUL',
 		};
 	}
 
-	public async removeDelegateAuthTo(courseId: string, delegateAuthToSlug: string): Promise<TServiceReturn<TPrismaPayloadCreateOrUpdateCourse>> {
+	public async removeDelegateAuthTo(
+		courseId: string,
+		delegateAuthToSlug: string,
+	): Promise<TServiceReturn<TPrismaPayloadCreateOrUpdateCourse>> {
 		const updatedCourse = await this._model.course.update({
-			where: {
-				id: courseId,
-			},
 			data: {
 				delegateAuthTo: {
 					disconnect: {
@@ -366,15 +428,21 @@ export class CourseService {
 					},
 				},
 			},
+			where: {
+				id: courseId,
+			},
 		});
 
 		if (!updatedCourse) {
-			throw new CustomError('NOT_FOUND', `Course with id ${courseId} not found`);
+			throw new CustomError(
+				'NOT_FOUND',
+				`Course with id ${courseId} not found`,
+			);
 		}
 
 		return {
-			status: 'SUCCESSFUL',
 			data: updatedCourse,
+			status: 'SUCCESSFUL',
 		};
 	}
 }

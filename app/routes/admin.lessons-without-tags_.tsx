@@ -1,10 +1,10 @@
-import {type LoaderFunctionArgs, useLoaderData} from 'react-router';
-import {AdminEntityCard} from '~/components/entities-cards';
-import {LessonService} from '~/services/lesson.service.server';
-import {type TypeUserSession} from '~/types/user-session.type';
-import {getUserSession} from '~/utils/session.server';
+import { type LoaderFunctionArgs, useLoaderData } from 'react-router';
+import { AdminEntityCard } from '~/components/entities-cards';
+import { LessonService } from '~/services/lesson.service.server';
+import { type TypeUserSession } from '~/types/user-session.type';
+import { getUserSession } from '~/utils/session.server';
 
-export const loader = async ({request}: LoaderFunctionArgs) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 	const user = userSession.data as TypeUserSession;
 
@@ -16,7 +16,7 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
 };
 
 export default function LessonsWithoutTags() {
-	const {lessons} = useLoaderData<typeof loader>();
+	const { lessons } = useLoaderData<typeof loader>();
 
 	return (
 		<>
@@ -24,9 +24,13 @@ export default function LessonsWithoutTags() {
 				<h1>Aulas sem Tags</h1>
 			</div>
 
-			<div className='flex gap-4 my-4 flex-wrap'>
-				{lessons.data.map(lesson => (
-					<AdminEntityCard key={lesson.id} course={lesson ?? {}} to={`./${lesson.slug}`}/>
+			<div className="flex gap-4 my-4 flex-wrap">
+				{lessons.data.map((lesson) => (
+					<AdminEntityCard
+						course={lesson ?? {}}
+						key={lesson.id}
+						to={`./${lesson.slug}`}
+					/>
 				))}
 			</div>
 		</>

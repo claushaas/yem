@@ -1,8 +1,10 @@
-import {type TEmailTemplate} from '../../types/email-template.type.js';
+import { type TEmailTemplate } from '../../types/email-template.type.js';
 
-export const newPassWordEmailTemplate = (firstName: string, to: string, password: string): TEmailTemplate => ({
-	to,
-	subject: `${firstName}, seu acesso chegou!`,
+export const newPassWordEmailTemplate = (
+	firstName: string,
+	to: string,
+	password: string,
+): TEmailTemplate => ({
 	html: `
   <!DOCTYPE html>
 <html xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office" lang="en">
@@ -163,6 +165,7 @@ export const newPassWordEmailTemplate = (firstName: string, to: string, password
 
 </html>
   `,
+	subject: `${firstName}, seu acesso chegou!`,
 	text: `
   Olá, ${firstName}, sua nova senha chegou.
 
@@ -177,4 +180,5 @@ export const newPassWordEmailTemplate = (firstName: string, to: string, password
   Um forte abraço,
   Equipe Yoga em Movimento
   `,
+	to,
 });

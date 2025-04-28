@@ -1,8 +1,10 @@
-import {type TEmailTemplate} from '../../types/email-template.type.js';
+import { type TEmailTemplate } from '../../types/email-template.type.js';
 
-export const formationHotmartPrintedPixEmailTemplate = (firstName: string, to: string, linkDoPix: string): TEmailTemplate => ({
-	to,
-	subject: 'Seu boleto está atrasado',
+export const formationHotmartPrintedPixEmailTemplate = (
+	firstName: string,
+	to: string,
+	linkDoPix: string,
+): TEmailTemplate => ({
 	html: `
   <!DOCTYPE html>
 <html xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office" lang="en">
@@ -152,6 +154,7 @@ export const formationHotmartPrintedPixEmailTemplate = (firstName: string, to: s
 
 </html>
   `,
+	subject: 'Seu boleto está atrasado',
 	text: `
   Olá, ${firstName}, foi emitido um código PIX para pagamento de uma parcela da Formação em Yoga.
 
@@ -159,4 +162,5 @@ export const formationHotmartPrintedPixEmailTemplate = (firstName: string, to: s
 
 	E se precisar da nossa ajuda, ficamos a disposição 🙏🙌😊
   `,
+	to,
 });

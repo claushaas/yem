@@ -1,9 +1,9 @@
-import {Request} from '../utils/request.js';
-import {CustomError} from '../utils/custom-error.js';
-import {type TServiceReturn} from '../types/service-return.type.js';
-import {type TMauticUserCreationAttributes} from '../types/user.type.js';
-import {logger} from '../utils/logger.util.js';
-import {MauticUserForCreation} from '../entities/user.entity.server.js';
+import { MauticUserForCreation } from '../entities/user.entity.server.js';
+import { type TServiceReturn } from '../types/service-return.type.js';
+import { type TMauticUserCreationAttributes } from '../types/user.type.js';
+import { CustomError } from '../utils/custom-error.js';
+import { logger } from '../utils/logger.util.js';
+import { Request } from '../utils/request.js';
 
 export class MauticService {
 	private readonly _request: Request;
@@ -14,16 +14,18 @@ export class MauticService {
 		const credentials = `${username}:${password}`;
 		const base64Credentials = Buffer.from(credentials).toString('base64');
 		this._request = new Request(process.env.MAUTIC_API_URL!, {
-			'Content-Type': 'application/json', // eslint-disable-line @typescript-eslint/naming-convention
-			Authorization: `Basic ${base64Credentials}`,
+			Authorization: `Basic ${base64Credentials}`, // eslint-disable-line @typescript-eslint/naming-convention
+			'Content-Type': 'application/json',
 		});
 	}
 
-	public async createContact(user: TMauticUserCreationAttributes): Promise<TServiceReturn<{
-		contact: {
-			id: string;
-		};
-	}>> {
+	public async createContact(user: TMauticUserCreationAttributes): Promise<
+		TServiceReturn<{
+			contact: {
+				id: string;
+			};
+		}>
+	> {
 		const validatedUser = new MauticUserForCreation(user);
 
 		const url = '/contacts/new';
@@ -34,7 +36,7 @@ export class MauticService {
 		};
 
 		try {
-			const response = await this._request.post(url, data) as {
+			const response = (await this._request.post(url, data)) as {
 				data: {
 					contact: {
 						id: string;
@@ -43,32 +45,48 @@ export class MauticService {
 			};
 
 			return {
-				status: 'CREATED',
 				data: response.data,
+				status: 'CREATED',
 			};
 		} catch (error) {
-			logger.logError(`Error creating contact for ${user.email}: ${(error as Error).message}`);
-			throw new CustomError('INVALID_DATA', `Error creating contact for ${user.email}`);
+			logger.logError(
+				`Error creating contact for ${user.email}: ${(error as Error).message}`,
+			);
+			throw new CustomError(
+				'INVALID_DATA',
+				`Error creating contact for ${user.email}`,
+			);
 		}
 	}
 
-	public async addContactToSegment(contactId: string, segmentId: number): Promise<TServiceReturn<string>> {
+	public async addContactToSegment(
+		contactId: string,
+		segmentId: number,
+	): Promise<TServiceReturn<string>> {
 		const url = `/segments/${segmentId}/contact/${contactId}/add`;
 
 		try {
 			await this._request.post(url);
 
 			return {
-				status: 'NO_CONTENT',
 				data: 'Contact added to segment successfully',
+				status: 'NO_CONTENT',
 			};
 		} catch (error) {
-			logger.logError(`Error adding contact ${contactId} to segment ${segmentId}: ${(error as Error).message}`);
-			throw new CustomError('INVALID_DATA', `Error adding contact ${contactId} to segment ${segmentId}`);
+			logger.logError(
+				`Error adding contact ${contactId} to segment ${segmentId}: ${(error as Error).message}`,
+			);
+			throw new CustomError(
+				'INVALID_DATA',
+				`Error adding contact ${contactId} to segment ${segmentId}`,
+			);
 		}
 	}
 
-	public async addContactToSegmentByEmail(email: string, segmentId: number): Promise<TServiceReturn<string>> {
+	public async addContactToSegmentByEmail(
+		email: string,
+		segmentId: number,
+	): Promise<TServiceReturn<string>> {
 		const response = await this._getContactIdByEmail(email);
 		const contactId = response.data;
 
@@ -78,16 +96,24 @@ export class MauticService {
 			await this._request.post(url);
 
 			return {
-				status: 'NO_CONTENT',
 				data: 'Contact added to segment successfully',
+				status: 'NO_CONTENT',
 			};
 		} catch (error) {
-			logger.logError(`Error adding contact ${contactId} to segment ${segmentId}: ${(error as Error).message}`);
-			throw new CustomError('INVALID_DATA', `Error adding contact ${contactId} to segment ${segmentId}`);
+			logger.logError(
+				`Error adding contact ${contactId} to segment ${segmentId}: ${(error as Error).message}`,
+			);
+			throw new CustomError(
+				'INVALID_DATA',
+				`Error adding contact ${contactId} to segment ${segmentId}`,
+			);
 		}
 	}
 
-	public async updateContact(email: string, data: Partial<TMauticUserCreationAttributes>): Promise<TServiceReturn<string>> {
+	public async updateContact(
+		email: string,
+		data: Partial<TMauticUserCreationAttributes>,
+	): Promise<TServiceReturn<string>> {
 		logger.logDebug(`Updating contact ${email}`);
 		const response = await this._getContactIdByEmail(email);
 		const contactId = response.data;
@@ -99,12 +125,17 @@ export class MauticService {
 			await this._request.patch(url, data);
 
 			return {
-				status: 'NO_CONTENT',
 				data: 'Contact updated successfully',
+				status: 'NO_CONTENT',
 			};
 		} catch (error) {
-			logger.logError(`Error updating contact ${contactId}: ${(error as Error).message}`);
-			throw new CustomError('INVALID_DATA', `Error updating contact ${contactId}`);
+			logger.logError(
+				`Error updating contact ${contactId}: ${(error as Error).message}`,
+			);
+			throw new CustomError(
+				'INVALID_DATA',
+				`Error updating contact ${contactId}`,
+			);
 		}
 	}
 
@@ -118,16 +149,23 @@ export class MauticService {
 			await this._request.delete(url);
 
 			return {
-				status: 'SUCCESSFUL',
 				data: `User ${email} deleted successfully`,
+				status: 'SUCCESSFUL',
 			};
 		} catch (error) {
-			logger.logError(`Error deleting contact ${contactId}: ${(error as Error).message}`);
-			throw new CustomError('INVALID_DATA', `Error deleting contact ${contactId}`);
+			logger.logError(
+				`Error deleting contact ${contactId}: ${(error as Error).message}`,
+			);
+			throw new CustomError(
+				'INVALID_DATA',
+				`Error deleting contact ${contactId}`,
+			);
 		}
 	}
 
-	public async addToDoNotContactList(email: string): Promise<TServiceReturn<string>> {
+	public async addToDoNotContactList(
+		email: string,
+	): Promise<TServiceReturn<string>> {
 		const response = await this._getContactIdByEmail(email);
 		const contactId = response.data;
 
@@ -137,16 +175,23 @@ export class MauticService {
 			await this._request.post(url);
 
 			return {
-				status: 'NO_CONTENT',
 				data: 'Contact added to do not contact list successfully',
+				status: 'NO_CONTENT',
 			};
 		} catch (error) {
-			logger.logError(`Error adding contact ${contactId} to do not contact list: ${(error as Error).message}`);
-			throw new CustomError('INVALID_DATA', `Error adding contact ${contactId} to do not contact list`);
+			logger.logError(
+				`Error adding contact ${contactId} to do not contact list: ${(error as Error).message}`,
+			);
+			throw new CustomError(
+				'INVALID_DATA',
+				`Error adding contact ${contactId} to do not contact list`,
+			);
 		}
 	}
 
-	public async removeFromDoNotContactList(email: string): Promise<TServiceReturn<string>> {
+	public async removeFromDoNotContactList(
+		email: string,
+	): Promise<TServiceReturn<string>> {
 		const response = await this._getContactIdByEmail(email);
 		const contactId = response.data;
 
@@ -156,16 +201,23 @@ export class MauticService {
 			await this._request.post(url);
 
 			return {
-				status: 'NO_CONTENT',
 				data: 'Contact removed from do not contact list successfully',
+				status: 'NO_CONTENT',
 			};
 		} catch (error) {
-			logger.logError(`Error removing contact ${contactId} from do not contact list: ${(error as Error).message}`);
-			throw new CustomError('INVALID_DATA', `Error removing contact ${contactId} from do not contact list`);
+			logger.logError(
+				`Error removing contact ${contactId} from do not contact list: ${(error as Error).message}`,
+			);
+			throw new CustomError(
+				'INVALID_DATA',
+				`Error removing contact ${contactId} from do not contact list`,
+			);
 		}
 	}
 
-	private async _getContactIdByEmail(email: string): Promise<TServiceReturn<string>> {
+	private async _getContactIdByEmail(
+		email: string,
+	): Promise<TServiceReturn<string>> {
 		const url = '/contacts';
 		const parameters = {
 			// eslint-disable-next-line @typescript-eslint/naming-convention
@@ -179,15 +231,22 @@ export class MauticService {
 		try {
 			const response = await this._request.get(url, parameters);
 
-			const contactId = Object.keys(response.data.contacts as Record<string, Record<string, unknown>>)[0];
+			const contactId = Object.keys(
+				response.data.contacts as Record<string, Record<string, unknown>>,
+			)[0];
 
 			return {
-				status: 'SUCCESSFUL',
 				data: contactId,
+				status: 'SUCCESSFUL',
 			};
 		} catch (error) {
-			logger.logError(`Error getting contact by email ${email}: ${(error as Error).message}`);
-			throw new CustomError('INVALID_DATA', `Error getting contact by email ${email}`);
+			logger.logError(
+				`Error getting contact by email ${email}: ${(error as Error).message}`,
+			);
+			throw new CustomError(
+				'INVALID_DATA',
+				`Error getting contact by email ${email}`,
+			);
 		}
 	}
 }

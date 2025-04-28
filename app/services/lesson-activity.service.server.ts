@@ -1,8 +1,8 @@
-import {type Prisma, type PrismaClient} from '@prisma/client';
-import {database} from '../database/database.server.js';
-import {type TServiceReturn} from '~/types/service-return.type.js';
-import {type TGetLessonActivityForUser} from '~/types/lesson-activity.type.js';
-import {logger} from '~/utils/logger.util.js';
+import { type Prisma, type PrismaClient } from '@prisma/client';
+import { type TGetLessonActivityForUser } from '~/types/lesson-activity.type.js';
+import { type TServiceReturn } from '~/types/service-return.type.js';
+import { logger } from '~/utils/logger.util.js';
+import { database } from '../database/database.server.js';
 
 export class LessonActivityService {
 	private readonly _model: PrismaClient;
@@ -11,19 +11,24 @@ export class LessonActivityService {
 		this._model = model;
 	}
 
-	public async getCourseProgressForUser(courseSlug: string, userId: string | undefined): Promise<TServiceReturn<{
-		totalLessons: number | undefined;
-		completedLessons: number | undefined;
-		percentage: number | undefined;
-	}>> {
+	public async getCourseProgressForUser(
+		courseSlug: string,
+		userId: string | undefined,
+	): Promise<
+		TServiceReturn<{
+			totalLessons: number | undefined;
+			completedLessons: number | undefined;
+			percentage: number | undefined;
+		}>
+	> {
 		if (!userId) {
 			return {
-				status: 'SUCCESSFUL',
 				data: {
-					totalLessons: undefined,
 					completedLessons: undefined,
 					percentage: undefined,
+					totalLessons: undefined,
 				},
+				status: 'SUCCESSFUL',
 			};
 		}
 
@@ -45,7 +50,6 @@ export class LessonActivityService {
 
 		const completedLessons = await this._model.completedLessons.count({
 			where: {
-				userId,
 				lesson: {
 					modules: {
 						some: {
@@ -59,34 +63,43 @@ export class LessonActivityService {
 						},
 					},
 				},
+				userId,
 			},
 		});
 
 		const data = {
-			totalLessons,
 			completedLessons,
-			percentage: completedLessons === 0 ? 0 : Math.round((completedLessons / totalLessons) * 100),
+			percentage:
+				completedLessons === 0
+					? 0
+					: Math.round((completedLessons / totalLessons) * 100),
+			totalLessons,
 		};
 
 		return {
-			status: 'SUCCESSFUL',
 			data,
+			status: 'SUCCESSFUL',
 		};
 	}
 
-	public async getModuleProgressForUser(moduleSlug: string, userId: string | undefined): Promise<TServiceReturn<{
-		totalLessons: number | undefined;
-		completedLessons: number | undefined;
-		percentage: number | undefined;
-	}>> {
+	public async getModuleProgressForUser(
+		moduleSlug: string,
+		userId: string | undefined,
+	): Promise<
+		TServiceReturn<{
+			totalLessons: number | undefined;
+			completedLessons: number | undefined;
+			percentage: number | undefined;
+		}>
+	> {
 		if (!userId) {
 			return {
-				status: 'SUCCESSFUL',
 				data: {
-					totalLessons: undefined,
 					completedLessons: undefined,
 					percentage: undefined,
+					totalLessons: undefined,
 				},
+				status: 'SUCCESSFUL',
 			};
 		}
 
@@ -102,7 +115,6 @@ export class LessonActivityService {
 
 		const completedLessons = await this._model.completedLessons.count({
 			where: {
-				userId,
 				lesson: {
 					modules: {
 						some: {
@@ -110,167 +122,217 @@ export class LessonActivityService {
 						},
 					},
 				},
+				userId,
 			},
 		});
 
 		const data = {
-			totalLessons,
 			completedLessons,
-			percentage: completedLessons === 0 ? 0 : Math.round((completedLessons / totalLessons) * 100),
+			percentage:
+				completedLessons === 0
+					? 0
+					: Math.round((completedLessons / totalLessons) * 100),
+			totalLessons,
 		};
 
 		return {
-			status: 'SUCCESSFUL',
 			data,
+			status: 'SUCCESSFUL',
 		};
 	}
 
-	public async getLessonActivityForUser(lessonSlug: string, userId: string | undefined): Promise<TServiceReturn<TGetLessonActivityForUser>> {
+	public async getLessonActivityForUser(
+		lessonSlug: string,
+		userId: string | undefined,
+	): Promise<TServiceReturn<TGetLessonActivityForUser>> {
 		if (!userId) {
 			return {
-				status: 'SUCCESSFUL',
 				data: {
-					saved: undefined,
 					completed: undefined,
 					favorited: undefined,
+					saved: undefined,
 				},
+				status: 'SUCCESSFUL',
 			};
 		}
 
 		try {
 			const lesson = await this._model.lesson.findUnique({
-				where: {
-					slug: lessonSlug,
-				},
 				select: {
 					completedBy: {
-						where: {
-							userId,
-							lessonSlug,
-						},
 						select: {
 							isCompleted: true,
 						},
-					},
-					savedBy: {
 						where: {
-							userId,
 							lessonSlug,
-						},
-						select: {
-							isSaved: true,
+							userId,
 						},
 					},
 					favoritedBy: {
-						where: {
-							userId,
-							lessonSlug,
-						},
 						select: {
 							isFavorited: true,
 						},
+						where: {
+							lessonSlug,
+							userId,
+						},
 					},
+					savedBy: {
+						select: {
+							isSaved: true,
+						},
+						where: {
+							lessonSlug,
+							userId,
+						},
+					},
+				},
+				where: {
+					slug: lessonSlug,
 				},
 			});
 
 			return {
-				status: 'SUCCESSFUL',
 				data: {
-					saved: (lesson?.savedBy && lesson.savedBy.length > 0 && lesson.savedBy[0].isSaved) ?? false,
-					completed: (lesson?.completedBy && lesson.completedBy.length > 0 && lesson.completedBy[0].isCompleted) ?? false,
-					favorited: (lesson?.favoritedBy && lesson.favoritedBy.length > 0 && lesson.favoritedBy[0].isFavorited) ?? false,
+					completed:
+						(lesson?.completedBy &&
+							lesson.completedBy.length > 0 &&
+							lesson.completedBy[0].isCompleted) ??
+						false,
+					favorited:
+						(lesson?.favoritedBy &&
+							lesson.favoritedBy.length > 0 &&
+							lesson.favoritedBy[0].isFavorited) ??
+						false,
+					saved:
+						(lesson?.savedBy &&
+							lesson.savedBy.length > 0 &&
+							lesson.savedBy[0].isSaved) ??
+						false,
 				},
+				status: 'SUCCESSFUL',
 			};
 		} catch (error) {
-			logger.logError(`Error getting lesson activity for user: ${(error as Error).message}`);
-			throw new Error(`Error getting lesson activity for user: ${(error as Error).message}`);
+			logger.logError(
+				`Error getting lesson activity for user: ${(error as Error).message}`,
+			);
+			throw new Error(
+				`Error getting lesson activity for user: ${(error as Error).message}`,
+			);
 		}
 	}
 
-	public async togleLessonSavedForUser(lessonSlug: string, userId: string, alreadySaved: boolean): Promise<TServiceReturn<string>> {
+	public async togleLessonSavedForUser(
+		lessonSlug: string,
+		userId: string,
+		alreadySaved: boolean,
+	): Promise<TServiceReturn<string>> {
 		try {
 			await this._model.savedLessons.upsert({
-				where: {
-					userId_lessonSlug: { // eslint-disable-line @typescript-eslint/naming-convention
-						userId,
-						lessonSlug,
-					},
-				},
 				create: {
-					userId,
-					lessonSlug,
 					isSaved: !alreadySaved,
+					lessonSlug,
+					userId,
 				},
 				update: {
 					isSaved: !alreadySaved,
 				},
+				where: {
+					userId_lessonSlug: {
+						// eslint-disable-line @typescript-eslint/naming-convention
+						lessonSlug,
+						userId,
+					},
+				},
 			});
 
 			return {
-				status: 'SUCCESSFUL',
 				data: 'Lesson saved toggled successfully',
+				status: 'SUCCESSFUL',
 			};
 		} catch (error) {
-			logger.logError(`Error toggling lesson saved for user: ${(error as Error).message}`);
-			throw new Error(`Error toggling lesson saved for user: ${(error as Error).message}`);
+			logger.logError(
+				`Error toggling lesson saved for user: ${(error as Error).message}`,
+			);
+			throw new Error(
+				`Error toggling lesson saved for user: ${(error as Error).message}`,
+			);
 		}
 	}
 
-	public async togleLessonCompletedForUser(lessonSlug: string, userId: string, alreadyCompleted: boolean): Promise<TServiceReturn<string>> {
+	public async togleLessonCompletedForUser(
+		lessonSlug: string,
+		userId: string,
+		alreadyCompleted: boolean,
+	): Promise<TServiceReturn<string>> {
 		try {
 			await this._model.completedLessons.upsert({
-				where: {
-					lessonSlug_userId: { // eslint-disable-line @typescript-eslint/naming-convention
-						lessonSlug,
-						userId,
-					},
-				},
 				create: {
-					userId,
-					lessonSlug,
 					isCompleted: !alreadyCompleted,
+					lessonSlug,
+					userId,
 				},
 				update: {
 					isCompleted: !alreadyCompleted,
 				},
+				where: {
+					lessonSlug_userId: {
+						// eslint-disable-line @typescript-eslint/naming-convention
+						lessonSlug,
+						userId,
+					},
+				},
 			});
 
 			return {
-				status: 'SUCCESSFUL',
 				data: 'Lesson completed toggled successfully',
+				status: 'SUCCESSFUL',
 			};
 		} catch (error) {
-			logger.logError(`Error toggling lesson completed for user: ${(error as Error).message}`);
-			throw new Error(`Error toggling lesson completed for user: ${(error as Error).message}`);
+			logger.logError(
+				`Error toggling lesson completed for user: ${(error as Error).message}`,
+			);
+			throw new Error(
+				`Error toggling lesson completed for user: ${(error as Error).message}`,
+			);
 		}
 	}
 
-	public async togleLessonFavoritedForUser(lessonSlug: string, userId: string, alreadyFavorited: boolean): Promise<TServiceReturn<string>> {
+	public async togleLessonFavoritedForUser(
+		lessonSlug: string,
+		userId: string,
+		alreadyFavorited: boolean,
+	): Promise<TServiceReturn<string>> {
 		try {
 			await this._model.favoritedLessons.upsert({
-				where: {
-					userId_lessonSlug: { // eslint-disable-line @typescript-eslint/naming-convention
-						userId,
-						lessonSlug,
-					},
-				},
 				create: {
-					userId,
-					lessonSlug,
 					isFavorited: !alreadyFavorited,
+					lessonSlug,
+					userId,
 				},
 				update: {
 					isFavorited: !alreadyFavorited,
 				},
+				where: {
+					userId_lessonSlug: {
+						// eslint-disable-line @typescript-eslint/naming-convention
+						lessonSlug,
+						userId,
+					},
+				},
 			});
 
 			return {
-				status: 'SUCCESSFUL',
 				data: 'Lesson favorited toggled successfully',
+				status: 'SUCCESSFUL',
 			};
 		} catch (error) {
-			logger.logError(`Error toggling lesson favorited for user: ${(error as Error).message}`);
-			throw new Error(`Error toggling lesson favorited for user: ${(error as Error).message}`);
+			logger.logError(
+				`Error toggling lesson favorited for user: ${(error as Error).message}`,
+			);
+			throw new Error(
+				`Error toggling lesson favorited for user: ${(error as Error).message}`,
+			);
 		}
 	}
 }
