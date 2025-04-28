@@ -1,14 +1,14 @@
 import Joi from 'joi';
-import {type TSubscription} from '../types/subscription.type.js';
-import {CustomError} from '../utils/custom-error.js';
+import { type TSubscription } from '../types/subscription.type.js';
+import { CustomError } from '../utils/custom-error.js';
 
 const subscriptionSchema = Joi.object({
-	userId: Joi.string().uuid().required(),
 	courseSlug: Joi.string().required(),
 	expiresAt: Joi.date().required(),
 	provider: Joi.string().valid('hotmart', 'iugu', 'manual').required(),
 	providerSubscriptionId: Joi.string().required(),
 	providerSubscriptionStatus: Joi.string().allow(''),
+	userId: Joi.string().uuid().required(),
 });
 
 export class Subscription implements TSubscription {
@@ -20,10 +20,13 @@ export class Subscription implements TSubscription {
 	private readonly _providerSubscriptionStatus?: string;
 
 	constructor(subscription: TSubscription) {
-		const {error} = subscriptionSchema.validate(subscription);
+		const { error } = subscriptionSchema.validate(subscription);
 
 		if (error) {
-			throw new CustomError('UNPROCESSABLE_ENTITY', `Invalid subscription data: ${error.message}`);
+			throw new CustomError(
+				'UNPROCESSABLE_ENTITY',
+				`Invalid subscription data: ${error.message}`,
+			);
 		}
 
 		this._userId = subscription.userId;

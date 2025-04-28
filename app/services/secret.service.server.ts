@@ -1,9 +1,13 @@
-import {fromEnv} from '@aws-sdk/credential-providers';
-import {SecretsManagerClient, GetSecretValueCommand, UpdateSecretCommand} from '@aws-sdk/client-secrets-manager';
-import {CustomError} from '../utils/custom-error.js';
-import {type TServiceReturn} from '../types/service-return.type.js';
-import {type TSecret} from '../types/secret.type.js';
-import {logger} from '../utils/logger.util.js';
+import {
+	GetSecretValueCommand,
+	SecretsManagerClient,
+	UpdateSecretCommand,
+} from '@aws-sdk/client-secrets-manager';
+import { fromEnv } from '@aws-sdk/credential-providers';
+import { type TSecret } from '../types/secret.type.js';
+import { type TServiceReturn } from '../types/service-return.type.js';
+import { CustomError } from '../utils/custom-error.js';
+import { logger } from '../utils/logger.util.js';
 
 export class SecretService {
 	private readonly _awsClient: SecretsManagerClient;
@@ -11,8 +15,8 @@ export class SecretService {
 
 	constructor() {
 		this._awsClient = new SecretsManagerClient({
-			region: process.env.AWS_REGION ?? 'us-east-1',
 			credentials: fromEnv(),
+			region: process.env.AWS_REGION ?? 'us-east-1',
 		});
 		this._awsSecretId = process.env.AWS_SECRET_ID ?? '';
 	}
@@ -21,7 +25,6 @@ export class SecretService {
 		try {
 			logger.logDebug('Getting secret');
 			const parameters = {
-
 				SecretId: this._awsSecretId,
 			};
 
@@ -33,8 +36,8 @@ export class SecretService {
 			}
 
 			return {
-				status: 'SUCCESSFUL',
 				data: JSON.parse(response.SecretString ?? '{}') as TSecret,
+				status: 'SUCCESSFUL',
 			};
 		} catch {
 			logger.logError('Error getting secret');
@@ -42,11 +45,12 @@ export class SecretService {
 		}
 	}
 
-	public async setSecret(secret: Record<string, string>): Promise<TServiceReturn<string>> {
+	public async setSecret(
+		secret: Record<string, string>,
+	): Promise<TServiceReturn<string>> {
 		try {
 			logger.logDebug('Setting secret');
 			const parameters = {
-
 				SecretId: this._awsSecretId,
 
 				SecretString: JSON.stringify(secret),
@@ -60,8 +64,8 @@ export class SecretService {
 			}
 
 			return {
-				status: 'NO_CONTENT',
 				data: response.Name ?? '',
+				status: 'NO_CONTENT',
 			};
 		} catch {
 			logger.logError('Error setting secret');

@@ -1,6 +1,7 @@
 /* eslint-disable react/require-default-props */
-import {type LegacyRef, forwardRef} from 'react';
-import {motion} from 'motion/react';
+
+import { motion } from 'motion/react';
+import { forwardRef, type LegacyRef } from 'react';
 
 export enum ButtonPreset {
 	Primary = 'primary',
@@ -49,7 +50,9 @@ const baseButtonClasses = `
 const classNames = (preset: ButtonPreset) => {
 	switch (preset) {
 		case ButtonPreset.Primary: {
-			return baseButtonClasses + `
+			return (
+				baseButtonClasses +
+				`
 				bg-purple-9
 				dark:bg-purpledark-9
 				text-whitea-11
@@ -59,11 +62,14 @@ const classNames = (preset: ButtonPreset) => {
 				dark:active:bg-purpledark-12
 				focus:ring-purple-9
 				shadow-purple-12
-			`;
+			`
+			);
 		}
 
 		case ButtonPreset.Secondary: {
-			return baseButtonClasses + `
+			return (
+				baseButtonClasses +
+				`
 				bg-purple-3
 				dark:bg-purpledark-3
 				text-blacka-7
@@ -73,34 +79,42 @@ const classNames = (preset: ButtonPreset) => {
 				active:bg-purple-5
 				dark:active:bg-purpledark-5
 				focus:ring-purple-3
-			`;
+			`
+			);
 		}
 	}
 };
 
 const noop = () => {}; // eslint-disable-line @typescript-eslint/no-empty-function
 
-export const Button = forwardRef(({
-	className,
-	isDisabled: disabled = false,
-	preset = ButtonPreset.Primary,
-	text = 'Clicar Aqui',
-	type = ButtonType.Button,
-	onClick = noop,
-}: ButtonProperties, forwardedReference: LegacyRef<HTMLButtonElement>) => (
-	<motion.button
-		ref={forwardedReference}
-		whileHover={{
-			scale: 1.05,
-			transition: {
-				duration: 0.5,
-			},
-		}}
-		className={classNames(preset) + (className ? ` ${className}` : '')}
-		disabled={disabled}
-		type={type ?? ButtonType.Button}
-		onClick={onClick}
-	>
-		<span className='font-gotham-bold leading-none drop-shadow-xs'>{text}</span>
-	</motion.button>
-));
+export const Button = forwardRef(
+	(
+		{
+			className,
+			isDisabled: disabled = false,
+			preset = ButtonPreset.Primary,
+			text = 'Clicar Aqui',
+			type = ButtonType.Button,
+			onClick = noop,
+		}: ButtonProperties,
+		forwardedReference: LegacyRef<HTMLButtonElement>,
+	) => (
+		<motion.button
+			className={classNames(preset) + (className ? ` ${className}` : '')}
+			disabled={disabled}
+			onClick={onClick}
+			ref={forwardedReference}
+			type={type ?? ButtonType.Button}
+			whileHover={{
+				scale: 1.05,
+				transition: {
+					duration: 0.5,
+				},
+			}}
+		>
+			<span className="font-gotham-bold leading-none drop-shadow-xs">
+				{text}
+			</span>
+		</motion.button>
+	),
+);

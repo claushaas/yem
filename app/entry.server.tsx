@@ -1,16 +1,24 @@
-import {PassThrough} from 'node:stream';
-import {type AppLoadContext, type EntryContext, ServerRouter} from 'react-router';
-import {createReadableStreamFromReadable} from '@react-router/node';
-import {isbot} from 'isbot';
-import {type RenderToPipeableStreamOptions, renderToPipeableStream} from 'react-dom/server';
-import {executeAndRepeat} from './utils/background-task.js';
-import {logger} from './utils/logger.util';
-import {populateCache} from './cache/initial-cache-population.js';
-import {IsBotProvider} from './hooks/use-is-bot.hook.js';
+import { PassThrough } from 'node:stream';
+import { createReadableStreamFromReadable } from '@react-router/node';
+import { isbot } from 'isbot';
+import {
+	type RenderToPipeableStreamOptions,
+	renderToPipeableStream,
+} from 'react-dom/server';
+import {
+	type AppLoadContext,
+	type EntryContext,
+	ServerRouter,
+} from 'react-router';
+import { populateCache } from './cache/initial-cache-population.js';
+import { IsBotProvider } from './hooks/use-is-bot.hook.js';
+import { executeAndRepeat } from './utils/background-task.js';
+import { logger } from './utils/logger.util';
 
 export const streamTimeout = 5000;
 
-export default async function handleRequest( // eslint-disable-line max-params
+export default async function handleRequest(
+	// eslint-disable-line max-params
 	request: Request,
 	responseStatusCode: number,
 	responseHeaders: Headers,
@@ -23,12 +31,14 @@ export default async function handleRequest( // eslint-disable-line max-params
 
 		// Ensure requests from bots and SPA Mode renders wait for all content to load before responding
 		// https://react.dev/reference/react-dom/server/renderToPipeableStream#waiting-for-all-content-to-load-for-crawlers-and-static-generation
-		const readyOption: keyof RenderToPipeableStreamOptions
-      = (userAgent && isbot(userAgent)) || routerContext.isSpaMode ? 'onAllReady' : 'onShellReady'; // eslint-disable-line @typescript-eslint/prefer-nullish-coalescing
+		const readyOption: keyof RenderToPipeableStreamOptions =
+			(userAgent && isbot(userAgent)) || routerContext.isSpaMode
+				? 'onAllReady'
+				: 'onShellReady'; // eslint-disable-line @typescript-eslint/prefer-nullish-coalescing
 
-		const {pipe, abort} = renderToPipeableStream(
+		const { pipe, abort } = renderToPipeableStream(
 			<IsBotProvider isBot={isbot(request.headers.get('user-agent') ?? '')}>
-				<ServerRouter context={routerContext} url={request.url}/>
+				<ServerRouter context={routerContext} url={request.url} />
 			</IsBotProvider>,
 			{
 				[readyOption]() {
@@ -47,9 +57,6 @@ export default async function handleRequest( // eslint-disable-line max-params
 
 					pipe(body);
 				},
-				onShellError(error: unknown) {
-					reject(error); // eslint-disable-line @typescript-eslint/prefer-promise-reject-errors
-				},
 				onError(error: unknown) {
 					responseStatusCode = 500;
 					// Log streaming rendering errors from inside the shell.  Don't log
@@ -58,6 +65,9 @@ export default async function handleRequest( // eslint-disable-line max-params
 					if (shellRendered) {
 						console.error(error);
 					}
+				},
+				onShellError(error: unknown) {
+					reject(error); // eslint-disable-line @typescript-eslint/prefer-promise-reject-errors
 				},
 			},
 		);
@@ -70,7 +80,8 @@ export default async function handleRequest( // eslint-disable-line max-params
 
 const ONE_DAY = 1000 * 60 * 60 * 24;
 
-executeAndRepeat(async () => { // eslint-disable-line @typescript-eslint/no-floating-promises
+executeAndRepeat(async () => {
+	// eslint-disable-line @typescript-eslint/no-floating-promises
 	logger.logInfo('Populate cache task started');
 	await populateCache();
 	logger.logInfo('Populate cache task finished');

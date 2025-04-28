@@ -1,4 +1,4 @@
-import axios, {type AxiosResponse, type AxiosInstance} from 'axios';
+import axios, { type AxiosInstance, type AxiosResponse } from 'axios';
 
 export class Request {
 	private readonly _request: AxiosInstance;
@@ -10,18 +10,21 @@ export class Request {
 		});
 	}
 
-	public async get(url: string, parameters: Record<string, string> = {}): Promise<AxiosResponse> {
-		return this._request.get(url, {params: parameters});
+	public async get(
+		url: string,
+		parameters: Record<string, string> = {},
+	): Promise<AxiosResponse> {
+		return this._request.get(url, { params: parameters });
 	}
 
-	public async post(
-		url: string,
-		data: unknown = {},
-	): Promise<AxiosResponse> {
+	public async post(url: string, data: unknown = {}): Promise<AxiosResponse> {
 		return this._request.post(url, data);
 	}
 
-	public async put(url: string, data: Record<string, string> = {}): Promise<AxiosResponse> {
+	public async put(
+		url: string,
+		data: Record<string, string> = {},
+	): Promise<AxiosResponse> {
 		return this._request.put(url, data);
 	}
 
@@ -29,7 +32,10 @@ export class Request {
 		return this._request.delete(url);
 	}
 
-	public async patch(url: string, data: Record<string, string> = {}): Promise<AxiosResponse> {
+	public async patch(
+		url: string,
+		data: Record<string, string> = {},
+	): Promise<AxiosResponse> {
 		return this._request.patch(url, data);
 	}
 }

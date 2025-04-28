@@ -1,25 +1,27 @@
 import Joi from 'joi';
-import {type TLessonType, type TLesson} from '../types/lesson.type.js';
-import {CustomError} from '../utils/custom-error.js';
-import {type TTags} from '../types/tag.type.js';
-import {convertNameToSlug} from '~/utils/convert-name-to-slug.js';
+import { convertNameToSlug } from '~/utils/convert-name-to-slug.js';
+import { type TLesson, type TLessonType } from '../types/lesson.type.js';
+import { type TTags } from '../types/tag.type.js';
+import { CustomError } from '../utils/custom-error.js';
 
 const lessonSchema = Joi.object({
-	oldId: Joi.string().allow(''),
-	name: Joi.string().required().min(3).max(100),
-	type: Joi.string().required().valid('video', 'text', 'courseWare'),
-	description: Joi.string().min(3).max(154).required(),
 	content: Joi.string().allow(''),
-	marketingContent: Joi.string().allow(''),
-	videoSourceUrl: Joi.string().allow(''),
-	marketingVideoUrl: Joi.string().allow(''),
-	thumbnailUrl: Joi.string().required(),
-	modules: Joi.array().items(Joi.string()).unique(),
-	tags: Joi.array().items(Joi.array().items(Joi.string()).min(2).max(2)).unique(),
+	description: Joi.string().min(3).max(154).required(),
 	duration: Joi.number().min(0).max(200),
-	order: Joi.number().integer().default(0),
 	isPublished: Joi.boolean().default(false),
+	marketingContent: Joi.string().allow(''),
+	marketingVideoUrl: Joi.string().allow(''),
+	modules: Joi.array().items(Joi.string()).unique(),
+	name: Joi.string().required().min(3).max(100),
+	oldId: Joi.string().allow(''),
+	order: Joi.number().integer().default(0),
 	publicationDate: Joi.date().default(new Date()),
+	tags: Joi.array()
+		.items(Joi.array().items(Joi.string()).min(2).max(2))
+		.unique(),
+	thumbnailUrl: Joi.string().required(),
+	type: Joi.string().required().valid('video', 'text', 'courseWare'),
+	videoSourceUrl: Joi.string().allow(''),
 });
 
 export class Lesson implements TLesson {
@@ -41,10 +43,13 @@ export class Lesson implements TLesson {
 	private readonly _publicationDate?: Date;
 
 	constructor(lesson: TLesson) {
-		const {error} = lessonSchema.validate(lesson);
+		const { error } = lessonSchema.validate(lesson);
 
 		if (error) {
-			throw new CustomError('UNPROCESSABLE_ENTITY', `Invalid lesson data: ${error.message}`);
+			throw new CustomError(
+				'UNPROCESSABLE_ENTITY',
+				`Invalid lesson data: ${error.message}`,
+			);
 		}
 
 		this._oldId = lesson.oldId;

@@ -1,8 +1,11 @@
-import {type TEmailTemplate} from '../../types/email-template.type.js';
+import { type TEmailTemplate } from '../../types/email-template.type.js';
 
-export const formationHotmartPrintedBilletEmailTemplate = (firstName: string, to: string, linkBoleto: string, codigoDoBoleto: string): TEmailTemplate => ({
-	to,
-	subject: 'Seu boleto está atrasado',
+export const formationHotmartPrintedBilletEmailTemplate = (
+	firstName: string,
+	to: string,
+	linkBoleto: string,
+	codigoDoBoleto: string,
+): TEmailTemplate => ({
 	html: `
   <!DOCTYPE html>
 <html xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office" lang="en">
@@ -153,6 +156,7 @@ export const formationHotmartPrintedBilletEmailTemplate = (firstName: string, to
 
 </html>
   `,
+	subject: 'Seu boleto está atrasado',
 	text: `
   Olá, ${firstName}, foi emitido um boleto para pagamento de uma parcela da Formação em Yoga.
 
@@ -162,4 +166,5 @@ export const formationHotmartPrintedBilletEmailTemplate = (firstName: string, to
 
 	E se precisar da nossa ajuda, ficamos a disposição 🙏🙌😊
   `,
+	to,
 });

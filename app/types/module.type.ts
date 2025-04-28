@@ -1,6 +1,6 @@
-import {type Prisma} from '@prisma/client';
-import {type TLessonDataForCache} from '~/cache/populate-lessons-to-cache.js';
-import {type TModuleToCourse} from '~/cache/populate-modules-to-cache.js';
+import { type Prisma } from '@prisma/client';
+import { type TLessonDataForCache } from '~/cache/populate-lessons-to-cache.js';
+import { type TModuleToCourse } from '~/cache/populate-modules-to-cache.js';
 
 export type TModule = {
 	oldId?: string;
@@ -31,13 +31,15 @@ export type TPrismaPayloadCreateOrUpdateModule = Prisma.ModuleGetPayload<{
 	};
 }>;
 
-export type TPrismaPayloadGetModulesList = Array<Prisma.ModuleGetPayload<{
-	select: {
-		id: true;
-		name: true;
-		slug: true;
-	};
-}>>;
+export type TPrismaPayloadGetModulesList = Array<
+	Prisma.ModuleGetPayload<{
+		select: {
+			id: true;
+			name: true;
+			slug: true;
+		};
+	}>
+>;
 
 export type TPrismaPayloadGetModuleBySlug = Prisma.ModuleToCourseGetPayload<{
 	include: {

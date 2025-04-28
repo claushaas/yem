@@ -4,4 +4,3 @@ export type TEmailTemplate = {
 	html: string;
 	text: string;
 };
-

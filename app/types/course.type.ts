@@ -1,4 +1,4 @@
-import {type Prisma} from '@prisma/client';
+import { type Prisma } from '@prisma/client';
 
 export type TCourse = {
 	oldId?: string;
@@ -16,19 +16,21 @@ export type TCourse = {
 	delegateAuthTo?: string[];
 };
 
-export type TPrismaPayloadGetAllCourses = Array<Prisma.CourseGetPayload<{
-	select: {
-		id: true;
-		name: true;
-		slug: true;
-		order: true;
-		description: true;
-		thumbnailUrl: true;
-		publicationDate: true;
-		isPublished: true;
-		isSelling: true;
-	};
-}>>;
+export type TPrismaPayloadGetAllCourses = Array<
+	Prisma.CourseGetPayload<{
+		select: {
+			id: true;
+			name: true;
+			slug: true;
+			order: true;
+			description: true;
+			thumbnailUrl: true;
+			publicationDate: true;
+			isPublished: true;
+			isSelling: true;
+		};
+	}>
+>;
 
 export type TPrismaPayloadGetCourseBySlug = Prisma.CourseGetPayload<{
 	include: {
@@ -65,4 +67,5 @@ export type TPrismaPayloadGetCourseBySlug = Prisma.CourseGetPayload<{
 	};
 }>;
 
-export type TPrismaPayloadCreateOrUpdateCourse = Prisma.CourseGetPayload<undefined>;
+export type TPrismaPayloadCreateOrUpdateCourse =
+	Prisma.CourseGetPayload<undefined>;
