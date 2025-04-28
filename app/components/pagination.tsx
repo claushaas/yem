@@ -1,17 +1,28 @@
-import {ChevronLeftIcon, ChevronRightIcon} from '@heroicons/react/24/outline';
-import {Link, useLocation} from 'react-router';
+import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
+import { Link, useLocation } from 'react-router';
 
 type PaginationProperties = {
 	readonly pages?: number;
 	readonly actualPage?: number;
 };
 
-export function Pagination({pages = 1, actualPage = 1}: PaginationProperties) {
-	const {pathname, search} = useLocation();
+export function Pagination({
+	pages = 1,
+	actualPage = 1,
+}: PaginationProperties) {
+	const { pathname, search } = useLocation();
 
-	const searchParameters = search.slice(1).split('&').filter(parameter => !parameter.startsWith('page')).join('&');
+	const searchParameters = search
+		.slice(1)
+		.split('&')
+		.filter((parameter) => !parameter.startsWith('page'))
+		.join('&');
 
-	const limitArraySize = (array: number[], currentPage: number, maxSize = 5) => {
+	const limitArraySize = (
+		array: number[],
+		currentPage: number,
+		maxSize = 5,
+	) => {
 		if (array.length <= maxSize) {
 			return array;
 		}
@@ -28,17 +39,17 @@ export function Pagination({pages = 1, actualPage = 1}: PaginationProperties) {
 		return array.slice(startIndex, startIndex + maxSize);
 	};
 
-	const pagesArray = Array.from({length: pages}, (_, index) => index + 1);
+	const pagesArray = Array.from({ length: pages }, (_, index) => index + 1);
 	const limitedPagesArray = limitArraySize(pagesArray, actualPage);
 
 	const limitedArrayFirstPage = limitedPagesArray[0];
 	const lastPage = pagesArray.at(-1);
 
 	return (
-		<div className='flex items-center justify-center gap-2'>
+		<div className="flex items-center justify-center gap-2">
 			{actualPage > 1 && (
 				<Link to={`${pathname}?page=${actualPage - 1}&${searchParameters}`}>
-					<ChevronLeftIcon className='size-4'/>
+					<ChevronLeftIcon className="size-4" />
 				</Link>
 			)}
 			{limitedArrayFirstPage !== 1 && (
@@ -49,11 +60,15 @@ export function Pagination({pages = 1, actualPage = 1}: PaginationProperties) {
 					<p>...</p>
 				</>
 			)}
-			{limitedPagesArray.map(page => {
+			{limitedPagesArray.map((page) => {
 				const isActualPage = page === actualPage;
 
 				if (isActualPage) {
-					return <p key={page} className='text-mauve-6 dark:text-mauve-10'>{page}</p>;
+					return (
+						<p className="text-mauve-6 dark:text-mauve-10" key={page}>
+							{page}
+						</p>
+					);
 				}
 
 				return (
@@ -72,7 +87,7 @@ export function Pagination({pages = 1, actualPage = 1}: PaginationProperties) {
 			)}
 			{actualPage < pages && (
 				<Link to={`${pathname}?page=${actualPage + 1}&${searchParameters}`}>
-					<ChevronRightIcon className='size-4'/>
+					<ChevronRightIcon className="size-4" />
 				</Link>
 			)}
 		</div>

@@ -1,8 +1,9 @@
-import {type TEmailTemplate} from '../../types/email-template.type.js';
+import { type TEmailTemplate } from '../../types/email-template.type.js';
 
-export const schoolHotmartDelayedBilletEmailTemplate = (firstName: string, to: string): TEmailTemplate => ({
-	to,
-	subject: 'Seu boleto está atrasado',
+export const schoolHotmartDelayedBilletEmailTemplate = (
+	firstName: string,
+	to: string,
+): TEmailTemplate => ({
 	html: `
   <!DOCTYPE html>
 <html xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office" lang="en">
@@ -153,6 +154,7 @@ export const schoolHotmartDelayedBilletEmailTemplate = (firstName: string, to: s
 
 </html>
   `,
+	subject: 'Seu boleto está atrasado',
 	text: `
   Olá, ${firstName}, tudo bem contigo?
 
@@ -162,4 +164,5 @@ export const schoolHotmartDelayedBilletEmailTemplate = (firstName: string, to: s
 	
   E se precisar da nossa ajuda, ficamos a disposição 🙏🙌😊
   `,
+	to,
 });

@@ -1,27 +1,15 @@
 import winston from 'winston';
 
-const timezoned = () => new Date().toLocaleString('pt-BR', {
-	timeZone: 'America/Sao_Paulo',
-});
+const timezoned = () =>
+	new Date().toLocaleString('pt-BR', {
+		timeZone: 'America/Sao_Paulo',
+	});
 
 class Logger {
 	private readonly _instance: winston.Logger;
 
 	constructor() {
 		this._instance = winston.createLogger({
-			level: process.env.WINSTON_LOG_LEVEL ?? 'debug',
-			format: winston.format.combine(
-				winston.format.timestamp({format: timezoned}),
-				winston.format.json(),
-			),
-			transports: [
-				new winston.transports.Console({
-					format: winston.format.combine(
-						winston.format.colorize(),
-						winston.format.simple(),
-					),
-				}),
-			],
 			exceptionHandlers: [
 				new winston.transports.Console({
 					format: winston.format.combine(
@@ -30,7 +18,20 @@ class Logger {
 					),
 				}),
 			],
+			format: winston.format.combine(
+				winston.format.timestamp({ format: timezoned }),
+				winston.format.json(),
+			),
+			level: process.env.WINSTON_LOG_LEVEL ?? 'debug',
 			rejectionHandlers: [
+				new winston.transports.Console({
+					format: winston.format.combine(
+						winston.format.colorize(),
+						winston.format.simple(),
+					),
+				}),
+			],
+			transports: [
 				new winston.transports.Console({
 					format: winston.format.combine(
 						winston.format.colorize(),

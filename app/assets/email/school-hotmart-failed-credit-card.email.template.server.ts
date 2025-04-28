@@ -1,8 +1,10 @@
-import {type TEmailTemplate} from '../../types/email-template.type.js';
+import { type TEmailTemplate } from '../../types/email-template.type.js';
 
-export const schoolHotmartFailedCreditCardEmailTemplate = (firstName: string, to: string, descricaoDoErro: string): TEmailTemplate => ({
-	to,
-	subject: 'Houve um problema com seu pagamento',
+export const schoolHotmartFailedCreditCardEmailTemplate = (
+	firstName: string,
+	to: string,
+	descricaoDoErro: string,
+): TEmailTemplate => ({
 	html: `
   <!DOCTYPE html>
 <html xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office" lang="en">
@@ -154,6 +156,7 @@ export const schoolHotmartFailedCreditCardEmailTemplate = (firstName: string, to
 
 </html>
   `,
+	subject: 'Houve um problema com seu pagamento',
 	text: `
   Olá, ${firstName}, tudo bem contigo?
 	
@@ -165,4 +168,5 @@ export const schoolHotmartFailedCreditCardEmailTemplate = (firstName: string, to
 	
 	E se precisar da nossa ajuda, ficamos a disposição 🙏🙌😊
   `,
+	to,
 });

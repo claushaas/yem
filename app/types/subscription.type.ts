@@ -1,5 +1,5 @@
-import {type Prisma} from '@prisma/client';
-import {type subscriptionIdentifierToCourseSlug} from '~/utils/subscription-identifier-to-course-id.js';
+import { type Prisma } from '@prisma/client';
+import { type subscriptionIdentifierToCourseSlug } from '~/utils/subscription-identifier-to-course-id.js';
 
 export type TSubscription = {
 	userId: string;
@@ -86,17 +86,18 @@ export type TIuguInvoiceResponse = {
 	payment_method: string;
 };
 
-export type TPrismaPayloadGetUserSubscriptions = Prisma.UserSubscriptionsGetPayload<{
-	include: {
-		course: {
-			select: {
-				id: true;
-				name: true;
-				slug: true;
+export type TPrismaPayloadGetUserSubscriptions =
+	Prisma.UserSubscriptionsGetPayload<{
+		include: {
+			course: {
+				select: {
+					id: true;
+					name: true;
+					slug: true;
+				};
 			};
 		};
-	};
-}>;
+	}>;
 
 export type TIncommingHotmartWebhook = {
 	data: {

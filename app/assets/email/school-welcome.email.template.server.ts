@@ -1,8 +1,9 @@
-import {type TEmailTemplate} from '../../types/email-template.type.js';
+import { type TEmailTemplate } from '../../types/email-template.type.js';
 
-export const schoolWelcomeEmailTemplate = (firstName: string, to: string): TEmailTemplate => ({
-	to,
-	subject: `Parabéns, ${firstName}! Sua jornada começa agora!!`,
+export const schoolWelcomeEmailTemplate = (
+	firstName: string,
+	to: string,
+): TEmailTemplate => ({
 	html: `
   <!DOCTYPE html>
 <html xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office" lang="en">
@@ -170,6 +171,7 @@ export const schoolWelcomeEmailTemplate = (firstName: string, to: string): TEmai
 
 </html>
   `,
+	subject: `Parabéns, ${firstName}! Sua jornada começa agora!!`,
 	text: `
   Parabéns ${firstName}! Sua matrícula foi confirmada.
 
@@ -200,4 +202,5 @@ export const schoolWelcomeEmailTemplate = (firstName: string, to: string): TEmai
   Claus Haas - Diretor do Yoga em Movimento
   
   `,
+	to,
 });

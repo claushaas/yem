@@ -1,7 +1,8 @@
-import {Request} from '../utils/request.js';
-import {CustomError} from '../utils/custom-error.js';
-import {type TServiceReturn} from '../types/service-return.type.js';
-import {logger} from '../utils/logger.util.js';
+/** biome-ignore-all lint/suspicious/noExplicitAny: <explanation> */
+import { type TServiceReturn } from '../types/service-return.type.js';
+import { CustomError } from '../utils/custom-error.js';
+import { logger } from '../utils/logger.util.js';
+import { Request } from '../utils/request.js';
 
 export class SlackService {
 	private readonly _request: Request;
@@ -14,14 +15,16 @@ export class SlackService {
 
 	public async sendMessage(message: any): Promise<TServiceReturn<string>> {
 		try {
-			await this._request.post('', {text: JSON.stringify(message)});
+			await this._request.post('', { text: JSON.stringify(message) });
 
 			return {
-				status: 'NO_CONTENT',
 				data: 'Message sent successfully',
+				status: 'NO_CONTENT',
 			};
 		} catch (error) {
-			logger.logError(`Error sending message on slack: ${(error as Error).message}`);
+			logger.logError(
+				`Error sending message on slack: ${(error as Error).message}`,
+			);
 			throw new CustomError('INVALID_DATA', 'Error sending message on slack');
 		}
 	}

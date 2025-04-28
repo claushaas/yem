@@ -2,8 +2,9 @@
 /* eslint-disable @typescript-eslint/no-extraneous-class */
 /* eslint-disable @typescript-eslint/consistent-type-assertions */
 
-import {remember} from '@epic-web/remember';
+import { remember } from '@epic-web/remember';
 
+// biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
 class MemoryCache {
 	static get(key: string) {
 		const value = MemoryCache.cache[key];

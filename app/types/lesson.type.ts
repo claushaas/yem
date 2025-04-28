@@ -1,5 +1,5 @@
-import {type Prisma} from '@prisma/client';
-import {type TTags} from './tag.type';
+import { type Prisma } from '@prisma/client';
+import { type TTags } from './tag.type';
 
 export type TLessonType = 'video' | 'text' | 'courseWare';
 
@@ -21,32 +21,35 @@ export type TLesson = {
 	publicationDate?: Date;
 };
 
-export type TPrismaPayloadCreateOrUpdateLesson = Prisma.LessonGetPayload<undefined>;
+export type TPrismaPayloadCreateOrUpdateLesson =
+	Prisma.LessonGetPayload<undefined>;
 
-export type TPrismaPayloadGetLessonList = Array<Prisma.LessonGetPayload<{
-	select: {
-		id: true;
-		slug: true;
-		name: true;
-		type: true;
-		description: true;
-		thumbnailUrl: true;
-		duration: true;
-		tags: true;
-		modules: {
-			select: {
-				isPublished: true;
-				publicationDate: true;
-				module: {
-					select: {
-						id: true;
-						slug: true;
-						courses: {
-							select: {
-								course: {
-									select: {
-										id: true;
-										slug: true;
+export type TPrismaPayloadGetLessonList = Array<
+	Prisma.LessonGetPayload<{
+		select: {
+			id: true;
+			slug: true;
+			name: true;
+			type: true;
+			description: true;
+			thumbnailUrl: true;
+			duration: true;
+			tags: true;
+			modules: {
+				select: {
+					isPublished: true;
+					publicationDate: true;
+					module: {
+						select: {
+							id: true;
+							slug: true;
+							courses: {
+								select: {
+									course: {
+										select: {
+											id: true;
+											slug: true;
+										};
 									};
 								};
 							};
@@ -55,8 +58,8 @@ export type TPrismaPayloadGetLessonList = Array<Prisma.LessonGetPayload<{
 				};
 			};
 		};
-	};
-}>>;
+	}>
+>;
 
 export type TPrismaPayloadGetLessonById = Prisma.LessonToModuleGetPayload<{
 	include: {
@@ -94,31 +97,33 @@ export type TPrismaPayloadGetLessonById = Prisma.LessonToModuleGetPayload<{
 	};
 }>;
 
-export type TPrismaPayloadGetCompletedLessons = Array<Prisma.CompletedLessonsGetPayload<{
-	select: {
-		lessonSlug: true;
-		userId: true;
-		updatedAt: true;
-		id: true;
-		lesson: {
-			select: {
-				name: true;
-				slug: true;
-				thumbnailUrl: true;
-				description: true;
-				modules: {
-					select: {
-						module: {
-							select: {
-								slug: true;
-								courses: {
-									select: {
-										course: {
-											select: {
-												slug: true;
-												delegateAuthTo: {
-													select: {
-														subscriptions: true;
+export type TPrismaPayloadGetCompletedLessons = Array<
+	Prisma.CompletedLessonsGetPayload<{
+		select: {
+			lessonSlug: true;
+			userId: true;
+			updatedAt: true;
+			id: true;
+			lesson: {
+				select: {
+					name: true;
+					slug: true;
+					thumbnailUrl: true;
+					description: true;
+					modules: {
+						select: {
+							module: {
+								select: {
+									slug: true;
+									courses: {
+										select: {
+											course: {
+												select: {
+													slug: true;
+													delegateAuthTo: {
+														select: {
+															subscriptions: true;
+														};
 													};
 												};
 											};
@@ -128,39 +133,41 @@ export type TPrismaPayloadGetCompletedLessons = Array<Prisma.CompletedLessonsGet
 							};
 						};
 					};
+					favoritedBy: true;
+					savedBy: true;
 				};
-				favoritedBy: true;
-				savedBy: true;
 			};
 		};
-	};
-}> & {link: string}>;
+	}> & { link: string }
+>;
 
-export type TPrismaPayloadGetSavedLessons = Array<Prisma.SavedLessonsGetPayload<{
-	select: {
-		lessonSlug: true;
-		userId: true;
-		updatedAt: true;
-		id: true;
-		lesson: {
-			select: {
-				name: true;
-				slug: true;
-				thumbnailUrl: true;
-				description: true;
-				modules: {
-					select: {
-						module: {
-							select: {
-								slug: true;
-								courses: {
-									select: {
-										course: {
-											select: {
-												slug: true;
-												delegateAuthTo: {
-													select: {
-														subscriptions: true;
+export type TPrismaPayloadGetSavedLessons = Array<
+	Prisma.SavedLessonsGetPayload<{
+		select: {
+			lessonSlug: true;
+			userId: true;
+			updatedAt: true;
+			id: true;
+			lesson: {
+				select: {
+					name: true;
+					slug: true;
+					thumbnailUrl: true;
+					description: true;
+					modules: {
+						select: {
+							module: {
+								select: {
+									slug: true;
+									courses: {
+										select: {
+											course: {
+												select: {
+													slug: true;
+													delegateAuthTo: {
+														select: {
+															subscriptions: true;
+														};
 													};
 												};
 											};
@@ -170,39 +177,41 @@ export type TPrismaPayloadGetSavedLessons = Array<Prisma.SavedLessonsGetPayload<
 							};
 						};
 					};
+					favoritedBy: true;
+					completedBy: true;
 				};
-				favoritedBy: true;
-				completedBy: true;
 			};
 		};
-	};
-}> & {link: string}>;
+	}> & { link: string }
+>;
 
-export type TPrismaPayloadGetFavoritedLessons = Array<Prisma.FavoritedLessonsGetPayload<{
-	select: {
-		lessonSlug: true;
-		userId: true;
-		updatedAt: true;
-		id: true;
-		lesson: {
-			select: {
-				name: true;
-				slug: true;
-				thumbnailUrl: true;
-				description: true;
-				modules: {
-					select: {
-						module: {
-							select: {
-								slug: true;
-								courses: {
-									select: {
-										course: {
-											select: {
-												slug: true;
-												delegateAuthTo: {
-													select: {
-														subscriptions: true;
+export type TPrismaPayloadGetFavoritedLessons = Array<
+	Prisma.FavoritedLessonsGetPayload<{
+		select: {
+			lessonSlug: true;
+			userId: true;
+			updatedAt: true;
+			id: true;
+			lesson: {
+				select: {
+					name: true;
+					slug: true;
+					thumbnailUrl: true;
+					description: true;
+					modules: {
+						select: {
+							module: {
+								select: {
+									slug: true;
+									courses: {
+										select: {
+											course: {
+												select: {
+													slug: true;
+													delegateAuthTo: {
+														select: {
+															subscriptions: true;
+														};
 													};
 												};
 											};
@@ -212,10 +221,10 @@ export type TPrismaPayloadGetFavoritedLessons = Array<Prisma.FavoritedLessonsGet
 							};
 						};
 					};
+					savedBy: true;
+					completedBy: true;
 				};
-				savedBy: true;
-				completedBy: true;
 			};
 		};
-	};
-}> & {link: string}>;
+	}> & { link: string }
+>;

@@ -1,7 +1,10 @@
-import {type Prisma} from '@prisma/client';
-import {memoryCache} from './memory-cache.js';
-import {type TAllDataToBeCached} from './get-all-data-to-be-cached.js';
-import {type TModuleDataForCache, populateModulesAndLessonsToCache} from './populate-modules-to-cache.js';
+import { type Prisma } from '@prisma/client';
+import { type TAllDataToBeCached } from './get-all-data-to-be-cached.js';
+import { memoryCache } from './memory-cache.js';
+import {
+	populateModulesAndLessonsToCache,
+	type TModuleDataForCache,
+} from './populate-modules-to-cache.js';
 
 type TCourse = Prisma.CourseGetPayload<undefined>;
 
@@ -10,29 +13,35 @@ export type TCourseDataForCache = {
 	delegateAuthTo: string[];
 } & TCourse;
 
-const getCourseDataForCache = (course: TAllDataToBeCached): TCourseDataForCache => {
+const getCourseDataForCache = (
+	course: TAllDataToBeCached,
+): TCourseDataForCache => {
 	course.modules.sort((a, b) => a.order - b.order);
-	const modules = course.modules.map(moduleToCourse => moduleToCourse.module.slug);
+	const modules = course.modules.map(
+		(moduleToCourse) => moduleToCourse.module.slug,
+	);
 
 	const courseDataForCache = {
-		id: course.id,
-		oldId: course.oldId,
-		slug: course.slug,
-		description: course.description,
-		order: course.order,
 		content: course.content,
-		name: course.name,
-		marketingContent: course.marketingContent,
-		videoSourceUrl: course.videoSourceUrl,
-		marketingVideoUrl: course.marketingVideoUrl,
-		thumbnailUrl: course.thumbnailUrl,
 		createdAt: course.createdAt,
-		updatedAt: course.updatedAt,
-		publicationDate: course.publicationDate,
+		delegateAuthTo: course.delegateAuthTo.map(
+			(delegateAuthTo) => delegateAuthTo.slug,
+		),
+		description: course.description,
+		id: course.id,
 		isPublished: course.isPublished,
 		isSelling: course.isSelling,
-		delegateAuthTo: course.delegateAuthTo.map(delegateAuthTo => delegateAuthTo.slug),
+		marketingContent: course.marketingContent,
+		marketingVideoUrl: course.marketingVideoUrl,
 		modules,
+		name: course.name,
+		oldId: course.oldId,
+		order: course.order,
+		publicationDate: course.publicationDate,
+		slug: course.slug,
+		thumbnailUrl: course.thumbnailUrl,
+		updatedAt: course.updatedAt,
+		videoSourceUrl: course.videoSourceUrl,
 	};
 
 	return courseDataForCache;
@@ -40,13 +49,15 @@ const getCourseDataForCache = (course: TAllDataToBeCached): TCourseDataForCache 
 
 const populateCourseToCache = (course: TAllDataToBeCached) => {
 	const courseDataForCache = getCourseDataForCache(course);
-	const {delegateAuthTo} = courseDataForCache;
+	const { delegateAuthTo } = courseDataForCache;
 
 	memoryCache.set(`course:${course.slug}`, JSON.stringify(courseDataForCache));
 	populateModulesAndLessonsToCache(course, delegateAuthTo);
 };
 
-export const populateCoursesAndModulesAndLessonsToCache = (allDataToBeCached: TAllDataToBeCached[]) => {
+export const populateCoursesAndModulesAndLessonsToCache = (
+	allDataToBeCached: TAllDataToBeCached[],
+) => {
 	for (const course of allDataToBeCached) {
 		populateCourseToCache(course);
 	}

@@ -1,43 +1,30 @@
 {
-  "include": [
-    "**/*",
-    "**/.server/**/*",
-    "**/.client/**/*",
-    ".react-router/types/**/*"
-  ],
-  "compilerOptions": {
-    "lib": [
-      "DOM",
-      "DOM.Iterable",
-      "ES2022"
-    ],
-    "types": [
-      "@react-router/node",
-      "vite/client",
-      "vite-plugin-svgr/client"
-    ],
-    "rootDirs": [
-      ".",
-      "./.react-router/types"
-    ],
-    "isolatedModules": true,
-    "esModuleInterop": true,
-    "jsx": "react-jsx",
-    "module": "ESNext",
-    "moduleResolution": "Bundler",
-    "resolveJsonModule": true,
-    "target": "ESNext",
-    "strict": true,
-    "noImplicitAny": true,
-    "allowJs": true,
-    "skipLibCheck": true,
-    "outDir": "build",
-    "forceConsistentCasingInFileNames": true,
-    "baseUrl": ".",
-    "paths": {
-      "~/*": [
-        "./app/*"
-      ],
-    },
-  }
+	"compilerOptions": {
+		"allowJs": true,
+		"baseUrl": ".",
+		"esModuleInterop": true,
+		"forceConsistentCasingInFileNames": true,
+		"isolatedModules": true,
+		"jsx": "react-jsx",
+		"lib": ["DOM", "DOM.Iterable", "ES2022"],
+		"module": "ESNext",
+		"moduleResolution": "Bundler",
+		"noImplicitAny": true,
+		"outDir": "build",
+		"paths": {
+			"~/*": ["./app/*"]
+		},
+		"resolveJsonModule": true,
+		"rootDirs": [".", "./.react-router/types"],
+		"skipLibCheck": true,
+		"strict": true,
+		"target": "ESNext",
+		"types": ["@react-router/node", "vite/client", "vite-plugin-svgr/client"]
+	},
+	"include": [
+		"**/*",
+		"**/.server/**/*",
+		"**/.client/**/*",
+		".react-router/types/**/*"
+	]
 }

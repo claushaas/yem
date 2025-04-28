@@ -1,9 +1,9 @@
-import {type AxiosResponse} from 'axios';
-import {Request} from '../utils/request.js';
-import {CustomError} from '../utils/custom-error.js';
-import {type TServiceReturn} from '../types/service-return.type.js';
-import {logger} from '../utils/logger.util.js';
-import {SecretService} from './secret.service.server.js';
+import { type AxiosResponse } from 'axios';
+import { type TServiceReturn } from '../types/service-return.type.js';
+import { CustomError } from '../utils/custom-error.js';
+import { logger } from '../utils/logger.util.js';
+import { Request } from '../utils/request.js';
+import { SecretService } from './secret.service.server.js';
 
 const baseUrl = process.env.BOTMAKER_API_URL ?? 'https://api.botmaker.com/v2.0';
 const whatsappChannelId = process.env.BOTMAKER_WHATSAPP_CHANNEL_ID;
@@ -15,13 +15,17 @@ export class BotmakerService {
 		this._secretService = new SecretService();
 	}
 
-	public async addToBlackList(phoneNumber: string): Promise<TServiceReturn<AxiosResponse>> {
-		const {data: {botmakerApiAccessToken}} = await this._secretService.getSecret();
+	public async addToBlackList(
+		phoneNumber: string,
+	): Promise<TServiceReturn<AxiosResponse>> {
+		const {
+			data: { botmakerApiAccessToken },
+		} = await this._secretService.getSecret();
 
 		const request = new Request(baseUrl, {
+			Accept: 'application/json', // eslint-disable-line @typescript-eslint/naming-convention
+			'access-token': botmakerApiAccessToken,
 			'content-type': 'application/json', // eslint-disable-line @typescript-eslint/naming-convention
-			Accept: 'application/json',
-			'access-token': botmakerApiAccessToken, // eslint-disable-line @typescript-eslint/naming-convention
 		});
 
 		const url = '/notifications/contacts-blacklist';
@@ -33,16 +37,25 @@ export class BotmakerService {
 			const response = await request.post(url, data);
 
 			return {
-				status: 'SUCCESSFUL',
 				data: response.data as AxiosResponse,
+				status: 'SUCCESSFUL',
 			};
 		} catch (error) {
-			logger.logError(`Error adding to blacklist: ${JSON.stringify((error as {
-				response: {
-					data: unknown;
-				};
-			}).response.data)}`);
-			throw new CustomError('INVALID_DATA', `Error adding ${phoneNumber} to blacklist`);
+			logger.logError(
+				`Error adding to blacklist: ${JSON.stringify(
+					(
+						error as {
+							response: {
+								data: unknown;
+							};
+						}
+					).response.data,
+				)}`,
+			);
+			throw new CustomError(
+				'INVALID_DATA',
+				`Error adding ${phoneNumber} to blacklist`,
+			);
 		}
 	}
 
@@ -52,12 +65,14 @@ export class BotmakerService {
 		variables: Record<string, string>,
 	): Promise<TServiceReturn<AxiosResponse>> {
 		logger.logDebug('Sending WP template');
-		const {data: {botmakerApiAccessToken}} = await this._secretService.getSecret();
+		const {
+			data: { botmakerApiAccessToken },
+		} = await this._secretService.getSecret();
 
 		const request = new Request(baseUrl, {
+			Accept: 'application/json', // eslint-disable-line @typescript-eslint/naming-convention
+			'access-token': botmakerApiAccessToken,
 			'Content-Type': 'application/json', // eslint-disable-line @typescript-eslint/naming-convention
-			Accept: 'application/json',
-			'access-token': botmakerApiAccessToken, // eslint-disable-line @typescript-eslint/naming-convention
 		});
 
 		const url = '/chats-actions/trigger-intent';
@@ -75,15 +90,21 @@ export class BotmakerService {
 			logger.logDebug('WP template sent successfully');
 
 			return {
-				status: 'SUCCESSFUL',
 				data: response.data as AxiosResponse,
+				status: 'SUCCESSFUL',
 			};
 		} catch (error) {
-			logger.logError(`Error sending WP template: ${JSON.stringify((error as {
-				response: {
-					data: unknown;
-				};
-			}).response.data)}`);
+			logger.logError(
+				`Error sending WP template: ${JSON.stringify(
+					(
+						error as {
+							response: {
+								data: unknown;
+							};
+						}
+					).response.data,
+				)}`,
+			);
 			throw new CustomError('INVALID_DATA', (error as Error).message);
 		}
 	}

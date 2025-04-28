@@ -1,235 +1,236 @@
 const countryCodes = {
-	AF: 93, // Afghanistan
-	AL: 355, // Albania
-	DZ: 213, // Algeria
-	AD: 376, // Andorra
-	AO: 244, // Angola
-	AI: 1264, // Anguilla
-	AG: 1268, // Antigua and Barbuda
-	AR: 54, // Argentina
-	AM: 374, // Armenia
-	AW: 297, // Aruba
+	AD: 376, // Afghanistan
+	AE: 971, // Albania
+	AF: 93, // Algeria
+	AG: 1268, // Andorra
+	AI: 1264, // Angola
+	AL: 355, // Anguilla
+	AM: 374, // Antigua and Barbuda
+	AO: 244, // Argentina
+	AR: 54, // Armenia
+	AT: 43, // Aruba
 	AU: 61, // Australia
-	AT: 43, // Austria
+	AW: 297, // Austria
 	AZ: 994, // Azerbaijan
-	BS: 1242, // Bahamas
-	BH: 973, // Bahrain
+	BA: 387, // Bahamas
+	BB: 1246, // Bahrain
 	BD: 880, // Bangladesh
-	BB: 1246, // Barbados
-	BY: 375, // Belarus
-	BE: 32, // Belgium
-	BZ: 501, // Belize
-	BJ: 229, // Benin
-	BM: 1441, // Bermuda
-	BT: 975, // Bhutan
-	BO: 591, // Bolivia
-	BA: 387, // Bosnia and Herzegovina
-	BW: 267, // Botswana
+	BE: 32, // Barbados
+	BF: 226, // Belarus
+	BG: 359, // Belgium
+	BH: 973, // Belize
+	BI: 257, // Benin
+	BJ: 229, // Bermuda
+	BL: 590, // Bhutan
+	BM: 1441, // Bolivia
+	BN: 673, // Bosnia and Herzegovina
+	BO: 591, // Botswana
 	BR: 55, // Brazil
-	BN: 673, // Brunei Darussalam
-	BG: 359, // Bulgaria
-	BF: 226, // Burkina Faso
-	BI: 257, // Burundi
-	KH: 855, // Cambodia
-	CM: 237, // Cameroon
-	CA: 1, // Canada
-	CV: 238, // Cape Verde
-	KY: 1345, // Cayman Islands
-	CF: 236, // Central African Republic
-	TD: 235, // Chad
+	BS: 1242, // Brunei Darussalam
+	BT: 975, // Bulgaria
+	BW: 267, // Burkina Faso
+	BY: 375, // Burundi
+	BZ: 501, // Cambodia
+	CA: 1, // Cameroon
+	CD: 243, // Canada
+	CF: 236, // Cape Verde
+	CG: 242, // Cayman Islands
+	CH: 41, // Central African Republic
+	CK: 682, // Chad
 	CL: 56, // Chile
-	CN: 86, // China
-	CO: 57, // Colombia
-	KM: 269, // Comoros
-	CG: 242, // Congo
-	CK: 682, // Cook Islands
-	CR: 506, // Costa Rica
-	HR: 385, // Croatia
-	CU: 53, // Cuba
-	CW: 599, // Curaçao
-	CY: 357, // Cyprus
-	CZ: 420, // Czech Republic
-	CD: 243, // Democratic Republic of the Congo
-	DK: 45, // Denmark
-	DJ: 253, // Djibouti
-	DM: 1767, // Dominica
-	DO: 1809, // Dominican Republic
-	EC: 593, // Ecuador
+	CM: 237, // China
+	CN: 86, // Colombia
+	CO: 57, // Comoros
+	CR: 506, // Congo
+	CU: 53, // Cook Islands
+	CV: 238, // Costa Rica
+	CW: 599, // Croatia
+	CY: 357, // Cuba
+	CZ: 420, // Curaçao
+	DE: 49, // Cyprus
+	DJ: 253, // Czech Republic
+	DK: 45, // Democratic Republic of the Congo
+	DM: 1767, // Denmark
+	DO: 1809, // Djibouti
+	DZ: 213, // Dominica
+	EC: 593, // Dominican Republic
+	EE: 372, // Ecuador
 	EG: 20, // Egypt
-	SV: 503, // El Salvador
-	GQ: 240, // Equatorial Guinea
-	ER: 291, // Eritrea
-	EE: 372, // Estonia
-	ET: 251, // Ethiopia
+	EH: 212, // El Salvador
+	ER: 291, // Equatorial Guinea
+	ES: 34, // Eritrea
+	ET: 251, // Estonia
+	FI: 358, // Ethiopia
 	FJ: 679, // Fiji
-	FI: 358, // Finland
+	FM: 691, // Finland
 	FR: 33, // France
-	GF: 594, // French Guiana
-	PF: 689, // French Polynesia
-	GA: 241, // Gabon
-	GM: 220, // Gambia
-	GE: 995, // Georgia
-	DE: 49, // Germany
-	GH: 233, // Ghana
-	GI: 350, // Gibraltar
-	GR: 30, // Greece
-	GL: 299, // Greenland
-	GD: 1473, // Grenada
-	GP: 590, // Guadeloupe
-	GU: 1671, // Guam
+	GA: 241, // French Guiana
+	GB: 44, // French Polynesia
+	GD: 1473, // Gabon
+	GE: 995, // Gambia
+	GF: 594, // Georgia
+	GH: 233, // Germany
+	GI: 350, // Ghana
+	GL: 299, // Gibraltar
+	GM: 220, // Greece
+	GN: 224, // Greenland
+	GP: 590, // Grenada
+	GQ: 240, // Guadeloupe
+	GR: 30, // Guam
 	GT: 502, // Guatemala
-	GN: 224, // Guinea
+	GU: 1671, // Guinea
 	GW: 245, // GuineaBissau
 	GY: 592, // Guyana
-	HT: 509, // Haiti
+	HK: 852, // Haiti
 	HN: 504, // Honduras
-	HK: 852, // Hong Kong
-	HU: 36, // Hungary
-	IS: 354, // Iceland
-	IN: 91, // India
-	ID: 62, // Indonesia
-	IR: 98, // Iran
-	IQ: 964, // Iraq
-	IE: 353, // Ireland
-	IL: 972, // Israel
-	IT: 39, // Italy
-	JM: 1876, // Jamaica
-	JP: 81, // Japan
+	HR: 385, // Hong Kong
+	HT: 509, // Hungary
+	HU: 36, // Iceland
+	ID: 62, // India
+	IE: 353, // Indonesia
+	IL: 972, // Iran
+	IN: 91, // Iraq
+	IQ: 964, // Ireland
+	IR: 98, // Israel
+	IS: 354, // Italy
+	IT: 39, // Jamaica
+	JM: 1876, // Japan
 	JO: 962, // Jordan
-	KZ: 7, // Kazakhstan
+	JP: 81, // Kazakhstan
 	KE: 254, // Kenya
-	KI: 686, // Kiribati
-	KP: 850, // North Korea
-	KR: 82, // South Korea
-	KW: 965, // Kuwait
-	KG: 996, // Kyrgyzstan
-	LA: 856, // Lao
-	LV: 371, // Latvia
-	LB: 961, // Lebanon
-	LS: 266, // Lesotho
-	LR: 231, // Liberia
-	LY: 218, // Libya
-	LI: 423, // Liechtenstein
-	LT: 370, // Lithuania
-	LU: 352, // Luxembourg
-	MO: 853, // Macao
-	MK: 389, // Macedonia
-	MG: 261, // Madagascar
-	MW: 265, // Malawi
-	MY: 60, // Malaysia
-	MV: 960, // Maldives
-	ML: 223, // Mali
-	MT: 356, // Malta
-	MH: 692, // Marshall Islands
-	MQ: 596, // Martinique
-	MR: 222, // Mauritania
-	MU: 230, // Mauritius
-	YT: 262, // Mayotte
-	MX: 52, // Mexico
-	FM: 691, // Micronesia
-	MD: 373, // Moldova
-	MC: 377, // Monaco
+	KG: 996, // Kiribati
+	KH: 855, // North Korea
+	KI: 686, // South Korea
+	KM: 269, // Kuwait
+	KN: 1869, // Kyrgyzstan
+	KP: 850, // Lao
+	KR: 82, // Latvia
+	KW: 965, // Lebanon
+	KY: 1345, // Lesotho
+	KZ: 7, // Liberia
+	LA: 856, // Libya
+	LB: 961, // Liechtenstein
+	LC: 1758, // Lithuania
+	LI: 423, // Luxembourg
+	LK: 94, // Macao
+	LR: 231, // Macedonia
+	LS: 266, // Madagascar
+	LT: 370, // Malawi
+	LU: 352, // Malaysia
+	LV: 371, // Maldives
+	LY: 218, // Mali
+	MA: 212, // Malta
+	MC: 377, // Marshall Islands
+	MD: 373, // Martinique
+	ME: 382, // Mauritania
+	MF: 590, // Mauritius
+	MG: 261, // Mayotte
+	MH: 692, // Mexico
+	MK: 389, // Micronesia
+	ML: 223, // Moldova
+	MM: 95, // Monaco
 	MN: 976, // Mongolia
-	ME: 382, // Montenegro
-	MS: 1664, // Montserrat
-	MA: 212, // Morocco
-	MZ: 258, // Mozambique
-	MM: 95, // Myanmar
-	NA: 264, // Namibia
-	NR: 674, // Nauru
-	NP: 977, // Nepal
-	NL: 31, // Netherlands
-	NC: 687, // New Caledonia
-	NZ: 64, // New Zealand
-	NI: 505, // Nicaragua
-	NE: 227, // Niger
-	NG: 234, // Nigeria
-	NU: 683, // Niue
+	MO: 853, // Montenegro
+	MP: 1670, // Montserrat
+	MQ: 596, // Morocco
+	MR: 222, // Mozambique
+	MS: 1664, // Myanmar
+	MT: 356, // Namibia
+	MU: 230, // Nauru
+	MV: 960, // Nepal
+	MW: 265, // Netherlands
+	MX: 52, // New Caledonia
+	MY: 60, // New Zealand
+	MZ: 258, // Nicaragua
+	NA: 264, // Niger
+	NC: 687, // Nigeria
+	NE: 227, // Niue
 	NF: 672, // Norfolk Island
-	MP: 1670, // Northern Mariana Islands
-	NO: 47, // Norway
-	OM: 968, // Oman
-	PK: 92, // Pakistan
-	PW: 680, // Palau
-	PS: 970, // Palestine
-	PA: 507, // Panama
-	PG: 675, // Papua New Guinea
-	PY: 595, // Paraguay
-	PE: 51, // Peru
-	PH: 63, // Philippines
-	PN: 64, // Pitcairn
-	PL: 48, // Poland
-	PT: 351, // Portugal
-	PR: 1787, // Puerto Rico
-	QA: 974, // Qatar
-	RE: 262, // Réunion
-	RO: 40, // Romania
-	RU: 7, // Russia
-	RW: 250, // Rwanda
-	BL: 590, // Saint Barthélemy
-	SH: 290, // Saint Helena
-	KN: 1869, // Saint Kitts and Nevis
-	LC: 1758, // Saint Lucia
-	MF: 590, // Saint Martin
-	PM: 508, // Saint Pierre and Miquelon
-	VC: 1784, // Saint Vincent and the Grenadines
-	WS: 685, // Samoa
-	SM: 378, // San Marino
-	ST: 239, // São Tomé and Príncipe
-	SA: 966, // Saudi Arabia
-	SN: 221, // Senegal
-	RS: 381, // Serbia
-	SC: 248, // Seychelles
-	SL: 232, // Sierra Leone
-	SG: 65, // Singapore
-	SX: 1721, // Sint Maarten
-	SK: 421, // Slovakia
-	SI: 386, // Slovenia
-	SB: 677, // Solomon Islands
-	SO: 252, // Somalia
-	ZA: 27, // South Africa
-	SS: 211, // South Sudan
-	ES: 34, // Spain
-	LK: 94, // Sri Lanka
-	SD: 249, // Sudan
-	SR: 597, // Suriname
-	SJ: 47, // Svalbard and Jan Mayen
-	SZ: 268, // Swaziland
-	SE: 46, // Sweden
-	CH: 41, // Switzerland
-	SY: 963, // Syria
-	TW: 886, // Taiwan
-	TJ: 992, // Tajikistan
-	TZ: 255, // Tanzania
-	TH: 66, // Thailand
+	NG: 234, // Northern Mariana Islands
+	NI: 505, // Norway
+	NL: 31, // Oman
+	NO: 47, // Pakistan
+	NP: 977, // Palau
+	NR: 674, // Palestine
+	NU: 683, // Panama
+	NZ: 64, // Papua New Guinea
+	OM: 968, // Paraguay
+	PA: 507, // Peru
+	PE: 51, // Philippines
+	PF: 689, // Pitcairn
+	PG: 675, // Poland
+	PH: 63, // Portugal
+	PK: 92, // Puerto Rico
+	PL: 48, // Qatar
+	PM: 508, // Réunion
+	PN: 64, // Romania
+	PR: 1787, // Russia
+	PS: 970, // Rwanda
+	PT: 351, // Saint Barthélemy
+	PW: 680, // Saint Helena
+	PY: 595, // Saint Kitts and Nevis
+	QA: 974, // Saint Lucia
+	RE: 262, // Saint Martin
+	RO: 40, // Saint Pierre and Miquelon
+	RS: 381, // Saint Vincent and the Grenadines
+	RU: 7, // Samoa
+	RW: 250, // San Marino
+	SA: 966, // São Tomé and Príncipe
+	SB: 677, // Saudi Arabia
+	SC: 248, // Senegal
+	SD: 249, // Serbia
+	SE: 46, // Seychelles
+	SG: 65, // Sierra Leone
+	SH: 290, // Singapore
+	SI: 386, // Sint Maarten
+	SJ: 47, // Slovakia
+	SK: 421, // Slovenia
+	SL: 232, // Solomon Islands
+	SM: 378, // Somalia
+	SN: 221, // South Africa
+	SO: 252, // South Sudan
+	SR: 597, // Spain
+	SS: 211, // Sri Lanka
+	ST: 239, // Sudan
+	SV: 503, // Suriname
+	SX: 1721, // Svalbard and Jan Mayen
+	SY: 963, // Swaziland
+	SZ: 268, // Sweden
+	TC: 1649, // Switzerland
+	TD: 235, // Syria
+	TG: 228, // Taiwan
+	TH: 66, // Tajikistan
+	TJ: 992, // Tanzania
+	TK: 690, // Thailand
 	TL: 670, // TimorLeste
-	TG: 228, // Togo
-	TK: 690, // Tokelau
+	TM: 993, // Togo
+	TN: 216, // Tokelau
 	TO: 676, // Tonga
-	TT: 1868, // Trinidad and Tobago
-	TN: 216, // Tunisia
-	TR: 90, // Turkey
-	TM: 993, // Turkmenistan
-	TC: 1649, // Turks and Caicos Islands
-	TV: 688, // Tuvalu
+	TR: 90, // Trinidad and Tobago
+	TT: 1868, // Tunisia
+	TV: 688, // Turkey
+	TW: 886, // Turkmenistan
+	TZ: 255, // Turks and Caicos Islands
+	UA: 380, // Tuvalu
 	UG: 256, // Uganda
-	UA: 380, // Ukraine
-	AE: 971, // United Arab Emirates
-	GB: 44, // United Kingdom
-	US: 1, // United States
-	UY: 598, // Uruguay
-	UZ: 998, // Uzbekistan
-	VU: 678, // Vanuatu
-	VA: 379, // Vatican City
-	VE: 58, // Venezuela
-	VN: 84, // Vietnam
-	WF: 681, // Wallis and Futuna
-	EH: 212, // Western Sahara
-	YE: 967, // Yemen
+	US: 1, // Ukraine
+	UY: 598, // United Arab Emirates
+	UZ: 998, // United Kingdom
+	VA: 379, // United States
+	VC: 1784, // Uruguay
+	VE: 58, // Uzbekistan
+	VN: 84, // Vanuatu
+	VU: 678, // Vatican City
+	WF: 681, // Venezuela
+	WS: 685, // Vietnam
+	YE: 967, // Wallis and Futuna
+	YT: 262, // Western Sahara
+	ZA: 27, // Yemen
 	ZM: 260, // Zambia
 	ZW: 263, // Zimbabwe
 };
 
 export type TCountriesIsos = keyof typeof countryCodes;
 
-export const getCountryCode = (country: TCountriesIsos): number => countryCodes[country] ?? 0;
+export const getCountryCode = (country: TCountriesIsos): number =>
+	countryCodes[country] ?? 0;
