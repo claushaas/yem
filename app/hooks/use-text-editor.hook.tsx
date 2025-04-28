@@ -17,11 +17,12 @@ export const useTextEditor = (
 		}
 	}, [quill]);
 
+	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	useEffect(() => {
 		if (initialContent && quill) {
 			quill.setContents(JSON.parse(initialContent) as Delta);
 		}
-	}, [quill]); // eslint-disable-line react-hooks/exhaustive-deps
+	}, [quill]);
 
 	return [content, setQuill];
 };

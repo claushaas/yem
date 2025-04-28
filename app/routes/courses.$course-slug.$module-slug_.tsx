@@ -220,6 +220,7 @@ export default function Module() {
 							{module.module.content && (
 								// eslint-disable-next-line react/no-danger, @typescript-eslint/naming-convention
 								<section
+									// biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
 									dangerouslySetInnerHTML={{
 										__html: contentConverter.convert(),
 									}}
@@ -392,6 +393,7 @@ export default function Module() {
 												activity={
 													lessonsActivity?.reduce(
 														(accumulator, activity) => ({
+															// biome-ignore lint/performance/noAccumulatingSpread: <explanation>
 															...accumulator,
 															...activity,
 														}),

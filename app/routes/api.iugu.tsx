@@ -28,6 +28,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 		const bodyText = await request.text();
 		const body = parse(bodyText) as {
 			event: string;
+			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 			data: Record<string, any>;
 		};
 

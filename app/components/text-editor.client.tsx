@@ -16,6 +16,7 @@ export const Editor = ({
 	// eslint-disable-line react/function-component-definition
 	const quillTextBoxReference = useRef<HTMLDivElement>(null);
 
+	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	useEffect(() => {
 		const quillTextBox = quillTextBoxReference;
 		if (quillTextBox.current) {

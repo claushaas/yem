@@ -1,4 +1,5 @@
 /* eslint-disable complexity */
+/** biome-ignore-all lint/suspicious/noExplicitAny: <explanation> */
 
 import { formationHotmartDelayedBilletEmailTemplate } from '~/assets/email/formation-hotmart-delayed-billet.email.template.server.js';
 import { formationHotmartDelayedPixEmailTemplate } from '~/assets/email/formation-hotmart-delayed-pix.email.template.server.js';

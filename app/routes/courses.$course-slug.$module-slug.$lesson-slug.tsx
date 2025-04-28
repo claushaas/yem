@@ -358,6 +358,7 @@ export default function Lesson() {
 							/* eslint-disable-next-line react/no-danger, @typescript-eslint/naming-convention */
 							<section
 								className="p-1 sm:p-5 bg-mauvea-2 dark:bg-mauvedarka-2 rounded-2xl flex flex-col gap-6"
+								// biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
 								dangerouslySetInnerHTML={{ __html: contentConverter.convert() }}
 								id="content"
 							/>

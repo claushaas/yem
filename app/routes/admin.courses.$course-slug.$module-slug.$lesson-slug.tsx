@@ -764,9 +764,9 @@ export default function Lesson() {
 					{lesson.lesson.content && (
 						<>
 							<h2>Conteúdo da Aula:</h2>
-							{/* eslint-disable-next-line react/no-danger */}
 							<div
 								className="p-4 rounded-lg border-2 border-mauve-6 dark:border-mauvedark-6 max-w-(--breakpoint-lg)"
+								// biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
 								dangerouslySetInnerHTML={{ __html: contentConverter.convert() }}
 							/>
 						</>

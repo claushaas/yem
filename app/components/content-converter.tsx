@@ -18,6 +18,7 @@ export function ContentConverter({
 		// eslint-disable-next-line react/no-danger
 		<div
 			className={className}
+			// biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
 			dangerouslySetInnerHTML={{ __html: contentConverter.convert() }}
 		/>
 	);

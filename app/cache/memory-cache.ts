@@ -4,6 +4,7 @@
 
 import { remember } from '@epic-web/remember';
 
+// biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
 class MemoryCache {
 	static get(key: string) {
 		const value = MemoryCache.cache[key];

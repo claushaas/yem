@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/suspicious/noExplicitAny: <explanation> */
 import { remember } from '@epic-web/remember';
 
 const executeAndRepeatFunction = async (

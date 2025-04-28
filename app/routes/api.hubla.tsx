@@ -12,6 +12,7 @@ export const meta = () => [{ content: 'noindex, nofollow', name: 'robots' }];
 export const loader = async ({ request }: LoaderFunctionArgs) => {
 	try {
 		await new SlackService().sendMessage(
+			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 			(await request.json()) as Record<string, any>,
 		);
 

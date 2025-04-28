@@ -98,6 +98,7 @@ export default function Courses() {
 								activity={
 									coursesActivity?.reduce(
 										(accumulator, activity) => ({
+											// biome-ignore lint/performance/noAccumulatingSpread: <explanation>
 											...accumulator,
 											...activity,
 										}),
