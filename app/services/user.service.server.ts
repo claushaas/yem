@@ -161,7 +161,6 @@ export class UserService {
 				this._mailService.sendEmail(
 					newPassWordEmailTemplate(user.firstName, user.email, password),
 				),
-
 			]);
 
 			return {
