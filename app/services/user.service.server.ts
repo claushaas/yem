@@ -21,7 +21,6 @@ import {
 import { CustomError } from '../utils/custom-error.js';
 import { generateSecurePassword } from '../utils/generate-secure-password.js';
 import { logger } from '../utils/logger.util.js';
-import { BotmakerService } from './botmaker.service.server.js';
 import { MailService } from './mail.service.server.js';
 import { MauticService } from './mautic.service.server.js';
 import SubscriptionService from './subscription.service.server.js';
@@ -30,7 +29,6 @@ export class UserService {
 	private readonly _awsClient: CognitoIdentityProviderClient;
 	private readonly _subscriptionService: SubscriptionService;
 	private readonly _mailService: MailService;
-	private readonly _botmakerService: BotmakerService;
 	private readonly _mauticService: MauticService;
 
 	constructor(
@@ -44,7 +42,6 @@ export class UserService {
 		this._awsClient = awsClient;
 		this._subscriptionService = new SubscriptionService();
 		this._mailService = new MailService();
-		this._botmakerService = new BotmakerService();
 		this._mauticService = new MauticService();
 	}
 
@@ -163,15 +160,6 @@ export class UserService {
 			await Promise.all([
 				this._mailService.sendEmail(
 					newPassWordEmailTemplate(user.firstName, user.email, password),
-				),
-				this._botmakerService.sendWhatsappTemplateMessate(
-					user.phoneNumber,
-					'new_password_2',
-					{
-						emailAluno: user.email,
-						primeiroNome: user.firstName,
-						senha: password,
-					},
 				),
 			]);
 
@@ -585,16 +573,6 @@ export class UserService {
 			await Promise.all([
 				this._mailService.sendEmail(
 					welcomeEmailTemplate(firstName, email, password),
-				),
-				this._botmakerService.sendWhatsappTemplateMessate(
-					phoneNumber,
-					'senha',
-					{
-						linkDaAreaDosAlunos: 'https://yogaemmovimento.com',
-						nome: firstName,
-						senha: password,
-						usuario: email,
-					},
 				),
 			]);
 		} catch (error) {

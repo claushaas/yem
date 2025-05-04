@@ -13,7 +13,6 @@ import {
 } from 'react-router';
 import styles from '~/app.css?url';
 import { Footer } from '~/components/footer.js';
-import { HelpButton } from './components/help-button.js';
 import { useIsBot } from './hooks/use-is-bot.hook.js';
 
 export const links: LinksFunction = () => [
@@ -82,7 +81,6 @@ function App() {
 			<body className="bg-mauve-2 dark:bg-mauvedark-2 min-h-screen flex flex-col justify-between">
 				<Outlet />
 				<Footer />
-				<HelpButton />
 				<ScrollRestoration />
 				{isBot ? null : <Scripts />}
 			</body>

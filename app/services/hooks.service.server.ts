@@ -24,7 +24,6 @@ import { CustomError } from '~/utils/custom-error.js';
 import { getLrMessage } from '~/utils/get-lr-message.js';
 import { logger } from '~/utils/logger.util';
 import { convertSubscriptionIdentifierToCourseSlug } from '~/utils/subscription-identifier-to-course-id.js';
-import { BotmakerService } from './botmaker.service.server.js';
 import { IuguService } from './iugu.service.server.js';
 import { MailService } from './mail.service.server.js';
 import { MauticService } from './mautic.service.server.js';
@@ -37,7 +36,6 @@ export class HooksService {
 	private readonly _subscriptionService: SubscriptionService;
 	private readonly _slackService: SlackService;
 	private readonly _iuguService: IuguService;
-	private readonly _botMakerService: BotmakerService;
 	private readonly _mailService: MailService;
 	private readonly _mauticService: MauticService;
 
@@ -46,7 +44,6 @@ export class HooksService {
 		this._subscriptionService = new SubscriptionService();
 		this._slackService = new SlackService();
 		this._iuguService = new IuguService();
-		this._botMakerService = new BotmakerService();
 		this._mailService = new MailService();
 		this._mauticService = new MauticService();
 	}
@@ -84,19 +81,6 @@ export class HooksService {
 
 					await Promise.all([
 						this._slackService.sendMessage(body),
-						this._botMakerService.sendWhatsappTemplateMessate(
-							user.phoneNumber,
-							'boas_vindas_formacao2',
-							{
-								linkCanalRecadosFormacao:
-									'https://t.me/joinchat/_2UwTcWJ5to3MTAx',
-								linkGrupoFormacao: 'https://t.me/joinchat/gxazJsQTmwI5YzYx',
-								linkManualDoAlunoFormacao:
-									'https://img.amo.yoga/MANUAL_DO_ALUNO.pdf',
-								linkSuporte: 'https://t.me/yogaemmovimento_bot',
-								nome: user.firstName,
-							},
-						),
 						this._mailService.sendEmail(
 							formationWelcomeEmailTemplate(user.firstName, user.email),
 						),
@@ -486,26 +470,6 @@ export class HooksService {
 		const { data } = body;
 
 		try {
-			const { data: invoice } = await this._iuguService.getInvoiceById(
-				data.id as string,
-			);
-			const { data: user } = await this._userService.getUserData(
-				invoice.payer_email.toLowerCase(),
-			);
-
-			const lrMessage = getLrMessage(data.lr as string);
-
-			await this._botMakerService.sendWhatsappTemplateMessate(
-				user.phoneNumber,
-				'falha_de_pagamento',
-				{
-					codigoDoErro: data.lr as string,
-					descricaoDoErro: lrMessage,
-					linkDaFatura: invoice.secure_url,
-					primeiroNome: user.firstName,
-				},
-			);
-
 			return {
 				data: 'Iugu invoice payment failed handled',
 				status: 'SUCCESSFUL',
@@ -543,15 +507,6 @@ export class HooksService {
 			}
 
 			await Promise.all([
-				this._botMakerService.sendWhatsappTemplateMessate(
-					user.phoneNumber,
-					'acao_de_cobranca',
-					{
-						dataDeVencimento: new Date(invoice.due_date).toLocaleDateString(),
-						linkDaFatura: invoice.secure_url,
-						nome: user.firstName,
-					},
-				),
 				this._userService.removeRolesFromUser(user, [
 					'escolaOnline',
 					'escolaAnual',
@@ -636,19 +591,6 @@ export class HooksService {
 						(!data.purchase.recurrence_number && !data.subscription)
 					) {
 						await Promise.all([
-							this._botMakerService.sendWhatsappTemplateMessate(
-								userData.phoneNumber,
-								'boas_vindas_formacao2',
-								{
-									linkCanalRecadosFormacao:
-										'https://t.me/joinchat/_2UwTcWJ5to3MTAx',
-									linkGrupoFormacao: 'https://t.me/joinchat/gxazJsQTmwI5YzYx',
-									linkManualDoAlunoFormacao:
-										'https://img.amo.yoga/MANUAL_DO_ALUNO.pdf',
-									linkSuporte: 'https://t.me/yogaemmovimento_bot',
-									nome: userData.firstName,
-								},
-							),
 							this._mailService.sendEmail(
 								formationWelcomeEmailTemplate(
 									userData.firstName,
@@ -707,19 +649,6 @@ export class HooksService {
 					// Formation Subscription
 					if (data.purchase.recurrence_number === 1) {
 						await Promise.all([
-							this._botMakerService.sendWhatsappTemplateMessate(
-								userData.phoneNumber,
-								'boas_vindas_formacao2',
-								{
-									linkCanalRecadosFormacao:
-										'https://t.me/joinchat/_2UwTcWJ5to3MTAx',
-									linkGrupoFormacao: 'https://t.me/joinchat/gxazJsQTmwI5YzYx',
-									linkManualDoAlunoFormacao:
-										'https://img.amo.yoga/MANUAL_DO_ALUNO.pdf',
-									linkSuporte: 'https://t.me/yogaemmovimento_bot',
-									nome: userData.firstName,
-								},
-							),
 							this._mailService.sendEmail(
 								formationWelcomeEmailTemplate(
 									userData.firstName,
@@ -769,16 +698,6 @@ export class HooksService {
 						await Promise.all([
 							this._mailService.sendEmail(
 								schoolWelcomeEmailTemplate(userData.firstName, userData.email),
-							),
-							this._botMakerService.sendWhatsappTemplateMessate(
-								userData.phoneNumber,
-								'escola_boas_vindas_2',
-								{
-									linkDaAreaDosAlunos: 'https://yogaemmovimento.com',
-									linkDaFichaMedica: 'https://img.amo.yoga/ficha-medica.pdf',
-									linkDoGrupoDeRecados: 'https://t.me/+_-lrXmqVqD1mMDk5',
-									nome: userData.firstName,
-								},
 							),
 						]);
 					}
@@ -870,15 +789,6 @@ export class HooksService {
 		if (isSchool && isBillet) {
 			await Promise.all([
 				// This._mailService.sendEmail(schoolWelcomeEmailTemplate(data.buyer.name, data.buyer.email)),
-				this._botMakerService.sendWhatsappTemplateMessate(
-					user.phoneNumber,
-					'boleto_emitido_escola',
-					{
-						codigoDoBoleto: data.purchase.payment.billet_barcode!,
-						linkBoleto: data.purchase.payment.billet_url!,
-						nome: user.firstName,
-					},
-				),
 				this._mailService.sendEmail(
 					schoolHotmartPrintedBilletEmailTemplate(
 						user.firstName,
@@ -894,14 +804,6 @@ export class HooksService {
 		if (isSchool && isPix) {
 			await Promise.all([
 				// This._mailService.sendEmail(schoolWelcomeEmailTemplate(data.buyer.name, data.buyer.email)),
-				this._botMakerService.sendWhatsappTemplateMessate(
-					user.phoneNumber,
-					'pix_emitido_escola',
-					{
-						linkDoPix: data.purchase.payment.pix_qrcode!,
-						nome: user.firstName,
-					},
-				),
 				this._mailService.sendEmail(
 					schoolHotmartPrintedPixEmailTemplate(
 						user.firstName,
@@ -915,16 +817,6 @@ export class HooksService {
 
 		if (isFormation && isBillet) {
 			await Promise.all([
-				// This._mailService.sendEmail(formationWelcomeEmailTemplate(data.buyer.name, data.buyer.email)),
-				this._botMakerService.sendWhatsappTemplateMessate(
-					user.phoneNumber,
-					'boleto_emitido_formacao',
-					{
-						codigoDoBoleto: data.purchase.payment.billet_barcode!,
-						linkBoleto: data.purchase.payment.billet_url!,
-						nome: user.firstName,
-					},
-				),
 				this._mailService.sendEmail(
 					formationHotmartPrintedBilletEmailTemplate(
 						user.firstName,
@@ -939,15 +831,6 @@ export class HooksService {
 
 		if (isFormation && isPix) {
 			await Promise.all([
-				// This._mailService.sendEmail(formationWelcomeEmailTemplate(data.buyer.name, data.buyer.email)),
-				this._botMakerService.sendWhatsappTemplateMessate(
-					user.phoneNumber,
-					'pix_emitido_formacao',
-					{
-						linkDoPix: data.purchase.payment.pix_qrcode!,
-						nome: user.firstName,
-					},
-				),
 				this._mailService.sendEmail(
 					formationHotmartPrintedPixEmailTemplate(
 						user.firstName,
@@ -996,14 +879,6 @@ export class HooksService {
 
 		if (isSchool && isBillet) {
 			await Promise.all([
-				this._botMakerService.sendWhatsappTemplateMessate(
-					user.phoneNumber,
-					'boleto_atrasado_escola',
-					{
-						emailAluno: user.email,
-						nome: user.firstName,
-					},
-				),
 				this._mailService.sendEmail(
 					schoolHotmartDelayedBilletEmailTemplate(user.firstName, user.email),
 				),
@@ -1017,15 +892,6 @@ export class HooksService {
 
 		if (isSchool && isPix) {
 			await Promise.all([
-				this._botMakerService.sendWhatsappTemplateMessate(
-					user.phoneNumber,
-					'purchase_delayed_hotmart_school_pix',
-					{
-						emailAluno: user.email,
-						linkCompraHotmart: 'https://consumer.hotmart.com/purchase/135340',
-						nome: user.firstName,
-					},
-				),
 				this._userService.removeRolesFromUser(user, [
 					'escolaOnline',
 					'escolaAnual',
@@ -1039,16 +905,6 @@ export class HooksService {
 
 		if (isSchool && isCreditCard) {
 			await Promise.all([
-				this._botMakerService.sendWhatsappTemplateMessate(
-					user.phoneNumber,
-					'falha_escola_hotmart',
-					{
-						descricaoDoErro:
-							data.purchase.payment.refusal_reason ?? 'Transação recusada',
-						emailAluno: user.email,
-						nome: user.firstName,
-					},
-				),
 				this._userService.removeRolesFromUser(user, [
 					'escolaOnline',
 					'escolaAnual',
@@ -1066,14 +922,6 @@ export class HooksService {
 
 		if (isFormation && isBillet) {
 			await Promise.all([
-				this._botMakerService.sendWhatsappTemplateMessate(
-					user.phoneNumber,
-					'boleto_atrasado_formacao',
-					{
-						emailAluno: user.email,
-						nome: user.firstName,
-					},
-				),
 				this._userService.removeRolesFromUser(user, [
 					'escolaOnline',
 					'escolaAnual',
@@ -1091,14 +939,6 @@ export class HooksService {
 
 		if (isFormation && isPix) {
 			await Promise.all([
-				this._botMakerService.sendWhatsappTemplateMessate(
-					user.phoneNumber,
-					'purchase_delayed_hotmart_formation_pix',
-					{
-						emailAluno: user.email,
-						nome: user.firstName,
-					},
-				),
 				this._userService.removeRolesFromUser(user, [
 					'escolaOnline',
 					'escolaAnual',
@@ -1113,16 +953,6 @@ export class HooksService {
 
 		if (isFormation && isCreditCard) {
 			await Promise.all([
-				this._botMakerService.sendWhatsappTemplateMessate(
-					user.phoneNumber,
-					'falha_de_pagamento_formacao',
-					{
-						descricaoDoErro:
-							data.purchase.payment.refusal_reason ?? 'Transação recusada',
-						emailAluno: user.email,
-						nome: user.firstName,
-					},
-				),
 				this._userService.removeRolesFromUser(user, [
 					'escolaOnline',
 					'escolaAnual',
