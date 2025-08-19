@@ -1,4 +1,4 @@
-import { type TAllDataToBeCached } from './get-all-data-to-be-cached.js';
+import type { TAllDataToBeCached } from './get-all-data-to-be-cached.js';
 import { memoryCache } from './memory-cache.js';
 
 const tagsDataToBeCached = (allDataToBeCached: TAllDataToBeCached[]) => {

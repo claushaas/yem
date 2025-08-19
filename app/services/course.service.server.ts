@@ -1,19 +1,20 @@
-import { type PrismaClient } from '@prisma/client';
+/** biome-ignore-all lint/style/noNonNullAssertion: . */
+import type { PrismaClient } from '@prisma/client';
 import { memoryCache } from '~/cache/memory-cache.js';
-import { type TCourseDataForCache } from '~/cache/populate-courses-to-cache.js';
-import { type TModuleDataForCache } from '~/cache/populate-modules-to-cache.js';
-import { type TSubscription } from '~/types/subscription.type.js';
+import type { TCourseDataForCache } from '~/cache/populate-courses-to-cache.js';
+import type { TModuleDataForCache } from '~/cache/populate-modules-to-cache.js';
+import type { TSubscription } from '~/types/subscription.type.js';
 import { logger } from '~/utils/logger.util.js';
 import { database } from '../database/database.server.js';
 import { Course } from '../entities/course.entity.server.js';
-import {
-	type TCourse,
-	type TPrismaPayloadCreateOrUpdateCourse,
-	type TPrismaPayloadGetAllCourses,
-	type TPrismaPayloadGetCourseBySlug,
+import type {
+	TCourse,
+	TPrismaPayloadCreateOrUpdateCourse,
+	TPrismaPayloadGetAllCourses,
+	TPrismaPayloadGetCourseBySlug,
 } from '../types/course.type.js';
-import { type TServiceReturn } from '../types/service-return.type.js';
-import { type TUser, type TUserRoles } from '../types/user.type.js';
+import type { TServiceReturn } from '../types/service-return.type.js';
+import type { TUser, TUserRoles } from '../types/user.type.js';
 import { CustomError } from '../utils/custom-error.js';
 
 export class CourseService {

@@ -13,11 +13,8 @@ import { fromEnv } from '@aws-sdk/credential-providers';
 import { newPassWordEmailTemplate } from '../assets/email/new-password.email.template.server.js';
 import { welcomeEmailTemplate } from '../assets/email/welcome.email.template.server.js';
 import { UserForCreation } from '../entities/user.entity.server.js';
-import { type TServiceReturn } from '../types/service-return.type.js';
-import {
-	type TUser,
-	type TUserCreationAttributes,
-} from '../types/user.type.js';
+import type { TServiceReturn } from '../types/service-return.type.js';
+import type { TUser, TUserCreationAttributes } from '../types/user.type.js';
 import { CustomError } from '../utils/custom-error.js';
 import { generateSecurePassword } from '../utils/generate-secure-password.js';
 import { logger } from '../utils/logger.util.js';

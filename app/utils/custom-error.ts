@@ -1,7 +1,7 @@
-import { type TCustomError } from '../types/custom-error.type.js';
-import {
-	type THttpStatus,
-	type THttpStatusCode,
+import type { TCustomError } from '../types/custom-error.type.js';
+import type {
+	THttpStatus,
+	THttpStatusCode,
 } from '../types/http-status.type.js';
 import { mapStatusHttp } from './map-status-http.js';
 

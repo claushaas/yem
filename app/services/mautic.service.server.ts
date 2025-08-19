@@ -1,6 +1,7 @@
+/** biome-ignore-all lint/style/noNonNullAssertion: . */
 import { MauticUserForCreation } from '../entities/user.entity.server.js';
-import { type TServiceReturn } from '../types/service-return.type.js';
-import { type TMauticUserCreationAttributes } from '../types/user.type.js';
+import type { TServiceReturn } from '../types/service-return.type.js';
+import type { TMauticUserCreationAttributes } from '../types/user.type.js';
 import { CustomError } from '../utils/custom-error.js';
 import { logger } from '../utils/logger.util.js';
 import { Request } from '../utils/request.js';

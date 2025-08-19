@@ -1,5 +1,5 @@
-import { type AxiosResponse } from 'axios';
-import { type TServiceReturn } from '../types/service-return.type.js';
+import type { AxiosResponse } from 'axios';
+import type { TServiceReturn } from '../types/service-return.type.js';
 import { CustomError } from '../utils/custom-error.js';
 import { logger } from '../utils/logger.util.js';
 import { Request } from '../utils/request.js';

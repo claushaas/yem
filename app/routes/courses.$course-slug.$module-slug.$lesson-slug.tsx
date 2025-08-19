@@ -1,3 +1,5 @@
+/** biome-ignore-all lint/correctness/useUniqueElementIds: . */
+/** biome-ignore-all lint/style/noNonNullAssertion: . */
 import { Stream } from '@cloudflare/stream-react';
 import {
 	BookmarkIcon,
@@ -10,7 +12,7 @@ import {
 	HeartIcon as SolidHeartIcon,
 } from '@heroicons/react/24/solid';
 import * as Tooltip from '@radix-ui/react-tooltip';
-import { type OpIterator } from 'quill/core';
+import type { OpIterator } from 'quill/core';
 import { QuillDeltaToHtmlConverter } from 'quill-delta-to-html';
 import { Suspense } from 'react';
 import {
@@ -30,19 +32,19 @@ import { CourseService } from '~/services/course.service.server';
 import { LessonService } from '~/services/lesson.service.server';
 import { LessonActivityService } from '~/services/lesson-activity.service.server';
 import { ModuleService } from '~/services/module.service.server';
-import { type TUser } from '~/types/user.type';
-import { type TypeUserSession } from '~/types/user-session.type';
+import type { TUser } from '~/types/user.type';
+import type { TypeUserSession } from '~/types/user-session.type';
 import { getUserSession } from '~/utils/session.server';
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => [
-	{ title: data!.lesson?.lesson.name ?? 'Aula do Curso do Yoga em Movimento' },
+	{ title: data?.lesson?.lesson.name ?? 'Aula do Curso do Yoga em Movimento' },
 	{
 		content:
-			data!.lesson?.lesson.description ??
+			data?.lesson?.lesson.description ??
 			'Conheça a aula do curso oferecido pela Yoga em Movimento',
 		name: 'description',
 	},
-	...data!.meta,
+	...(Array.isArray(data?.meta) ? data.meta : []),
 ];
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
@@ -351,6 +353,15 @@ export default function Lesson() {
 										title={lesson.lesson.name}
 									/>
 								)}
+								{/(youtu.be|youtube)/i.test(lesson.lesson.videoSourceUrl) && (
+									<iframe
+										allowFullScreen
+										id="ytplayer"
+										rel="0"
+										src={lesson.lesson.videoSourceUrl}
+										title={lesson.lesson.name}
+									/>
+								)}
 							</section>
 						)}
 
@@ -358,7 +369,7 @@ export default function Lesson() {
 							/* eslint-disable-next-line react/no-danger, @typescript-eslint/naming-convention */
 							<section
 								className="p-1 sm:p-5 bg-mauvea-2 dark:bg-mauvedarka-2 rounded-2xl flex flex-col gap-6"
-								// biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
+								// biome-ignore lint/security/noDangerouslySetInnerHtml: .
 								dangerouslySetInnerHTML={{ __html: contentConverter.convert() }}
 								id="content"
 							/>

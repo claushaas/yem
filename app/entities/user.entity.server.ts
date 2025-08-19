@@ -1,8 +1,8 @@
 import Joi from 'joi';
-import {
-	type TBasicUser,
-	type TMauticUserCreationAttributes,
-	type TUserCreationAttributes,
+import type {
+	TBasicUser,
+	TMauticUserCreationAttributes,
+	TUserCreationAttributes,
 } from '../types/user.type.js';
 import { convertStringToStartCase } from '../utils/convert-string-to-start-case.js';
 import { CustomError } from '../utils/custom-error.js';

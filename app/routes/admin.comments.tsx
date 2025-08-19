@@ -1,4 +1,5 @@
-import { type LoaderFunctionArgs, type MetaArgs } from 'react-router';
+/** biome-ignore-all lint/style/noNonNullAssertion: . */
+import type { LoaderFunctionArgs, MetaArgs } from 'react-router';
 
 export const meta = ({ data }: MetaArgs<typeof loader>) => [
 	{ title: 'Comentários - Yoga em Movimento' },

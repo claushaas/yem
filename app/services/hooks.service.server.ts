@@ -1,6 +1,5 @@
-/* eslint-disable complexity */
-/** biome-ignore-all lint/suspicious/noExplicitAny: <explanation> */
-
+/** biome-ignore-all lint/style/noNonNullAssertion: . */
+/** biome-ignore-all lint/suspicious/noExplicitAny: . */
 import { formationHotmartDelayedBilletEmailTemplate } from '~/assets/email/formation-hotmart-delayed-billet.email.template.server.js';
 import { formationHotmartDelayedPixEmailTemplate } from '~/assets/email/formation-hotmart-delayed-pix.email.template.server.js';
 import { formationHotmartFailedCreditCardEmailTemplate } from '~/assets/email/formation-hotmart-failed-credit-card.email.template.server.js';
@@ -13,15 +12,14 @@ import { schoolHotmartFailedCreditCardEmailTemplate } from '~/assets/email/schoo
 import { schoolHotmartPrintedBilletEmailTemplate } from '~/assets/email/school-hotmart-printed-billet.email.template.server.js';
 import { schoolHotmartPrintedPixEmailTemplate } from '~/assets/email/school-hotmart-printed-pix.email.template.server.js';
 import { schoolWelcomeEmailTemplate } from '~/assets/email/school-welcome.email.template.server.js';
-import { type THublaEvents } from '~/types/hubla.type.js';
-import { type TServiceReturn } from '~/types/service-return.type';
-import {
-	type TIncommingHotmartWebhook,
-	type TPlanIdentifier,
+import type { THublaEvents } from '~/types/hubla.type.js';
+import type { TServiceReturn } from '~/types/service-return.type';
+import type {
+	TIncommingHotmartWebhook,
+	TPlanIdentifier,
 } from '~/types/subscription.type.js';
 import { convertStringToStartCase } from '~/utils/convert-string-to-start-case.js';
 import { CustomError } from '~/utils/custom-error.js';
-import { getLrMessage } from '~/utils/get-lr-message.js';
 import { logger } from '~/utils/logger.util';
 import { convertSubscriptionIdentifierToCourseSlug } from '~/utils/subscription-identifier-to-course-id.js';
 import { IuguService } from './iugu.service.server.js';
@@ -262,7 +260,7 @@ export class HooksService {
 				}
 
 				case 'invoice.payment_failed': {
-					await this._handleIuguInvoicePaymentFailedWebhook(body);
+					await this._handleIuguInvoicePaymentFailedWebhook();
 					break;
 				}
 
@@ -463,12 +461,7 @@ export class HooksService {
 		}
 	}
 
-	private async _handleIuguInvoicePaymentFailedWebhook(body: {
-		event: string;
-		data: Record<string, any>;
-	}): Promise<TServiceReturn<string>> {
-		const { data } = body;
-
+	private async _handleIuguInvoicePaymentFailedWebhook(): Promise<TServiceReturn<string>> {
 		try {
 			return {
 				data: 'Iugu invoice payment failed handled',

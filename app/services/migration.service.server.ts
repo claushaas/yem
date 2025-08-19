@@ -1,4 +1,5 @@
-/** biome-ignore-all lint/suspicious/noExplicitAny: <explanation> */
+/** biome-ignore-all lint/suspicious/noExplicitAny: . */
+/** biome-ignore-all lint/style/noNonNullAssertion: . */
 import {
 	CognitoIdentityProviderClient,
 	ListUsersCommand,
@@ -10,10 +11,10 @@ import {
 	DynamoDBDocument,
 	type QueryCommandOutput,
 } from '@aws-sdk/lib-dynamodb';
-import { type PrismaClient } from '@prisma/client';
+import type { PrismaClient } from '@prisma/client';
 import { memoryCache } from '~/cache/memory-cache';
 import { database } from '~/database/database.server';
-import { type TServiceReturn } from '~/types/service-return.type';
+import type { TServiceReturn } from '~/types/service-return.type';
 import { logger } from '~/utils/logger.util';
 
 export class MigrationService {
@@ -76,7 +77,7 @@ export class MigrationService {
 
 				if (favoritedLessons && favoritedLessons.length > 0) {
 					const favoritedLessonsArray = favoritedLessons.map((dynamoLesson) => {
-						const lesson = memoryCache.entries().find(([key, value]) => {
+						const lesson = memoryCache.entries().find(([_key, value]) => {
 							const lesson = JSON.parse(value) as Record<string, any>;
 
 							const oldId = (lesson?.lesson?.oldId as string) || '';
@@ -113,7 +114,7 @@ export class MigrationService {
 
 				if (completedLessons && completedLessons.length > 0) {
 					const completedLessonsArray = completedLessons.map((dynamoLesson) => {
-						const lesson = memoryCache.entries().find(([key, value]) => {
+						const lesson = memoryCache.entries().find(([_key, value]) => {
 							const lesson = JSON.parse(value) as Record<string, any>;
 
 							const oldId = (lesson?.lesson?.oldId as string) || '';

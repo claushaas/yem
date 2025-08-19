@@ -1,5 +1,5 @@
-import { type Prisma } from '@prisma/client';
-import { type TTags } from './tag.type';
+import type { Prisma } from '@prisma/client';
+import type { TTags } from './tag.type';
 
 export type TLessonType = 'video' | 'text' | 'courseWare';
 

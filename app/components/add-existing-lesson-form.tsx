@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
+/** biome-ignore-all lint/style/noNonNullAssertion: . */
 
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import * as Dialog from '@radix-ui/react-dialog';
@@ -18,7 +19,7 @@ import { Button, ButtonPreset, ButtonType } from '~/components/button.js';
 import { YemSpinner } from '~/components/yem-spinner.js';
 import { LessonService } from '~/services/lesson.service.server';
 import { ModuleService } from '~/services/module.service.server';
-import { type TUser } from '~/types/user.type';
+import type { TUser } from '~/types/user.type';
 import { logger } from '~/utils/logger.util';
 import { commitUserSession, getUserSession } from '~/utils/session.server';
 

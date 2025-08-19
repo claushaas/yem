@@ -1,5 +1,5 @@
+/** biome-ignore-all lint/style/noNonNullAssertion: . */
 import {
-	Link,
 	type LoaderFunctionArgs,
 	type MetaArgs,
 	useLoaderData,
@@ -8,7 +8,7 @@ import { GenericEntityCard } from '~/components/entities-cards.js';
 import { NavigateBar } from '~/components/navigation-bar.js';
 import { CourseService } from '~/services/course.service.server';
 import { LessonActivityService } from '~/services/lesson-activity.service.server';
-import { type TypeUserSession } from '~/types/user-session.type';
+import type { TypeUserSession } from '~/types/user-session.type';
 import { logger } from '~/utils/logger.util';
 import { getUserSession } from '~/utils/session.server';
 
@@ -82,7 +82,7 @@ export default function Courses() {
 								activity={
 									coursesActivity?.reduce(
 										(accumulator, activity) => ({
-											// biome-ignore lint/performance/noAccumulatingSpread: <explanation>
+											// biome-ignore lint/performance/noAccumulatingSpread: .
 											...accumulator,
 											...activity,
 										}),

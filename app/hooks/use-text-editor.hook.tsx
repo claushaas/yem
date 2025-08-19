@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import type Quill from 'quill';
-import { type Delta } from 'quill/core';
+import type { Delta } from 'quill/core';
 import { useEffect, useState } from 'react';
 
 export const useTextEditor = (
@@ -17,7 +17,7 @@ export const useTextEditor = (
 		}
 	}, [quill]);
 
-	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+	// biome-ignore lint/correctness/useExhaustiveDependencies: .
 	useEffect(() => {
 		if (initialContent && quill) {
 			quill.setContents(JSON.parse(initialContent) as Delta);

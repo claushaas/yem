@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/naming-convention */
-
+/** biome-ignore-all lint/style/noNonNullAssertion: . */
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import * as Dialog from '@radix-ui/react-dialog';
 import * as RadixForm from '@radix-ui/react-form';
@@ -17,7 +16,7 @@ import { SuccessOrErrorMessage } from '~/components/admin-success-or-error-messa
 import { Button, ButtonPreset, ButtonType } from '~/components/button.js';
 import { YemSpinner } from '~/components/yem-spinner.js';
 import { TagService } from '~/services/tag.service.server';
-import { type TTag } from '~/types/tag.type';
+import type { TTag } from '~/types/tag.type';
 import { logger } from '~/utils/logger.util';
 import { commitUserSession, getUserSession } from '~/utils/session.server';
 

@@ -8,7 +8,7 @@ import Select from 'react-select';
 import { Button, ButtonPreset, ButtonType } from '~/components/button.js';
 import { Editor } from '~/components/text-editor.client.js';
 import { YemSpinner } from '~/components/yem-spinner.js';
-import { type loader } from '~/routes/admin.courses_.js';
+import type { loader } from '~/routes/admin.courses_.js';
 import { useTextEditor } from '../hooks/use-text-editor.hook.js';
 
 export function CourseCreateOrEditForm() {

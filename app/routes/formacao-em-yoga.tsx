@@ -1,3 +1,5 @@
+/** biome-ignore-all lint/correctness/useUniqueElementIds: . */
+/** biome-ignore-all lint/style/noNonNullAssertion: . */
 import { Stream } from '@cloudflare/stream-react';
 import {
 	BookmarkIcon,
@@ -13,7 +15,6 @@ import {
 	Link,
 	type LoaderFunctionArgs,
 	type MetaFunction,
-	useLocation,
 } from 'react-router';
 import { AccordionItem } from '~/components/accordion';
 import { Button, ButtonPreset, ButtonType } from '~/components/button.js';
@@ -43,18 +44,11 @@ export const loader = ({ request }: LoaderFunctionArgs) => ({
 });
 
 export default function Formacao() {
-	const { search } = useLocation();
-	const searchParameters = search ? search.split('?')[1].split('&') : [];
-	const marketingSearchParameters = searchParameters.filter((searchParameter) =>
-		searchParameter.includes('utm_'),
-	);
-
 	return (
 		<>
 			<header className="max-xs:max-w-[95%] max-w-[90%] mx-auto my-4 flex justify-between items-center w-[-webkit-fill-available]">
 				<div className="w-72">
 					<div
-						aria-label="Página inicial do Yoga em Movimento"
 						className='inline before:bg-[url("./assets/logo/logo-reduzido-colorido.svg")] sm:before:bg-[url("./assets/logo/logo-retangular-colorido.svg")] max-xs:before:h-14 before:h-20 before:block before:bg-no-repeat'
 					/>
 				</div>

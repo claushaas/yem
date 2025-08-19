@@ -1,4 +1,4 @@
-import { type PrismaClient } from '@prisma/client';
+import type { PrismaClient } from '@prisma/client';
 import { memoryCache } from '~/cache/memory-cache.js';
 import { CustomError } from '~/utils/custom-error.js';
 import { convertSubscriptionIdentifierToCourseSlug } from '~/utils/subscription-identifier-to-course-id.js';
@@ -9,12 +9,12 @@ import {
 } from '~/utils/test-user-roles-for-old-courses.js';
 import { database } from '../database/database.server.js';
 import { Subscription } from '../entities/subscription.entity.server.js';
-import { type TServiceReturn } from '../types/service-return.type.js';
-import {
-	type TPrismaPayloadGetUserSubscriptions,
-	type TSubscription,
+import type { TServiceReturn } from '../types/service-return.type.js';
+import type {
+	TPrismaPayloadGetUserSubscriptions,
+	TSubscription,
 } from '../types/subscription.type.js';
-import { type TUser } from '../types/user.type.js';
+import type { TUser } from '../types/user.type.js';
 import { logger } from '../utils/logger.util.js';
 import { HotmartService } from './hotmart.service.server.js';
 import { IuguService } from './iugu.service.server.js';

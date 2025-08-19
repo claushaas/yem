@@ -1,13 +1,14 @@
+/** biome-ignore-all lint/style/useTemplate: . */
 import { convertSubscriptionIdentifierToCourseSlug } from '~/utils/subscription-identifier-to-course-id.js';
-import { type TServiceReturn } from '../types/service-return.type.js';
-import {
-	type TIuguInvoiceResponse,
-	type TIuguSubscription,
-	type TIuguSubscriptionResponse,
-	type TPlanIdentifier,
-	type TSubscription,
+import type { TServiceReturn } from '../types/service-return.type.js';
+import type {
+	TIuguInvoiceResponse,
+	TIuguSubscription,
+	TIuguSubscriptionResponse,
+	TPlanIdentifier,
+	TSubscription,
 } from '../types/subscription.type.js';
-import { type TUser } from '../types/user.type.js';
+import type { TUser } from '../types/user.type.js';
 import { CustomError } from '../utils/custom-error.js';
 import { logger } from '../utils/logger.util.js';
 import { Request } from '../utils/request.js';

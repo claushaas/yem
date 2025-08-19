@@ -1,4 +1,4 @@
-import { type Prisma } from '@prisma/client';
+import type { Prisma } from '@prisma/client';
 import { database } from '../database/database.server.js';
 
 export type TAllDataToBeCached = Prisma.CourseGetPayload<{

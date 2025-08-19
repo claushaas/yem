@@ -1,7 +1,7 @@
-import { type LoaderFunctionArgs } from 'react-router';
+import type { LoaderFunctionArgs } from 'react-router';
 import { HooksService } from '~/services/hooks.service.server';
 import { SlackService } from '~/services/slack.service.server';
-import { type TIncommingHotmartWebhook } from '~/types/subscription.type';
+import type { TIncommingHotmartWebhook } from '~/types/subscription.type';
 import {
 	getCountryCode,
 	type TCountriesIsos,
@@ -13,7 +13,7 @@ export const meta = () => [{ content: 'noindex, nofollow', name: 'robots' }];
 export const loader = async ({ request }: LoaderFunctionArgs) => {
 	try {
 		await new SlackService().sendMessage(
-			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			// biome-ignore lint/suspicious/noExplicitAny: .
 			(await request.json()) as Record<string, any>,
 		);
 

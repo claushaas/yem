@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/naming-convention */
-
+/** biome-ignore-all lint/style/noNonNullAssertion: . */
 import {
 	CheckIcon,
 	ChevronDownIcon,
@@ -11,7 +10,7 @@ import * as Dialog from '@radix-ui/react-dialog';
 import * as RadixForm from '@radix-ui/react-form';
 import * as RadixSelect from '@radix-ui/react-select';
 import copy from 'clipboard-copy';
-import { type OpIterator } from 'quill/core';
+import type { OpIterator } from 'quill/core';
 import { QuillDeltaToHtmlConverter } from 'quill-delta-to-html';
 import { useEffect, useState } from 'react';
 import {
@@ -32,9 +31,9 @@ import { YemSpinner } from '~/components/yem-spinner.js';
 import { useTextEditor } from '~/hooks/use-text-editor.hook';
 import { LessonService } from '~/services/lesson.service.server';
 import { TagService } from '~/services/tag.service.server';
-import { type TLesson, type TLessonType } from '~/types/lesson.type';
-import { type TTag } from '~/types/tag.type';
-import { type TUser } from '~/types/user.type';
+import type { TLesson, TLessonType } from '~/types/lesson.type';
+import type { TTag } from '~/types/tag.type';
+import type { TUser } from '~/types/user.type';
 import { logger } from '~/utils/logger.util';
 import { commitUserSession, getUserSession } from '~/utils/session.server';
 
@@ -766,7 +765,7 @@ export default function Lesson() {
 							<h2>Conteúdo da Aula:</h2>
 							<div
 								className="p-4 rounded-lg border-2 border-mauve-6 dark:border-mauvedark-6 max-w-(--breakpoint-lg)"
-								// biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
+								// biome-ignore lint/security/noDangerouslySetInnerHtml: .
 								dangerouslySetInnerHTML={{ __html: contentConverter.convert() }}
 							/>
 						</>

@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/naming-convention */
-
+/** biome-ignore-all lint/style/noNonNullAssertion: . */
 import {
 	CheckIcon,
 	ChevronDownIcon,
@@ -32,10 +31,10 @@ import { useTextEditor } from '~/hooks/use-text-editor.hook.js';
 import { LessonService } from '~/services/lesson.service.server';
 import { ModuleService } from '~/services/module.service.server';
 import { TagService } from '~/services/tag.service.server';
-import { type TLesson, type TLessonType } from '~/types/lesson.type';
-import { type TModule } from '~/types/module.type';
-import { type TTag, type TTags } from '~/types/tag.type';
-import { type TUser } from '~/types/user.type';
+import type { TLesson, TLessonType } from '~/types/lesson.type';
+import type { TModule } from '~/types/module.type';
+import type { TTag, TTags } from '~/types/tag.type';
+import type { TUser } from '~/types/user.type';
 import { logger } from '~/utils/logger.util';
 import { commitUserSession, getUserSession } from '~/utils/session.server';
 
