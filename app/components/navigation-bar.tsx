@@ -40,9 +40,7 @@ export function NavigateBar({
 		<header className="max-xs:max-w-[95%] max-w-[90%] mx-auto my-4 flex justify-between items-center w-[-webkit-fill-available]">
 			<div className="w-72">
 				<Link aria-label="Página inicial do Yoga em Movimento" to="/">
-					<div
-						className='inline before:bg-[url("./assets/logo/logo-reduzido-colorido.svg")] sm:before:bg-[url("./assets/logo/logo-retangular-colorido.svg")] max-xs:before:h-14 before:h-20 before:block before:bg-no-repeat'
-					/>
+					<div className='inline before:bg-[url("./assets/logo/logo-reduzido-colorido.svg")] sm:before:bg-[url("./assets/logo/logo-retangular-colorido.svg")] max-xs:before:h-14 before:h-20 before:block before:bg-no-repeat' />
 					<p className="hidden">Home</p>
 				</Link>
 			</div>

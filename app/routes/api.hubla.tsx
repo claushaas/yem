@@ -3,19 +3,13 @@
 
 import type { LoaderFunctionArgs } from 'react-router';
 import { HooksService } from '~/services/hooks.service.server';
-import { SlackService } from '~/services/slack.service.server';
 import type { THublaEvents } from '~/types/hubla.type';
 import { logger } from '~/utils/logger.util';
 
 export const meta = () => [{ content: 'noindex, nofollow', name: 'robots' }];
 
-export const loader = async ({ request }: LoaderFunctionArgs) => {
+export const loader = async () => {
 	try {
-		await new SlackService().sendMessage(
-			// biome-ignore lint/suspicious/noExplicitAny: .
-			(await request.json()) as Record<string, any>,
-		);
-
 		return Response.json(
 			{
 				message: 'OK',

@@ -108,7 +108,9 @@ export class ModuleService {
 		};
 	}
 
-	public async getAllForAdmin(): Promise<TServiceReturn<TPrismaPayloadGetModulesList>> {
+	public async getAllForAdmin(): Promise<
+		TServiceReturn<TPrismaPayloadGetModulesList>
+	> {
 		const modules = await this._model.module.findMany({
 			select: {
 				id: true,

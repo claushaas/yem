@@ -346,19 +346,21 @@ export default function Lesson() {
 										src={lesson.lesson.videoSourceUrl}
 									/>
 								)}
-								{lesson.lesson.videoSourceUrl.startsWith('https://') && (
-									<VideoPlayer
-										alt={lesson.lesson.name}
-										src={lesson.lesson.videoSourceUrl}
-										title={lesson.lesson.name}
-									/>
-								)}
+								{lesson.lesson.videoSourceUrl.startsWith('https://') &&
+									!/(youtu.be|youtube)/i.test(lesson.lesson.videoSourceUrl) && (
+										<VideoPlayer
+											alt={lesson.lesson.name}
+											src={lesson.lesson.videoSourceUrl}
+											title={lesson.lesson.name}
+										/>
+									)}
 								{/(youtu.be|youtube)/i.test(lesson.lesson.videoSourceUrl) && (
 									<iframe
 										allowFullScreen
 										id="ytplayer"
-										rel="0"
-										src={lesson.lesson.videoSourceUrl}
+										src={`${lesson.lesson.videoSourceUrl}${
+											lesson.lesson.videoSourceUrl.includes('?') ? '&' : '?'
+										}modestbranding=1&rel=0`}
 										title={lesson.lesson.name}
 									/>
 								)}

@@ -11,11 +11,7 @@ import {
 } from '@heroicons/react/24/outline';
 import * as Accordion from '@radix-ui/react-accordion';
 import { Image } from '@unpic/react';
-import {
-	Link,
-	type LoaderFunctionArgs,
-	type MetaFunction,
-} from 'react-router';
+import { Link, type LoaderFunctionArgs, type MetaFunction } from 'react-router';
 import { AccordionItem } from '~/components/accordion';
 import { Button, ButtonPreset, ButtonType } from '~/components/button.js';
 import { FormationBonusCard } from '~/components/formation-bonus-card';
@@ -48,9 +44,7 @@ export default function Formacao() {
 		<>
 			<header className="max-xs:max-w-[95%] max-w-[90%] mx-auto my-4 flex justify-between items-center w-[-webkit-fill-available]">
 				<div className="w-72">
-					<div
-						className='inline before:bg-[url("./assets/logo/logo-reduzido-colorido.svg")] sm:before:bg-[url("./assets/logo/logo-retangular-colorido.svg")] max-xs:before:h-14 before:h-20 before:block before:bg-no-repeat'
-					/>
+					<div className='inline before:bg-[url("./assets/logo/logo-reduzido-colorido.svg")] sm:before:bg-[url("./assets/logo/logo-retangular-colorido.svg")] max-xs:before:h-14 before:h-20 before:block before:bg-no-repeat' />
 				</div>
 				<div className="flex gap-4 flex-wrap justify-end">
 					<Link

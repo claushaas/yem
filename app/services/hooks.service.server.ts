@@ -25,14 +25,12 @@ import { convertSubscriptionIdentifierToCourseSlug } from '~/utils/subscription-
 import { IuguService } from './iugu.service.server.js';
 import { MailService } from './mail.service.server.js';
 import { MauticService } from './mautic.service.server.js';
-import { SlackService } from './slack.service.server.js';
 import SubscriptionService from './subscription.service.server.js';
 import { UserService } from './user.service.server.js';
 
 export class HooksService {
 	private readonly _userService: UserService;
 	private readonly _subscriptionService: SubscriptionService;
-	private readonly _slackService: SlackService;
 	private readonly _iuguService: IuguService;
 	private readonly _mailService: MailService;
 	private readonly _mauticService: MauticService;
@@ -40,7 +38,6 @@ export class HooksService {
 	constructor() {
 		this._userService = new UserService();
 		this._subscriptionService = new SubscriptionService();
-		this._slackService = new SlackService();
 		this._iuguService = new IuguService();
 		this._mailService = new MailService();
 		this._mauticService = new MauticService();
@@ -78,19 +75,9 @@ export class HooksService {
 					});
 
 					await Promise.all([
-						this._slackService.sendMessage(body),
 						this._mailService.sendEmail(
 							formationWelcomeEmailTemplate(user.firstName, user.email),
 						),
-						fetch(process.env.SLACK_WEBHOOK_URL_FORMATION!, {
-							body: JSON.stringify({
-								text: `Novo Aluno na Formação\nNome: ${user.firstName} ${user.lastName}\nEmail: ${user.email}\nTelefone: ${user.phoneNumber}`,
-							}),
-							headers: {
-								'Content-Type': 'application/json', // eslint-disable-line @typescript-eslint/naming-convention
-							},
-							method: 'POST',
-						}),
 						this._mauticService.addContactToSegment(user.email, 2),
 					]);
 
@@ -157,7 +144,6 @@ export class HooksService {
 				}
 
 				default: {
-					await this._slackService.sendMessage(body);
 					break;
 				}
 			}
@@ -200,7 +186,6 @@ export class HooksService {
 				}
 
 				case 'PURCHASE_OUT_OF_SHOPPING_CART': {
-					await this._slackService.sendMessage(body);
 					break;
 				}
 
@@ -227,7 +212,6 @@ export class HooksService {
 				}
 
 				default: {
-					await this._slackService.sendMessage(body);
 					break;
 				}
 			}
@@ -327,10 +311,6 @@ export class HooksService {
 				}
 
 				default: {
-					await this._slackService.sendMessage({
-						message: 'Iugu webhook not handled',
-						...body,
-					});
 					break;
 				}
 			}
@@ -407,12 +387,7 @@ export class HooksService {
 							}),
 							this._mauticService.addContactToSegmentByEmail(user.email, 6),
 						]);
-					} catch {
-						await this._slackService.sendMessage({
-							message: 'Error handling iugu invoice status changed (paid)',
-							...body,
-						});
-					}
+					} catch {}
 
 					break;
 				}
@@ -422,10 +397,6 @@ export class HooksService {
 				}
 
 				case 'pending': {
-					await this._slackService.sendMessage({
-						message: 'Iugu invoice status changed not handled',
-						...body,
-					});
 					break;
 				}
 
@@ -438,10 +409,6 @@ export class HooksService {
 				}
 
 				default: {
-					await this._slackService.sendMessage({
-						message: 'Iugu invoice status changed not handled',
-						...body,
-					});
 					break;
 				}
 			}
@@ -461,7 +428,9 @@ export class HooksService {
 		}
 	}
 
-	private async _handleIuguInvoicePaymentFailedWebhook(): Promise<TServiceReturn<string>> {
+	private async _handleIuguInvoicePaymentFailedWebhook(): Promise<
+		TServiceReturn<string>
+	> {
 		try {
 			return {
 				data: 'Iugu invoice payment failed handled',
@@ -590,15 +559,6 @@ export class HooksService {
 									userData.email,
 								),
 							),
-							fetch(process.env.SLACK_WEBHOOK_URL_FORMATION!, {
-								body: JSON.stringify({
-									text: `Novo Aluno na Formação\nNome: ${userData.firstName} ${userData.lastName}\nEmail: ${userData.email}\nTelefone: ${userData.phoneNumber}`,
-								}),
-								headers: {
-									'Content-Type': 'application/json', // eslint-disable-line @typescript-eslint/naming-convention
-								},
-								method: 'POST',
-							}),
 						]);
 					}
 
@@ -648,15 +608,6 @@ export class HooksService {
 									userData.email,
 								),
 							),
-							fetch(process.env.SLACK_WEBHOOK_URL_FORMATION!, {
-								body: JSON.stringify({
-									text: `Novo Aluno na Formação\nNome: ${userData.firstName} ${userData.lastName}\nEmail: ${userData.email}\nTelefone: ${userData.phoneNumber}`,
-								}),
-								headers: {
-									'Content-Type': 'application/json', // eslint-disable-line @typescript-eslint/naming-convention
-								},
-								method: 'POST',
-							}),
 						]);
 					}
 
@@ -736,18 +687,10 @@ export class HooksService {
 				}
 
 				default: {
-					await this._slackService.sendMessage({
-						...body,
-						message: 'Product not found',
-					});
 					break;
 				}
 			}
 		} catch (error) {
-			await this._slackService.sendMessage({
-				...body,
-				message: `Error handling hotmart purchase aproved webhook: ${(error as Error).message}`,
-			});
 			logger.logError(
 				`Error handling hotmart purchase aproved webhook: ${(error as Error).message}`,
 			);
@@ -834,11 +777,6 @@ export class HooksService {
 			]);
 			return;
 		}
-
-		await this._slackService.sendMessage({
-			message: 'Não conseguiu lidar com webhook billet printed da hotmart',
-			...body,
-		});
 	}
 
 	private async _handleHotmartPurchaseDelayedWebhook(
@@ -961,11 +899,6 @@ export class HooksService {
 			]);
 			return;
 		}
-
-		await this._slackService.sendMessage({
-			message: 'Não conseguiu lidar com a compra atrasada da hotmart',
-			...body,
-		});
 	}
 
 	private async _handleHotmartPurchaseRefundedOrChargebackWebhook(
@@ -1037,10 +970,6 @@ export class HooksService {
 				}
 			}
 		} catch (error) {
-			await this._slackService.sendMessage({
-				...body,
-				message: `Error handling hotmart purchase refunded webhook: ${(error as Error).message}`,
-			});
 			logger.logError(
 				`Error handling hotmart purchase refunded webhook: ${(error as Error).message}`,
 			);
