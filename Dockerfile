@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1.4
 
-FROM node:22-alpine3.20 AS base
+FROM node:22-alpine3.22 AS base
 
     RUN apk update && apk add --no-cache tzdata
     ENV TZ="America/Sao_Paulo"
