@@ -12,7 +12,6 @@ import { schoolHotmartFailedCreditCardEmailTemplate } from '~/assets/email/schoo
 import { schoolHotmartPrintedBilletEmailTemplate } from '~/assets/email/school-hotmart-printed-billet.email.template.server.js';
 import { schoolHotmartPrintedPixEmailTemplate } from '~/assets/email/school-hotmart-printed-pix.email.template.server.js';
 import { schoolWelcomeEmailTemplate } from '~/assets/email/school-welcome.email.template.server.js';
-import type { THublaEvents } from '~/types/hubla.type.js';
 import type { TServiceReturn } from '~/types/service-return.type';
 import type {
 	TIncommingHotmartWebhook,
@@ -41,126 +40,6 @@ export class HooksService {
 		this._iuguService = new IuguService();
 		this._mailService = new MailService();
 		this._mauticService = new MauticService();
-	}
-
-	public async handleHublaWebhook(
-		body: THublaEvents,
-	): Promise<TServiceReturn<string>> {
-		const { type } = body;
-
-		try {
-			switch (type) {
-				case 'AbandonedCheckout': {
-					break;
-				}
-
-				case 'NewSale': {
-					break;
-				}
-
-				case 'invoice.created': {
-					break;
-				}
-
-				case 'invoice.payment_succeeded': {
-					const {
-						data: { userData: user },
-					} = await this._userService.createOrUpdate({
-						document: body.event.user.document,
-						email: body.event.user.email.toLowerCase(),
-						firstName: convertStringToStartCase(body.event.user.firstName),
-						lastName: convertStringToStartCase(body.event.user.lastName),
-						phoneNumber: body.event.user.phone,
-						roles: ['iniciantes'],
-					});
-
-					await Promise.all([
-						this._mailService.sendEmail(
-							formationWelcomeEmailTemplate(user.firstName, user.email),
-						),
-						this._mauticService.addContactToSegment(user.email, 2),
-					]);
-
-					const rolesToAdd = [
-						'iniciantes',
-						'escolaOnline',
-						'escolaAnual',
-						'novaFormacao',
-					];
-
-					let expiresAt: Date;
-					if (
-						body.event.invoice.smartInstallment.installments >
-						body.event.invoice.smartInstallment.installment
-					) {
-						expiresAt = new Date();
-						expiresAt.setDate(expiresAt.getDate() + 35);
-					} else {
-						expiresAt = new Date(2_556_113_460_000);
-					}
-
-					await Promise.all([
-						this._userService.addRolesToUser(user, rolesToAdd), // Should be deleted when old site stops being suported
-						this._subscriptionService.createOrUpdate({
-							courseSlug:
-								convertSubscriptionIdentifierToCourseSlug('novaFormacao'),
-							expiresAt,
-							provider: 'hubla',
-							providerSubscriptionId: body.event.invoice.subscriptionId,
-							userId: user.id,
-						}),
-					]);
-
-					break;
-				}
-
-				case 'invoice.refunded': {
-					const rolesToRemove = ['escolaOnline', 'escolaAnual', 'novaFormacao'];
-
-					const {
-						data: { userData: user },
-					} = await this._userService.createOrUpdate({
-						document: body.event.user.document,
-						email: body.event.user.email.toLowerCase(),
-						firstName: convertStringToStartCase(body.event.user.firstName),
-						lastName: convertStringToStartCase(body.event.user.lastName),
-						phoneNumber: body.event.user.phone,
-						roles: ['iniciantes'],
-					});
-
-					await Promise.all([
-						this._userService.removeRolesFromUser(user, rolesToRemove),
-						this._subscriptionService.createOrUpdate({
-							courseSlug:
-								convertSubscriptionIdentifierToCourseSlug('novaFormacao'),
-							expiresAt: new Date(),
-							provider: 'hubla',
-							providerSubscriptionId: body.event.invoice.subscriptionId,
-							userId: user.id,
-						}),
-					]);
-
-					break;
-				}
-
-				default: {
-					break;
-				}
-			}
-
-			return {
-				data: 'Hubla Webhook received',
-				status: 'SUCCESSFUL',
-			};
-		} catch (error) {
-			logger.logError(
-				`Error handling hubla webhook: ${(error as Error).message}`,
-			);
-			throw new CustomError(
-				'INVALID_DATA',
-				`Error handling hubla webhook: ${(error as Error).message}`,
-			);
-		}
 	}
 
 	public async handleHotmartWebhook(
