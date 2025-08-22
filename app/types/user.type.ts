@@ -18,9 +18,3 @@ export type TUserCreationAttributes = TBasicUser & {
 	roles?: TUserRoles;
 	phoneNumber: string;
 };
-
-export type TMauticUserCreationAttributes = {
-	email: string;
-	firstName: string;
-	lastName: string;
-};

@@ -23,7 +23,6 @@ import { logger } from '~/utils/logger.util';
 import { convertSubscriptionIdentifierToCourseSlug } from '~/utils/subscription-identifier-to-course-id.js';
 import { IuguService } from './iugu.service.server.js';
 import { MailService } from './mail.service.server.js';
-import { MauticService } from './mautic.service.server.js';
 import SubscriptionService from './subscription.service.server.js';
 import { UserService } from './user.service.server.js';
 
@@ -32,14 +31,12 @@ export class HooksService {
 	private readonly _subscriptionService: SubscriptionService;
 	private readonly _iuguService: IuguService;
 	private readonly _mailService: MailService;
-	private readonly _mauticService: MauticService;
 
 	constructor() {
 		this._userService = new UserService();
 		this._subscriptionService = new SubscriptionService();
 		this._iuguService = new IuguService();
 		this._mailService = new MailService();
-		this._mauticService = new MauticService();
 	}
 
 	public async handleHotmartWebhook(
@@ -247,12 +244,6 @@ export class HooksService {
 							rolesToAdd = ['iniciantes'];
 						}
 
-						await this._mauticService.createContact({
-							email: user.email,
-							firstName: user.firstName,
-							lastName: user.lastName,
-						});
-
 						await Promise.all([
 							this._userService.addRolesToUser(user, rolesToAdd), // Should be deleted when old site stops being suported
 							this._subscriptionService.createOrUpdate({
@@ -264,7 +255,6 @@ export class HooksService {
 								providerSubscriptionId: subscription.id,
 								userId: user.id,
 							}),
-							this._mauticService.addContactToSegmentByEmail(user.email, 6),
 						]);
 					} catch {}
 
@@ -414,16 +404,6 @@ export class HooksService {
 		});
 
 		try {
-			await this._mauticService.createContact({
-				email: userData.email,
-				firstName: userData.firstName,
-				lastName: userData.lastName,
-			});
-		} catch (error) {
-			console.log(error);
-		}
-
-		try {
 			switch (data.product.id) {
 				case 1_392_822: {
 					// Formation
@@ -471,7 +451,6 @@ export class HooksService {
 								data.subscription?.subscriber.code ?? data.purchase.transaction,
 							userId: userData.id,
 						}),
-						this._mauticService.addContactToSegmentByEmail(userData.email, 2),
 					]);
 
 					break;
@@ -509,7 +488,6 @@ export class HooksService {
 								data.subscription?.subscriber.code ?? data.purchase.transaction,
 							userId: userData.id,
 						}),
-						this._mauticService.addContactToSegmentByEmail(userData.email, 2),
 					]);
 
 					break;
@@ -559,7 +537,6 @@ export class HooksService {
 								data.subscription?.subscriber.code ?? data.purchase.transaction,
 							userId: userData.id,
 						}),
-						this._mauticService.addContactToSegmentByEmail(userData.email, 6),
 					]);
 
 					break;
