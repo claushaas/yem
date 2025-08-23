@@ -21,6 +21,7 @@
 			"**/*.html",
 			"**/*.json",
 			"**/*.md",
+			"!**/app/app.css",
 			"!**/supabase/functions/",
 			"!**/node_modules",
 			"!**/dist",

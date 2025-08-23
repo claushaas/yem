@@ -249,11 +249,7 @@ export class UserService {
 		};
 	}
 
-	public async updateUserName(
-		id: string,
-		firstName: string,
-		lastName: string,
-	) {
+	public async updateUserName(id: string, firstName: string, lastName: string) {
 		const parameters = {
 			UserAttributes: [
 				{
@@ -272,9 +268,7 @@ export class UserService {
 		const command = new AdminUpdateUserAttributesCommand(parameters);
 
 		try {
-			await Promise.all([
-				this._awsClient.send(command),
-			]);
+			await Promise.all([this._awsClient.send(command)]);
 		} catch (error) {
 			logger.logError(`Error updating name ${(error as Error).message}`);
 			throw new CustomError(
@@ -303,9 +297,7 @@ export class UserService {
 		const command = new AdminUpdateUserAttributesCommand(parameters);
 
 		try {
-			await Promise.all([
-				this._awsClient.send(command),
-			]);
+			await Promise.all([this._awsClient.send(command)]);
 		} catch (error) {
 			logger.logError(`Error updating email ${(error as Error).message}`);
 			throw new CustomError(
