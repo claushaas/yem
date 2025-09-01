@@ -1,6 +1,5 @@
-/* eslint-disable complexity */
-/** biome-ignore-all lint/suspicious/noExplicitAny: <explanation> */
-
+/** biome-ignore-all lint/style/noNonNullAssertion: . */
+/** biome-ignore-all lint/suspicious/noExplicitAny: . */
 import { formationHotmartDelayedBilletEmailTemplate } from '~/assets/email/formation-hotmart-delayed-billet.email.template.server.js';
 import { formationHotmartDelayedPixEmailTemplate } from '~/assets/email/formation-hotmart-delayed-pix.email.template.server.js';
 import { formationHotmartFailedCreditCardEmailTemplate } from '~/assets/email/formation-hotmart-failed-credit-card.email.template.server.js';
@@ -13,170 +12,31 @@ import { schoolHotmartFailedCreditCardEmailTemplate } from '~/assets/email/schoo
 import { schoolHotmartPrintedBilletEmailTemplate } from '~/assets/email/school-hotmart-printed-billet.email.template.server.js';
 import { schoolHotmartPrintedPixEmailTemplate } from '~/assets/email/school-hotmart-printed-pix.email.template.server.js';
 import { schoolWelcomeEmailTemplate } from '~/assets/email/school-welcome.email.template.server.js';
-import { type THublaEvents } from '~/types/hubla.type.js';
-import { type TServiceReturn } from '~/types/service-return.type';
-import {
-	type TIncommingHotmartWebhook,
-	type TPlanIdentifier,
+import type { TServiceReturn } from '~/types/service-return.type';
+import type {
+	TIncommingHotmartWebhook,
+	TPlanIdentifier,
 } from '~/types/subscription.type.js';
 import { convertStringToStartCase } from '~/utils/convert-string-to-start-case.js';
 import { CustomError } from '~/utils/custom-error.js';
-import { getLrMessage } from '~/utils/get-lr-message.js';
 import { logger } from '~/utils/logger.util';
 import { convertSubscriptionIdentifierToCourseSlug } from '~/utils/subscription-identifier-to-course-id.js';
 import { IuguService } from './iugu.service.server.js';
 import { MailService } from './mail.service.server.js';
-import { MauticService } from './mautic.service.server.js';
-import { SlackService } from './slack.service.server.js';
 import SubscriptionService from './subscription.service.server.js';
 import { UserService } from './user.service.server.js';
 
 export class HooksService {
 	private readonly _userService: UserService;
 	private readonly _subscriptionService: SubscriptionService;
-	private readonly _slackService: SlackService;
 	private readonly _iuguService: IuguService;
 	private readonly _mailService: MailService;
-	private readonly _mauticService: MauticService;
 
 	constructor() {
 		this._userService = new UserService();
 		this._subscriptionService = new SubscriptionService();
-		this._slackService = new SlackService();
 		this._iuguService = new IuguService();
 		this._mailService = new MailService();
-		this._mauticService = new MauticService();
-	}
-
-	public async handleHublaWebhook(
-		body: THublaEvents,
-	): Promise<TServiceReturn<string>> {
-		const { type } = body;
-
-		try {
-			switch (type) {
-				case 'AbandonedCheckout': {
-					break;
-				}
-
-				case 'NewSale': {
-					break;
-				}
-
-				case 'invoice.created': {
-					break;
-				}
-
-				case 'invoice.payment_succeeded': {
-					const {
-						data: { userData: user },
-					} = await this._userService.createOrUpdate({
-						document: body.event.user.document,
-						email: body.event.user.email.toLowerCase(),
-						firstName: convertStringToStartCase(body.event.user.firstName),
-						lastName: convertStringToStartCase(body.event.user.lastName),
-						phoneNumber: body.event.user.phone,
-						roles: ['iniciantes'],
-					});
-
-					await Promise.all([
-						this._slackService.sendMessage(body),
-						this._mailService.sendEmail(
-							formationWelcomeEmailTemplate(user.firstName, user.email),
-						),
-						fetch(process.env.SLACK_WEBHOOK_URL_FORMATION!, {
-							body: JSON.stringify({
-								text: `Novo Aluno na Formação\nNome: ${user.firstName} ${user.lastName}\nEmail: ${user.email}\nTelefone: ${user.phoneNumber}`,
-							}),
-							headers: {
-								'Content-Type': 'application/json', // eslint-disable-line @typescript-eslint/naming-convention
-							},
-							method: 'POST',
-						}),
-						this._mauticService.addContactToSegment(user.email, 2),
-					]);
-
-					const rolesToAdd = [
-						'iniciantes',
-						'escolaOnline',
-						'escolaAnual',
-						'novaFormacao',
-					];
-
-					let expiresAt: Date;
-					if (
-						body.event.invoice.smartInstallment.installments >
-						body.event.invoice.smartInstallment.installment
-					) {
-						expiresAt = new Date();
-						expiresAt.setDate(expiresAt.getDate() + 35);
-					} else {
-						expiresAt = new Date(2_556_113_460_000);
-					}
-
-					await Promise.all([
-						this._userService.addRolesToUser(user, rolesToAdd), // Should be deleted when old site stops being suported
-						this._subscriptionService.createOrUpdate({
-							courseSlug:
-								convertSubscriptionIdentifierToCourseSlug('novaFormacao'),
-							expiresAt,
-							provider: 'hubla',
-							providerSubscriptionId: body.event.invoice.subscriptionId,
-							userId: user.id,
-						}),
-					]);
-
-					break;
-				}
-
-				case 'invoice.refunded': {
-					const rolesToRemove = ['escolaOnline', 'escolaAnual', 'novaFormacao'];
-
-					const {
-						data: { userData: user },
-					} = await this._userService.createOrUpdate({
-						document: body.event.user.document,
-						email: body.event.user.email.toLowerCase(),
-						firstName: convertStringToStartCase(body.event.user.firstName),
-						lastName: convertStringToStartCase(body.event.user.lastName),
-						phoneNumber: body.event.user.phone,
-						roles: ['iniciantes'],
-					});
-
-					await Promise.all([
-						this._userService.removeRolesFromUser(user, rolesToRemove),
-						this._subscriptionService.createOrUpdate({
-							courseSlug:
-								convertSubscriptionIdentifierToCourseSlug('novaFormacao'),
-							expiresAt: new Date(),
-							provider: 'hubla',
-							providerSubscriptionId: body.event.invoice.subscriptionId,
-							userId: user.id,
-						}),
-					]);
-
-					break;
-				}
-
-				default: {
-					await this._slackService.sendMessage(body);
-					break;
-				}
-			}
-
-			return {
-				data: 'Hubla Webhook received',
-				status: 'SUCCESSFUL',
-			};
-		} catch (error) {
-			logger.logError(
-				`Error handling hubla webhook: ${(error as Error).message}`,
-			);
-			throw new CustomError(
-				'INVALID_DATA',
-				`Error handling hubla webhook: ${(error as Error).message}`,
-			);
-		}
 	}
 
 	public async handleHotmartWebhook(
@@ -202,7 +62,6 @@ export class HooksService {
 				}
 
 				case 'PURCHASE_OUT_OF_SHOPPING_CART': {
-					await this._slackService.sendMessage(body);
 					break;
 				}
 
@@ -229,7 +88,6 @@ export class HooksService {
 				}
 
 				default: {
-					await this._slackService.sendMessage(body);
 					break;
 				}
 			}
@@ -262,7 +120,7 @@ export class HooksService {
 				}
 
 				case 'invoice.payment_failed': {
-					await this._handleIuguInvoicePaymentFailedWebhook(body);
+					await this._handleIuguInvoicePaymentFailedWebhook();
 					break;
 				}
 
@@ -329,10 +187,6 @@ export class HooksService {
 				}
 
 				default: {
-					await this._slackService.sendMessage({
-						message: 'Iugu webhook not handled',
-						...body,
-					});
 					break;
 				}
 			}
@@ -390,12 +244,6 @@ export class HooksService {
 							rolesToAdd = ['iniciantes'];
 						}
 
-						await this._mauticService.createContact({
-							email: user.email,
-							firstName: user.firstName,
-							lastName: user.lastName,
-						});
-
 						await Promise.all([
 							this._userService.addRolesToUser(user, rolesToAdd), // Should be deleted when old site stops being suported
 							this._subscriptionService.createOrUpdate({
@@ -407,14 +255,8 @@ export class HooksService {
 								providerSubscriptionId: subscription.id,
 								userId: user.id,
 							}),
-							this._mauticService.addContactToSegmentByEmail(user.email, 6),
 						]);
-					} catch {
-						await this._slackService.sendMessage({
-							message: 'Error handling iugu invoice status changed (paid)',
-							...body,
-						});
-					}
+					} catch {}
 
 					break;
 				}
@@ -424,10 +266,6 @@ export class HooksService {
 				}
 
 				case 'pending': {
-					await this._slackService.sendMessage({
-						message: 'Iugu invoice status changed not handled',
-						...body,
-					});
 					break;
 				}
 
@@ -440,10 +278,6 @@ export class HooksService {
 				}
 
 				default: {
-					await this._slackService.sendMessage({
-						message: 'Iugu invoice status changed not handled',
-						...body,
-					});
 					break;
 				}
 			}
@@ -463,12 +297,9 @@ export class HooksService {
 		}
 	}
 
-	private async _handleIuguInvoicePaymentFailedWebhook(body: {
-		event: string;
-		data: Record<string, any>;
-	}): Promise<TServiceReturn<string>> {
-		const { data } = body;
-
+	private async _handleIuguInvoicePaymentFailedWebhook(): Promise<
+		TServiceReturn<string>
+	> {
 		try {
 			return {
 				data: 'Iugu invoice payment failed handled',
@@ -573,16 +404,6 @@ export class HooksService {
 		});
 
 		try {
-			await this._mauticService.createContact({
-				email: userData.email,
-				firstName: userData.firstName,
-				lastName: userData.lastName,
-			});
-		} catch (error) {
-			console.log(error);
-		}
-
-		try {
 			switch (data.product.id) {
 				case 1_392_822: {
 					// Formation
@@ -597,15 +418,6 @@ export class HooksService {
 									userData.email,
 								),
 							),
-							fetch(process.env.SLACK_WEBHOOK_URL_FORMATION!, {
-								body: JSON.stringify({
-									text: `Novo Aluno na Formação\nNome: ${userData.firstName} ${userData.lastName}\nEmail: ${userData.email}\nTelefone: ${userData.phoneNumber}`,
-								}),
-								headers: {
-									'Content-Type': 'application/json', // eslint-disable-line @typescript-eslint/naming-convention
-								},
-								method: 'POST',
-							}),
 						]);
 					}
 
@@ -639,7 +451,6 @@ export class HooksService {
 								data.subscription?.subscriber.code ?? data.purchase.transaction,
 							userId: userData.id,
 						}),
-						this._mauticService.addContactToSegmentByEmail(userData.email, 2),
 					]);
 
 					break;
@@ -655,15 +466,6 @@ export class HooksService {
 									userData.email,
 								),
 							),
-							fetch(process.env.SLACK_WEBHOOK_URL_FORMATION!, {
-								body: JSON.stringify({
-									text: `Novo Aluno na Formação\nNome: ${userData.firstName} ${userData.lastName}\nEmail: ${userData.email}\nTelefone: ${userData.phoneNumber}`,
-								}),
-								headers: {
-									'Content-Type': 'application/json', // eslint-disable-line @typescript-eslint/naming-convention
-								},
-								method: 'POST',
-							}),
 						]);
 					}
 
@@ -686,7 +488,6 @@ export class HooksService {
 								data.subscription?.subscriber.code ?? data.purchase.transaction,
 							userId: userData.id,
 						}),
-						this._mauticService.addContactToSegmentByEmail(userData.email, 2),
 					]);
 
 					break;
@@ -736,25 +537,16 @@ export class HooksService {
 								data.subscription?.subscriber.code ?? data.purchase.transaction,
 							userId: userData.id,
 						}),
-						this._mauticService.addContactToSegmentByEmail(userData.email, 6),
 					]);
 
 					break;
 				}
 
 				default: {
-					await this._slackService.sendMessage({
-						...body,
-						message: 'Product not found',
-					});
 					break;
 				}
 			}
 		} catch (error) {
-			await this._slackService.sendMessage({
-				...body,
-				message: `Error handling hotmart purchase aproved webhook: ${(error as Error).message}`,
-			});
 			logger.logError(
 				`Error handling hotmart purchase aproved webhook: ${(error as Error).message}`,
 			);
@@ -841,11 +633,6 @@ export class HooksService {
 			]);
 			return;
 		}
-
-		await this._slackService.sendMessage({
-			message: 'Não conseguiu lidar com webhook billet printed da hotmart',
-			...body,
-		});
 	}
 
 	private async _handleHotmartPurchaseDelayedWebhook(
@@ -968,11 +755,6 @@ export class HooksService {
 			]);
 			return;
 		}
-
-		await this._slackService.sendMessage({
-			message: 'Não conseguiu lidar com a compra atrasada da hotmart',
-			...body,
-		});
 	}
 
 	private async _handleHotmartPurchaseRefundedOrChargebackWebhook(
@@ -1044,10 +826,6 @@ export class HooksService {
 				}
 			}
 		} catch (error) {
-			await this._slackService.sendMessage({
-				...body,
-				message: `Error handling hotmart purchase refunded webhook: ${(error as Error).message}`,
-			});
 			logger.logError(
 				`Error handling hotmart purchase refunded webhook: ${(error as Error).message}`,
 			);

@@ -1,21 +1,22 @@
 /* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
-import { type PrismaClient } from '@prisma/client';
+/** biome-ignore-all lint/style/noNonNullAssertion: . */
+import type { PrismaClient } from '@prisma/client';
 import { memoryCache } from '~/cache/memory-cache.js';
-import { type TCourseDataForCache } from '~/cache/populate-courses-to-cache.js';
-import { type TLessonDataForCache } from '~/cache/populate-lessons-to-cache.js';
-import { type TSubscription } from '~/types/subscription.type.js';
+import type { TCourseDataForCache } from '~/cache/populate-courses-to-cache.js';
+import type { TLessonDataForCache } from '~/cache/populate-lessons-to-cache.js';
+import type { TSubscription } from '~/types/subscription.type.js';
 import { logger } from '~/utils/logger.util.js';
 import { database } from '../database/database.server.js';
 import { Module } from '../entities/module.entity.server.js';
-import {
-	type TModule,
-	type TModuleDataFromCache,
-	type TPrismaPayloadCreateOrUpdateModule,
-	type TPrismaPayloadGetModuleBySlug,
-	type TPrismaPayloadGetModulesList,
+import type {
+	TModule,
+	TModuleDataFromCache,
+	TPrismaPayloadCreateOrUpdateModule,
+	TPrismaPayloadGetModuleBySlug,
+	TPrismaPayloadGetModulesList,
 } from '../types/module.type.js';
-import { type TServiceReturn } from '../types/service-return.type.js';
-import { type TUser } from '../types/user.type.js';
+import type { TServiceReturn } from '../types/service-return.type.js';
+import type { TUser } from '../types/user.type.js';
 import { CustomError } from '../utils/custom-error.js';
 
 export class ModuleService {
@@ -107,9 +108,9 @@ export class ModuleService {
 		};
 	}
 
-	public async getAllForAdmin(
-		user: TUser,
-	): Promise<TServiceReturn<TPrismaPayloadGetModulesList>> {
+	public async getAllForAdmin(): Promise<
+		TServiceReturn<TPrismaPayloadGetModulesList>
+	> {
 		const modules = await this._model.module.findMany({
 			select: {
 				id: true,

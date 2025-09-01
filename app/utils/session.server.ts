@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/style/noNonNullAssertion: . */
 import { createCookieSessionStorage } from 'react-router';
 
 export const {

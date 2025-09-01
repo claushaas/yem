@@ -1,6 +1,6 @@
 import { SESv2Client, SendEmailCommand } from '@aws-sdk/client-sesv2';
 import { fromEnv } from '@aws-sdk/credential-providers';
-import { type TEmailTemplate } from '../types/email-template.type.js';
+import type { TEmailTemplate } from '../types/email-template.type.js';
 import type { TServiceReturn } from '../types/service-return.type.js';
 import { CustomError } from '../utils/custom-error.js';
 import { logger } from '../utils/logger.util.js';

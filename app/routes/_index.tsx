@@ -1,3 +1,5 @@
+/** biome-ignore-all lint/correctness/useUniqueElementIds: . */
+/** biome-ignore-all lint/style/noNonNullAssertion: . */
 import { Image } from '@unpic/react';
 import {
 	Link,
@@ -9,7 +11,7 @@ import { Button, ButtonPreset, ButtonType } from '~/components/button';
 import { NavigateBar } from '~/components/navigation-bar.js';
 import { Testimonies } from '~/layouts/testimonies.js';
 import { History } from '~/layouts/yem-history.js';
-import { type TypeUserSession } from '~/types/user-session.type';
+import type { TypeUserSession } from '~/types/user-session.type';
 import { buildImgSource } from '~/utils/build-cloudflare-image-source.js';
 import { getUserSession } from '~/utils/session.server';
 

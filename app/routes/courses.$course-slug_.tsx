@@ -1,5 +1,7 @@
+/** biome-ignore-all lint/correctness/useUniqueElementIds: . */
+/** biome-ignore-all lint/style/noNonNullAssertion: . */
 import { Stream } from '@cloudflare/stream-react';
-import { type OpIterator } from 'quill/core';
+import type { OpIterator } from 'quill/core';
 import { QuillDeltaToHtmlConverter } from 'quill-delta-to-html';
 import { Suspense } from 'react';
 import {
@@ -8,7 +10,7 @@ import {
 	type MetaArgs,
 	useLoaderData,
 } from 'react-router';
-import { type TModuleDataForCache } from '~/cache/populate-modules-to-cache.js';
+import type { TModuleDataForCache } from '~/cache/populate-modules-to-cache.js';
 import { Breadcrumbs } from '~/components/breadcrumbs.js';
 import { GenericEntityCard } from '~/components/entities-cards.js';
 import { NavigateBar } from '~/components/navigation-bar.js';
@@ -16,8 +18,8 @@ import { VideoPlayer } from '~/components/video-player.js';
 import { YemSpinner } from '~/components/yem-spinner.js';
 import { CourseService } from '~/services/course.service.server';
 import { LessonActivityService } from '~/services/lesson-activity.service.server';
-import { type TUser } from '~/types/user.type';
-import { type TypeUserSession } from '~/types/user-session.type';
+import type { TUser } from '~/types/user.type';
+import type { TypeUserSession } from '~/types/user-session.type';
 import { logger } from '~/utils/logger.util';
 import { getUserSession } from '~/utils/session.server';
 
@@ -130,7 +132,7 @@ export default function Course() {
 							{course.content && (
 								// eslint-disable-next-line react/no-danger, @typescript-eslint/naming-convention
 								<div
-									// biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
+									// biome-ignore lint/security/noDangerouslySetInnerHtml: .
 									dangerouslySetInnerHTML={{
 										__html: contentConverter.convert(),
 									}}
@@ -160,7 +162,7 @@ export default function Course() {
 												activity={
 													modulesActivity.reduce(
 														(accumulator, activity) => ({
-															// biome-ignore lint/performance/noAccumulatingSpread: <explanation>
+															// biome-ignore lint/performance/noAccumulatingSpread: .
 															...accumulator,
 															...activity,
 														}),

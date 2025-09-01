@@ -1,7 +1,7 @@
 import Joi from 'joi';
 import { convertNameToSlug } from '~/utils/convert-name-to-slug.js';
-import { type TModule } from '../types/module.type.js';
-import { type TTags } from '../types/tag.type.js';
+import type { TModule } from '../types/module.type.js';
+import type { TTags } from '../types/tag.type.js';
 import { CustomError } from '../utils/custom-error.js';
 
 const moduleSchema = Joi.object({

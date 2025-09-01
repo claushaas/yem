@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/naming-convention */
-
+/** biome-ignore-all lint/style/noNonNullAssertion: . */
 import * as RadixForm from '@radix-ui/react-form';
 import { useState } from 'react';
 import {
@@ -14,13 +13,13 @@ import {
 	useNavigation,
 } from 'react-router';
 import 'react-phone-number-input/style.css';
-import { type E164Number } from 'libphonenumber-js/core'; // eslint-disable-line import/no-extraneous-dependencies
+import type { E164Number } from 'libphonenumber-js/core'; // eslint-disable-line import/no-extraneous-dependencies
 import PhoneInput from 'react-phone-number-input';
 import { Button, ButtonPreset, ButtonType } from '~/components/button.js';
 import { NavigateBar } from '~/components/navigation-bar.js';
 import { YemSpinner } from '~/components/yem-spinner.js';
 import { UserService } from '~/services/user.service.server';
-import { type TypeUserSession } from '~/types/user-session.type';
+import type { TypeUserSession } from '~/types/user-session.type';
 import type { CustomError } from '~/utils/custom-error';
 import { logger } from '~/utils/logger.util.js';
 import { commitUserSession, getUserSession } from '~/utils/session.server';

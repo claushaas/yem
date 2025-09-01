@@ -1,5 +1,5 @@
-import { type Prisma } from '@prisma/client';
-import { type subscriptionIdentifierToCourseSlug } from '~/utils/subscription-identifier-to-course-id.js';
+import type { Prisma } from '@prisma/client';
+import type { subscriptionIdentifierToCourseSlug } from '~/utils/subscription-identifier-to-course-id.js';
 
 export type TSubscription = {
 	userId: string;

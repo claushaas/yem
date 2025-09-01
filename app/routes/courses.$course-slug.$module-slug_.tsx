@@ -1,9 +1,11 @@
+/** biome-ignore-all lint/correctness/useUniqueElementIds: . */
+/** biome-ignore-all lint/style/noNonNullAssertion: . */
 import { Stream } from '@cloudflare/stream-react';
 import { AdjustmentsHorizontalIcon } from '@heroicons/react/24/outline';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import * as Switch from '@radix-ui/react-switch';
 import { motion } from 'motion/react';
-import { type OpIterator } from 'quill/core';
+import type { OpIterator } from 'quill/core';
 import { QuillDeltaToHtmlConverter } from 'quill-delta-to-html';
 import { Suspense, useState } from 'react';
 import {
@@ -14,7 +16,7 @@ import {
 	useLocation,
 	useNavigate,
 } from 'react-router';
-import { type TLessonDataForCache } from '~/cache/populate-lessons-to-cache.js';
+import type { TLessonDataForCache } from '~/cache/populate-lessons-to-cache.js';
 import { Breadcrumbs } from '~/components/breadcrumbs.js';
 import { Button, ButtonPreset, ButtonType } from '~/components/button';
 import { LessonEntityCard } from '~/components/entities-cards.js';
@@ -26,8 +28,8 @@ import { CourseService } from '~/services/course.service.server';
 import { LessonActivityService } from '~/services/lesson-activity.service.server';
 import { ModuleService } from '~/services/module.service.server';
 import { TagService } from '~/services/tag.service.server';
-import { type TUser } from '~/types/user.type';
-import { type TypeUserSession } from '~/types/user-session.type';
+import type { TUser } from '~/types/user.type';
+import type { TypeUserSession } from '~/types/user-session.type';
 import { logger } from '~/utils/logger.util';
 import { getUserSession } from '~/utils/session.server';
 
@@ -220,7 +222,7 @@ export default function Module() {
 							{module.module.content && (
 								// eslint-disable-next-line react/no-danger, @typescript-eslint/naming-convention
 								<section
-									// biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
+									// biome-ignore lint/security/noDangerouslySetInnerHtml: .
 									dangerouslySetInnerHTML={{
 										__html: contentConverter.convert(),
 									}}
@@ -393,7 +395,7 @@ export default function Module() {
 												activity={
 													lessonsActivity?.reduce(
 														(accumulator, activity) => ({
-															// biome-ignore lint/performance/noAccumulatingSpread: <explanation>
+															// biome-ignore lint/performance/noAccumulatingSpread: .
 															...accumulator,
 															...activity,
 														}),

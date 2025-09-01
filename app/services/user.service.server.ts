@@ -13,23 +13,18 @@ import { fromEnv } from '@aws-sdk/credential-providers';
 import { newPassWordEmailTemplate } from '../assets/email/new-password.email.template.server.js';
 import { welcomeEmailTemplate } from '../assets/email/welcome.email.template.server.js';
 import { UserForCreation } from '../entities/user.entity.server.js';
-import { type TServiceReturn } from '../types/service-return.type.js';
-import {
-	type TUser,
-	type TUserCreationAttributes,
-} from '../types/user.type.js';
+import type { TServiceReturn } from '../types/service-return.type.js';
+import type { TUser, TUserCreationAttributes } from '../types/user.type.js';
 import { CustomError } from '../utils/custom-error.js';
 import { generateSecurePassword } from '../utils/generate-secure-password.js';
 import { logger } from '../utils/logger.util.js';
 import { MailService } from './mail.service.server.js';
-import { MauticService } from './mautic.service.server.js';
 import SubscriptionService from './subscription.service.server.js';
 
 export class UserService {
 	private readonly _awsClient: CognitoIdentityProviderClient;
 	private readonly _subscriptionService: SubscriptionService;
 	private readonly _mailService: MailService;
-	private readonly _mauticService: MauticService;
 
 	constructor(
 		awsClient: CognitoIdentityProviderClient = new CognitoIdentityProviderClient(
@@ -42,7 +37,6 @@ export class UserService {
 		this._awsClient = awsClient;
 		this._subscriptionService = new SubscriptionService();
 		this._mailService = new MailService();
-		this._mauticService = new MauticService();
 	}
 
 	public async createOrFail(
@@ -255,12 +249,7 @@ export class UserService {
 		};
 	}
 
-	public async updateUserName(
-		id: string,
-		email: string,
-		firstName: string,
-		lastName: string,
-	) {
+	public async updateUserName(id: string, firstName: string, lastName: string) {
 		const parameters = {
 			UserAttributes: [
 				{
@@ -279,13 +268,7 @@ export class UserService {
 		const command = new AdminUpdateUserAttributesCommand(parameters);
 
 		try {
-			await Promise.all([
-				this._awsClient.send(command),
-				this._mauticService.updateContact(email, {
-					firstName,
-					lastName,
-				}),
-			]);
+			await Promise.all([this._awsClient.send(command)]);
 		} catch (error) {
 			logger.logError(`Error updating name ${(error as Error).message}`);
 			throw new CustomError(
@@ -295,7 +278,7 @@ export class UserService {
 		}
 	}
 
-	public async updateUserEmail(id: string, oldEmail: string, newEmail: string) {
+	public async updateUserEmail(id: string, newEmail: string) {
 		const parameters = {
 			UserAttributes: [
 				{
@@ -314,12 +297,7 @@ export class UserService {
 		const command = new AdminUpdateUserAttributesCommand(parameters);
 
 		try {
-			await Promise.all([
-				this._awsClient.send(command),
-				this._mauticService.updateContact(oldEmail, {
-					email: newEmail,
-				}),
-			]);
+			await Promise.all([this._awsClient.send(command)]);
 		} catch (error) {
 			logger.logError(`Error updating email ${(error as Error).message}`);
 			throw new CustomError(
@@ -445,10 +423,6 @@ export class UserService {
 
 	public async deleteUser(id: string) {
 		try {
-			const { data: userData } = await this.getUserData(id);
-
-			await this._mauticService.deleteContact(userData.email);
-
 			const parameters = {
 				Username: id,
 				UserPoolId: process.env.COGNITO_USER_POOL_ID,
@@ -489,7 +463,6 @@ export class UserService {
 				{ Name: 'custom:roles', Value: roles ? roles.join('-') : 'iniciantes' },
 				{ Name: 'custom:CPF', Value: document ?? '' },
 				{ Name: 'custom:iuguId', Value: 'INVALID-IUGU-ID' }, // Added for support for old site, should be deleted when old site is no more supported
-				{ Name: 'custom:mauticId', Value: 'INVALID-MAUTIC-ID' }, // Added for support for old site, should be deleted when old site is no more supported
 			],
 			Username: email,
 			UserPoolId: process.env.COGNITO_USER_POOL_ID,
@@ -541,30 +514,6 @@ export class UserService {
 		logger.logDebug(`Setting user password for user ${username}`);
 		await this._setUserPassword(username, password);
 		logger.logDebug(`User password set successfully for user ${username}`);
-
-		try {
-			logger.logDebug(`Creating contact in Mautic for user ${email}`);
-			const response = await this._mauticService.createContact({
-				email,
-				firstName,
-				lastName,
-			});
-
-			const mauticUserId = response.data.contact.id;
-
-			try {
-				logger.logDebug(`Adding user ${email} to segment 3`);
-				await this._mauticService.addContactToSegment(mauticUserId, 3);
-			} catch (error) {
-				logger.logError(
-					`Error adding user ${email} to segment 3: ${(error as Error).message}`,
-				);
-			}
-		} catch (error) {
-			logger.logError(
-				`Error creating contact in Mautic for user ${email}: ${(error as Error).message}`,
-			);
-		}
 
 		try {
 			logger.logDebug(

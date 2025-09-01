@@ -1,7 +1,7 @@
-import { type Prisma } from '@prisma/client';
-import { type TAllDataToBeCached } from './get-all-data-to-be-cached.js';
+import type { Prisma } from '@prisma/client';
+import type { TAllDataToBeCached } from './get-all-data-to-be-cached.js';
 import { memoryCache } from './memory-cache.js';
-import { type TCourseDataForCache } from './populate-courses-to-cache.js';
+import type { TCourseDataForCache } from './populate-courses-to-cache.js';
 import {
 	populateLessonsToCache,
 	type TLessonDataForCache,

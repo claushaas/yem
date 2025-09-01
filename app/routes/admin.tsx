@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/style/noNonNullAssertion: . */
 import {
 	Link,
 	type LoaderFunctionArgs,
@@ -8,7 +9,7 @@ import {
 	useLocation,
 } from 'react-router';
 import { NavigateBar } from '~/components/navigation-bar.js';
-import { type TypeUserSession } from '~/types/user-session.type';
+import type { TypeUserSession } from '~/types/user-session.type';
 import { getUserSession } from '~/utils/session.server';
 
 export const meta = ({ data }: MetaArgs<typeof loader>) => [

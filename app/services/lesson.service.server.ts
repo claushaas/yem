@@ -1,26 +1,26 @@
-/* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
-import { type Prisma, type PrismaClient } from '@prisma/client';
+/** biome-ignore-all lint/style/noNonNullAssertion: . */
+import type { Prisma, PrismaClient } from '@prisma/client';
 import Fuse, { type IFuseOptions } from 'fuse.js';
 import { memoryCache } from '~/cache/memory-cache.js';
-import { type TCourseDataForCache } from '~/cache/populate-courses-to-cache';
-import { type TLessonDataForCache } from '~/cache/populate-lessons-to-cache.js';
-import { type TModuleDataFromCache } from '~/types/module.type';
-import { type TTag } from '~/types/tag.type.js';
-import { type TypeUserSession } from '~/types/user-session.type';
+import type { TCourseDataForCache } from '~/cache/populate-courses-to-cache';
+import type { TLessonDataForCache } from '~/cache/populate-lessons-to-cache.js';
+import type { TModuleDataFromCache } from '~/types/module.type';
+import type { TTag } from '~/types/tag.type.js';
+import type { TypeUserSession } from '~/types/user-session.type';
 import { logger } from '~/utils/logger.util.js';
 import { database } from '../database/database.server';
 import { Lesson } from '../entities/lesson.entity.server';
-import {
-	type TLesson,
-	type TPrismaPayloadCreateOrUpdateLesson,
-	type TPrismaPayloadGetCompletedLessons,
-	type TPrismaPayloadGetFavoritedLessons,
-	type TPrismaPayloadGetLessonById,
-	type TPrismaPayloadGetLessonList,
-	type TPrismaPayloadGetSavedLessons,
+import type {
+	TLesson,
+	TPrismaPayloadCreateOrUpdateLesson,
+	TPrismaPayloadGetCompletedLessons,
+	TPrismaPayloadGetFavoritedLessons,
+	TPrismaPayloadGetLessonById,
+	TPrismaPayloadGetLessonList,
+	TPrismaPayloadGetSavedLessons,
 } from '../types/lesson.type';
-import { type TServiceReturn } from '../types/service-return.type';
-import { type TUser } from '../types/user.type';
+import type { TServiceReturn } from '../types/service-return.type';
+import type { TUser } from '../types/user.type';
 import { CustomError } from '../utils/custom-error.js';
 
 export class LessonService {

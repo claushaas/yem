@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/naming-convention */
+/** biome-ignore-all lint/style/noNonNullAssertion: . */
 import {
 	type ActionFunctionArgs,
 	data,
@@ -10,8 +10,8 @@ import { SuccessOrErrorMessage } from '~/components/admin-success-or-error-messa
 import { CourseCreateOrEditForm } from '~/components/course-create-or-edit-form.js';
 import { AdminEntityCard } from '~/components/entities-cards.js';
 import { CourseService } from '~/services/course.service.server';
-import { type TCourse } from '~/types/course.type';
-import { type TUserRoles } from '~/types/user.type';
+import type { TCourse } from '~/types/course.type';
+import type { TUserRoles } from '~/types/user.type';
 import { logger } from '~/utils/logger.util.js';
 import { commitUserSession, getUserSession } from '~/utils/session.server.js';
 

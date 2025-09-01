@@ -1,7 +1,7 @@
 import { type LoaderFunctionArgs, useLoaderData } from 'react-router';
 import { AdminEntityCard } from '~/components/entities-cards';
 import { LessonService } from '~/services/lesson.service.server';
-import { type TypeUserSession } from '~/types/user-session.type';
+import type { TypeUserSession } from '~/types/user-session.type';
 import { getUserSession } from '~/utils/session.server';
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {

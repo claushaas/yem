@@ -1,6 +1,6 @@
-import {
-	type THttpStatus,
-	type THttpStatusCode,
+import type {
+	THttpStatus,
+	THttpStatusCode,
 } from '../types/http-status.type.js';
 
 export function mapStatusHttp(status: THttpStatus): THttpStatusCode {

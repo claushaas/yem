@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/correctness/useUniqueElementIds: . */
 import { Testimony } from '~/components/testimony-card.js';
 
 export function Testimonies() {

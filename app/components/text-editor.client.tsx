@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/correctness/useUniqueElementIds: . */
 import Quill from 'quill';
 import { useEffect, useRef } from 'react';
 import 'quill/dist/quill.snow.css';
@@ -16,7 +17,7 @@ export const Editor = ({
 	// eslint-disable-line react/function-component-definition
 	const quillTextBoxReference = useRef<HTMLDivElement>(null);
 
-	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+	// biome-ignore lint/correctness/useExhaustiveDependencies: .
 	useEffect(() => {
 		const quillTextBox = quillTextBoxReference;
 		if (quillTextBox.current) {

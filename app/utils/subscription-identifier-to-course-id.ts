@@ -1,7 +1,7 @@
 /* eslint-disable quote-props */
 /* eslint-disable @typescript-eslint/naming-convention */
 
-import { type TPlanIdentifier } from '~/types/subscription.type';
+import type { TPlanIdentifier } from '~/types/subscription.type';
 
 export const subscriptionIdentifierToCourseSlug = {
 	'135340': 'escola-online',

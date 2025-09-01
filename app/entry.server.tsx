@@ -23,7 +23,7 @@ export default async function handleRequest(
 	responseStatusCode: number,
 	responseHeaders: Headers,
 	routerContext: EntryContext,
-	loadContext: AppLoadContext,
+	_loadContext: AppLoadContext,
 ) {
 	return new Promise((resolve, reject) => {
 		let shellRendered = false;
