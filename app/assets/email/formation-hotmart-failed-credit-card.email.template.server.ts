@@ -1,4 +1,4 @@
-import { type TEmailTemplate } from '../../types/email-template.type.js';
+import type { TEmailTemplate } from '../../types/email-template.type.js';
 
 export const formationHotmartFailedCreditCardEmailTemplate = (
 	firstName: string,

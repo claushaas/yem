@@ -1,6 +1,6 @@
-import { type Prisma } from '@prisma/client';
-import { type TLessonDataForCache } from '~/cache/populate-lessons-to-cache.js';
-import { type TModuleToCourse } from '~/cache/populate-modules-to-cache.js';
+import type { Prisma } from '@prisma/client';
+import type { TLessonDataForCache } from '~/cache/populate-lessons-to-cache.js';
+import type { TModuleToCourse } from '~/cache/populate-modules-to-cache.js';
 
 export type TModule = {
 	oldId?: string;

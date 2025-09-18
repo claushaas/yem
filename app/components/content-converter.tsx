@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import { type OpIterator } from 'quill/core';
+import type { OpIterator } from 'quill/core';
 import { QuillDeltaToHtmlConverter } from 'quill-delta-to-html';
 
 export function ContentConverter({
@@ -18,7 +18,7 @@ export function ContentConverter({
 		// eslint-disable-next-line react/no-danger
 		<div
 			className={className}
-			// biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
+			// biome-ignore lint/security/noDangerouslySetInnerHtml: .
 			dangerouslySetInnerHTML={{ __html: contentConverter.convert() }}
 		/>
 	);

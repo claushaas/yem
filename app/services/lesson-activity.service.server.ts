@@ -1,6 +1,6 @@
-import { type Prisma, type PrismaClient } from '@prisma/client';
-import { type TGetLessonActivityForUser } from '~/types/lesson-activity.type.js';
-import { type TServiceReturn } from '~/types/service-return.type.js';
+import type { PrismaClient } from '@prisma/client';
+import type { TGetLessonActivityForUser } from '~/types/lesson-activity.type.js';
+import type { TServiceReturn } from '~/types/service-return.type.js';
 import { logger } from '~/utils/logger.util.js';
 import { database } from '../database/database.server.js';
 

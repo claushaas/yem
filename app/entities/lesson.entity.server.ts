@@ -1,7 +1,7 @@
 import Joi from 'joi';
 import { convertNameToSlug } from '~/utils/convert-name-to-slug.js';
-import { type TLesson, type TLessonType } from '../types/lesson.type.js';
-import { type TTags } from '../types/tag.type.js';
+import type { TLesson, TLessonType } from '../types/lesson.type.js';
+import type { TTags } from '../types/tag.type.js';
 import { CustomError } from '../utils/custom-error.js';
 
 const lessonSchema = Joi.object({

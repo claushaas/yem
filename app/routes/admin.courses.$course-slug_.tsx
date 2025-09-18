@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/naming-convention */
-
+/** biome-ignore-all lint/style/noNonNullAssertion: . */
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import * as Dialog from '@radix-ui/react-dialog';
 import * as RadixForm from '@radix-ui/react-form';
@@ -25,9 +24,9 @@ import { YemSpinner } from '~/components/yem-spinner.js';
 import { useTextEditor } from '~/hooks/use-text-editor.hook';
 import { CourseService } from '~/services/course.service.server';
 import { ModuleService } from '~/services/module.service.server';
-import { type TCourse } from '~/types/course.type';
-import { type TModule } from '~/types/module.type';
-import { type TUser } from '~/types/user.type';
+import type { TCourse } from '~/types/course.type';
+import type { TModule } from '~/types/module.type';
+import type { TUser } from '~/types/user.type';
 import { logger } from '~/utils/logger.util';
 import { commitUserSession, getUserSession } from '~/utils/session.server';
 

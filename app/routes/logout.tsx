@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/naming-convention */
+/** biome-ignore-all lint/style/noNonNullAssertion: . */
 import * as RadixForm from '@radix-ui/react-form';
 import {
 	type ActionFunctionArgs,
@@ -13,7 +13,7 @@ import {
 import { Button, ButtonPreset, ButtonType } from '~/components/button.js';
 import { NavigateBar } from '~/components/navigation-bar.js';
 import { YemSpinner } from '~/components/yem-spinner.js';
-import { type TypeUserSession } from '~/types/user-session.type';
+import type { TypeUserSession } from '~/types/user-session.type';
 import { destroyUserSession, getUserSession } from '~/utils/session.server';
 
 export const meta = ({ data }: MetaArgs<typeof loader>) => [

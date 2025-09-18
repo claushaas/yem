@@ -1,5 +1,5 @@
 import Joi from 'joi';
-import { type TSubscription } from '../types/subscription.type.js';
+import type { TSubscription } from '../types/subscription.type.js';
 import { CustomError } from '../utils/custom-error.js';
 
 const subscriptionSchema = Joi.object({

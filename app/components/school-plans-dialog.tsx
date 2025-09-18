@@ -1,7 +1,6 @@
 import { CheckCircleIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import * as Dialog from '@radix-ui/react-dialog';
-import { Link, useLocation } from 'react-router';
-import { Button, ButtonPreset, ButtonType } from './button.js';
+import { Link } from 'react-router';
 
 type SchoolPlansDialogProperties = {
 	readonly isOpen: boolean;
@@ -12,12 +11,6 @@ export default function SchoolPlansDialog({
 	isOpen,
 	onOpenChange,
 }: SchoolPlansDialogProperties) {
-	const { search } = useLocation();
-	const searchParameters = search ? search.split('?')[1].split('&') : [];
-	const marketingSearchParameters = searchParameters.filter((searchParameter) =>
-		searchParameter.includes('utm_'),
-	);
-
 	return (
 		<Dialog.Root onOpenChange={onOpenChange} open={isOpen}>
 			<Dialog.Portal>

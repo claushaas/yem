@@ -1,5 +1,5 @@
 import { parse } from 'qs';
-import { type ActionFunctionArgs } from 'react-router';
+import type { ActionFunctionArgs } from 'react-router';
 import { HooksService } from '~/services/hooks.service.server';
 import { logger } from '~/utils/logger.util';
 
@@ -28,7 +28,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 		const bodyText = await request.text();
 		const body = parse(bodyText) as {
 			event: string;
-			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			// biome-ignore lint/suspicious/noExplicitAny: .
 			data: Record<string, any>;
 		};
 

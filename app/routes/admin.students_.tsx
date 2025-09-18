@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/naming-convention */
+/** biome-ignore-all lint/style/noNonNullAssertion: . */
 import * as Form from '@radix-ui/react-form';
 import {
 	type ActionFunctionArgs,

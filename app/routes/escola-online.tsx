@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/correctness/useUniqueElementIds: . */
 import {
 	BookmarkIcon,
 	CheckCircleIcon,
@@ -24,6 +25,7 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => [
 			'A maior escola de Yoga online do Brasil. Com mais de 1500 aulas disponíveis para você praticar onde e quando quiser.',
 		name: 'description',
 	},
+	// biome-ignore lint/style/noNonNullAssertion: .
 	...data!.meta,
 ];
 
@@ -44,10 +46,7 @@ export default function EscolaOnline() {
 		<>
 			<header className="max-xs:max-w-[95%] max-w-[90%] mx-auto my-4 flex justify-between items-center w-[-webkit-fill-available]">
 				<div className="w-72">
-					<div
-						aria-label="Página inicial do Yoga em Movimento"
-						className='inline before:bg-[url("./assets/logo/logo-reduzido-colorido.svg")] sm:before:bg-[url("./assets/logo/logo-retangular-colorido.svg")] max-xs:before:h-14 before:h-20 before:block before:bg-no-repeat'
-					/>
+					<div className='inline before:bg-[url("./assets/logo/logo-reduzido-colorido.svg")] sm:before:bg-[url("./assets/logo/logo-retangular-colorido.svg")] max-xs:before:h-14 before:h-20 before:block before:bg-no-repeat' />
 				</div>
 				<div className="flex gap-4 flex-wrap justify-end">
 					<Link

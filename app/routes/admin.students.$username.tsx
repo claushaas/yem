@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/naming-convention */
-
+/** biome-ignore-all lint/style/noNonNullAssertion: . */
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import * as Dialog from '@radix-ui/react-dialog';
 import * as RadixForm from '@radix-ui/react-form';
@@ -95,11 +94,10 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 		switch (formType) {
 			case 'name': {
 				const id = formData.get('id') as string;
-				const email = formData.get('email') as string;
 				const firstName = formData.get('firstName') as string;
 				const lastName = formData.get('lastName') as string;
 
-				await userService.updateUserName(id, email, firstName, lastName);
+				await userService.updateUserName(id, firstName, lastName);
 
 				userSession.flash(
 					'success',
@@ -111,10 +109,9 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 
 			case 'email': {
 				const id = formData.get('id') as string;
-				const oldEmail = formData.get('oldEmail') as string;
 				const newEmail = formData.get('newEmail') as string;
 
-				await userService.updateUserEmail(id, oldEmail, newEmail);
+				await userService.updateUserEmail(id, newEmail);
 
 				userSession.flash(
 					'success',

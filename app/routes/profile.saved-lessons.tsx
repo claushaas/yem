@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/style/noNonNullAssertion: . */
 import {
 	type LoaderFunctionArgs,
 	type MetaArgs,
@@ -5,7 +6,7 @@ import {
 } from 'react-router';
 import { LessonWithoutSuspenseEntityCard } from '~/components/entities-cards';
 import { LessonService } from '~/services/lesson.service.server';
-import { type TypeUserSession } from '~/types/user-session.type';
+import type { TypeUserSession } from '~/types/user-session.type';
 import { getUserSession } from '~/utils/session.server';
 
 export const meta = ({ data }: MetaArgs<typeof loader>) => [

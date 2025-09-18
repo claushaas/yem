@@ -1,5 +1,5 @@
 import { type LoaderFunctionArgs, useLoaderData } from 'react-router';
-import { type TypeUserSession } from '~/types/user-session.type';
+import type { TypeUserSession } from '~/types/user-session.type';
 import { getUserSession } from '~/utils/session.server';
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {

@@ -1,4 +1,4 @@
-import { type PrismaClient } from '@prisma/client';
+import type { PrismaClient } from '@prisma/client';
 import { memoryCache } from '~/cache/memory-cache.js';
 import { CustomError } from '~/utils/custom-error.js';
 import { convertSubscriptionIdentifierToCourseSlug } from '~/utils/subscription-identifier-to-course-id.js';
@@ -9,30 +9,27 @@ import {
 } from '~/utils/test-user-roles-for-old-courses.js';
 import { database } from '../database/database.server.js';
 import { Subscription } from '../entities/subscription.entity.server.js';
-import { type TServiceReturn } from '../types/service-return.type.js';
-import {
-	type TPrismaPayloadGetUserSubscriptions,
-	type TSubscription,
+import type { TServiceReturn } from '../types/service-return.type.js';
+import type {
+	TPrismaPayloadGetUserSubscriptions,
+	TSubscription,
 } from '../types/subscription.type.js';
-import { type TUser } from '../types/user.type.js';
+import type { TUser } from '../types/user.type.js';
 import { logger } from '../utils/logger.util.js';
 import { HotmartService } from './hotmart.service.server.js';
 import { IuguService } from './iugu.service.server.js';
-import { MauticService } from './mautic.service.server.js';
 
 export default class SubscriptionService {
 	private static cache: typeof memoryCache;
 	private readonly _model: PrismaClient;
 	private readonly _hotmartService: HotmartService;
 	private readonly _iuguService: IuguService;
-	private readonly _mauticService: MauticService;
 
 	constructor(model: PrismaClient = database) {
 		this._model = model;
 		this._hotmartService = new HotmartService();
 		this._iuguService = new IuguService();
 		SubscriptionService.cache = memoryCache;
-		this._mauticService = new MauticService();
 	}
 
 	public async createOrUpdate(
@@ -222,7 +219,6 @@ export default class SubscriptionService {
 					iuguSubscriptions.map(async (subscription) => {
 						await this.createOrUpdate(subscription);
 					}),
-					this._mauticService.addContactToSegmentByEmail(user.email, 6),
 				]);
 			} else if (iuguSubscriptions.length === 0) {
 				await this.createOrUpdate({
@@ -253,7 +249,6 @@ export default class SubscriptionService {
 					hotmartSubscriptions.map(async (subscription) => {
 						await this.createOrUpdate(subscription);
 					}),
-					this._mauticService.addContactToSegmentByEmail(user.email, 6),
 				]);
 			} else if (hotmartSubscriptions.length === 0) {
 				await this.createOrUpdate({
@@ -298,7 +293,6 @@ export default class SubscriptionService {
 							providerSubscriptionId: `no-hotmart-formation-${user.id}`,
 							userId: user.id,
 						}),
-					this._mauticService.addContactToSegmentByEmail(user.email, 2),
 				]);
 			} else if (
 				hotmartSubscriptions.length === 0 &&
@@ -343,7 +337,6 @@ export default class SubscriptionService {
 					providerSubscriptionId: `old-formation-${user.id}`,
 					userId: user.id,
 				}),
-				this._mauticService.addContactToSegmentByEmail(user.email, 5),
 			]);
 		} else {
 			await this.createOrUpdate({

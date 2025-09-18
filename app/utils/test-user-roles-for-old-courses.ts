@@ -1,4 +1,4 @@
-import { type TUser } from '~/types/user.type';
+import type { TUser } from '~/types/user.type';
 
 export const userHasOldFormationRoles = (user: TUser): boolean =>
 	Boolean(
