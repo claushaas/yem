@@ -407,19 +407,19 @@ export class HooksService {
 			switch (data.product.id) {
 				case 1_392_822: {
 					// Formation
-					if (
-						data.purchase.recurrence_number === 1 ||
-						(!data.purchase.recurrence_number && !data.subscription)
-					) {
-						await Promise.all([
-							this._mailService.sendEmail(
-								formationWelcomeEmailTemplate(
-									userData.firstName,
-									userData.email,
-								),
-							),
-						]);
-					}
+					// if (
+					// 	data.purchase.recurrence_number === 1 ||
+					// 	(!data.purchase.recurrence_number && !data.subscription)
+					// ) {
+					// 	await Promise.all([
+					// 		this._mailService.sendEmail(
+					// 			formationWelcomeEmailTemplate(
+					// 				userData.firstName,
+					// 				userData.email,
+					// 			),
+					// 		),
+					// 	]);
+					// }
 
 					const rolesToAdd = [
 						'iniciantes',
