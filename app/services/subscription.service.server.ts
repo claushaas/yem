@@ -120,18 +120,18 @@ export default class SubscriptionService {
 			!hasVinyasaSubscription
 		) {
 			await Promise.all([
-				!hasIuguSubscriptions && this._createUserIuguSubscriptions(user),
+				!hasIuguSubscriptions && this.createUserIuguSubscriptions(user),
 				!hasHotmartSchoolSubscriptions &&
-					this._createUserHotmartSchoolSubscriptions(user),
+					this.createUserHotmartSchoolSubscriptions(user),
 				!hasHotmartFormationSubscriptions &&
-					this._createUserHotmartFormationSubscriptions(user),
+					this.createUserHotmartFormationSubscriptions(user),
 				!hasBeginnerSubscription &&
-					this._createOrUpdateBeginnerSubscription(user),
+					this.createOrUpdateBeginnerSubscription(user),
 				!hasOldFormationSubscriptions &&
-					this._createOrUpdateOldFormationSubscription(user),
-				!hasYPGSubscription && this._createOrUpdateYPGSubscription(user),
+					this.createOrUpdateOldFormationSubscription(user),
+				!hasYPGSubscription && this.createOrUpdateYPGSubscription(user),
 				!hasVinyasaSubscription &&
-					this._createOrUpdateVinyasaSubscription(user),
+					this.createOrUpdateVinyasaSubscription(user),
 			]);
 		}
 
@@ -209,10 +209,12 @@ export default class SubscriptionService {
 		}
 	}
 
-	private async _createUserIuguSubscriptions(user: TUser): Promise<void> {
+	async createUserIuguSubscriptions(user: TUser): Promise<void> {
 		try {
 			const { data: iuguSubscriptions } =
 				await this._iuguService.getUserSubscriptions(user);
+
+			console.log({ iuguSubscriptions });
 
 			if (iuguSubscriptions.length > 0) {
 				await Promise.all([
@@ -237,7 +239,7 @@ export default class SubscriptionService {
 		}
 	}
 
-	private async _createUserHotmartSchoolSubscriptions(
+	async createUserHotmartSchoolSubscriptions(
 		user: TUser,
 	): Promise<void> {
 		try {
@@ -267,7 +269,7 @@ export default class SubscriptionService {
 		}
 	}
 
-	private async _createUserHotmartFormationSubscriptions(
+	async createUserHotmartFormationSubscriptions(
 		user: TUser,
 	): Promise<void> {
 		try {
@@ -313,7 +315,7 @@ export default class SubscriptionService {
 		}
 	}
 
-	private async _createOrUpdateBeginnerSubscription(
+	async createOrUpdateBeginnerSubscription(
 		user: TUser,
 	): Promise<void> {
 		await this.createOrUpdate({
@@ -325,7 +327,7 @@ export default class SubscriptionService {
 		});
 	}
 
-	private async _createOrUpdateOldFormationSubscription(
+	async createOrUpdateOldFormationSubscription(
 		user: TUser,
 	): Promise<void> {
 		if (userHasOldFormationRoles(user)) {
@@ -349,7 +351,7 @@ export default class SubscriptionService {
 		}
 	}
 
-	private async _createOrUpdateYPGSubscription(user: TUser): Promise<void> {
+	async createOrUpdateYPGSubscription(user: TUser): Promise<void> {
 		if (userHasYPGRoles(user)) {
 			await this.createOrUpdate({
 				courseSlug: convertSubscriptionIdentifierToCourseSlug('ypg'),
@@ -369,7 +371,7 @@ export default class SubscriptionService {
 		}
 	}
 
-	private async _createOrUpdateVinyasaSubscription(user: TUser): Promise<void> {
+	async createOrUpdateVinyasaSubscription(user: TUser): Promise<void> {
 		if (userHasVinyasaRoles(user)) {
 			await this.createOrUpdate({
 				courseSlug: convertSubscriptionIdentifierToCourseSlug('vinyasa'),

@@ -151,8 +151,19 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 
 			case 'subscriptions': {
 				const { data: user } = await userService.getUserData(username!);
+				const subscriptionService = new SubscriptionService();
 
 				await new SubscriptionService().resetUserSubscriptions(user);
+
+				await Promise.all([
+					subscriptionService.createUserIuguSubscriptions(user),
+					subscriptionService.createUserHotmartSchoolSubscriptions(user),
+					subscriptionService.createUserHotmartFormationSubscriptions(user),
+					subscriptionService.createOrUpdateBeginnerSubscription(user),
+					subscriptionService.createOrUpdateOldFormationSubscription(user),
+					subscriptionService.createOrUpdateYPGSubscription(user),
+					subscriptionService.createOrUpdateVinyasaSubscription(user),
+			]);
 
 				userSession.flash(
 					'success',
