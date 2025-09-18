@@ -9,7 +9,7 @@ services:
     volumes:
       - ./app:/app/app
     ports:
-      - "3001:3001"
+      - "3000:3000"
       - "24678:24678"
     environment:
       APP_PORT: ${APP_PORT}
