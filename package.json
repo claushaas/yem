@@ -34,7 +34,7 @@
 		"fuse.js": "^7.1.0",
 		"isbot": "^5.1.30",
 		"joi": "^18.0.1",
-		"motion": "^12.23.15",
+		"motion": "^12.23.16",
 		"nprogress": "^0.2.0",
 		"prisma": "^6.16.2",
 		"qs": "^6.14.0",
@@ -74,9 +74,7 @@
 	},
 	"license": "UNLICENSED",
 	"name": "yoga-em-movimento",
-	"prisma": {
-		"seed": "tsx ./prisma/seed.ts"
-	},
+
 	"private": true,
 	"repository": {
 		"type": "git",
