@@ -146,8 +146,7 @@ export class CourseService {
 		const filteredCourses = allCourses.filter(
 			(course) =>
 				user.roles?.includes('admin') ||
-				(course.isPublished && course.hasActiveSubscription) ||
-				course.isSelling,
+				(course.isPublished && course.hasActiveSubscription)
 		); // eslint-disable-line @typescript-eslint/prefer-nullish-coalescing
 
 		filteredCourses.sort((a, b) => {
