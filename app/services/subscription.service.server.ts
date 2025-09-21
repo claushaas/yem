@@ -1,5 +1,4 @@
 import type { PrismaClient } from '@prisma/client';
-import { memoryCache } from '~/cache/memory-cache.js';
 import { CustomError } from '~/utils/custom-error.js';
 import { convertSubscriptionIdentifierToCourseSlug } from '~/utils/subscription-identifier-to-course-id.js';
 import {
@@ -20,7 +19,6 @@ import { HotmartService } from './hotmart.service.server.js';
 import { IuguService } from './iugu.service.server.js';
 
 export default class SubscriptionService {
-	private static cache: typeof memoryCache;
 	private readonly _model: PrismaClient;
 	private readonly _hotmartService: HotmartService;
 	private readonly _iuguService: IuguService;
@@ -29,7 +27,6 @@ export default class SubscriptionService {
 		this._model = model;
 		this._hotmartService = new HotmartService();
 		this._iuguService = new IuguService();
-		SubscriptionService.cache = memoryCache;
 	}
 
 	public async createOrUpdate(
@@ -58,13 +55,6 @@ export default class SubscriptionService {
 					},
 				},
 			});
-
-		if (new Date(createdOrUpdatedSubscription.expiresAt) > new Date()) {
-			SubscriptionService.cache.set(
-				`${subscription.courseSlug}:${subscription.userId}`,
-				JSON.stringify(createdOrUpdatedSubscription),
-			);
-		}
 
 		if (!createdOrUpdatedSubscription) {
 			throw new Error('Subscription not created');
@@ -130,8 +120,7 @@ export default class SubscriptionService {
 				!hasOldFormationSubscriptions &&
 					this.createOrUpdateOldFormationSubscription(user),
 				!hasYPGSubscription && this.createOrUpdateYPGSubscription(user),
-				!hasVinyasaSubscription &&
-					this.createOrUpdateVinyasaSubscription(user),
+				!hasVinyasaSubscription && this.createOrUpdateVinyasaSubscription(user),
 			]);
 		}
 
@@ -214,8 +203,6 @@ export default class SubscriptionService {
 			const { data: iuguSubscriptions } =
 				await this._iuguService.getUserSubscriptions(user);
 
-			console.log({ iuguSubscriptions });
-
 			if (iuguSubscriptions.length > 0) {
 				await Promise.all([
 					iuguSubscriptions.map(async (subscription) => {
@@ -239,9 +226,7 @@ export default class SubscriptionService {
 		}
 	}
 
-	async createUserHotmartSchoolSubscriptions(
-		user: TUser,
-	): Promise<void> {
+	async createUserHotmartSchoolSubscriptions(user: TUser): Promise<void> {
 		try {
 			const { data: hotmartSubscriptions } =
 				await this._hotmartService.getUserSchoolSubscriptions(user);
@@ -269,9 +254,7 @@ export default class SubscriptionService {
 		}
 	}
 
-	async createUserHotmartFormationSubscriptions(
-		user: TUser,
-	): Promise<void> {
+	async createUserHotmartFormationSubscriptions(user: TUser): Promise<void> {
 		try {
 			const { data: hotmartSubscriptions } =
 				await this._hotmartService.getUserFormationSubscriptions(user);
@@ -315,9 +298,7 @@ export default class SubscriptionService {
 		}
 	}
 
-	async createOrUpdateBeginnerSubscription(
-		user: TUser,
-	): Promise<void> {
+	async createOrUpdateBeginnerSubscription(user: TUser): Promise<void> {
 		await this.createOrUpdate({
 			courseSlug: convertSubscriptionIdentifierToCourseSlug('beginner'),
 			expiresAt: new Date(2_556_113_460_000),
@@ -327,9 +308,7 @@ export default class SubscriptionService {
 		});
 	}
 
-	async createOrUpdateOldFormationSubscription(
-		user: TUser,
-	): Promise<void> {
+	async createOrUpdateOldFormationSubscription(user: TUser): Promise<void> {
 		if (userHasOldFormationRoles(user)) {
 			await Promise.all([
 				this.createOrUpdate({

@@ -1,10 +1,6 @@
 /** biome-ignore-all lint/style/noNonNullAssertion: . */
 import type { Prisma, PrismaClient } from '@prisma/client';
 import Fuse, { type IFuseOptions } from 'fuse.js';
-import { memoryCache } from '~/cache/memory-cache.js';
-import type { TCourseDataForCache } from '~/cache/populate-courses-to-cache';
-import type { TLessonDataForCache } from '~/cache/populate-lessons-to-cache.js';
-import type { TModuleDataFromCache } from '~/types/module.type';
 import type { TTag } from '~/types/tag.type.js';
 import type { TypeUserSession } from '~/types/user-session.type';
 import { logger } from '~/utils/logger.util.js';
@@ -24,12 +20,10 @@ import type { TUser } from '../types/user.type';
 import { CustomError } from '../utils/custom-error.js';
 
 export class LessonService {
-	private static cache: typeof memoryCache;
 	private readonly _model: PrismaClient;
 
 	constructor(model: PrismaClient = database) {
 		this._model = model;
-		LessonService.cache = memoryCache;
 	}
 
 	public async create(
@@ -471,62 +465,71 @@ export class LessonService {
 		};
 	}
 
-	public getBySlugFromCache(
+	public async getOneForUser(
 		courseSlug: string,
 		moduleSlug: string,
 		lessonSlug: string,
 		user: TUser | undefined,
-	): TServiceReturn<TLessonDataForCache | undefined> {
+	): Promise<
+		TServiceReturn<
+			Prisma.LessonToModuleGetPayload<{
+				include: {
+					lesson: true;
+					module: { include: { courses: { include: { course: true } } } };
+				};
+			}>
+		>
+	> {
 		try {
-			const lesson = JSON.parse(
-				LessonService.cache.get(`${moduleSlug}:${lessonSlug}`) ?? '{}',
-			) as TLessonDataForCache;
+			const lesson = await this._model.lessonToModule.findUnique({
+				include: {
+					lesson: true,
+					module: {
+						include: {
+							courses: {
+								include: {
+									course: true,
+								},
+								where: {
+									courseSlug,
+								},
+							},
+						},
+					},
+				},
+				where: {
+					lessonToModule: {
+						lessonSlug,
+						moduleSlug,
+					},
+					module: {
+						courses: {
+							some: {
+								course: {
+									delegateAuthTo: {
+										some: {
+											subscriptions: {
+												some: {
+													expiresAt: {
+														gte: new Date(),
+													},
+													userId: user?.id,
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			});
 
 			if (!lesson) {
 				logger.logError(
 					`Lesson ${lessonSlug} for ${moduleSlug} not found in cache`,
 				);
 				throw new CustomError('NOT_FOUND', 'Lesson not found');
-			}
-
-			const isAdmin = user?.roles?.includes('admin');
-
-			const hasActiveSubscription =
-				isAdmin ||
-				lesson.delegateAuthTo.some((courseSlug) => {
-					const subscription = LessonService.cache.get(
-						`${courseSlug}:${user?.id}`,
-					);
-
-					if (!subscription) {
-						return false;
-					}
-
-					const expirationDate = (
-						JSON.parse(
-							subscription,
-						) as Prisma.UserSubscriptionsGetPayload<undefined>
-					).expiresAt;
-
-					return new Date(expirationDate) >= new Date();
-				});
-
-			if (!hasActiveSubscription) {
-				const module = JSON.parse(
-					LessonService.cache.get(`${courseSlug}:${moduleSlug}`) ?? '{}',
-				) as TModuleDataFromCache;
-				const course = JSON.parse(
-					LessonService.cache.get(`course:${courseSlug}`) ?? '{}',
-				) as TCourseDataForCache;
-
-				lesson.lesson.content =
-					lesson.lesson.marketingContent ||
-					module.module.marketingContent ||
-					course.marketingContent;
-				lesson.lesson.videoSourceUrl =
-					lesson.lesson.marketingVideoUrl ||
-					module.module.marketingVideoUrl ||
-					course.marketingVideoUrl;
 			}
 
 			return {
