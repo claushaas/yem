@@ -3,7 +3,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      target: prod
+      target: dev
     container_name: app
     working_dir: /app
     volumes:
