@@ -10,7 +10,6 @@ import {
 	type MetaArgs,
 	useLoaderData,
 } from 'react-router';
-import type { TModuleDataForCache } from '~/cache/populate-modules-to-cache.js';
 import { Breadcrumbs } from '~/components/breadcrumbs.js';
 import { GenericEntityCard } from '~/components/entities-cards.js';
 import { NavigateBar } from '~/components/navigation-bar.js';
@@ -49,7 +48,7 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
 	try {
 		const lessonActivityService = new LessonActivityService();
 
-		const { data: course } = new CourseService().getBySlugFromCache(
+		const { data: course } = await new CourseService().getOneForUser(
 			courseSlug!,
 			userSession.data as TUser,
 		);
@@ -58,12 +57,12 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
 			courseSlug!,
 			(userSession.data as TUser).id,
 		);
+
 		const modulesActivity = course.modules.map((module) => ({
-			[(module as TModuleDataForCache).module.slug]:
-				lessonActivityService.getModuleProgressForUser(
-					(module as TModuleDataForCache).module.slug,
-					(userSession.data as TUser).id,
-				),
+			[module.module.slug]: lessonActivityService.getModuleProgressForUser(
+				module.module.slug,
+				(userSession.data as TUser).id,
+			),
 		}));
 
 		return {
@@ -156,26 +155,24 @@ export default function Course() {
 							>
 								<h2 className="text-center">Módulos</h2>
 								<div className="flex flex-wrap gap-4 my-4 justify-center">
-									{(course.modules as unknown as TModuleDataForCache[]).map(
-										(module) => (
-											<GenericEntityCard
-												activity={
-													modulesActivity.reduce(
-														(accumulator, activity) => ({
-															// biome-ignore lint/performance/noAccumulatingSpread: .
-															...accumulator,
-															...activity,
-														}),
-														{},
-													)[module.module.slug] ?? undefined
-												}
-												course={module.module}
-												key={module.module.id}
-												// eslint-disable-next-line unicorn/no-array-reduce
-												to={`./${module.module.slug}`}
-											/>
-										),
-									)}
+									{course.modules.map((module) => (
+										<GenericEntityCard
+											activity={
+												modulesActivity.reduce(
+													(accumulator, activity) => ({
+														// biome-ignore lint/performance/noAccumulatingSpread: .
+														...accumulator,
+														...activity,
+													}),
+													{},
+												)[module.module.slug] ?? undefined
+											}
+											course={module.module}
+											key={module.module.id}
+											// eslint-disable-next-line unicorn/no-array-reduce
+											to={`./${module.module.slug}`}
+										/>
+									))}
 								</div>
 							</section>
 						)}

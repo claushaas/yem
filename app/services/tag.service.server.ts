@@ -1,5 +1,4 @@
 import type { PrismaClient } from '@prisma/client';
-import { memoryCache } from '~/cache/memory-cache.js';
 import type {
 	TPrismaPayloadCreateTag,
 	TPrismaPayloadGetAllTags,
@@ -11,12 +10,10 @@ import type { TServiceReturn } from '../types/service-return.type.js';
 import { logger } from '../utils/logger.util.js';
 
 export class TagService {
-	private static cache: typeof memoryCache;
 	private readonly _model: PrismaClient;
 
 	constructor(model: PrismaClient = database) {
 		this._model = model;
-		TagService.cache = memoryCache;
 	}
 
 	public async create(
@@ -78,40 +75,43 @@ export class TagService {
 		}
 	}
 
-	public getTagsFromCache(): TServiceReturn<
-		Array<{ tagOption: string; tagValues: string[] }> | undefined
+	public async getAllOrganised(): Promise<
+		TServiceReturn<
+			Array<{ tagOption: string; tagValues: string[] }> | undefined
+		>
 	> {
-		const tagsFromCache = TagService.cache.get('tags');
+		try {
+			const tags = await this._model.tagOptionTagValue.findMany();
 
-		if (!tagsFromCache) {
-			return {
-				data: undefined,
-				status: 'NO_CONTENT',
-			};
-		}
+			const organizedTags = [];
 
-		const parsedTags = JSON.parse(tagsFromCache) as Array<{
-			tagOption: string;
-			tagValue: string;
-		}>;
+			for (const tag of tags) {
+				const tagIndex = organizedTags.findIndex(
+					({ tagOption }) => tagOption === tag.tagOptionName,
+				);
 
-		const tags = [];
-
-		for (const tag of parsedTags) {
-			const tagIndex = tags.findIndex(
-				({ tagOption }) => tagOption === tag.tagOption,
-			);
-
-			if (tagIndex === -1) {
-				tags.push({ tagOption: tag.tagOption, tagValues: [tag.tagValue] });
-			} else if (!tags[tagIndex].tagValues.includes(tag.tagValue)) {
-				tags[tagIndex].tagValues.push(tag.tagValue);
+				if (tagIndex === -1) {
+					organizedTags.push({
+						tagOption: tag.tagOptionName,
+						tagValues: [tag.tagValueName],
+					});
+				} else if (
+					!organizedTags[tagIndex].tagValues.includes(tag.tagValueName)
+				) {
+					organizedTags[tagIndex].tagValues.push(tag.tagValueName);
+				}
 			}
-		}
 
-		return {
-			data: tags,
-			status: 'SUCCESSFUL',
-		};
+			return {
+				data: organizedTags,
+				status: 'SUCCESSFUL',
+			};
+		} catch (error) {
+			logger.logError(`Error getting all tags: ${(error as Error).message}`);
+			throw new CustomError(
+				'UNKNOWN',
+				`Error getting all tags: ${(error as Error).message}`,
+			);
+		}
 	}
 }

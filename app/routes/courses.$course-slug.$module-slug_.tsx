@@ -16,7 +16,6 @@ import {
 	useLocation,
 	useNavigate,
 } from 'react-router';
-import type { TLessonDataForCache } from '~/cache/populate-lessons-to-cache.js';
 import { Breadcrumbs } from '~/components/breadcrumbs.js';
 import { Button, ButtonPreset, ButtonType } from '~/components/button';
 import { LessonEntityCard } from '~/components/entities-cards.js';
@@ -78,29 +77,28 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
 
 	try {
 		const lessonActivityService = new LessonActivityService();
-		const { data: module } = new ModuleService().getBySlugFromCache(
+		const { data: module } = await new ModuleService().getOneForUser(
 			courseSlug!,
 			moduleSlug!,
 			userSession.data as TUser,
 			appliedTags,
 			page,
 		);
-		const { data: course } = new CourseService().getBySlugFromCache(
+		const { data: course } = await new CourseService().getOneForUser(
 			courseSlug!,
 			userSession.data as TUser,
 		);
-		const { data: tags } = new TagService().getTagsFromCache();
+		const { data: tags } = await new TagService().getAllOrganised();
 
 		const moduleActivity = lessonActivityService.getModuleProgressForUser(
 			moduleSlug!,
 			(userSession.data as TUser).id,
 		);
-		const lessonsActivity = module?.lessons.map((lesson) => ({
-			[(lesson as TLessonDataForCache).lesson.slug]:
-				lessonActivityService.getLessonActivityForUser(
-					(lesson as TLessonDataForCache).lesson.slug,
-					(userSession.data as TUser).id,
-				),
+		const lessonsActivity = module?.module.lessons.map((lesson) => ({
+			[lesson.lesson.slug]: lessonActivityService.getLessonActivityForUser(
+				lesson.lesson.slug,
+				(userSession.data as TUser).id,
+			),
 		}));
 
 		return {
@@ -388,32 +386,30 @@ export default function Module() {
 							</div>
 
 							<div className="flex flex-wrap justify-center gap-4 my-4">
-								{module.lessons.length > 0 ? (
-									(module.lessons as unknown as TLessonDataForCache[]).map(
-										(lesson) => (
-											<LessonEntityCard
-												activity={
-													lessonsActivity?.reduce(
-														(accumulator, activity) => ({
-															// biome-ignore lint/performance/noAccumulatingSpread: .
-															...accumulator,
-															...activity,
-														}),
-														{},
-													)[lesson.lesson.slug] ?? undefined
-												}
-												course={lesson.lesson}
-												key={lesson.lesson.id}
-												to={`./${lesson.lesson.slug}`}
-											/>
-										),
-									)
+								{module.module.lessons.length > 0 ? (
+									module.module.lessons.map((lesson) => (
+										<LessonEntityCard
+											activity={
+												lessonsActivity?.reduce(
+													(accumulator, activity) => ({
+														// biome-ignore lint/performance/noAccumulatingSpread: .
+														...accumulator,
+														...activity,
+													}),
+													{},
+												)[lesson.lesson.slug] ?? undefined
+											}
+											course={lesson.lesson}
+											key={lesson.lesson.id}
+											to={`./${lesson.lesson.slug}`}
+										/>
+									))
 								) : (
 									<p>Nenhuma aula encontrada</p>
 								)}
 							</div>
 
-							{module.pages > 1 && (
+							{module.pages && module.pages > 1 && (
 								<Pagination actualPage={actualPage} pages={module.pages} />
 							)}
 						</section>

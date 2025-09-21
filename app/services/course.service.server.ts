@@ -1,9 +1,5 @@
 /** biome-ignore-all lint/style/noNonNullAssertion: . */
-import type { PrismaClient } from '@prisma/client';
-import { memoryCache } from '~/cache/memory-cache.js';
-import type { TCourseDataForCache } from '~/cache/populate-courses-to-cache.js';
-import type { TModuleDataForCache } from '~/cache/populate-modules-to-cache.js';
-import type { TSubscription } from '~/types/subscription.type.js';
+import type { Prisma, PrismaClient } from '@prisma/client';
 import { logger } from '~/utils/logger.util.js';
 import { database } from '../database/database.server.js';
 import { Course } from '../entities/course.entity.server.js';
@@ -18,12 +14,10 @@ import type { TUser, TUserRoles } from '../types/user.type.js';
 import { CustomError } from '../utils/custom-error.js';
 
 export class CourseService {
-	private static cache: typeof memoryCache;
 	private readonly _model: PrismaClient;
 
 	constructor(model: PrismaClient = database) {
 		this._model = model;
-		CourseService.cache = memoryCache;
 	}
 
 	public async create(
@@ -104,52 +98,38 @@ export class CourseService {
 		};
 	}
 
-	public getAllFromCache(user: TUser): TServiceReturn<TCourseDataForCache[]> {
-		const allCoursesKeys = CourseService.cache
-			.keys()
-			.filter((key) => key.startsWith('course:'));
-		logger.logDebug(`All courses keys: ${JSON.stringify(allCoursesKeys)}`);
-
-		const allCourses = allCoursesKeys.map((key) => {
-			const course = JSON.parse(
-				CourseService.cache.get(key) ?? '{}',
-			) as TCourseDataForCache;
-
-			const hasActiveSubscription =
-				user.roles?.includes('admin') ||
-				course.delegateAuthTo.some((courseSlug) => {
-					// eslint-disable-line @typescript-eslint/prefer-nullish-coalescing
-					const subscription = CourseService.cache.get(
-						`${courseSlug}:${user.id}`,
-					);
-
-					if (!subscription) {
-						return false;
-					}
-
-					const { expiresAt } = JSON.parse(subscription) as TSubscription;
-					return expiresAt >= new Date();
-				});
-
-			return {
-				...course,
-				content: hasActiveSubscription
-					? course.content
-					: course.marketingContent,
-				hasActiveSubscription,
-				videoSourceUrl: hasActiveSubscription
-					? course.videoSourceUrl
-					: course.marketingVideoUrl,
-			};
+	public async getAllForUser(
+		user: TUser,
+	): Promise<TServiceReturn<TPrismaPayloadGetAllCourses>> {
+		const allCourses = await this._model.course.findMany({
+			orderBy: [{ order: 'asc' }, { name: 'asc' }],
+			select: {
+				description: true,
+				id: true,
+				isPublished: true,
+				isSelling: true,
+				name: true,
+				order: true,
+				publicationDate: true,
+				slug: true,
+				thumbnailUrl: true,
+			},
+			where: {
+				delegateAuthTo: {
+					some: {
+						subscriptions: {
+							some: { expiresAt: { gte: new Date() }, userId: user.id },
+						},
+					},
+				},
+				isPublished: user.roles?.includes('admin') ? undefined : true,
+				publicationDate: {
+					lte: user.roles?.includes('admin') ? undefined : new Date(),
+				},
+			},
 		});
 
-		const filteredCourses = allCourses.filter(
-			(course) =>
-				user.roles?.includes('admin') ||
-				(course.isPublished && course.hasActiveSubscription)
-		); // eslint-disable-line @typescript-eslint/prefer-nullish-coalescing
-
-		filteredCourses.sort((a, b) => {
+		allCourses.sort((a, b) => {
 			if (!a.order && !b.order) {
 				return a.name.localeCompare(b.name);
 			}
@@ -166,7 +146,7 @@ export class CourseService {
 		});
 
 		return {
-			data: filteredCourses,
+			data: allCourses,
 			status: 'SUCCESSFUL',
 		};
 	}
@@ -292,58 +272,47 @@ export class CourseService {
 		}
 	}
 
-	public getBySlugFromCache(
+	public async getOneForUser(
 		slug: string,
 		user: TUser,
-	): TServiceReturn<TCourseDataForCache> {
+	): Promise<
+		TServiceReturn<
+			Prisma.CourseGetPayload<{
+				include: {
+					modules: {
+						include: { module: true };
+					};
+				};
+			}>
+		>
+	> {
 		const isAdmin = user.roles?.includes('admin');
 
-		const course = JSON.parse(
-			CourseService.cache.get(`course:${slug}`) ?? '{}',
-		) as TCourseDataForCache;
+		const course = await this._model.course.findUnique({
+			include: {
+				modules: {
+					include: {
+						module: true,
+					},
+				},
+			},
+			where: {
+				delegateAuthTo: {
+					some: {
+						subscriptions: {
+							some: { expiresAt: { gte: new Date() }, userId: user.id },
+						},
+					},
+				},
+				isPublished: isAdmin ? undefined : true,
+				slug,
+			},
+		});
 
 		if (!course) {
 			logger.logError(`Course with slug ${slug} not found in cache`);
 			throw new CustomError('NOT_FOUND', 'Course not found');
 		}
-
-		// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-		const hasActiveSubscription =
-			isAdmin ||
-			course.delegateAuthTo.some((courseSlug) => {
-				const subscription = CourseService.cache.get(
-					`${courseSlug}:${user.id}`,
-				);
-
-				if (!subscription) {
-					return false;
-				}
-
-				const { expiresAt } = JSON.parse(subscription) as TSubscription;
-				return new Date(expiresAt) >= new Date();
-			});
-
-		const modules = course.modules.map((module) => {
-			const moduleData = JSON.parse(
-				CourseService.cache.get(`${course.slug}:${module as string}`) ?? '{}',
-			) as TModuleDataForCache;
-
-			moduleData.module.content = hasActiveSubscription
-				? moduleData.module.content
-				: moduleData.module.marketingContent;
-			moduleData.module.videoSourceUrl = hasActiveSubscription
-				? moduleData.module.videoSourceUrl
-				: moduleData.module.marketingVideoUrl;
-
-			return moduleData;
-		});
-		course.modules = modules;
-		course.content = hasActiveSubscription
-			? course.content
-			: course.marketingContent;
-		course.videoSourceUrl = hasActiveSubscription
-			? course.videoSourceUrl
-			: course.marketingVideoUrl;
 
 		return {
 			data: course,
