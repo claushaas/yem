@@ -24,8 +24,6 @@ export const meta = ({ data }: MetaArgs<typeof loader>) => [
 export const loader = async ({ request }: LoaderFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 
-	console.log('userSession');
-
 	try {
 		const courses = await new CourseService().getAllForUser(
 			userSession.get('user'),
