@@ -203,8 +203,6 @@ export default class SubscriptionService {
 			const { data: iuguSubscriptions } =
 				await this._iuguService.getUserSubscriptions(user);
 
-			console.log({ iuguSubscriptions });
-
 			if (iuguSubscriptions.length > 0) {
 				await Promise.all([
 					iuguSubscriptions.map(async (subscription) => {

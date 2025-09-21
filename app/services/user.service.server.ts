@@ -144,7 +144,6 @@ export class UserService {
 
 	public async getNewPassword(email: string): Promise<TServiceReturn<string>> {
 		try {
-			console.log('Getting new password for user', email);
 			const { data: user } = await this.getUserData(email);
 
 			const password = generateSecurePassword();
