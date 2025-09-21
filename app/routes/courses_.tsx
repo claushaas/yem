@@ -36,7 +36,8 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 		const lessonActivityService = new LessonActivityService();
 
 		const userData = userSession.data as TypeUserSession;
-		const { data: courses } = new CourseService().getAllFromCache(userData);
+		const { data: courses } = await new CourseService().getAllForUser(userData);
+
 		const coursesActivity =
 			typeof userSession.get('id') === 'string'
 				? courses.map((course) => ({

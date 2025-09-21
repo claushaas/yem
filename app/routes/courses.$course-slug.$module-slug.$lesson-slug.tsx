@@ -23,15 +23,14 @@ import {
 	type MetaFunction,
 	redirect,
 	useLoaderData,
+	useParams,
 } from 'react-router';
 import { Breadcrumbs } from '~/components/breadcrumbs.js';
 import { NavigateBar } from '~/components/navigation-bar.js';
 import { VideoPlayer } from '~/components/video-player.js';
 import { YemSpinner } from '~/components/yem-spinner.js';
-import { CourseService } from '~/services/course.service.server';
 import { LessonService } from '~/services/lesson.service.server';
 import { LessonActivityService } from '~/services/lesson-activity.service.server';
-import { ModuleService } from '~/services/module.service.server';
 import type { TUser } from '~/types/user.type';
 import type { TypeUserSession } from '~/types/user-session.type';
 import { getUserSession } from '~/utils/session.server';
@@ -68,36 +67,18 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
 
 	const userId = (userSession.data as TUser).id;
 
-	const { data: lesson } = new LessonService().getBySlugFromCache(
+	const { data: lesson } = await new LessonService().getOneForUser(
 		courseSlug!,
 		moduleSlug!,
 		lessonSlug!,
-		userSession.data as TUser,
-	);
-	const { data: module } = new ModuleService().getBySlugFromCache(
-		courseSlug!,
-		moduleSlug!,
-		userSession.data as TUser,
-		[],
-	);
-	const { data: course } = new CourseService().getBySlugFromCache(
-		courseSlug!,
 		userSession.data as TUser,
 	);
 	const userLessonActivity =
 		new LessonActivityService().getLessonActivityForUser(lessonSlug!, userId);
 
 	return {
-		course: {
-			name: course?.name ?? '',
-			slug: course?.slug ?? '',
-		},
 		lesson,
 		meta,
-		module: {
-			name: module?.module.name ?? '',
-			slug: module?.moduleSlug ?? '',
-		},
 		userData: userSession.data as TypeUserSession,
 		userLessonActivity,
 	};
@@ -160,7 +141,8 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 
 export default function Lesson() {
 	const data = useLoaderData<typeof loader>();
-	const { lesson, module, course, userLessonActivity, userData } = data;
+	const { lesson, userLessonActivity, userData } = data;
+	const params = useParams();
 
 	const { ops } = lesson?.lesson.content
 		? (JSON.parse(lesson?.lesson.content) as OpIterator)
@@ -168,6 +150,19 @@ export default function Lesson() {
 	const contentConverter = new QuillDeltaToHtmlConverter(ops, {
 		multiLineParagraph: false,
 	});
+
+	const course = lesson?.module.courses.find(
+		(c) => c.course.slug === params['course-slug'],
+	)?.course;
+	const { name: courseName, slug: courseSlug } = course ?? {
+		name: 'Curso Desconhecido',
+		slug: 'curso-desconhecido',
+	};
+
+	const { name: moduleName, slug: moduleSlug } = lesson?.module ?? {
+		name: 'Módulo Desconhecido',
+		slug: 'modulo-desconhecido',
+	};
 
 	return (
 		lesson && (
@@ -177,10 +172,10 @@ export default function Lesson() {
 				<main className="w-full max-w-[95%] sm:max-w-[90%] mx-auto">
 					<Breadcrumbs
 						data={[
-							[`/courses/${course.slug}`, course.name], // Course
-							[`/courses/${course.slug}/${module.slug}`, module.name], // Module
+							[`/courses/${courseSlug}`, courseName], // Course
+							[`/courses/${courseSlug}/${moduleSlug}`, moduleName], // Module
 							[
-								`/courses/${course.slug}/${module.slug}/${lesson.lessonSlug}`,
+								`/courses/${courseSlug}/${moduleSlug}/${lesson.lessonSlug}`,
 								lesson.lesson.name,
 							], // Lesson
 						]}

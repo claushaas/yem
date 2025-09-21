@@ -163,7 +163,7 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 					subscriptionService.createOrUpdateOldFormationSubscription(user),
 					subscriptionService.createOrUpdateYPGSubscription(user),
 					subscriptionService.createOrUpdateVinyasaSubscription(user),
-			]);
+				]);
 
 				userSession.flash(
 					'success',

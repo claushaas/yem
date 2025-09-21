@@ -11,7 +11,6 @@ import { CourseCreateOrEditForm } from '~/components/course-create-or-edit-form.
 import { AdminEntityCard } from '~/components/entities-cards.js';
 import { CourseService } from '~/services/course.service.server';
 import type { TCourse } from '~/types/course.type';
-import type { TUserRoles } from '~/types/user.type';
 import { logger } from '~/utils/logger.util.js';
 import { commitUserSession, getUserSession } from '~/utils/session.server.js';
 
@@ -25,9 +24,11 @@ export const meta = ({ data }: MetaArgs<typeof loader>) => [
 export const loader = async ({ request }: LoaderFunctionArgs) => {
 	const userSession = await getUserSession(request.headers.get('Cookie'));
 
+	console.log('userSession');
+
 	try {
-		const courses = await new CourseService().getAll(
-			userSession.get('roles') as TUserRoles,
+		const courses = await new CourseService().getAllForUser(
+			userSession.get('user'),
 		);
 
 		return data(

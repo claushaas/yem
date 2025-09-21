@@ -1,16 +1,11 @@
 /* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
 /** biome-ignore-all lint/style/noNonNullAssertion: . */
-import type { PrismaClient } from '@prisma/client';
-import { memoryCache } from '~/cache/memory-cache.js';
-import type { TCourseDataForCache } from '~/cache/populate-courses-to-cache.js';
-import type { TLessonDataForCache } from '~/cache/populate-lessons-to-cache.js';
-import type { TSubscription } from '~/types/subscription.type.js';
+import type { Prisma, PrismaClient } from '@prisma/client';
 import { logger } from '~/utils/logger.util.js';
 import { database } from '../database/database.server.js';
 import { Module } from '../entities/module.entity.server.js';
 import type {
 	TModule,
-	TModuleDataFromCache,
 	TPrismaPayloadCreateOrUpdateModule,
 	TPrismaPayloadGetModuleBySlug,
 	TPrismaPayloadGetModulesList,
@@ -19,13 +14,23 @@ import type { TServiceReturn } from '../types/service-return.type.js';
 import type { TUser } from '../types/user.type.js';
 import { CustomError } from '../utils/custom-error.js';
 
+// Tipo estendido para incluir a propriedade de paginação adicionada dinamicamente
+type TModuleToCourseWithPagination = Prisma.ModuleToCourseGetPayload<{
+	include: {
+		course: true;
+		module: {
+			include: {
+				lessons: { include: { lesson: { include: { tags: true } } } };
+			};
+		};
+	};
+}> & { pages?: number };
+
 export class ModuleService {
-	private static cache: typeof memoryCache;
 	private readonly _model: PrismaClient;
 
 	constructor(model: PrismaClient = database) {
 		this._model = model;
-		ModuleService.cache = memoryCache;
 	}
 
 	public async create(
@@ -263,71 +268,60 @@ export class ModuleService {
 	}
 
 	// eslint-disable-next-line max-params
-	public getBySlugFromCache(
+	public async getOneForUser(
 		courseSlug: string,
 		moduleSlug: string,
 		user: TUser,
 		appliedTags: Array<[string, string]>,
 		page?: number,
-	): TServiceReturn<TModuleDataFromCache | undefined> {
+	): Promise<TServiceReturn<TModuleToCourseWithPagination | undefined>> {
 		try {
-			const module = JSON.parse(
-				ModuleService.cache.get(`${courseSlug}:${moduleSlug}`) ?? '{}',
-			) as TModuleDataFromCache;
-			const course = JSON.parse(
-				ModuleService.cache.get(`course:${courseSlug}`) ?? '{}',
-			) as TCourseDataForCache;
-
-			if (!module) {
-				logger.logError(
-					`Module ${moduleSlug} for ${courseSlug} not found in cache`,
-				);
-				throw new CustomError('NOT_FOUND', 'Module not found');
-			}
-
-			const isAdmin = user.roles?.includes('admin');
-
-			const hasActiveSubscription =
-				isAdmin ||
-				module.delegateAuthTo.some((courseSlug) => {
-					const subscription = ModuleService.cache.get(
-						`${courseSlug}:${user.id}`,
-					);
-
-					if (!subscription) {
-						return false;
-					}
-
-					const { expiresAt } = JSON.parse(subscription) as TSubscription;
-					return new Date(expiresAt) >= new Date();
-				});
+			const moduleToCourse = await this._model.moduleToCourse.findUnique({
+				include: {
+					course: true,
+					module: {
+						include: {
+							lessons: {
+								include: {
+									lesson: {
+										select: {
+											description: true,
+											duration: true,
+											id: true,
+											name: true,
+											slug: true,
+											tags: true,
+											thumbnailUrl: true,
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+				where: {
+					course: {
+						delegateAuthTo: {
+							some: {
+								subscriptions: {
+									some: {
+										expiresAt: {
+											gte: new Date(),
+										},
+										userId: user.id,
+									},
+								},
+							},
+						},
+					},
+					moduleToCourse: {
+						courseSlug,
+						moduleSlug,
+					},
+				},
+			});
 
 			const actualPage = page ?? 1;
-
-			if (!hasActiveSubscription) {
-				module.module.content =
-					module.module.marketingContent || course.marketingContent;
-				module.module.videoSourceUrl =
-					module.module.marketingVideoUrl || course.marketingVideoUrl;
-			}
-
-			const allModuleLessons = module.lessons.map((lessonSlug) => {
-				const lessonData = JSON.parse(
-					ModuleService.cache.get(`${moduleSlug}:${lessonSlug as string}`) ??
-						'{}',
-				) as TLessonDataForCache;
-
-				if (!hasActiveSubscription) {
-					lessonData.lesson.content =
-						lessonData.lesson.marketingContent ||
-						module.module.marketingContent;
-					lessonData.lesson.videoSourceUrl =
-						lessonData.lesson.marketingVideoUrl ||
-						module.module.marketingVideoUrl;
-				}
-
-				return lessonData;
-			});
 
 			// eslint-disable-next-line unicorn/no-array-reduce
 			const organizedTags = appliedTags.reduce<Array<Record<string, string[]>>>(
@@ -369,7 +363,7 @@ export class ModuleService {
 				}
 			};
 
-			const lessons = allModuleLessons.filter((lesson) => {
+			const lessons = moduleToCourse?.module.lessons.filter((lesson) => {
 				if (appliedTags.length === 0) {
 					return true;
 				}
@@ -390,17 +384,20 @@ export class ModuleService {
 				);
 			});
 
-			module.pages = Math.ceil(lessons.length / 16);
+			const totalPages =
+				(lessons?.length ?? 0) > 0 ? Math.ceil((lessons?.length ?? 0) / 16) : 1;
 
-			const actualPageLessons = lessons.slice(
-				(actualPage - 1) * 16,
-				actualPage * 16,
-			);
+			const actualPageLessons =
+				lessons?.slice((actualPage - 1) * 16, actualPage * 16) ?? [];
 
-			module.lessons = actualPageLessons;
+			if (moduleToCourse) {
+				moduleToCourse.module.lessons = actualPageLessons;
+				// Fazemos o cast para o tipo estendido que suporta pages
+				(moduleToCourse as TModuleToCourseWithPagination).pages = totalPages;
+			}
 
 			return {
-				data: module,
+				data: moduleToCourse as TModuleToCourseWithPagination,
 				status: 'SUCCESSFUL',
 			};
 		} catch (error) {
