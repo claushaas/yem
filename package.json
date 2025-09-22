@@ -34,7 +34,7 @@
 		"fuse.js": "^7.1.0",
 		"isbot": "^5.1.30",
 		"joi": "^18.0.1",
-		"motion": "^12.23.16",
+		"motion": "^12.23.18",
 		"nprogress": "^0.2.0",
 		"prisma": "^6.16.2",
 		"qs": "^6.14.0",
@@ -45,7 +45,7 @@
 		"react-phone-number-input": "^3.4.12",
 		"react-router": "^7.9.1",
 		"react-select": "^5.10.2",
-		"remix-utils": "^8.8.0",
+		"remix-utils": "^9.0.0",
 		"winston": "^3.17.0"
 	},
 	"description": "Plataforma da Yoga em Movimento Ltda.",
@@ -65,7 +65,7 @@
 		"tailwindcss-radix-colors": "^2.1.0",
 		"tsx": "^4.20.5",
 		"typescript": "^5.9.2",
-		"vite": "^7.1.6",
+		"vite": "^7.1.7",
 		"vite-plugin-svgr": "^4.5.0",
 		"vite-tsconfig-paths": "^5.1.4"
 	},
